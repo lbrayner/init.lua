@@ -1,74 +1,40 @@
-set statusline=%<%f%=\ %y
+set statusline=%<%f%=\ %1*%y%*
 set statusline+=\ %4.(#%n%)
-set statusline+=\ %1*%2.(%R%)\ %3.(%m%)%*
-set statusline+=\ %4.(%2*%{&fileformat}%*%)
-set statusline+=\ %4.l:%4.(%c%V%)\ %3*%L%*\ %3.P
-set statusline+=\ %{&fileencoding}
+set statusline+=\ %2*%2.(%R%)\ %3.(%m%)%*
+set statusline+=\ %4.(%3*%{&fileformat}%*%)
+set statusline+=\ %4.l:%4.(%c%V%)\ %4*%L%*\ %3.P
+set statusline+=\ %5*%{&fileencoding}%*
 
-let s:vmode='cterm'
-
-if has('gui_running')
-    let s:vmode='gui'
-endif
-
-let s:normal_bg='#5f87ff'
-let s:normal_fg='#121212'
-
-let s:insert_bg='#121212'
-let s:insert_fg='#00ff87'
-
-let s:user1_normal_bg='#121212'
-let s:user1_normal_fg='#d7005f'
-
-let s:user1_insert_bg=s:insert_fg
-let s:user1_insert_fg='Purple'
-
-let s:user2_normal_bg='#121212'
-let s:user2_normal_fg='DarkGray'
-
-let s:user2_insert_bg=s:insert_fg
-let s:user2_insert_fg='Orange'
-
-let s:user3_normal_bg='#121212'
-let s:user3_normal_fg='DarkGray'
-
-let s:user3_insert_bg=s:insert_fg
-let s:user3_insert_fg='Orange'
-
-let s:not_current_bg='DarkGray'
-let s:not_current_fg='#121212'
+call initializer#initialize()
 
 function! s:Highlight(dict)
 	for group in keys(a:dict)
         let arguments = a:dict[group]
         for hikey in keys(arguments)
-            exe "hi! ".group." ".s:vmode.hikey."=".arguments[hikey]
+            exe "hi! ".group." ".g:status_vmode.hikey."=".arguments[hikey]
         endfor
     endfor
 endfunction
 
-function! s:HighlightInsert()
-    call s:Highlight({
-        \ 'StatusLine': {'bg': s:insert_bg, 'fg': s:insert_fg},
-        \ 'User1': {'bg': s:user1_insert_bg, 'fg': s:user1_insert_fg},
-        \ 'User2': {'bg': s:user2_insert_bg, 'fg': s:user2_insert_fg},
-        \ 'User3': {'bg': s:user3_insert_bg, 'fg': s:user3_insert_fg}})
-endfunction
-
-function! s:HighlightNormal()
-    call s:Highlight({
-        \ 'StatusLine': {'bg': s:normal_bg, 'fg': s:normal_fg},
-        \ 'User1': {'bg': s:user1_normal_bg, 'fg': s:user1_normal_fg},
-        \ 'User2': {'bg': s:user2_normal_bg, 'fg': s:user2_normal_fg},
-        \ 'User3': {'bg': s:user3_normal_bg, 'fg': s:user3_normal_fg}})
+function! s:HighlightMode(mode)
+    exe "call s:Highlight({"
+        \ . "'StatusLine': {'bg': g:".a:mode."_bg, 'fg': g:".a:mode."_fg},"
+        \ . "'User1': {'bg': g:user1_".a:mode."_bg, 'fg': g:user1_".a:mode."_fg},"
+        \ . "'User2': {'bg': g:user2_".a:mode."_bg, 'fg': g:user2_".a:mode."_fg},"
+        \ . "'User3': {'bg': g:user3_".a:mode."_bg, 'fg': g:user3_".a:mode."_fg},"
+        \ . "'User4': {'bg': g:user4_".a:mode."_bg, 'fg': g:user4_".a:mode."_fg},"
+        \ . "'User5': {'bg': g:user5_".a:mode."_bg, 'fg': g:user5_".a:mode."_fg}})"
 endfunction
 
 augroup MyVimStatusLineInsertEnterLeave
-    autocmd! InsertEnter * call s:HighlightInsert()
-    autocmd! InsertLeave * call s:HighlightNormal()
+    autocmd! InsertEnter * call s:HighlightMode('insert')
+    autocmd! InsertLeave * call s:HighlightMode('normal')
 augroup END
 
-call s:HighlightNormal()
+exe "hi! StatusLine ".g:status_vmode."=".g:statusline_attr_list
+exe "hi! StatusLineNC ".g:status_vmode."=".g:statuslinenc_attr_list
+
+call s:HighlightMode('normal')
 
 call s:Highlight({
-    \ 'StatusLineNC': {'bg': s:not_current_bg, 'fg': s:not_current_fg}})
+    \ 'StatusLineNC': {'bg': g:not_current_bg, 'fg': g:not_current_fg}})
