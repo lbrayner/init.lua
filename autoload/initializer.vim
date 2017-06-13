@@ -33,8 +33,11 @@ function initializer#initialize()
         let g:not_current_bg='DarkGray'
         let g:not_current_fg='#121212'
     else
-        let g:statusline_attr_list='NONE'
-        let g:statuslinenc_attr_list='NONE'
+        let g:statusline_normal='NONE'
+        let g:statusline_insert='bold'
+
+        " let g:statusline_attr_list='NONE'
+        let g:statuslinenc='NONE'
 
         let g:normal_bg='233'
         let g:normal_fg='69'

@@ -10,9 +10,14 @@ call initializer#initialize()
 function! s:Highlight(dict)
 	for group in keys(a:dict)
         let arguments = a:dict[group]
-        for hikey in keys(arguments)
-            exe "hi! ".group." ".g:status_vmode.hikey."=".arguments[hikey]
-        endfor
+        if type(arguments) == type({})
+            for hikey in keys(arguments)
+                exe "hi! ".group." ".g:status_vmode.hikey."=".arguments[hikey]
+            endfor
+        endif
+        if type(arguments) == type("")
+            exe "hi! ".group." ".g:status_vmode."=".arguments
+        endif
     endfor
 endfunction
 
@@ -24,6 +29,13 @@ function! s:HighlightMode(mode)
         \ . "'User3': {'bg': g:user3_".a:mode."_bg, 'fg': g:user3_".a:mode."_fg},"
         \ . "'User4': {'bg': g:user4_".a:mode."_bg, 'fg': g:user4_".a:mode."_fg},"
         \ . "'User5': {'bg': g:user5_".a:mode."_bg, 'fg': g:user5_".a:mode."_fg}})"
+    exe "call s:Highlight({"
+        \ . "'StatusLine': g:statusline_".a:mode.","
+        \ . "'User1': g:statusline_".a:mode.","
+        \ . "'User2': g:statusline_".a:mode.","
+        \ . "'User3': g:statusline_".a:mode.","
+        \ . "'User4': g:statusline_".a:mode.","
+        \ . "'User5': g:statusline_".a:mode."})"
 endfunction
 
 augroup MyVimStatusLineInsertEnterLeave
@@ -31,8 +43,7 @@ augroup MyVimStatusLineInsertEnterLeave
     autocmd! InsertLeave * call s:HighlightMode('normal')
 augroup END
 
-exe "hi! StatusLine ".g:status_vmode."=".g:statusline_attr_list
-exe "hi! StatusLineNC ".g:status_vmode."=".g:statuslinenc_attr_list
+exe "hi! StatusLineNC ".g:status_vmode."=".g:statuslinenc
 
 call s:HighlightMode('normal')
 
