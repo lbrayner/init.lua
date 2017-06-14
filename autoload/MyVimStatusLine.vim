@@ -3,11 +3,11 @@ function! MyVimStatusLine#Highlight(dict)
         let arguments = a:dict[group]
         if type(arguments) == type({})
             for hikey in keys(arguments)
-                exe "hi! ".group." ".s:status_vmode.hikey."=".arguments[hikey]
+                exe "hi! ".group." ".s:term.hikey."=".arguments[hikey]
             endfor
         endif
         if type(arguments) == type("")
-            exe "hi! ".group." ".s:status_vmode."=".arguments
+            exe "hi! ".group." ".s:term."=".arguments
         endif
     endfor
 endfunction
@@ -31,30 +31,38 @@ endfunction
 
 function! MyVimStatusLine#loadColorMappings(colorMapping)
     for mapping in keys(a:colorMapping)
-        let color = MyVimStatusLine#themes#getColor(a:colorMapping[mapping],s:status_vmode)
+        let color = MyVimStatusLine#themes#getColor(a:colorMapping[mapping],s:term)
         exe "let s:".mapping."='".color."'"
     endfor
 endfunction
 
-function! MyVimStatusLine#getVMode()
-    let status_vmode='cterm'
+function! MyVimStatusLine#loadTermAttrList(termAttrList)
+    for mapping in keys(a:termAttrList)
+        exe "let s:".mapping."='".a:termAttrList[mapping]."'"
+    endfor
+endfunction
+
+function! MyVimStatusLine#getTerm()
+    let term='cterm'
 
     if has('gui_running')
-        let status_vmode='gui'
+        let term='gui'
     endif
 
-    return status_vmode
+    return term
 endfunction
 
 function! MyVimStatusLine#HighlightStatusLineNC()
     call MyVimStatusLine#Highlight({
         \ 'StatusLineNC': {'bg': s:not_current_bg, 'fg': s:not_current_fg}})
-    exe "hi! StatusLineNC ".s:status_vmode."=".s:statuslinenc
+    exe "hi! StatusLineNC ".s:term."=".s:statuslinenc
 endfunction
 
 function! s:LoadTheme()
     exec "let colorMapping = MyVimStatusLine#themes#".g:MyVimStatusLine_theme."#getColorMapping()"
+    exec "let termAttrList = MyVimStatusLine#themes#".g:MyVimStatusLine_theme."#getTermAttrList()"
     call MyVimStatusLine#loadColorMappings(colorMapping)
+    call MyVimStatusLine#loadTermAttrList(termAttrList)
 endfunction
 
 function! MyVimStatusLine#initialize()
@@ -62,12 +70,7 @@ function! MyVimStatusLine#initialize()
         let g:MyVimStatusLine_theme = 'default'
     endif
 
-    " call MyVimStatusLine#loadColorMappings(s:colorMapping)
     call s:LoadTheme()
 endfunction
 
-let s:status_vmode = MyVimStatusLine#getVMode()
-let s:statuslinenc='NONE'
-
-let s:statusline_normal='NONE'
-let s:statusline_insert='bold'
+let s:term = MyVimStatusLine#getTerm()

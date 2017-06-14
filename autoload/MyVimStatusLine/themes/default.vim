@@ -28,3 +28,11 @@ function! MyVimStatusLine#themes#default#getColorMapping()
         \ 'not_current_fg': 'x240_Grey35'}
     return colorMapping
 endfunction
+
+function! MyVimStatusLine#themes#default#getTermAttrList()
+    let termAttrList = {
+        \ 'statuslinenc': 'NONE',
+        \ 'statusline_normal': 'NONE',
+        \ 'statusline_insert': 'bold'}
+    return termAttrList
+endfunction
