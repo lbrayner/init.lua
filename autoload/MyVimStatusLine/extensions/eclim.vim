@@ -3,7 +3,7 @@ let s:specialFiletypeDic = {
             \ }
 
 function! MyVimStatusLine#extensions#eclim#EclimLeftStatusLine()
-    return expand('%:t')
+    return expand('%:t:r')
 endfunction
 
 function! MyVimStatusLine#extensions#eclim#EclimAvailable()
@@ -33,22 +33,31 @@ endfunction
 function! MyVimStatusLine#extensions#eclim#WarningFlag()
     let loclist = 0
     let changed = 0
+    let modifier = ''
     if exists("b:eclim_loclist")
-        let loclist = 1
+        let loclist = len(getloclist(0))
+    else
+        let loclist = 0
     endif
-    if exists("s:loclist_last")
-        let loclist_last = s:loclist_last
+    if exists("b:loclist_last")
+        let loclist_last = b:loclist_last
     else
         let loclist_last = 0
     endif
-    if loclist && !loclist_last || !loclist && loclist_last
+    if loclist != loclist_last
         let changed = 1
+        " echomsg "changed from ".loclist_last." to ".loclist
     endif
     if changed
         call MyVimStatusLine#extensions#eclim#LoadWarningFlag()
+    else
+        if loclist > 0
+            let modifier = '?'
+        else
+            let b:warning_flag = ''
+        endif
     endif
-    let s:loclist_last = loclist
-    return get(b:, 'warning_flag', '')
+    return modifier.get(b:, 'warning_flag', '')
 endfunction
 
 function! MyVimStatusLine#extensions#eclim#LoadWarningFlag()
@@ -63,16 +72,17 @@ function! MyVimStatusLine#extensions#eclim#LoadWarningFlag()
             let b:warning_flag = 'W'
         endif
     endif
-    " let b:MyVimStatusLine_changenr = changenr()
-    " return s:warning_flag
 endfunction
 
 function MyVimStatusLine#extensions#eclim#DefineEclimStatusLine()
     set statusline=%<%{MyVimStatusLine#extensions#eclim#ContextSensitiveLeftStatusLine()}%=
-    set statusline+=\ %4*%.20{MyVimStatusLine#extensions#eclim#CurrentProjectName()}%*\ %1*%{&ft}%*
-    set statusline+=\ %2*%1.(%{MyVimStatusLine#extensions#eclim#WarningFlag()}%)%*\ %4.(#%n%)
-    set statusline+=\ %2*%2.(%R%)\ %1.(%M%)%*
+    set statusline+=\ %2*%{MyVimStatusLine#extensions#eclim#WarningFlag()}%*
+    set statusline+=\ %4*%.20{MyVimStatusLine#extensions#eclim#CurrentProjectName()}%*
+    set statusline+=\ %1*%{&ft}%*
+    set statusline+=\ #%n
+    set statusline+=\ %2*%1.(%{MyVimStatusLine#statusline#DefaultReadOnlyFlag()}%)%*
+    set statusline+=%2*%1.(%{MyVimStatusLine#statusline#DefaultModifiedFlag()}%)%*
     set statusline+=\ %4.(%3*%{&fileformat}%*%)
-    set statusline+=\ %3.l:%2.c\ %3*%L%*\ %3.P
+    set statusline+=\ :%2.c\ %3*%L%*\ %3.P
     set statusline+=\ %3*%{&fileencoding}%*
 endfunction
