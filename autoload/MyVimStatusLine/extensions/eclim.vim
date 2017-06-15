@@ -31,15 +31,40 @@ function! MyVimStatusLine#extensions#eclim#ContextSensitiveLeftStatusLine()
 endfunction
 
 function! MyVimStatusLine#extensions#eclim#WarningFlag()
+    let loclist = 0
+    let changed = 0
+    if exists("b:eclim_loclist")
+        let loclist = 1
+    endif
+    if exists("s:loclist_last")
+        let loclist_last = s:loclist_last
+    else
+        let loclist_last = 0
+    endif
+    if loclist && !loclist_last || !loclist && loclist_last
+        let changed = 1
+    endif
+    if changed
+        call MyVimStatusLine#extensions#eclim#LoadWarningFlag()
+    endif
+    let s:loclist_last = loclist
+    return get(b:, 'warning_flag', '')
+endfunction
+
+function! MyVimStatusLine#extensions#eclim#LoadWarningFlag()
+    let b:warning_flag = ''
     let errorlist = eclim#display#signs#GetExisting('error')
     if len(errorlist) > 0
-        return 'E'
+        let b:warning_flag = 'E'
     endif
-    let warninglist = eclim#display#signs#GetExisting()
-    if len(warninglist) > 0
-        return 'W'
+    if b:warning_flag == ''
+        let warninglist = eclim#display#signs#GetExisting()
+        if len(warninglist) > 0
+            let b:warning_flag = 'W'
+        endif
     endif
-    return ''
+    " let b:MyVimStatusLine_changenr = changenr()
+    " return s:warning_flag
 endfunction
 
 function MyVimStatusLine#extensions#eclim#DefineEclimStatusLine()
