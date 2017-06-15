@@ -1,3 +1,4 @@
+" TODO add the first 16 colors
 let s:mapping = {
 \ 'x016_Grey0': {'cterm': '16', 'gui': '#000000'},
 \ 'x017_NavyBlue': {'cterm': '17', 'gui': '#00005f'},
