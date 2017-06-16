@@ -1,9 +1,5 @@
-let s:specialFiletypeDic = {
-            \ 'java': ''
-            \ }
-
-function! MyVimStatusLine#extensions#eclim#EclimLeftStatusLine()
-    return expand('%:t:r')
+function! MyVimStatusLine#extensions#eclim#EclimLoaded()
+    return exists(':ProjectCreate')
 endfunction
 
 function! MyVimStatusLine#extensions#eclim#EclimAvailable()
@@ -18,64 +14,32 @@ function! MyVimStatusLine#extensions#eclim#CurrentProjectName()
     return ""
 endfunction
 
-function! MyVimStatusLine#extensions#eclim#ContextSensitiveLeftStatusLine()
-    let projectName = MyVimStatusLine#extensions#eclim#CurrentProjectName()
-    if projectName == ""
-        return MyVimStatusLine#statusline#DefaultLeftStatusLine()
-    endif
-    let filetype = &ft
-    if !has_key(s:specialFiletypeDic,filetype)
-        return MyVimStatusLine#statusline#DefaultLeftStatusLine()
-    endif
-    return MyVimStatusLine#extensions#eclim#EclimLeftStatusLine()
-endfunction
-
 function! MyVimStatusLine#extensions#eclim#WarningFlag()
-    let loclist = 0
-    let changed = 0
-    let modifier = ''
-    if exists("b:eclim_loclist")
-        let loclist = len(getloclist(0))
-    else
-        let loclist = 0
-    endif
-    if exists("b:loclist_last")
-        let loclist_last = b:loclist_last
-    else
-        let loclist_last = 0
-    endif
-    if loclist != loclist_last
-        let changed = 1
-        " echomsg "changed from ".loclist_last." to ".loclist
-    endif
-    if changed
-        call MyVimStatusLine#extensions#eclim#LoadWarningFlag()
-    else
-        if loclist > 0
-            let modifier = '?'
-        else
-            let b:warning_flag = ''
-        endif
-    endif
-    return modifier.get(b:, 'warning_flag', '')
-endfunction
+    let bufnr = bufnr("%")
+    redir => output
+        silent! execute "sign place buffer=".bufnr
+    redir END
 
-function! MyVimStatusLine#extensions#eclim#LoadWarningFlag()
-    let b:warning_flag = ''
-    let errorlist = eclim#display#signs#GetExisting('error')
-    if len(errorlist) > 0
-        let b:warning_flag = 'E'
-    endif
-    if b:warning_flag == ''
-        let warninglist = eclim#display#signs#GetExisting()
-        if len(warninglist) > 0
-            let b:warning_flag = 'W'
+    let lines = split(output, '\n')
+
+    if len(lines) >= 3
+        " echomsg lines[2]
+        let first_sign_line = lines[2]
+        let type = substitute(first_sign_line,".*name=\\(\\w\\+\\)$","\\1","")
+        if type ==? 'error'
+            let warning_flag = 'E'
+        else
+            let warning_flag = 'W'
         endif
+    else
+        let warning_flag = ''
     endif
+
+    return warning_flag
 endfunction
 
 function MyVimStatusLine#extensions#eclim#DefineEclimStatusLine()
-    set statusline=%<%{MyVimStatusLine#extensions#eclim#ContextSensitiveLeftStatusLine()}%=
+    set statusline=%<%{MyVimStatusLine#statusline#DefaultLeftStatusLine()}%=
     set statusline+=\ %2*%{MyVimStatusLine#extensions#eclim#WarningFlag()}%*
     set statusline+=\ %4*%.20{MyVimStatusLine#extensions#eclim#CurrentProjectName()}%*
     set statusline+=\ %1*%{&ft}%*

@@ -1,9 +1,8 @@
-try
-    call MyVimStatusLine#extensions#eclim#EclimAvailable()
+if MyVimStatusLine#extensions#eclim#EclimLoaded()
     call MyVimStatusLine#extensions#eclim#DefineEclimStatusLine()
-catch /E117/ 
+else
     call MyVimStatusLine#statusline#DefineDefaultStatusLine()
-endtry
+endif
 
 call MyVimStatusLine#initialize()
 

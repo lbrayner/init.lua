@@ -1,9 +1,8 @@
 if &ft == 'java'
-  augroup MyVimStatusLine_java
-    autocmd! BufWritePre <buffer>
-    autocmd BufWritePre <buffer> let b:loclist_last = len(getloclist(0))
-                " \ | echomsg b:loclist_last
-  augroup END
+  if MyVimStatusLine#extensions#eclim#EclimLoaded()
+      augroup MyVimStatusLine_java
+            autocmd! BufEnter <buffer>
+            autocmd BufEnter <buffer> let b:MVSL_left_status_cmd = "expand('%:t:r')"
+      augroup END
+  endif
 endif
-
-

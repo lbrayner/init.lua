@@ -1,5 +1,12 @@
+let s:left_status_cmd = "expand('%')"
+
 function! MyVimStatusLine#statusline#DefaultLeftStatusLine()
-    return expand('%')
+    let left_status_cmd = s:left_status_cmd
+    if exists("b:MVSL_left_status_cmd")
+        let left_status_cmd = b:MVSL_left_status_cmd
+    endif
+    exec "let status_line = ".left_status_cmd
+    return status_line
 endfunction
 
 function! MyVimStatusLine#statusline#DefaultReadOnlyFlag()
@@ -20,7 +27,8 @@ function! MyVimStatusLine#statusline#DefaultModifiedFlag()
 endfunction
 
 function MyVimStatusLine#statusline#DefineDefaultStatusLine()
-    set statusline=%<%{MyVimStatusLine#statusline#DefaultLeftStatusLine()}%=\ %1*%y%*
+    set statusline=%<%{MyVimStatusLine#statusline#DefaultLeftStatusLine()}%=
+    set statusline+=\ %1*%{&ft}%*
     set statusline+=\ #%n
     set statusline+=\ %2*%1.(%{MyVimStatusLine#statusline#DefaultReadOnlyFlag()}%)%*
     set statusline+=\ %2*%1.(%{MyVimStatusLine#statusline#DefaultModifiedFlag()}%)%*
