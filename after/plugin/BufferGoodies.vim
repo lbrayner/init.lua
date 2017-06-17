@@ -8,4 +8,4 @@
 "     nnoremap <leader>T :BufWipeTab<cr>
 " endif
 
-call MyVimGoodies#util#vimmap('nnoremap','<leader>T',':BufWipeTab<cr> ')
+call MyVimGoodies#util#vimmap('nnoremap','<leader>T',':BufWipeTab<cr>')
