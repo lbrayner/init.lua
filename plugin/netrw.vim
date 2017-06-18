@@ -1,5 +1,7 @@
 " netrw is weird
 augroup MVSL_netrw
-    autocmd!
-    au FileType netrw let b:MVSL_left_status_cmd = "fnamemodify(b:netrw_curdir, ':.')"
+    autocmd! FileType
+    au FileType netrw
+        \ let &l:statusline = '%<%{fnamemodify(b:netrw_curdir, ":.")}%='
+        \                   . MyVimStatusLine#statusline#GetStatusLineTail()
 augroup END

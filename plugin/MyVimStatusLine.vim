@@ -14,7 +14,7 @@ let delaydir = substitute(fnamemodify(delaydirrel, ':p'), '\', '/', 'g')
 let delaydir = substitute(delaydir, '.$', '','')
 
 if delaydir == ''
-    echoe "Unable to determine MyVimStatusLine's delay dir.  " .
+    echoe "Unable to determine MyVimStatusLine's delay dir."
     finish
 endif
 
@@ -37,4 +37,3 @@ call MyVimStatusLine#initialize()
 
 call MyVimStatusLine#HighlightMode('normal')
 call MyVimStatusLine#HighlightStatusLineNC()
-
