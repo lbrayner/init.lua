@@ -1,8 +1,17 @@
+call MyVimStatusLine#statusline#DefineStatusLine()
+
+if ! has("gui_running")
+    if &t_Co < 256
+        finish
+    endif
+endif
+
 " (not so) dexteriously copied from eclim's startup script
 
 let delaydirrel = finddir('MyVimStatusLine.vim/delay/eclim', escape(&runtimepath, ' '))
 
 let delaydir = substitute(fnamemodify(delaydirrel, ':p'), '\', '/', 'g')
+let delaydir = substitute(delaydir, '.$', '','')
 
 if delaydir == ''
     echoe "Unable to determine MyVimStatusLine's delay dir.  " .
@@ -29,4 +38,3 @@ call MyVimStatusLine#initialize()
 call MyVimStatusLine#HighlightMode('normal')
 call MyVimStatusLine#HighlightStatusLineNC()
 
-call MyVimStatusLine#statusline#DefineStatusLine()
