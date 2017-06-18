@@ -34,6 +34,3 @@ if !exists(":HighlightStatusLineNC")
 endif
 
 call MyVimStatusLine#initialize()
-
-call MyVimStatusLine#HighlightMode('normal')
-call MyVimStatusLine#HighlightStatusLineNC()

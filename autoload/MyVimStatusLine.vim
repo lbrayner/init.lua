@@ -29,9 +29,13 @@ function! MyVimStatusLine#HighlightMode(mode)
         \ . "'User5': s:statusline_".a:mode."})"
 endfunction
 
-function! MyVimStatusLine#loadColorMappings(colorMapping)
-    for mapping in keys(a:colorMapping)
-        let color = MyVimStatusLine#themes#getColor(a:colorMapping[mapping],s:term)
+function! MyVimStatusLine#loadColorTheme(colorTheme)
+    let colorMapping = a:colorTheme
+    if type(a:colorTheme) == type("")
+        exec "let colorMapping = MyVimStatusLine#themes#".a:colorTheme."#getColorMapping()"
+    endif
+    for mapping in keys(colorMapping)
+        let color = MyVimStatusLine#themes#getColor(colorMapping[mapping],s:term)
         exe "let s:".mapping."='".color."'"
     endfor
 endfunction
@@ -58,11 +62,18 @@ function! MyVimStatusLine#HighlightStatusLineNC()
     exe "hi! StatusLineNC ".s:term."=".s:statuslinenc
 endfunction
 
-function! s:LoadTheme()
-    exec "let colorMapping = MyVimStatusLine#themes#".g:MyVimStatusLine_theme."#getColorMapping()"
-    exec "let termAttrList = MyVimStatusLine#themes#".g:MyVimStatusLine_theme."#getTermAttrList()"
-    call MyVimStatusLine#loadColorMappings(colorMapping)
+function! MyVimStatusLine#LoadTheme(colorTheme)
+    if exists("*MyVimStatusLine#themes#".a:colorTheme."#getColorMapping")
+        exec "source autoload/MyVimStatusLine/themes/".a:colorTheme.".vim"
+    endif
+
+    exec "let colorMapping = MyVimStatusLine#themes#".a:colorTheme."#getColorMapping()"
+    exec "let termAttrList = MyVimStatusLine#themes#".a:colorTheme."#getTermAttrList()"
+
+    call MyVimStatusLine#loadColorTheme(colorMapping)
     call MyVimStatusLine#loadTermAttrList(termAttrList)
+    call MyVimStatusLine#HighlightMode('normal')
+    call MyVimStatusLine#HighlightStatusLineNC()
 endfunction
 
 function! MyVimStatusLine#initialize()
@@ -70,7 +81,7 @@ function! MyVimStatusLine#initialize()
         let g:MyVimStatusLine_theme = 'default'
     endif
 
-    call s:LoadTheme()
+    call MyVimStatusLine#LoadTheme(g:MyVimStatusLine_theme)
 endfunction
 
 let s:term = MyVimStatusLine#getTerm()
