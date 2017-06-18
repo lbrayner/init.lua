@@ -8,3 +8,10 @@ noremap <Plug>HighlightStatusLineNC  :call MyVimStatusLine#HighlightStatusLineNC
 if !exists(":HighlightStatusLineNC")
     command -nargs=0  HighlightStatusLineNC  :call s:HighlightStatusLineNC()
 endif
+
+call MyVimStatusLine#initialize()
+
+call MyVimStatusLine#HighlightMode('normal')
+call MyVimStatusLine#HighlightStatusLineNC()
+
+call MyVimStatusLine#statusline#DefineStatusLine()
