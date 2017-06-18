@@ -11,6 +11,17 @@ function! MyVimStatusLine#extensions#eclim#CurrentProjectName()
 endfunction
 
 function! MyVimStatusLine#extensions#eclim#WarningFlag()
+    if ! exists("b:MVSL_warning_flag")
+        return ""
+    endif
+    return b:MVSL_warning_flag
+endfunction
+
+function! MyVimStatusLine#extensions#eclim#LoadWarningFlag()
+    let b:MVSL_warning_flag = s:GetWarningFlag()
+endfunction
+
+function! s:GetWarningFlag()
     let bufnr = bufnr("%")
     redir => output
         silent! execute "sign place buffer=".bufnr

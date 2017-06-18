@@ -1,3 +1,18 @@
+" (not so) dexteriously copied from eclim's startup script
+
+let delaydirrel = finddir('MyVimStatusLine.vim/delay/eclim', escape(&runtimepath, ' '))
+
+let delaydir = substitute(fnamemodify(delaydirrel, ':p'), '\', '/', 'g')
+
+if delaydir == ''
+    echoe "Unable to determine MyVimStatusLine's delay dir.  " .
+    finish
+endif
+
+exec 'set runtimepath+='
+    \ . delaydir . ','
+    \ . delaydir . '/after'
+
 augroup MyVimStatusLineInsertEnterLeave
     autocmd! InsertEnter * call MyVimStatusLine#HighlightMode('insert')
     autocmd! InsertLeave * call MyVimStatusLine#HighlightMode('normal')

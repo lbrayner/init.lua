@@ -1,6 +1,8 @@
 if &ft == 'help'
   augroup MVSL_help
     autocmd! BufEnter <buffer>
-    autocmd BufEnter <buffer> let b:MVSL_left_status_cmd = "expand('%:t')"
+    autocmd! BufEnter <buffer>
+        \ let &l:statusline = '%<%{expand("%:t")}%='
+        \                   . MyVimStatusLine#statusline#GetStatusLineTail()
   augroup END
 endif
