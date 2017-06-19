@@ -1,8 +1,15 @@
 let s:DiffTabMessage = 'q to close this tab.'
 
-function! s:SVNDiff(filename)
-    let tempfile = system("svn diff -r HEAD " . shellescape(a:filename)
-                \ . " --diff-cmd ~/bin/svnmkpatch > /dev/null")
+function! s:SVNDiff(filename,...)
+    let svncommand = "svn diff -r HEAD " . shellescape(a:filename)
+                \ . " --diff-cmd ~/bin/svnmkpatch"
+    if a:0 > 0
+        for extrarg in a:000
+            let svncommand = svncommand . " " . extrarg
+        endfor
+    endif
+    let svncommand = svncommand . " > /dev/null"
+    let tempfile = system(svncommand)
     if v:shell_error
         let message = substitute(tempfile,"[\r\n]","","g")
         echoerr message
@@ -18,12 +25,14 @@ function! s:SVNDiff(filename)
     endif
 endfunction
 
-function! MyVimGoodies#SVNGoodies#SVNDiffCursor()
+function! MyVimGoodies#SVNGoodies#SVNDiffCursor(...)
+    let vargs = copy(a:000)
     let filename = expand("<cfile>")
-    call s:SVNDiff(filename)
+    call call(function("s:SVNDiff"),insert(vargs,filename))
 endfunction
 
-function! MyVimGoodies#SVNGoodies#SVNDiffThis()
+function! MyVimGoodies#SVNGoodies#SVNDiffThis(...)
+    let vargs = copy(a:000)
     let filename = expand("%")
-    call s:SVNDiff(filename)
+    call call(function("s:SVNDiff"),insert(vargs,filename))
 endfunction
