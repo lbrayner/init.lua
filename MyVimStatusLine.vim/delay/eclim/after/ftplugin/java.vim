@@ -17,8 +17,8 @@ if &ft == 'java'
                     autocmd! BufEnter <buffer>
                     autocmd  BufEnter <buffer>
                         \ let &l:statusline = '%<%{expand("%:t:r")}%='
-                        \                   . ' %2*%{MyVimStatusLine#extensions#eclim#WarningFlag()}'
                         \             . ' %4*%.20{MyVimStatusLine#extensions#eclim#CurrentProjectName()}%*'
+                        \                   . ' %2*%{MyVimStatusLine#extensions#eclim#WarningFlag()}'
                         \                   . MyVimStatusLine#statusline#GetStatusLineTail()
               augroup END
           endif
