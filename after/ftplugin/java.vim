@@ -15,13 +15,13 @@ if &ft == 'java'
                         \ call MyVimGoodies#util#vimmap('nnoremap <buffer>',
                         \   '<leader>P',':echo eclim#java#util#GetPackage()<cr>')
                     autocmd  BufEnter <buffer>
-                        \ call MyVimGoodies#util#vimmap('nnoremap <buffer>',
+                        \   call MyVimGoodies#util#vimmap('nnoremap <buffer> <silent>',
                         \   '<leader>T'
-    \ ,':silent call MyVimGoodies#extensions#eclim#EclimGoToClassDeclarationLine()<cr>')
-                    autocmd  BufEnter <buffer>
-                        \ silent call 
-                        \   MyVimGoodies#extensions#eclim#EclimGoToClassDeclarationLine()
+            \ ,':call MyVimGoodies#extensions#eclim#EclimGoToClassDeclarationLine()<cr>')
               augroup END
+              if v:vim_did_enter
+                   call MyVimGoodies#extensions#eclim#EclimGoToClassDeclarationLine()
+              endif
           endif
       endif
     endif
