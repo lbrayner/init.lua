@@ -11,15 +11,16 @@ if &ft == 'java'
           if projectName != ""
               augroup MVSL_BWP_java
                     autocmd! BufWritePost <buffer>
-                    autocmd  BufWritePost <buffer> call MyVimStatusLine#extensions#eclim#LoadWarningFlag()
+                    autocmd  BufWritePost <buffer> 
+                                \ call MyVimStatusLine#extensions#eclim#LoadWarningFlag()
               augroup END
               augroup MVSL_BE_java
                     autocmd! BufEnter <buffer>
                     autocmd  BufEnter <buffer>
-                        \ let &l:statusline = '%<%{expand("%:t:r")}%='
-                        \             . ' %4*%.20{MyVimStatusLine#extensions#eclim#CurrentProjectName()}%*'
-                        \                   . ' %2*%{MyVimStatusLine#extensions#eclim#WarningFlag()}'
-                        \                   . MyVimStatusLine#statusline#GetStatusLineTail()
+                \ let &l:statusline = '%<%{expand("%:t:r")}%='
+                \ . ' %4*%.20{MyVimStatusLine#extensions#eclim#CurrentProjectName()}%*'
+                \       . ' %2*%{MyVimStatusLine#extensions#eclim#WarningFlag()}'
+                \       . MyVimStatusLine#statusline#GetStatusLineTail()
               augroup END
           endif
       endif

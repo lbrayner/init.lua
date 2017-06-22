@@ -22,25 +22,16 @@ function! MyVimStatusLine#extensions#eclim#LoadWarningFlag()
 endfunction
 
 function! s:GetWarningFlag()
-    let bufnr = bufnr("%")
-    redir => output
-        silent! execute "sign place buffer=".bufnr
-    redir END
-
-    let lines = split(output, '\n')
-
-    if len(lines) >= 3
-        " echomsg lines[2]
-        let first_sign_line = lines[2]
-        let type = substitute(first_sign_line,".*name=\\(\\w\\+\\)$","\\1","")
-        if type ==? 'error'
-            let warning_flag = 'E'
-        else
+    let warning_flag = ''
+    let errorlist = eclim#display#signs#GetExisting('error')
+    if len(errorlist) > 0
+        let warning_flag = 'E'
+    endif
+    if warning_flag == ''
+        let warninglist = eclim#display#signs#GetExisting()
+        if len(warninglist) > 0
             let warning_flag = 'W'
         endif
-    else
-        let warning_flag = ''
     endif
-
     return warning_flag
 endfunction
