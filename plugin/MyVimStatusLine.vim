@@ -1,4 +1,4 @@
-call MyVimStatusLine#statusline#DefineStatusLine()
+call MyVimStatusLine#statusline#DefineGlobalStatusLine()
 
 if ! has("gui_running")
     if &t_Co < 256
@@ -22,9 +22,15 @@ exec 'set runtimepath+='
     \ . delaydir . ','
     \ . delaydir . '/after'
 
-augroup MyVimStatusLineInsertEnterLeave
-    autocmd! InsertEnter * call MyVimStatusLine#HighlightMode('insert')
-    autocmd! InsertLeave * call MyVimStatusLine#HighlightMode('normal')
+augroup MyVimStatusLineInsertEnterLeaveGroup
+    autocmd!
+    autocmd InsertEnter * call MyVimStatusLine#HighlightMode('insert')
+    autocmd InsertLeave * call MyVimStatusLine#HighlightMode('normal')
+augroup END
+
+augroup MyVimStatusLineModifiedUserGroup
+    autocmd!
+    autocmd User * call MyVimStatusLine#RedefineStatusLine()
 augroup END
 
 noremap <Plug>HighlightStatusLineNC  :call MyVimStatusLine#HighlightStatusLineNC()<CR>

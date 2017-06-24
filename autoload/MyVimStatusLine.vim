@@ -15,18 +15,33 @@ endfunction
 function! MyVimStatusLine#HighlightMode(mode)
     exe "call MyVimStatusLine#Highlight({"
         \ . "'StatusLine': {'bg': s:".a:mode."_bg, 'fg': s:".a:mode."_fg},"
-        \ . "'User1': {'bg': s:user1_".a:mode."_bg, 'fg': s:user1_".a:mode."_fg},"
+        \ . "'User1': {'bg': s:user1_".a:mode."_bg},"
         \ . "'User2': {'bg': s:user2_".a:mode."_bg, 'fg': s:user2_".a:mode."_fg},"
         \ . "'User3': {'bg': s:user3_".a:mode."_bg, 'fg': s:user3_".a:mode."_fg},"
         \ . "'User4': {'bg': s:user4_".a:mode."_bg, 'fg': s:user4_".a:mode."_fg},"
-        \ . "'User5': {'bg': s:user5_".a:mode."_bg, 'fg': s:user5_".a:mode."_fg}})"
+        \ . "'User5': {'bg': s:user5_".a:mode."_bg, 'fg': s:user5_".a:mode."_fg},"
+        \ . "'User6': {'bg': s:user6_".a:mode."_bg, 'fg': s:user6_".a:mode."_fg}})"
     exe "call MyVimStatusLine#Highlight({"
         \ . "'StatusLine': s:statusline_".a:mode.","
         \ . "'User1': s:statusline_".a:mode.","
         \ . "'User2': s:statusline_".a:mode.","
         \ . "'User3': s:statusline_".a:mode.","
         \ . "'User4': s:statusline_".a:mode.","
-        \ . "'User5': s:statusline_".a:mode."})"
+        \ . "'User5': s:statusline_".a:mode.","
+        \ . "'User6': s:statusline_".a:mode."})"
+endfunction
+
+function! MyVimStatusLine#RedefineStatusLine()
+    if &modified
+        call MyVimStatusLine#statusline#DefineModifiedStatusLine()
+    else
+        call MyVimStatusLine#statusline#DefineStatusLine()
+    endif
+endfunction
+
+function! MyVimStatusLine#HighlightModifiedStatusLineGroup()
+    call MyVimStatusLine#Highlight({
+        \ 'User1': {'fg': s:user1_modified_fg}})
 endfunction
 
 function! MyVimStatusLine#loadColorTheme(colorTheme)
@@ -74,6 +89,7 @@ function! MyVimStatusLine#LoadTheme(colorTheme)
     call MyVimStatusLine#loadTermAttrList(termAttrList)
     call MyVimStatusLine#HighlightMode('normal')
     call MyVimStatusLine#HighlightStatusLineNC()
+    call MyVimStatusLine#HighlightModifiedStatusLineGroup()
 endfunction
 
 function! MyVimStatusLine#initialize()

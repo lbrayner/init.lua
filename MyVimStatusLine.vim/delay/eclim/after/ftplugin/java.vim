@@ -14,14 +14,15 @@ if &ft == 'java'
                     autocmd  BufWritePost <buffer> 
                                 \ call MyVimStatusLine#extensions#eclim#LoadWarningFlag()
               augroup END
-              augroup MVSL_BE_java
-                    autocmd! BufEnter <buffer>
-                    autocmd  BufEnter <buffer>
-                \ let &l:statusline = '%<%{expand("%:t:r")}%='
-                \ . ' %4*%.20{MyVimStatusLine#extensions#eclim#CurrentProjectName()}%*'
-                \       . ' %2*%{MyVimStatusLine#extensions#eclim#WarningFlag()}'
-                \       . MyVimStatusLine#statusline#GetStatusLineTail()
-              augroup END
+              let b:MVSL_custom_leftline = '%<%{expand("%:t:r")}'
+              \ . '%{MyVimStatusLine#statusline#DefaultModifiedFlag()}%='
+              \ . ' %5*%.20{MyVimStatusLine#extensions#eclim#CurrentProjectName()}%*'
+              \ . ' %3*%{MyVimStatusLine#extensions#eclim#WarningFlag()}'
+              let b:MVSL_custom_mod_leftline = '%<%1*%{expand("%:t:r")}'
+              \ . '%{MyVimStatusLine#statusline#DefaultModifiedFlag()}%*%='
+              \ . ' %5*%.20{MyVimStatusLine#extensions#eclim#CurrentProjectName()}%*'
+              \ . ' %3*%{MyVimStatusLine#extensions#eclim#WarningFlag()}'
+              call MyVimStatusLine#statusline#DefineStatusLine()
           endif
       endif
   endif
