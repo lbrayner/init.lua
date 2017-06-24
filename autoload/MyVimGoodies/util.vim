@@ -1,5 +1,9 @@
-function! MyVimGoodies#util#vimmap(leftside,keyseq,rightside)
-    if ! hasmapto(a:keyseq)
-        exec a:leftside." "a:keyseq." "a:rightside
+function! MyVimGoodies#util#vimmap(leftside,keyseq,keyseqtarget)
+    if ! hasmapto(a:keyseqtarget)
+        exec a:leftside." "a:keyseq." "a:keyseqtarget
     endif
+endfunction
+
+function! MyVimGoodies#util#escapeFileName(filename)
+    return substitute(fnamemodify(a:filename, ':p'), '\', '/', 'g')
 endfunction

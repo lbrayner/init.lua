@@ -36,3 +36,15 @@ function! MyVimGoodies#SVNGoodies#SVNDiffThis(...)
     let filename = expand("%")
     call call(function("s:SVNDiff"),insert(vargs,filename))
 endfunction
+
+function! MyVimGoodies#SVNGoodies#SVNDiffContextual(...)
+    let filename = expand("<cfile>")
+    let filename = MyVimGoodies#util#escapeFileName(filename)
+    echomsg filename
+    if filereadable(filename)
+        call MyVimGoodies#SVNGoodies#SVNDiffCursor(filename)
+    else
+        let filename = expand("%")
+        call MyVimGoodies#SVNGoodies#SVNDiffThis(filename)
+    endif
+endfunction

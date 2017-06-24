@@ -20,5 +20,4 @@ if !executable('svn')
   finish
 endif
 
-call MyVimGoodies#util#vimmap('nnoremap <silent>','<leader>D',':SVNDiffThis<cr>')
-call MyVimGoodies#util#vimmap('nmap','0sd','<Plug>MVGSVNDiffCursor')
+call MyVimGoodies#util#vimmap('nmap <unique>','<leader>D','<Plug>MVGSVNDiffContextual')
