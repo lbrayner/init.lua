@@ -11,15 +11,21 @@ function! s:SVNDiff(filename,...)
     let svncommand = svncommand . " > /dev/null"
     let tempfile = system(svncommand)
     if v:shell_error
-        let message = substitute(tempfile,"[\r\n]","","g")
+        let message = substitute(tempfile,"[\r]","","g")
         echoerr message
         return
     endif
     if tempfile != ""
+        let s:current_tab = tabpagenr()
         silent exec ":tab sview ".a:filename." | sil lefta vert diffpa ".tempfile
-                    \ . ' | setlocal noma | exec "file ".expand("%:t")'
-                    \ . ' | nnoremap <silent> <buffer> <nowait> q :bw<cr>:tabc<cr>'
-                    \ . ' | autocmd WinEnter <buffer> echo "'.s:DiffTabMessage.'"'
+                  \ . ' | exec "file ".expand("%:t")'
+                  \ . ' | setlocal noma'
+                  \ . ' | setlocal buftype=nofile'
+                  \ . ' | setlocal bufhidden=wipe'
+                  \ . ' | setlocal noswapfile'
+                  \ . ' | nnoremap <silent> <buffer> <nowait> q :bw<cr>:tabc<cr>'
+                  \         .s:current_tab.'gt'
+                  \ . ' | autocmd WinEnter <buffer> echo "'.s:DiffTabMessage.'"'
     else
         echomsg "Contents equal HEAD."
     endif
@@ -39,12 +45,15 @@ endfunction
 
 function! MyVimGoodies#SVNGoodies#SVNDiffContextual(...)
     let filename = expand("<cfile>")
-    let filename = MyVimGoodies#util#escapeFileName(filename)
-    echomsg filename
+    " echomsg filename
+    let filename = MyVimGoodies#util#escapeFileName(fnamemodify(filename, ':p'))
+    " echomsg filename
     if filereadable(filename)
         call MyVimGoodies#SVNGoodies#SVNDiffCursor(filename)
     else
         let filename = expand("%")
+        let filename = MyVimGoodies#util#escapeFileName(fnamemodify(filename, ':p'))
+        " echomsg filename
         call MyVimGoodies#SVNGoodies#SVNDiffThis(filename)
     endif
 endfunction

@@ -5,5 +5,5 @@ function! MyVimGoodies#util#vimmap(leftside,keyseq,keyseqtarget)
 endfunction
 
 function! MyVimGoodies#util#escapeFileName(filename)
-    return substitute(fnamemodify(a:filename, ':p'), '\', '/', 'g')
+    return substitute(a:filename, '\', '/', 'g')
 endfunction
