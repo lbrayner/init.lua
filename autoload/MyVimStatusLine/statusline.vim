@@ -9,14 +9,14 @@ function! MyVimStatusLine#statusline#DefaultReadOnlyFlag()
 endfunction
 
 function! MyVimStatusLine#statusline#DefaultModifiedFlag()
-    if ! exists("b:MVSL_modified")
-        let b:MVSL_modified = 0
+    if ! exists("w:MVSL_modified")
+        let w:MVSL_modified = 0
     endif
-    if b:MVSL_modified != &modified
+    if w:MVSL_modified != &modified
         if exists("#MyVimStatusLineModifiedUserGroup#User")
             doautocmd <nomodeline> MyVimStatusLineModifiedUserGroup User
         endif
-        let b:MVSL_modified = &modified
+        let w:MVSL_modified = &modified
     endif
     if &modified
         return '*'
