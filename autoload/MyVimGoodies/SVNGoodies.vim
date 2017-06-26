@@ -49,7 +49,7 @@ function! MyVimGoodies#SVNGoodies#SVNDiffContextual(...)
     let filename = MyVimGoodies#util#escapeFileName(fnamemodify(filename, ':p'))
     " echomsg filename
     if filereadable(filename)
-        call MyVimGoodies#SVNGoodies#SVNDiffCursor(filename)
+        call MyVimGoodies#SVNGoodies#SVNDiffCursor()
     else
         let filename = expand("%")
         let filename = MyVimGoodies#util#escapeFileName(fnamemodify(filename, ':p'))
