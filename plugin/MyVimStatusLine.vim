@@ -1,5 +1,3 @@
-call MyVimStatusLine#statusline#DefineGlobalStatusLine()
-
 if ! has("gui_running")
     if &t_Co < 256
         finish
@@ -31,6 +29,11 @@ augroup END
 augroup MyVimStatusLineModifiedUserGroup
     autocmd!
     autocmd User * call MyVimStatusLine#RedefineStatusLine()
+augroup END
+
+augroup MyVimStatusLineModifiedBWEGroup
+    autocmd!
+    autocmd BufWinEnter * call MyVimStatusLine#RedefineStatusLine()
 augroup END
 
 noremap <Plug>HighlightStatusLineNC  :call MyVimStatusLine#HighlightStatusLineNC()<CR>

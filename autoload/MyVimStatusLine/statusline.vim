@@ -53,7 +53,7 @@ function MyVimStatusLine#statusline#DefineStatusLine()
     exec "let &l:statusline='".&l:statusline.s:status_line_tail."'"
 endfunction
 
-function MyVimStatusLine#statusline#DefineGlobalStatusLine()
-    set statusline=%<%f%{MyVimStatusLine#statusline#DefaultModifiedFlag()}%=
-    exec "let &statusline='".&statusline.s:status_line_tail."'"
-endfunction
+" function MyVimStatusLine#statusline#DefineGlobalStatusLine()
+"     set statusline=%<%f%{MyVimStatusLine#statusline#DefaultModifiedFlag()}%=
+"     exec "let &statusline='".&statusline.s:status_line_tail."'"
+" endfunction
