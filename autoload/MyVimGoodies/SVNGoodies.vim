@@ -54,6 +54,6 @@ function! MyVimGoodies#SVNGoodies#SVNDiffContextual(...)
         let filename = expand("%")
         let filename = MyVimGoodies#util#escapeFileName(fnamemodify(filename, ':p'))
         " echomsg filename
-        call MyVimGoodies#SVNGoodies#SVNDiffThis(filename)
+        call MyVimGoodies#SVNGoodies#SVNDiffThis()
     endif
 endfunction
