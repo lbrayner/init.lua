@@ -7,6 +7,11 @@ let s:search_element =
     \ '-o <offset> -e <encoding> -l <length> <args>'
 
 function! MyVimGoodies#extensions#eclim#EclimGoToClassDeclarationLine()
-    call eclim#java#search#SearchAndDisplay('java_search', '-p '.expand('%:t:r').' -x declarations'
-                \ .' -s project')
+    let package = eclim#java#util#GetPackage()
+    call eclim#java#search#SearchAndDisplay('java_search', '-p '
+                \ .package."."
+                \ .expand('%:t:r')
+                \ . ' -x declarations'
+                \ .' -s project'
+                \ )
 endfunction
