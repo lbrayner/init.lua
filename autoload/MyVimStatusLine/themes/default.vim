@@ -37,7 +37,7 @@ function! MyVimStatusLine#themes#default#getTermAttrList()
         \ 'statuslinenc': 'NONE',
         \ 'statusline_modified': 'NONE',
         \ 'statusline_nomodified': 'NONE',
-        \ 'statusline_normal': 'NONE',
+        \ 'statusline_normal': 'bold',
         \ 'statusline_insert': 'bold'}
     return termAttrList
 endfunction
