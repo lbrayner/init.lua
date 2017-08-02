@@ -73,6 +73,10 @@ function! MyVimGoodies#BufferGoodies#BufWipeHidden(...)
     call s:LoopBuffers(0,'bufname(n) =~? s:wipe_pattern')
 endfunction
 
+function! MyVimGoodies#BufferGoodies#BufWipeNotLoaded()
+    call s:LoopBuffers(1,'!bufloaded(n)')
+endfunction
+
 let s:tab_dic = {}
 
 function! MyVimGoodies#BufferGoodies#BufWipeTabOnly()

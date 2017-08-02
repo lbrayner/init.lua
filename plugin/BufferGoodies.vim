@@ -1,3 +1,4 @@
+command! BufWipeNotLoaded call MyVimGoodies#BufferGoodies#BufWipeNotLoaded()
 command! BufWipeTab call MyVimGoodies#BufferGoodies#BufWipeTab()
 command! -nargs=1 BufWipe call MyVimGoodies#BufferGoodies#BufWipe(<f-args>)
 command! -nargs=1 BufWipeHidden call MyVimGoodies#BufferGoodies#BufWipeHidden(<f-args>)
