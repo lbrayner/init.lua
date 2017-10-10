@@ -33,13 +33,17 @@ function! MyVimGoodies#GitGoodies#GitStatus(...)
             throw message
         endif
         call writefile(stdout,tempfile)
+        let buffer_name = '['.fnamemodify(projectroot,':t').'] git-status'
+        if bufexists(buffer_name)
+            silent exe 'bwipe ' . fnameescape(buffer_name)
+        endif
         silent exec ":split ".tempfile
               \ . ' | setlocal ft=git-status'
               \ . ' | setlocal noma'
               \ . ' | setlocal buftype=nofile'
               \ . ' | setlocal bufhidden=wipe'
               \ . ' | setlocal noswapfile'
-              \ . ' | file ['.fnamemodify(projectroot,':t').'] git-status'
+              \ . ' | file '.buffer_name
               \ . ' | lcd '.projectroot
     catch /\v^fatal|^Error/
         echoerr message
