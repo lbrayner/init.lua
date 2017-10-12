@@ -13,14 +13,16 @@ if &ft == 'java'
                     autocmd! BufEnter <buffer>
                     autocmd  BufEnter <buffer>
                         \ call MyVimGoodies#util#vimmap('nnoremap <buffer>',
-                        \   '<leader>P',':let @"=eclim#java#util#GetPackage()<cr>:echo @"<cr>')
+                        \   '<leader>P',':let @"=eclim#java#util#GetPackage()<cr>'
+    \ . ':let @+=@" <cr> :let @*=@" <cr> :echo @"<cr>')
                     autocmd  BufEnter <buffer>
                         \   call MyVimGoodies#util#vimmap('nnoremap <buffer> <silent>',
                         \   '<leader>T'
             \ ,':call MyVimGoodies#extensions#eclim#EclimGoToClassDeclarationLine()<cr>')
                     autocmd  BufEnter <buffer>
                         \ call MyVimGoodies#util#vimmap('nnoremap <buffer>',
-    \   '<leader>F',':let @"=eclim#java#util#GetPackage().".".expand("%:t:r")<cr>:echo @"<cr>')
+    \   '<leader>F',':let @"=eclim#java#util#GetPackage().".".expand("%:t:r")<cr>'
+    \ . ':let @+=@" <cr> :let @*=@" <cr> :echo @"<cr>')
                     autocmd  BufEnter <buffer>
                         \ call MyVimGoodies#util#vimmap('nnoremap <buffer>',
                         \   '<leader>S',':JavaSearch<space>')
