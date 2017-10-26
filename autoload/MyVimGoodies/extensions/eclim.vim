@@ -8,7 +8,8 @@ let s:search_element =
 
 function! MyVimGoodies#extensions#eclim#EclimGoToClassDeclarationLine()
     let package = eclim#java#util#GetPackage()
-    call eclim#java#search#SearchAndDisplay('java_search', '-p '
+    silent! call eclim#java#search#SearchAndDisplay('java_search',
+                \ '-p '
                 \ .package."."
                 \ .expand('%:t:r')
                 \ . ' -x declarations'
