@@ -122,6 +122,6 @@ function! MyVimGoodies#GitGoodies#GitDiffContextual(...)
         let filename = expand("%")
         let filename = MyVimGoodies#util#escapeFileName(fnamemodify(filename, ':p'))
         " echomsg filename
-        call MyVimGoodies#GitGoodies#GitDiffThis(filename)
+        call MyVimGoodies#GitGoodies#GitDiffThis()
     endif
 endfunction
