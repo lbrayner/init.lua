@@ -35,3 +35,7 @@ function! MyVimGoodies#AssortedGoodies#FilterVisualSelection()
     endfor
     call cursor(line_start,0)
 endfunction
+
+function! MyVimGoodies#AssortedGoodies#RemoveTrailingSpaces() range
+    silent exec "keepp ".a:firstline.",".a:lastline.'s/\s\+$//e'
+endfunction
