@@ -1,7 +1,9 @@
 let s:DiffTabMessage = 'q to close this tab.'
 
 function! s:SVNDiff(filename,...)
-    let svncommand = "svn diff -r HEAD " . shellescape(a:filename)
+    let escaped_filename = shellescape(a:filename)
+    let svncommand = "svn diff --old=" . escaped_filename
+            \ . " --new=" . escaped_filename . "@HEAD"
     if exists("g:MVGoodies_svn_diff_cmd")
         let svncommand = svncommand . " --diff-cmd " . g:MVGoodies_svn_diff_cmd
     else
