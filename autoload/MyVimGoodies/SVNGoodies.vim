@@ -2,33 +2,42 @@ let s:DiffTabMessage = 'q to close this tab.'
 
 function! s:SVNDiff(filename,...)
     let svncommand = "svn diff -r HEAD " . shellescape(a:filename)
-                \ . " --diff-cmd ~/bin/svnmkpatch"
+    if exists("g:MVGoodies_svn_diff_cmd")
+        let svncommand = svncommand . " --diff-cmd " . g:MVGoodies_svn_diff_cmd
+    else
+        let svncommand = svncommand . " --internal-diff"
+    endif
     if a:0 > 0
         for extrarg in a:000
             let svncommand = svncommand . " " . extrarg
         endfor
     endif
-    let svncommand = svncommand . " > /dev/null"
-    let tempfile = system(svncommand)
-    if v:shell_error
-        let message = substitute(tempfile,"[\r]","","g")
-        echoerr message
-        return
-    endif
-    if tempfile != ""
-        let s:current_tab = tabpagenr()
-        silent exec ":tab sview ".a:filename." | sil lefta vert diffpa ".tempfile
-                  \ . ' | exec "file ".expand("%:t")'
-                  \ . ' | setlocal noma'
-                  \ . ' | setlocal buftype=nofile'
-                  \ . ' | setlocal bufhidden=wipe'
-                  \ . ' | setlocal noswapfile'
-                  \ . ' | nnoremap <silent> <buffer> <nowait> q :bw<cr>:tabc<cr>'
-                  \         .s:current_tab.'gt'
-                  \ . ' | autocmd WinEnter <buffer> echo "'.s:DiffTabMessage.'"'
-    else
-        echomsg "Contents equal HEAD."
-    endif
+    let tempfile = MyVimGoodies#util#escapeFileName(tempname())
+    try
+        let stdout = systemlist(svncommand)
+        if v:shell_error
+            let message = stdout[0]
+            echoerr message
+            return
+        endif
+        call writefile(stdout,tempfile)
+        if getfsize(tempfile) != 0
+            let s:current_tab = tabpagenr()
+            silent exec ":tab sview ".a:filename." | sil lefta vert diffpa ".tempfile
+                      \ . ' | exec "file ".expand("%:t")'
+                      \ . ' | setlocal noma'
+                      \ . ' | setlocal buftype=nofile'
+                      \ . ' | setlocal bufhidden=wipe'
+                      \ . ' | setlocal noswapfile'
+                      \ . ' | nnoremap <silent> <buffer> <nowait> q :bw<cr>:tabc<cr>'
+                      \         .s:current_tab.'gt'
+                      \ . ' | autocmd WinEnter <buffer> echo "'.s:DiffTabMessage.'"'
+        else
+            echomsg "Contents equal HEAD."
+        endif
+    finally
+        call delete(tempfile)
+    endtry
 endfunction
 
 function! MyVimGoodies#SVNGoodies#SVNDiffCursor(...)

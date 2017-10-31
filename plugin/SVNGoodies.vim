@@ -8,4 +8,7 @@ command! -nargs=0 SVNDiffContextual call MyVimGoodies#SVNGoodies#SVNDiffContextu
 
 nnoremap <silent> <Plug>MVGSVNDiffCursor :call MyVimGoodies#SVNGoodies#SVNDiffCursor()<CR>
 nnoremap <silent> <Plug>MVGSVNDiffThis :call MyVimGoodies#SVNGoodies#SVNDiffThis()<CR>
-nnoremap <silent> <Plug>MVGSVNDiffContextual :call MyVimGoodies#SVNGoodies#SVNDiffContextual()<CR>
+nnoremap <silent> <Plug>MVGSVNDiffThisIgnoreAllWS
+            \ :call MyVimGoodies#SVNGoodies#SVNDiffThis("-x -w")<CR>
+nnoremap <silent> <Plug>MVGSVNDiffContextual
+            \ :call MyVimGoodies#SVNGoodies#SVNDiffContextual()<CR>

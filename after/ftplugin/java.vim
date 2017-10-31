@@ -2,7 +2,7 @@
 if exists("b:MVGoodies_did_ftplugin")
     finish
 endif
-let b:did_ftplugin = 1
+let b:MVGoodies_did_ftplugin = 1
 
 if &ft == 'java'
     if MyVimGoodies#extensions#util#EclimLoaded()
@@ -32,5 +32,14 @@ if &ft == 'java'
               endif
           endif
       endif
+    endif
+    if executable('git')
+        call MyVimGoodies#util#vimmap('nmap'
+                    \ ,'<leader>G','<Plug>MVGGitDiffThisExtDiff')
+    endif
+    if executable('svn')
+        call MyVimGoodies#util#vimmap('nmap'
+            \ ,'<leader>D'
+            \ ,'<Plug>MVGSVNDiffThisIgnoreAllWS')
     endif
 endif
