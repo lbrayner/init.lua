@@ -34,11 +34,11 @@ if &ft == 'java'
       endif
     endif
     if executable('git')
-        call MyVimGoodies#util#vimmap('nmap'
+        call MyVimGoodies#util#vimmap('nmap <buffer>'
                     \ ,'<leader>G','<Plug>MVGGitDiffThisExtDiff')
     endif
     if executable('svn')
-        call MyVimGoodies#util#vimmap('nmap'
+        call MyVimGoodies#util#vimmap('nmap <buffer>'
             \ ,'<leader>D'
             \ ,'<Plug>MVGSVNDiffThisIgnoreAllWS')
     endif
