@@ -61,7 +61,7 @@ function! MyVimGoodies#GitGoodies#GitDiff(filename,...)
         return
     endtry
     let tempfile = MyVimGoodies#util#escapeFileName(tempname())
-    let gitcommand = "git diff -R --no-ext-diff"
+    let gitcommand = "git -c core.fileMode=false diff -R --no-ext-diff"
     if a:0 > 0
         for extrarg in a:000
             let gitcommand = gitcommand . " " . extrarg
