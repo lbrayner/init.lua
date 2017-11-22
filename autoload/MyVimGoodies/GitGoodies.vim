@@ -55,7 +55,7 @@ endfunction
 
 function! MyVimGoodies#GitGoodies#GitDiff(filename,...)
     try
-        let projectroot = MyVimGoodies#GitGoodies#GitGetProjectRoot()
+        call MyVimGoodies#GitGoodies#GitGetProjectRoot()
     catch /^fatal/
         echoerr v:exception
         return
@@ -68,9 +68,7 @@ function! MyVimGoodies#GitGoodies#GitDiff(filename,...)
         endfor
     endif
     let gitcommand = gitcommand . " " . shellescape(a:filename)
-    let oldir = getcwd()
     try
-        exec "cd " . projectroot
         let stdout = systemlist(gitcommand)
         if v:shell_error
             let message = stdout[0]
@@ -94,7 +92,6 @@ function! MyVimGoodies#GitGoodies#GitDiff(filename,...)
     catch /\v^fatal|^Error/
         echoerr message
     finally
-        exec "cd " . oldir
         call delete(tempfile)
     endtry
 endfunction
