@@ -8,22 +8,21 @@ function! s:MessageBuffers(buffer_count)
 	endif
 endfunction
 
-function! s:LoopBuffers(test_buflisted,predicate)
+function! s:WipeBuffers(predicate)
+    call s:LoopBuffers(a:predicate,'bwipe')
+endfunction
+
+function! s:LoopBuffers(predicate,command)
 	let last_buffer = bufnr('$')
 	let delete_count = 0
 	let n = 1
-    if a:test_buflisted
-        let buflisted_pred = 'buflisted(n) && '
-    else
-        let buflisted_pred = ''
-    endif
+        " let buflisted_pred = 'buflisted(n) && '
 	while n <= last_buffer
-        let test_var = eval(buflisted_pred . a:predicate)
-        if test_var
+        if eval(a:predicate)
             if getbufvar(n, '&modified')
                 echoe 'No write since last change for buffer' n '(add ! to override)'
             else
-                silent exe 'bwipe ' . n
+                silent exe a:command . ' ' . n
 				if ! buflisted(n)
 					let delete_count = delete_count+1
 				endif
@@ -40,7 +39,7 @@ function! MyVimGoodies#BufferGoodies#BufWipeTab()
     for i in tab_list
         exec 'let s:tab_dic.' . i . ' = ' . i
     endfor
-    call s:LoopBuffers(1,'has_key(s:tab_dic,n)')
+    call s:WipeBuffers('buflisted(n) && has_key(s:tab_dic,n)')
 endfunction
 
 let s:wipe_pattern = ''
@@ -52,7 +51,7 @@ function! MyVimGoodies#BufferGoodies#BufWipeFileType(...)
     else
         let s:filetype = &ft
     endif
-    call s:LoopBuffers(0,'getbufvar(n,"&ft") == s:filetype')
+    call s:WipeBuffers(0,'getbufvar(n,"&ft") == s:filetype')
 endfunction
 
 function! MyVimGoodies#BufferGoodies#BufWipe(...)
@@ -61,7 +60,7 @@ function! MyVimGoodies#BufferGoodies#BufWipe(...)
     else
         let s:wipe_pattern = expand('%:t')
     endif
-    call s:LoopBuffers(1,'bufname(n) =~? s:wipe_pattern')
+    call s:WipeBuffers('buflisted(n) && bufname(n) =~? s:wipe_pattern')
 endfunction
 
 function! MyVimGoodies#BufferGoodies#BufWipeHidden(...)
@@ -70,11 +69,11 @@ function! MyVimGoodies#BufferGoodies#BufWipeHidden(...)
     else
         let s:wipe_pattern = expand('%:t')
     endif
-    call s:LoopBuffers(0,'bufname(n) =~? s:wipe_pattern')
+    call s:WipeBuffers(0,'bufname(n) =~? s:wipe_pattern')
 endfunction
 
 function! MyVimGoodies#BufferGoodies#BufWipeNotLoaded()
-    call s:LoopBuffers(1,'!bufloaded(n)')
+    call s:WipeBuffers('buflisted(n) && !bufloaded(n)')
 endfunction
 
 let s:tab_dic = {}
@@ -85,5 +84,14 @@ function! MyVimGoodies#BufferGoodies#BufWipeTabOnly()
     for i in tab_list
         exec 'let s:tab_dic.' . i . ' = ' . i
     endfor
-    call s:LoopBuffers(1,'!has_key(s:tab_dic,n)')
+    call s:WipeBuffers('buflisted(n) && !has_key(s:tab_dic,n)')
+endfunction
+
+function! MyVimGoodies#BufferGoodies#BufWipeForce(...)
+    if a:0 > 0
+        let s:wipe_pattern = a:1
+    else
+        let s:wipe_pattern = expand('%:t')
+    endif
+    call s:LoopBuffers('buflisted(n) && bufname(n) =~? s:wipe_pattern','bwipe!')
 endfunction
