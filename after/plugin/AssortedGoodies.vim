@@ -17,3 +17,8 @@ call MyVimGoodies#util#vimmap('nnoremap <silent>','<leader>do',':diffoff!<cr>')
 
 call MyVimGoodies#util#vimmap('vnoremap <silent>','<leader><f3>'
             \ ,'<esc>:call MyVimGoodies#AssortedGoodies#FilterVisualSelection()<cr>')
+
+" XML
+
+call MyVimGoodies#util#vimmap('nnoremap <silent>','[<'
+            \ ,':<c-u>call MyVimGoodies#AssortedGoodies#NavigateXmlDepth(-v:count1)<cr>')
