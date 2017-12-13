@@ -19,7 +19,10 @@ autocmd CursorHold,BufWritePost,BufReadPost,BufLeave *
 augroup Checktime
     au!
     if !has("gui_running")
+        "silent! necessary otherwise throws errors when using command
+        "line window.
         autocmd BufEnter,CursorHold,CursorHoldI,CursorMoved
-                    \,CursorMovedI,FocusGained,BufEnter,FocusLost,WinLeave * checktime
+                    \,CursorMovedI,FocusGained,BufEnter,FocusLost,WinLeave *
+                    \ sil! exe "checktime"
     endif
 augroup END
