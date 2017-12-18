@@ -1,3 +1,7 @@
+if has("gui_running")
+    finish
+endif
+
 " Swap | File changes outside
 
 " https://github.com/neovim/neovim/issues/2127
