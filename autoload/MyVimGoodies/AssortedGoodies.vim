@@ -40,18 +40,6 @@ function! MyVimGoodies#AssortedGoodies#RemoveTrailingSpaces() range
     silent exec "keepp ".a:firstline.",".a:lastline.'s/\s\+$//e'
 endfunction
 
-" https://stackoverflow.com/a/5686810/2856535
-" Add quickfixlist files to argument list
-" command! -nargs=0 -bar Qargs execute 'args ' . QuickfixFilenames()
-function! MyVimGoodies#AssortedGoodies#QuickfixFilenames()
-  " Building a hash ensures we get each buffer only once
-  let bufnr2fname = {}
-  for quickfix_item in getqflist()
-    let bufnr2fname[quickfix_item['bufnr']] = fnameescape(bufname(quickfix_item['bufnr']))
-  endfor
-  return join(values(bufnr2fname))
-endfunction
-
 " XML
 
 function! s:NavigateXmlNthParent(n)
