@@ -1,0 +1,108 @@
+[submodule "pack/bundle/start/BufOnly.vim"]
+	path = pack/bundle/start/BufOnly.vim
+	url = https://github.com/lbrayner/BufOnly.vim.git
+[submodule "pack/bundle/start/CamelCaseMotion"]
+	path = pack/bundle/start/CamelCaseMotion
+	url = https://github.com/bkad/CamelCaseMotion.git
+[submodule "pack/bundle/start/ctrlp.vim"]
+	path = pack/bundle/start/ctrlp.vim
+	url = https://github.com/ctrlpvim/ctrlp.vim.git
+[submodule "pack/bundle/start/dbext.vim"]
+	path = pack/bundle/start/dbext.vim
+	url = https://github.com/vim-scripts/dbext.vim.git
+[submodule "pack/bundle/start/L9"]
+	path = pack/bundle/start/L9
+	url = https://github.com/vim-scripts/L9.git
+[submodule "pack/bundle/start/LargeFile"]
+	path = pack/bundle/start/LargeFile
+	url = https://github.com/vim-scripts/LargeFile.git
+[submodule "pack/bundle/start/linediff.vim"]
+	path = pack/bundle/start/linediff.vim
+	url = https://github.com/AndrewRadev/linediff.vim.git
+[submodule "pack/bundle/start/LogiPat"]
+	path = pack/bundle/start/LogiPat
+	url = https://github.com/vim-scripts/LogiPat.git
+[submodule "pack/bundle/start/loupe"]
+	path = pack/bundle/start/loupe
+	url = https://github.com/wincent/loupe.git
+[submodule "pack/bundle/start/MyVimGoodies"]
+	path = pack/bundle/start/MyVimGoodies
+	url = https://github.com/lbrayner/MyVimGoodies.git
+[submodule "pack/bundle/start/MyVimStatusLine"]
+	path = pack/bundle/start/MyVimStatusLine
+	url = https://github.com/lbrayner/MyVimStatusLine.git
+[submodule "pack/bundle/start/paredit.vim"]
+	path = pack/bundle/start/paredit.vim
+	url = https://github.com/vim-scripts/paredit.vim.git
+[submodule "pack/bundle/start/QFEnter"]
+	path = pack/bundle/start/QFEnter
+	url = https://github.com/yssl/QFEnter.git
+[submodule "pack/bundle/start/supertab"]
+	path = pack/bundle/start/supertab
+	url = https://github.com/ervandew/supertab.git
+[submodule "pack/bundle/start/syntastic"]
+	path = pack/bundle/start/syntastic
+	url = https://github.com/scrooloose/syntastic.git
+[submodule "pack/bundle/start/tabman.vim"]
+	path = pack/bundle/start/tabman.vim
+	url = https://github.com/kien/tabman.vim.git
+[submodule "pack/bundle/start/tpope-vim-abolish"]
+	path = pack/bundle/start/tpope-vim-abolish
+	url = https://github.com/tpope/tpope-vim-abolish.git
+[submodule "pack/bundle/start/vim-airline"]
+	path = pack/bundle/start/vim-airline
+	url = https://github.com/vim-airline/vim-airline.git
+[submodule "pack/bundle/start/vim-airline-themes"]
+	path = pack/bundle/start/vim-airline-themes
+	url = https://github.com/vim-airline/vim-airline-themes.git
+[submodule "pack/bundle/start/vim-colors-solarized"]
+	path = pack/bundle/start/vim-colors-solarized
+	url = https://github.com/altercation/vim-colors-solarized.git
+[submodule "pack/bundle/start/vim-commentary"]
+	path = pack/bundle/start/vim-commentary
+	url = https://github.com/tpope/vim-commentary.git
+[submodule "pack/bundle/start/vim-fireplace"]
+	path = pack/bundle/start/vim-fireplace
+	url = https://github.com/tpope/vim-fireplace.git
+[submodule "pack/bundle/start/vim-fugitive"]
+	path = pack/bundle/start/vim-fugitive
+	url = https://github.com/tpope/vim-fugitive.git
+[submodule "pack/bundle/start/vim-gfm-syntax"]
+	path = pack/bundle/start/vim-gfm-syntax
+	url = https://github.com/rhysd/vim-gfm-syntax.git
+[submodule "pack/bundle/start/vim-mark"]
+	path = pack/bundle/start/vim-mark
+	url = https://github.com/inkarkat/vim-mark.git
+[submodule "pack/bundle/start/vim-obsession"]
+	path = pack/bundle/start/vim-obsession
+	url = https://github.com/tpope/vim-obsession.git
+[submodule "pack/bundle/start/vim-ps1"]
+	path = pack/bundle/start/vim-ps1
+	url = https://github.com/PProvost/vim-ps1.git
+[submodule "pack/bundle/start/vim-repeat"]
+	path = pack/bundle/start/vim-repeat
+	url = https://github.com/tpope/vim-repeat.git
+[submodule "pack/bundle/start/vim-rzip"]
+	path = pack/bundle/start/vim-rzip
+	url = https://github.com/lbrayner/vim-rzip.git
+[submodule "pack/bundle/start/vim-salve"]
+	path = pack/bundle/start/vim-salve
+	url = https://github.com/tpope/vim-salve.git
+[submodule "pack/bundle/start/vim-sneak"]
+	path = pack/bundle/start/vim-sneak
+	url = https://github.com/justinmk/vim-sneak.git
+[submodule "pack/bundle/start/vim-surround"]
+	path = pack/bundle/start/vim-surround
+	url = https://github.com/tpope/vim-surround.git
+[submodule "pack/bundle/start/vim-unimpaired"]
+	path = pack/bundle/start/vim-unimpaired
+	url = https://github.com/tpope/vim-unimpaired.git
+[submodule "pack/bundle/start/vim-vinegar"]
+	path = pack/bundle/start/vim-vinegar
+	url = https://github.com/tpope/vim-vinegar.git
+[submodule "pack/bundle/start/vissort"]
+	path = pack/bundle/start/vissort
+	url = https://github.com/yaroot/vissort.git
+[submodule "pack/bundle/start/Vundle.vim"]
+	path = pack/bundle/start/Vundle.vim
+	url = https://github.com/VundleVim/Vundle.vim.git
