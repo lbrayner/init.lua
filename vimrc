@@ -1,3 +1,8 @@
+let s:has_windows = 0
+if has('win32') || has('win64')
+    let s:has_windows = 1
+endif
+
 set enc=utf-8
 
 set nocompatible
@@ -6,7 +11,6 @@ syntax on
 " set clipboard+=unnamedplus
 
 set ttimeoutlen=0
-" set t_Co=256
 set laststatus=2
 set listchars=eol:¬,tab:»\ ,trail:·
 set splitbelow
@@ -24,19 +28,33 @@ set fileformats=unix,dos
 set fileformat=unix
 set backspace=2
 set backspace=indent,eol,start
-set shellslash
+if s:has_windows
+    set shellslash
+endif
 set incsearch
 set nojoinspaces
 
-set packpath+=C:/Users/leona/vimfiles/pack/bundle
+let s:ssh_client = 0
 
-let s:packadd_matchit = 1
-
-if !exists(":packadd")
-    let s:packadd_matchit = 0
+if $SSH_CLIENT != ''
+    let s:ssh_client = 1
 endif
 
-if s:packadd_matchit
+if has("nvim")
+    if s:ssh_client
+        set mouse=
+    else
+        set mouse=a
+    endif
+endif
+
+if has('packages')
+    if has('unix')
+        set packpath+=~/.vim/pack/bundle
+    endif
+    if s:has_windows
+        set packpath+=C:/Users/leona/vimfiles/pack/bundle
+    endif
     packadd matchit
 endif
 
@@ -44,11 +62,17 @@ if $SHELL =~# 'sh'
     set noshelltemp
 endif
 
-if has('win32') || has('win64')
+if s:has_windows
     set grepprg=C:/cygwin64/bin/grep.exe
 endif
 
-if has('win32') || has('win64')
+if has("unix")
+    if !has("nvim")
+        set dir=~/.vim/swap
+    endif
+endif
+
+if s:has_windows
     let s:vim_dir = escape(expand('~'),' ') . '/vimfiles/swap//'
     let &dir=s:vim_dir
 endif
@@ -70,7 +94,6 @@ command! -nargs=1 SetDictionaryLanguage call s:SetDictionaryLanguage(0,<f-args>)
 command! -nargs=1 SetGlobalDictionaryLanguage call s:SetDictionaryLanguage(1,<f-args>)
 
 SetGlobalDictionaryLanguage en
-
 
 nmap ç :
 vmap ç :
@@ -138,18 +161,22 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 
-function! s:FilterLine()
-    let line = getline('.')
-    let temp = tempname()
-    exe 'sil! !'.escape(line,&shellxescape).' > '.temp.' 2>&1'
-    if v:shell_error
-        exe 'throw "'.escape(readfile(temp)[0],'"').'"'
-    endif
-    exe "sil! read ".fnameescape(temp)
-    exe "sil call delete ('".temp."')"
-endfunction
+nnoremap <silent> <leader><F3> :.!<C-R>=getline('.')<CR><cr>
 
-nnoremap <silent> <leader><F3> :call <SID>FilterLine()<cr>
+if s:has_windows
+    function! s:FilterLine()
+        let line = getline('.')
+        let temp = tempname()
+        exe 'sil! !'.escape(line,&shellxescape).' > '.temp.' 2>&1'
+        if v:shell_error
+            exe 'throw "'.escape(readfile(temp)[0],'"').'"'
+        endif
+        exe "sil! read ".fnameescape(temp)
+        exe "sil call delete ('".temp."')"
+    endfunction
+    nnoremap <silent> <leader><F3> :call <SID>FilterLine()<cr>
+endif
+
 
 nnoremap <F3> :.w !$SHELL<CR>
 nnoremap <F4> :execute getline(".")<CR>
@@ -234,6 +261,18 @@ augroup RelativeNumberAutoGroup
     autocmd InsertLeave * :set relativenumber
 augroup END
 
+if has("nvim")
+    tnoremap <A-h> <C-\><C-n><C-w>h
+    tnoremap <A-j> <C-\><C-n><C-w>j
+    tnoremap <A-k> <C-\><C-n><C-w>k
+    tnoremap <A-l> <C-\><C-n><C-w>l
+    tnoremap <leader><Esc> <C-\><C-n>
+    nnoremap <A-h> <C-w>h
+    nnoremap <A-j> <C-w>j
+    nnoremap <A-k> <C-w>k
+    nnoremap <A-l> <C-w>l
+endif
+
 " text format options
 
 set textwidth=80
@@ -250,10 +289,15 @@ function! g:IncrementVariable(var)
     return to_return
 endfunction
 
+if !has('packages')
+    finish
+endif
+
 " Plugin customisation
 
 " loupe
 
+let g:LoupeCenterResults=0
 nmap <f2> <Plug>(LoupeClearHighlight)
 
 " Eclim
@@ -302,15 +346,6 @@ nnoremap <silent> <F5> :CtrlPBuffer<cr>
 nnoremap <leader><F7> :CtrlPClearAllCaches<cr>
 
 
-" dbext
-let g:dbext_default_profile_mysql_local_table = 'type=MYSQL:user=leo:passwd=leop:dbname=sarh:extra=--batch --raw --silent --table'
-let g:dbext_default_profile_mysql_local_raw = 'type=MYSQL:user=leo:passwd=leop:dbname=sarh:extra=--batch --raw --silent'
-"let g:dbext_default_profile_PG = 'type=PGSQL:user=desenvolvedor:extra=options=--search_path=public,sarh,sarh_log'
-let g:dbext_default_profile_PG = 'type=PGSQL:user=desenvolvedor'
-let g:dbext_default_profile = 'PG'
-
-nnoremap <F10> :DBSetOption profile=PG<cr>
-
 " vim-rzip
 let g:zipPlugin_extra_ext = '*.odt'
 
@@ -318,7 +353,11 @@ let g:zipPlugin_extra_ext = '*.odt'
 
 let s:enable_solarized = 1
 
-if !(has("gui_running") || has("nvim"))
+if !has("nvim") && !has("gui_running") && s:ssh_client
+    let s:enable_solarized = 0
+endif
+
+if has("win32unix")
     let s:enable_solarized = 0
 endif
 
