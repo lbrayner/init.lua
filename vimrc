@@ -204,12 +204,6 @@ nnoremap <silent> <leader>q :copen<CR>
 
 nnoremap <silent> <leader>B :b#<CR>
 
-augroup QuickfixAutoGroup
-    autocmd!
-    autocmd FileType qf setlocal nowrap
-    autocmd FileType qf nnoremap <silent> <buffer> <nowait> q :q<cr>
-augroup END
-
 " merge
 
 command! JumpToNextMergeConflictLeft   :keepp keepj ?^<<<<<<<
@@ -395,3 +389,9 @@ map T <Plug>Sneak_T
 
 map x <Plug>Sneak_s
 map X <Plug>Sneak_S
+
+" ferret
+let g:FerretExecutable="ag"
+
+" scalpel
+nmap <Leader>x <Plug>(Scalpel)

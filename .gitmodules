@@ -106,3 +106,9 @@
 [submodule "pack/bundle/start/Vundle.vim"]
 	path = pack/bundle/start/Vundle.vim
 	url = https://github.com/VundleVim/Vundle.vim.git
+[submodule "pack/bundle/start/ferret"]
+	path = pack/bundle/start/ferret
+	url = https://github.com/wincent/ferret
+[submodule "pack/bundle/start/scalpel"]
+	path = pack/bundle/start/scalpel
+	url = https://github.com/wincent/scalpel
