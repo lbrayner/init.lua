@@ -55,7 +55,9 @@ if has('packages')
     if s:has_windows
         set packpath+=C:/Users/leona/vimfiles/pack/bundle
     endif
-    packadd matchit
+    if !has("nvim")
+        packadd matchit
+    endif
 endif
 
 if $SHELL =~# 'sh'
