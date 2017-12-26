@@ -32,6 +32,14 @@ if &ft == 'java'
               endif
           endif
       endif
+        call MyVimGoodies#util#vimmap
+                    \('nnoremap <buffer>','<leader>js',':JavaSearch<space>')
+        call MyVimGoodies#util#vimmap
+                    \('nnoremap <buffer>','<leader>jr',':JavaRename<space>')
+        call MyVimGoodies#util#vimmap
+                    \('nnoremap <buffer>','<leader>ji',':JavaImport<cr>')
+        call MyVimGoodies#util#vimmap
+                    \('nnoremap <buffer>','<leader>jn',':JavaNew<space>')
     endif
     if executable('git')
         call MyVimGoodies#util#vimmap('nmap <buffer>'

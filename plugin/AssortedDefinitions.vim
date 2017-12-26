@@ -7,10 +7,10 @@ endif
 " https://github.com/neovim/neovim/issues/2127
 augroup AutoSwap
         autocmd!
-        autocmd SwapExists *  call AS_HandleSwapfile(expand('<afile>:p'), v:swapname)
+        autocmd SwapExists *  call s:AS_HandleSwapfile(expand('<afile>:p'), v:swapname)
 augroup END
 
-function! AS_HandleSwapfile (filename, swapname)
+function! s:AS_HandleSwapfile (filename, swapname)
         " if swapfile is older than file itself, just get rid of it
         if getftime(v:swapname) < getftime(a:filename)
                 call delete(v:swapname)
