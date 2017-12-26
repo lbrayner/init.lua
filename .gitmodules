@@ -103,9 +103,6 @@
 [submodule "pack/bundle/start/vissort"]
 	path = pack/bundle/start/vissort
 	url = https://github.com/yaroot/vissort.git
-[submodule "pack/bundle/start/Vundle.vim"]
-	path = pack/bundle/start/Vundle.vim
-	url = https://github.com/VundleVim/Vundle.vim.git
 [submodule "pack/bundle/start/ferret"]
 	path = pack/bundle/start/ferret
 	url = https://github.com/wincent/ferret
