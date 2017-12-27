@@ -65,7 +65,7 @@ if $SHELL =~# 'sh'
 endif
 
 if s:has_windows
-    set grepprg=C:/cygwin64/bin/grep.exe
+    set grepprg=grep.exe
 endif
 
 if has("unix")
