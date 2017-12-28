@@ -48,6 +48,12 @@ if has("nvim")
     endif
 endif
 
+let s:vim_dir = $HOME . "/.vim"
+
+if s:has_windows
+    let s:vim_dir = $HOME . "/vimfiles"
+endif
+
 if has('packages')
     if has('unix')
         set packpath+=~/.vim/pack/bundle
@@ -68,34 +74,39 @@ if s:has_windows
     set grepprg=grep.exe
 endif
 
-if has("unix")
-    if !has("nvim")
-        set dir=~/.vim/swap
-    endif
+" setting dir
+
+let s:swap_dir = s:vim_dir."/swap"
+exe "let s:has_swap_dir = isdirectory('".s:swap_dir."')"
+if !s:has_swap_dir
+    call mkdir(s:swap_dir)
+endif
+let &dir=s:swap_dir."//"
+
+" sourcing a vimrc.local if it exists
+
+let s:vimrc_local = s:vim_dir . "/init.local.vim"
+if filereadable(s:vimrc_local)
+  execute 'source ' . s:vimrc_local
 endif
 
-if s:has_windows
-    let s:vim_dir = escape(expand('~'),' ') . '/vimfiles/swap//'
-    let &dir=s:vim_dir
-endif
+" let s:dictionaries = {
+"             \ 'en': 'c:\Users\leona\usr\share\dict\american-english-huge',
+"             \ 'br': 'c:\Users\leona\usr\share\dict\brazilian-utf8'
+"             \ }
 
-let s:dictionaries = {
-            \ 'en': 'c:\Users\leona\usr\share\dict\american-english-huge',
-            \ 'br': 'c:\Users\leona\usr\share\dict\brazilian-utf8'
-            \ }
+" function! s:SetDictionaryLanguage(global,language)
+"     if a:global
+"         let &dictionary = s:dictionaries[a:language]
+"         return
+"     endif
+"     let &l:dictionary = s:dictionaries[a:language]
+" endfunction
 
-function! s:SetDictionaryLanguage(global,language)
-    if a:global
-        let &dictionary = s:dictionaries[a:language]
-        return
-    endif
-    let &l:dictionary = s:dictionaries[a:language]
-endfunction
+" command! -nargs=1 SetDictionaryLanguage call s:SetDictionaryLanguage(0,<f-args>)
+" command! -nargs=1 SetGlobalDictionaryLanguage call s:SetDictionaryLanguage(1,<f-args>)
 
-command! -nargs=1 SetDictionaryLanguage call s:SetDictionaryLanguage(0,<f-args>)
-command! -nargs=1 SetGlobalDictionaryLanguage call s:SetDictionaryLanguage(1,<f-args>)
-
-SetGlobalDictionaryLanguage en
+" SetGlobalDictionaryLanguage en
 
 nmap ç :
 vmap ç :
@@ -271,7 +282,9 @@ endif
 
 " text format options
 
-set textwidth=80
+augroup TextFormatAutoGroup
+    autocmd FileType txt set textwidth=80
+augroup END
 
 " diff options
 
@@ -314,11 +327,6 @@ if !has('packages')
 endif
 
 " Plugin customisation
-
-" loupe
-
-let g:LoupeCenterResults=0
-nmap <f2> <Plug>(LoupeClearHighlight)
 
 " Eclim
 

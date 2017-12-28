@@ -1,5 +1,7 @@
 .netrwhist
+/after
 /bundle
 /eclim
+/init.local.vim
 /plugin/eclim.vim
 /swap

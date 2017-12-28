@@ -22,9 +22,6 @@
 [submodule "pack/bundle/start/LogiPat"]
 	path = pack/bundle/start/LogiPat
 	url = https://github.com/vim-scripts/LogiPat.git
-[submodule "pack/bundle/start/loupe"]
-	path = pack/bundle/start/loupe
-	url = https://github.com/wincent/loupe.git
 [submodule "pack/bundle/start/MyVimGoodies"]
 	path = pack/bundle/start/MyVimGoodies
 	url = https://github.com/lbrayner/MyVimGoodies.git
