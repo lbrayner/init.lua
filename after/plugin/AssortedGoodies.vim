@@ -16,7 +16,10 @@ call MyVimGoodies#util#vimmap('nnoremap <silent>','<leader>do',':diffoff!<cr>')
 " other
 
 call MyVimGoodies#util#vimmap('vnoremap <silent>','<leader><f3>'
-            \ ,'<esc>:call MyVimGoodies#AssortedGoodies#FilterVisualSelection()<cr>')
+            \ ,':call MyVimGoodies#AssortedGoodies#FilterVisualSelection()<cr>')
+
+call MyVimGoodies#util#vimmap('vnoremap <silent>','<leader><f4>'
+            \ ,':call MyVimGoodies#AssortedGoodies#SourceVisualSelection()<cr>')
 
 " XML
 

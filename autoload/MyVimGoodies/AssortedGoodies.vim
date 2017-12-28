@@ -20,9 +20,19 @@ function! MyVimGoodies#AssortedGoodies#CopyFilePathUnderCursor()
     echomsg "Yanked file path."
 endfunction
 
-function! MyVimGoodies#AssortedGoodies#FilterVisualSelection()
-    let line_start = getpos("'<")[1]
-    let line_end = getpos("'>")[1]
+function! MyVimGoodies#AssortedGoodies#SourceVisualSelection() range
+    let line_start = a:firstline
+    let line_end = a:lastline
+    let offset = 0
+    for linenr in range(line_start,line_end)
+        exe getline(linenr)
+    endfor
+    echom "Sourced visual selection."
+endfunction
+
+function! MyVimGoodies#AssortedGoodies#FilterVisualSelection() range
+    let line_start = a:firstline
+    let line_end = a:lastline
     let offset = 0
     for linenr in range(line_start,line_end)
         call cursor(linenr+offset,0)
