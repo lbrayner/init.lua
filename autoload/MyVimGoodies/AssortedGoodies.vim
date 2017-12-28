@@ -20,6 +20,20 @@ function! MyVimGoodies#AssortedGoodies#CopyFilePathUnderCursor()
     echomsg "Yanked file path."
 endfunction
 
+function! MyVimGoodies#AssortedGoodies#SetDictionaryLanguage(global,language)
+    if !exists("g:MyVimGoodies#AssortedGoodies#dictionaries")
+        echoe "No dictionaries defined."
+        return
+    endif
+    let dictionaries = g:MyVimGoodies#AssortedGoodies#dictionaries
+    if a:global
+        let &dictionary = dictionaries[a:language]
+        return
+    endif
+    let &l:dictionary = dictionaries[a:language]
+    echo "Dictionary language set to '" . a:language . "'."
+endfunction
+
 function! MyVimGoodies#AssortedGoodies#SourceVisualSelection() range
     let line_start = a:firstline
     let line_end = a:lastline
