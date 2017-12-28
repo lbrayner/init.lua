@@ -288,25 +288,25 @@ endfunction
 if has("gui_running") || has("nvim")
     " For Emacs-style editing on the command-line >
     " start of line
-    cnoremap <C-A>		<Home>
+    cnoremap <C-A> <Home>
     " back one character
-    cnoremap <C-B>		<Left>
+    cnoremap <C-B> <Left>
     " delete character under cursor
-    cnoremap <C-D>		<Del>
+    cnoremap <C-D> <Del>
     " end of line
-    cnoremap <C-E>		<End>
+    cnoremap <C-E> <End>
     " forward one character
-    cnoremap <C-F>		<Right>
+    cnoremap <C-F> <Right>
     " recall newer command-line
-    cnoremap <C-N>		<Down>
+    cnoremap <C-N> <Down>
     " recall previous (older) command-line
-    cnoremap <C-P>		<Up>
+    cnoremap <C-P> <Up>
     " back one word
-    cnoremap <M-b>	<S-Left>
+    cnoremap <M-b> <S-Left>
     " forward one word
-    cnoremap <M-f>	<S-Right>
+    cnoremap <M-f> <S-Right>
     " cancel
-    cnoremap <C-G>	<Esc>
+    cnoremap <C-G> <C-C>
 endif
 
 if !has('packages')
