@@ -53,7 +53,7 @@ if has('packages')
         set packpath+=~/.vim/pack/bundle
     endif
     if s:has_windows
-        set packpath+=C:/Users/leona/vimfiles/pack/bundle
+        exec "set packpath+=".$HOME."/vimfiles/pack/bundle"
     endif
     if !has("nvim")
         packadd matchit
