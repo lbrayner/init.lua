@@ -144,6 +144,7 @@ function! s:HighlightOverLength()
     let w:HighlightOverLengthFlag = ! w:HighlightOverLengthFlag
 endfunction
 
+nnoremap <silent> <f2> :set invhlsearch hlsearch?<cr>
 nnoremap <silent> <leader><f2> :call <SID>HighlightOverLength()<cr>
 
 vnoremap <silent> <leader>* y:exec 'let @/="\\V" . @"'<cr>
