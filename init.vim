@@ -83,30 +83,12 @@ if !s:has_swap_dir
 endif
 let &dir=s:swap_dir."//"
 
-" sourcing a vimrc.local if it exists
+" sourcing a init.local.vim if it exists
 
-let s:vimrc_local = s:vim_dir . "/init.local.vim"
-if filereadable(s:vimrc_local)
-  execute 'source ' . s:vimrc_local
+let s:init_local = s:vim_dir . "/init.local.vim"
+if filereadable(s:init_local)
+  execute 'source ' . s:init_local
 endif
-
-" let s:dictionaries = {
-"             \ 'en': 'c:\Users\leona\usr\share\dict\american-english-huge',
-"             \ 'br': 'c:\Users\leona\usr\share\dict\brazilian-utf8'
-"             \ }
-
-" function! s:SetDictionaryLanguage(global,language)
-"     if a:global
-"         let &dictionary = s:dictionaries[a:language]
-"         return
-"     endif
-"     let &l:dictionary = s:dictionaries[a:language]
-" endfunction
-
-" command! -nargs=1 SetDictionaryLanguage call s:SetDictionaryLanguage(0,<f-args>)
-" command! -nargs=1 SetGlobalDictionaryLanguage call s:SetDictionaryLanguage(1,<f-args>)
-
-" SetGlobalDictionaryLanguage en
 
 nmap ç :
 vmap ç :
@@ -320,6 +302,8 @@ if has("gui_running") || has("nvim")
     cnoremap <M-f> <S-Right>
     " cancel
     cnoremap <C-G> <C-C>
+    " open the command line buffer
+    cnoremap <C-Z> <C-F>
 endif
 
 if !has('packages')
