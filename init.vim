@@ -33,6 +33,8 @@ if s:has_windows
 endif
 set incsearch
 set nojoinspaces
+set ignorecase
+set smartcase
 
 let s:ssh_client = 0
 
