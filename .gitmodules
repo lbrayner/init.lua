@@ -22,9 +22,6 @@
 [submodule "pack/bundle/start/LogiPat"]
 	path = pack/bundle/start/LogiPat
 	url = https://github.com/vim-scripts/LogiPat.git
-[submodule "pack/bundle/start/MyVimStatusLine"]
-	path = pack/bundle/start/MyVimStatusLine
-	url = https://github.com/lbrayner/MyVimStatusLine.git
 [submodule "pack/bundle/start/paredit.vim"]
 	path = pack/bundle/start/paredit.vim
 	url = https://github.com/vim-scripts/paredit.vim.git
