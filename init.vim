@@ -56,6 +56,11 @@ if s:has_windows
     let s:vim_dir = $HOME . "/vimfiles"
 endif
 
+if has("path_extra")
+    set fileignorecase
+    set path+=**
+endif
+
 if has('packages')
     if has('unix')
         set packpath+=~/.vim/pack/bundle
