@@ -1,7 +1,3 @@
-if has("gui_running")
-    finish
-endif
-
 " Swap | File changes outside
 
 " https://github.com/neovim/neovim/issues/2127
@@ -19,6 +15,10 @@ function! s:AS_HandleSwapfile (filename, swapname)
 endfunction
 autocmd CursorHold,BufWritePost,BufReadPost,BufLeave *
   \ if isdirectory(expand("<amatch>:h")) | let &swapfile = &modified | endif
+
+if has("gui_running")
+    finish
+endif
 
 augroup Checktime
     au!
