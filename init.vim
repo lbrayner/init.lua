@@ -113,6 +113,10 @@ vnoremap <f1> <esc>:vert h
 
 nnoremap <silent> <Esc><Esc> <Esc>:on<CR>
 
+if has("path_extra")
+    nnoremap <F7> :find<space>
+endif
+
 " clear search highlights
 
 function! s:HighlightOverLength()
@@ -361,9 +365,15 @@ command! CtrlpCustomIgnoreDefault :let g:ctrlp_custom_ignore = s:ctrlp_custom_ig
 let g:ctrlp_custom_ignore = deepcopy(s:ctrlp_custom_ignore)
 
 let g:ctrlp_switch_buffer = 't'
-let g:ctrlp_map = '<f7>'
+
+if has("gui_running") || has("nvim")
+    let g:ctrlp_map = '<M-p>'
+else
+    let g:ctrlp_map = '<esc>p'
+endif
+
 nnoremap <silent> <F5> :CtrlPBuffer<cr>
-nnoremap <leader><F7> :CtrlPClearAllCaches<cr>
+" nnoremap <leader><F7> :CtrlPClearAllCaches<cr>
 
 
 " vim-rzip
