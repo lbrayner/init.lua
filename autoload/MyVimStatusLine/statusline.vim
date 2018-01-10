@@ -39,7 +39,9 @@ function MyVimStatusLine#statusline#DefineModifiedStatusLine()
     if exists("b:MVSL_custom_mod_leftline")
         exec "let &l:statusline='".b:MVSL_custom_mod_leftline."'"
     else
-        setlocal statusline=%<%1*%f%{MyVimStatusLine#statusline#DefaultModifiedFlag()}%*%=
+        let &l:statusline='%<%1*'
+            \ . '%{expand("%:t")}'
+            \ . '%{MyVimStatusLine#statusline#DefaultModifiedFlag()}%*%='
     endif
     exec "let &l:statusline='".&l:statusline.s:status_line_tail."'"
 endfunction
@@ -48,12 +50,9 @@ function MyVimStatusLine#statusline#DefineStatusLine()
     if exists("b:MVSL_custom_leftline")
         exec "let &l:statusline='".b:MVSL_custom_leftline."'"
     else
-        setlocal statusline=%<%f%{MyVimStatusLine#statusline#DefaultModifiedFlag()}%=
+        let &l:statusline='%<'
+            \ . '%{expand("%:t")}'
+            \ . '%{MyVimStatusLine#statusline#DefaultModifiedFlag()}%='
     endif
     exec "let &l:statusline='".&l:statusline.s:status_line_tail."'"
 endfunction
-
-" function MyVimStatusLine#statusline#DefineGlobalStatusLine()
-"     set statusline=%<%f%{MyVimStatusLine#statusline#DefaultModifiedFlag()}%=
-"     exec "let &statusline='".&statusline.s:status_line_tail."'"
-" endfunction
