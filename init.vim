@@ -81,12 +81,6 @@ if s:has_windows
     set grepprg=grep.exe
 endif
 
-if has("windows")
-    set showtabline=2
-    let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '
-        \ . '%#Question#%{getcwd()}%=%#TabLineSel# %f '
-endif
-
 " setting dir
 
 let s:swap_dir = s:vim_dir."/swap"
