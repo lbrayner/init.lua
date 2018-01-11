@@ -10,7 +10,8 @@ function! RedefineTabline()
     let isabsolute=expand("%:p") !~# getcwd() " is an absolute path
     if isabsolute
         let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '
-            \ . '%#Question#%{fnamemodify(getcwd(),":~")}%=%#ErrorMsg# %{expand("%:h")} '
+            \ . '%#Question#%{fnamemodify(getcwd(),":~")}%=%#ErrorMsg#'
+            \. ' %{fnamemodify(expand("%"),":p:~")} '
     endif
 endfunction
 
