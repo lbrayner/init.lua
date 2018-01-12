@@ -23,6 +23,7 @@ if &ft == 'java'
               \ . ' %5*%.20{MyVimStatusLine#extensions#eclim#CurrentProjectName()}%*'
               \ . ' %3*%{MyVimStatusLine#extensions#eclim#WarningFlag()}'
               call MyVimStatusLine#statusline#DefineStatusLine()
+              let &l:path=projectName.",".&path
           endif
       endif
   endif

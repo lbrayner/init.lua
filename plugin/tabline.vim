@@ -17,5 +17,5 @@ endfunction
 
 augroup TablineBufWinEnter
     autocmd!
-    autocmd WinEnter * call RedefineTabline()
+    autocmd WinEnter,BufEnter * call RedefineTabline()
 augroup END

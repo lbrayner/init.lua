@@ -114,7 +114,7 @@ vnoremap <f1> <esc>:vert h
 nnoremap <silent> <Esc><Esc> <Esc>:on<CR>
 
 if has("path_extra")
-    nnoremap <F7> :find<space>
+    nnoremap <F7> :1find<space>
 endif
 
 " clear search highlights
@@ -191,7 +191,6 @@ nnoremap <leader><F5> :ls<CR>:buffer<Space>
 nnoremap <F6> :w<CR>
 nnoremap <leader><F6> :w!<CR>
 nnoremap <leader>W :bw<CR>
-nnoremap <leader>Q :q<CR>
 nnoremap <silent> <F12>  :setlocal list!<CR>
 nnoremap <leader>\| :setlocal wrap! wrap?<CR>
 nnoremap <silent> <leader>N :setlocal number!<CR>
@@ -208,6 +207,7 @@ nnoremap <silent> <leader><F9> :bw<cr>
 
 nnoremap <silent> <leader>l :lopen<CR>
 nnoremap <silent> <leader>q :copen<CR>
+nnoremap <silent> <leader>Q :cclose<CR>
 
 nnoremap <silent> <leader>B :b#<CR>
 
@@ -220,6 +220,11 @@ command! JumpToNextMergeConflictRight  :keepp keepj /^>>>>>>>
 nnoremap <silent> <leader>cr :JumpToNextMergeConflictRight<cr>
 nnoremap <silent> <leader>cm :JumpToNextMergeConflictMiddle<cr>
 nnoremap <silent> <leader>cl :JumpToNextMergeConflictLeft<cr>
+
+" search / pattern
+
+" force case sensitivity for *-search
+nnoremap <silent> * /\C\<<c-r>=expand("<cword>")<cr>\><cr>
 
 "help buffers
 
@@ -277,7 +282,8 @@ endif
 " text format options
 
 augroup TextFormatAutoGroup
-    autocmd FileType txt set textwidth=80
+    au!
+    autocmd FileType text set textwidth=80
 augroup END
 
 " diff options

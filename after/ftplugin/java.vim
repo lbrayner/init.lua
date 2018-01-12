@@ -40,6 +40,8 @@ if &ft == 'java'
                     \('nnoremap <buffer>','<leader>ji',':JavaImport<cr>')
         call MyVimGoodies#util#vimmap
                     \('nnoremap <buffer>','<leader>jn',':JavaNew<space>')
+        call MyVimGoodies#util#vimmap
+                    \('nnoremap <buffer>','<leader>jo',':JavaImportOrganize<cr>')
     endif
     if executable('git')
         call MyVimGoodies#util#vimmap('nmap <buffer>'
