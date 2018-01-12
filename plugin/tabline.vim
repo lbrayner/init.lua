@@ -6,11 +6,11 @@ set showtabline=2
 
 function! RedefineTabline()
     let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '
-        \ . '%#Question#%{fnamemodify(getcwd(),":~")}%=%#TabLineSel# %{expand("%:h")} '
+        \ . '%#NonText#%{fnamemodify(getcwd(),":~")}%=%#Directory# %{expand("%:h")} '
     let isabsolute=expand("%:p") !~# getcwd() " is an absolute path
     if isabsolute
         let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '
-            \ . '%#Question#%{fnamemodify(getcwd(),":~")}%=%#ErrorMsg#'
+            \ . '%#NonText#%{fnamemodify(getcwd(),":~")}%=%#WarningMsg#'
             \. ' %{fnamemodify(expand("%"),":p:~")} '
     endif
 endfunction
