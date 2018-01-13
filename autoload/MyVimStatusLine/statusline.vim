@@ -25,7 +25,6 @@ function! MyVimStatusLine#statusline#DefaultModifiedFlag()
 endfunction
 
 let s:status_line_tail = ' %2*%{&ft}%*'
-                     \ . ' #%n'
                      \ . ' %3*%1.(%{MyVimStatusLine#statusline#DefaultReadOnlyFlag()}%)%*'
                      \ . ' %4.(%4*%{&fileformat}%*%)'
                      \ . ' :%2.c %4*%L%* %3.P'
