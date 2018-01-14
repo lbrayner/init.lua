@@ -9,6 +9,7 @@ if &ft == 'java'
       if MyVimGoodies#extensions#eclim#EclimAvailable()
           let projectName = eclim#project#util#GetCurrentProjectName()
           if projectName != ""
+              let s:eclim = 1
               augroup MVGoodies_BE_java
                     autocmd! BufEnter <buffer>
                     autocmd  BufEnter <buffer>
@@ -51,5 +52,13 @@ if &ft == 'java'
         call MyVimGoodies#util#vimmap('nmap <buffer>'
             \ ,'<leader>D'
             \ ,'<Plug>MVGSVNDiffThisIgnoreAllWS')
+    endif
+    if !exists("s:eclim")
+        if executable("ctags")
+            augroup CtagsJava
+                au!
+                autocmd  BufWritePost <buffer> call ctags#UpdateTags()
+            augroup END
+        endif
     endif
 endif
