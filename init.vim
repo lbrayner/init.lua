@@ -278,7 +278,7 @@ endif
 
 augroup TextFormatAutoGroup
     au!
-    autocmd FileType text set textwidth=80
+    autocmd FileType text,svn set textwidth=80
 augroup END
 
 " diff options
