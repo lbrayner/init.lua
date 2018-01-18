@@ -15,10 +15,16 @@ function! s:PrintTabs(currentTab)
     let spacing = "  "
     echo spacing . l:currentTab " " . fnamemodify(getcwd(),":~")
     echohl None
+    let currentWindow=winnr()
     for window in gettabinfo(l:currentTab)[0]["windows"]
-        echo "\t" . fnamemodify(getbufinfo(getwininfo(window)
-                    \[0]["bufnr"])[0]["name"]
-                    \,":~:.")
+        if win_id2win(window) == currentWindow
+            let spacing = "> "
+        else
+            let spacing = "  "
+        endif
+        echo "\t" . spacing . fnamemodify(getbufinfo(getwininfo(window)
+                \[0]["bufnr"])[0]["name"]
+                \,":~:.")
     endfor
 endfunction
 
