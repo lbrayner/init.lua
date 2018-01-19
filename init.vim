@@ -65,7 +65,7 @@ if has('packages')
         set packpath+=~/.vim/pack/bundle
     endif
     if s:has_windows
-        exec "set packpath+=".$HOME."/vimfiles/pack/bundle"
+        set packpath+=$HOME/vimfiles/pack/bundle
     endif
     if !has("nvim")
         packadd matchit
@@ -184,6 +184,7 @@ nnoremap <F3> :.w !$SHELL<CR>
 nnoremap <F4> :execute getline(".")<CR>
 nnoremap <leader><F5> :ls<CR>:buffer<Space>
 nnoremap <F6> :w<CR>
+nnoremap <leader><F7> :find<space>
 nnoremap <leader><F6> :w!<CR>
 nnoremap <leader>W :bw<CR>
 nnoremap <silent> <F12>  :setlocal list!<CR>
