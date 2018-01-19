@@ -331,7 +331,6 @@ let g:EclimHighlightError = "Error"
 let g:EclimHighlightWarning = "Ignore"
 " let g:EclimHighlightInfo = "Type"
 
-let g:EclimMakeLCD = 1
 let g:EclimXmlValidate=0
 let g:EclimXsdValidate=0
 let g:EclimDtdValidate=0
