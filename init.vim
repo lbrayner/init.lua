@@ -371,7 +371,7 @@ let g:ctrlp_tabpage_position = 'bc'
 let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max:10,results:10'
 let g:ctrlp_clear_cache_on_exit = 0
 nnoremap <silent> <F5> :CtrlPBuffer<cr>
-nnoremap <leader><F7> :CtrlPClearAllCaches<cr>
+" nnoremap <leader><F7> :CtrlPClearAllCaches<cr>
 
 " vim-rzip
 let g:zipPlugin_extra_ext = '*.odt'
