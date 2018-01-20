@@ -45,6 +45,11 @@ function MyVimStatusLine#statusline#DefineModifiedStatusLine()
     exec "let &l:statusline='".&l:statusline.s:status_line_tail."'"
 endfunction
 
+function MyVimStatusLine#statusline#DefineStatusLineNoFocus()
+    let &l:statusline='%<'
+        \ . '%{expand("%")}%='
+endfunction
+
 function MyVimStatusLine#statusline#DefineStatusLine()
     if exists("b:MVSL_custom_leftline")
         exec "let &l:statusline='".b:MVSL_custom_leftline."'"

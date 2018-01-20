@@ -26,7 +26,6 @@ set hidden
 set nostartofline
 set fileformats=unix,dos
 set fileformat=unix
-set backspace=2
 set backspace=indent,eol,start
 if s:has_windows
     set shellslash

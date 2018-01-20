@@ -33,7 +33,12 @@ augroup END
 
 augroup MyVimStatusLineModifiedBWEGroup
     autocmd!
-    autocmd BufWinEnter * call MyVimStatusLine#RedefineStatusLine()
+    autocmd WinEnter * call MyVimStatusLine#RedefineStatusLine()
+augroup END
+
+augroup MyVimStatusLineWinLeaveGroup
+    autocmd!
+    autocmd WinLeave * call MyVimStatusLine#statusline#DefineStatusLineNoFocus()
 augroup END
 
 noremap <Plug>HighlightStatusLineNC  :call MyVimStatusLine#HighlightStatusLineNC()<CR>
