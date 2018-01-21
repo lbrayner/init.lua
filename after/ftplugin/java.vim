@@ -62,6 +62,8 @@ if &ft == 'java'
         endif
     endif
     " static snippets
-    inoreabbrev <buffer> sysout System.out.println();
-    inoreabbrev <buffer> main public static void main(String[] args)<cr>{<cr>}
+    iabbrev <buffer> sysout System.out.println("");<left><left><left>
+    inoreabbrev <buffer> sysou sysout
+    inoreabbrev <buffer> syso sysout
+    inoreabbrev <buffer> main public static void main(String[] args)<cr>{<cr>}<up><cr>
 endif
