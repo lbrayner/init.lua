@@ -61,4 +61,7 @@ if &ft == 'java'
             augroup END
         endif
     endif
+    " static snippets
+    inoreabbrev <buffer> sysout System.out.println();
+    inoreabbrev <buffer> main public static void main(String[] args)<cr>{<cr>}
 endif

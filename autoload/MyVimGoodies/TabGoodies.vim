@@ -31,6 +31,9 @@ endfunction
 function! MyVimGoodies#TabGoodies#GoToTab()
     let s:a_tab_nr=tabpagenr()
     echo "Current tabs:"
+    " https://github.com/chrisbra/SaveSigns.vim
+    " consider saving and restoring the signs
+    sign unplace *
     call MyVimGoodies#TabGoodies#TabDo("call s:PrintTabs(s:a_tab_nr)")
     let tab = input("Go to tab (" . tabpagenr() . "): ")
     if tab == ""
