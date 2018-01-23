@@ -18,7 +18,7 @@ if &ft == 'java'
     \ . ':let @+=@" <cr> :let @*=@" <cr> :echo @"<cr>')
                     autocmd  BufEnter <buffer>
                         \   call MyVimGoodies#util#vimmap('nnoremap <buffer> <silent>',
-                        \   '<leader>T'
+                        \   '<leader>C'
             \ ,':call MyVimGoodies#extensions#eclim#EclimGoToClassDeclarationLine()<cr>')
                     autocmd  BufEnter <buffer>
                         \ call MyVimGoodies#util#vimmap('nnoremap <buffer>',
@@ -41,6 +41,8 @@ if &ft == 'java'
                     \('nnoremap <buffer>','<leader>ji',':JavaImport<cr>')
         call MyVimGoodies#util#vimmap
                     \('nnoremap <buffer>','<leader>jn',':JavaNew<space>')
+        call MyVimGoodies#util#vimmap
+                    \('nnoremap <buffer>','<leader>jg',':JavaGet')
         call MyVimGoodies#util#vimmap
                     \('nnoremap <buffer>','<leader>jo',':JavaImportOrganize<cr>')
     endif
@@ -66,4 +68,10 @@ if &ft == 'java'
     inoreabbrev <buffer> sysou sysout
     inoreabbrev <buffer> syso sysout
     inoreabbrev <buffer> main public static void main(String[] args)<cr>{<cr>}<up><cr>
+    inoreabbrev <buffer> pubs public static void ()<cr>{<cr>}<up><up><c-o>f(
+    inoreabbrev <buffer> for for()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
+    inoreabbrev <buffer> while while()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
+    inoreabbrev <buffer> if if()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
+    iabbrev <buffer> format String.format("")<left><left>
+    inoreabbrev <buffer> fmt format
 endif
