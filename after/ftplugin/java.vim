@@ -44,6 +44,10 @@ if &ft == 'java'
         call MyVimGoodies#util#vimmap
                     \('nnoremap <buffer>','<leader>jg',':JavaGet')
         call MyVimGoodies#util#vimmap
+                    \('nnoremap <buffer>','<leader>jc',':JavaConstructor<cr>')
+        call MyVimGoodies#util#vimmap
+                    \('vnoremap <buffer>','<leader>jc',':JavaConstructor<cr>')
+        call MyVimGoodies#util#vimmap
                     \('nnoremap <buffer>','<leader>jo',':JavaImportOrganize<cr>')
     endif
     if executable('git')
@@ -65,7 +69,7 @@ if &ft == 'java'
     endif
     " static snippets
     abclear <buffer>
-    iabbrev <buffer> sysout System.out.println("");<left><left><left>
+    iabbrev <buffer> sysout System.out.println();<left><left>
     inoreabbrev <buffer> sysou sysout
     inoreabbrev <buffer> syso sysout
     inoreabbrev <buffer> mainm public static void main(String[] args)<cr>{<cr>}<up><cr>
