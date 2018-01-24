@@ -88,13 +88,6 @@ if !s:has_swap_dir
 endif
 let &dir=s:swap_dir."//"
 
-" sourcing a init.local.vim if it exists
-
-let s:init_local = s:vim_dir . "/init.local.vim"
-if filereadable(s:init_local)
-  execute 'source ' . s:init_local
-endif
-
 nmap ç :
 vmap ç :
 nmap Ç :<up><cr>
@@ -424,8 +417,12 @@ map T <Plug>Sneak_T
 map x <Plug>Sneak_s
 map X <Plug>Sneak_S
 
-" ferret
-let g:FerretExecutable="ag"
-
 " scalpel
 nmap <Leader>x <Plug>(Scalpel)
+
+" sourcing a init.local.vim if it exists
+
+let s:init_local = s:vim_dir . "/init.local.vim"
+if filereadable(s:init_local)
+  execute 'source ' . s:init_local
+endif
