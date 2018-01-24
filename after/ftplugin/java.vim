@@ -64,14 +64,19 @@ if &ft == 'java'
         endif
     endif
     " static snippets
+    abclear <buffer>
     iabbrev <buffer> sysout System.out.println("");<left><left><left>
     inoreabbrev <buffer> sysou sysout
     inoreabbrev <buffer> syso sysout
-    inoreabbrev <buffer> main public static void main(String[] args)<cr>{<cr>}<up><cr>
-    inoreabbrev <buffer> pubs public static void ()<cr>{<cr>}<up><up><c-o>f(
-    inoreabbrev <buffer> for for()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
-    inoreabbrev <buffer> while while()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
-    inoreabbrev <buffer> if if()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
-    iabbrev <buffer> format String.format("")<left><left>
-    inoreabbrev <buffer> fmt format
+    inoreabbrev <buffer> mainm public static void main(String[] args)<cr>{<cr>}<up><cr>
+    inoreabbrev <buffer> staticm public static void ()<cr>{<cr>}<cr><up><up><up><c-o>t(<right>
+    inoreabbrev <buffer> publicm public void ()<cr>{<cr>}<cr><up><up><up><c-o>t(<right>
+    inoreabbrev <buffer> privatem private void ()<cr>{<cr>}<cr><up><up><up><c-o>t(<right>
+    inoreabbrev <buffer> privates private static<space>
+    inoreabbrev <buffer> publics public static<space>
+    inoreabbrev <buffer> forl for()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
+    inoreabbrev <buffer> whilel while()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
+    inoreabbrev <buffer> iff if()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
+    iabbrev <buffer> formats String.format("")<left><left>
+    inoreabbrev <buffer> fmt formats
 endif
