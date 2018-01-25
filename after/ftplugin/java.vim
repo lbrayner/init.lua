@@ -70,7 +70,7 @@ if &ft == 'java'
 
     " mappings
     imapclear <buffer>
-    if exists("*PareditInsertQuotes")
+    if exists('g:paredit_loaded')
         inoremap <buffer> <expr> " PareditInsertQuotes()
     endif
 
@@ -93,4 +93,6 @@ if &ft == 'java'
     inoreabbrev <buffer> iff if()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
     iabbrev <buffer> formats String.format("")<left><left>
     inoreabbrev <buffer> fmt formats
+    inoreabbrev <buffer> linfo logger.info();<left><left>
+    inoreabbrev <buffer> lbug logger.debug();<left><left>
 endif

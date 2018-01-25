@@ -396,6 +396,11 @@ let g:netrw_liststyle = 3
 " paredit
 let g:paredit_leader = '\'
 
+" augroup JavaParedit
+"     au!
+"     au FileType java call PareditInitBuffer()
+" augroup END
+
 " " fireplace
 " augroup FireplaceAutoGroup
 " autocmd FileType clojure nmap <buffer> cç <Plug>FireplacePrompt<c-f>k
