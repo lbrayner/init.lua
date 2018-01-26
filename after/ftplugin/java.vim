@@ -76,9 +76,9 @@ if &ft == 'java'
 
     " static snippets
     abclear <buffer>
-    iabbrev <buffer> toString @Override<cr>public String toString()<cr>{<cr>}<up><cr>
-    inoreabbrev <buffer> tostr toString
-    inoreabbrev <buffer> tostring toString
+    iabbrev <buffer> toString_ @Override<cr>public String toString()<cr>{<cr>}<up><cr>
+    inoreabbrev <buffer> tostr toString_
+    inoreabbrev <buffer> tostring toString_
     iabbrev <buffer> sysout System.out.println();<left><left>
     inoreabbrev <buffer> sysou sysout
     inoreabbrev <buffer> syso sysout
