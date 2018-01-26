@@ -8,8 +8,6 @@ set enc=utf-8
 set nocompatible
 syntax on
 
-" set clipboard+=unnamedplus
-
 set ttimeoutlen=0
 set laststatus=2
 set listchars=eol:¬,tab:»\ ,trail:·
@@ -324,7 +322,6 @@ endif
 
 let g:EclimHighlightError = "Error"
 let g:EclimHighlightWarning = "Ignore"
-" let g:EclimHighlightInfo = "Type"
 
 let g:EclimXmlValidate=0
 let g:EclimXsdValidate=0
@@ -346,6 +343,7 @@ map <silent> <leader>e <Plug>CamelCaseMotion_e
 map <silent> <leader>ge <Plug>CamelCaseMotion_ge
 
 " ctrlp
+let g:ctrlp_working_path_mode = ''
 let g:ctrlp_reuse_window = 'netrw\|help'
 let s:ctrlp_custom_ignore = {
             \ 'file': '\v\.o$|\.exe$|\.lnk$|\.bak$|\.swp$|\.class$|\.jasper$'
@@ -353,9 +351,6 @@ let s:ctrlp_custom_ignore = {
             \ 'dir': '\C\V' . escape(expand('~'),' \') . '\$\|'
             \               . '\v[\/](classes|target|build|test-classes|dumps)$'
             \ }
-let g:ctrlp_working_path_mode = ''
-
-command! CtrlpCustomIgnoreDefault :let g:ctrlp_custom_ignore = s:ctrlp_custom_ignore
 
 let g:ctrlp_custom_ignore = deepcopy(s:ctrlp_custom_ignore)
 
@@ -365,7 +360,6 @@ let g:ctrlp_tabpage_position = 'bc'
 let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max:10,results:10'
 let g:ctrlp_clear_cache_on_exit = 0
 nnoremap <silent> <F5> :CtrlPBuffer<cr>
-" nnoremap <leader><F7> :CtrlPClearAllCaches<cr>
 
 " vim-rzip
 let g:zipPlugin_extra_ext = '*.odt'
@@ -395,18 +389,6 @@ let g:netrw_liststyle = 3
 
 " paredit
 let g:paredit_leader = '\'
-
-" augroup JavaParedit
-"     au!
-"     au FileType java call PareditInitBuffer()
-" augroup END
-
-" " fireplace
-" augroup FireplaceAutoGroup
-" autocmd FileType clojure nmap <buffer> cç <Plug>FireplacePrompt<c-f>k
-" autocmd FileType clojure
-"             \ nmap <buffer> cÇ <Plug>FireplacePrompt<up><cr>
-" augroup END
 
 " syntastic
 " autocmd FileType java SyntasticToggleMode

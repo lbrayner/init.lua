@@ -86,8 +86,8 @@ if &ft == 'java'
     inoreabbrev <buffer> staticm public static void ()<cr>{<cr>}<cr><up><up><up><c-o>t(<right>
     inoreabbrev <buffer> publicm public void ()<cr>{<cr>}<cr><up><up><up><c-o>t(<right>
     inoreabbrev <buffer> privatem private void ()<cr>{<cr>}<cr><up><up><up><c-o>t(<right>
-    inoreabbrev <buffer> privates private static<space>
-    inoreabbrev <buffer> publics public static<space>
+    inoreabbrev <buffer> privates private static
+    inoreabbrev <buffer> publics public static
     inoreabbrev <buffer> forl for()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
     inoreabbrev <buffer> whilel while()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
     inoreabbrev <buffer> iff if()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
