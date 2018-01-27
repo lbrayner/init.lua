@@ -78,7 +78,6 @@ if &ft == 'java'
     abclear <buffer>
     iabbrev <buffer> toString_ @Override<cr>public String toString()<cr>{<cr>}<up><cr>
     inoreabbrev <buffer> tostr toString_
-    inoreabbrev <buffer> tostring toString_
     iabbrev <buffer> sysout System.out.println();<left><left>
     inoreabbrev <buffer> sysou sysout
     inoreabbrev <buffer> syso sysout
@@ -91,8 +90,8 @@ if &ft == 'java'
     inoreabbrev <buffer> forl for()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
     inoreabbrev <buffer> whilel while()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
     inoreabbrev <buffer> iff if()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>
-    iabbrev <buffer> formats String.format("")<left><left>
+    iabbrev <buffer> formats String.format("");<c-o>F"
     inoreabbrev <buffer> fmt formats
-    inoreabbrev <buffer> linfo logger.info();<left><left>
-    inoreabbrev <buffer> lbug logger.debug();<left><left>
+    inoreabbrev <buffer> info_ logger.info();<left><left>
+    inoreabbrev <buffer> debug_ logger.debug();<left><left>
 endif
