@@ -1,8 +1,7 @@
-" Only do this when not done yet for this buffer
 if exists("b:MVSL_did_ftplugin")
     finish
 endif
-let b:did_ftplugin = 1
+let b:MVSL_did_ftplugin = 1
 
 if &ft == 'java'
   if MyVimStatusLine#extensions#util#EclimLoaded()
@@ -23,6 +22,7 @@ if &ft == 'java'
               \ . ' %5*%.20{MyVimStatusLine#extensions#eclim#CurrentProjectName()}%*'
               \ . ' %3*%{MyVimStatusLine#extensions#eclim#WarningFlag()}'
               call MyVimStatusLine#statusline#DefineStatusLine()
+              " setting &l:path
               let &l:path=projectName.",".&path
           endif
       endif
