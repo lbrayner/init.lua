@@ -210,7 +210,7 @@ nnoremap <silent> <leader>cl :JumpToNextMergeConflictLeft<cr>
 " search / pattern
 
 " force case sensitivity for *-search
-nnoremap <Plug>CaseSensitiveStar /\C\<<c-r>=expand("<cword>")<cr>\><cr>
+nnoremap <Plug>CaseSensitiveStar /\C\V\<<c-r>=expand("<cword>")<cr>\><cr>
 nmap <kmultiply> <Plug>CaseSensitiveStar
 nmap * <Plug>CaseSensitiveStar
 
