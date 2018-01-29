@@ -24,11 +24,10 @@ if &ft == 'java'
                 call MyVimGoodies#util#vimmap('nnoremap <buffer> <silent>',
                   \   '<leader>C'
                   \ ,':call MyVimGoodies#extensions#eclim#EclimGoToClassDeclarationLine()<cr>')
-                call MyVimGoodies#util#vimmap('nnoremap <buffer>',
-                  \   '<leader>F',':let @"=eclim#java#util#GetPackage().".".expand("%:t:r")<cr>'
+                call MyVimGoodies#util#vimmap('nnoremap <buffer>'
+                  \,'<leader>F'
+                  \,':let @"=eclim#java#util#GetPackage().".".expand("%:t:r")<cr>'
                   \ . ':let @+=@" <cr> :let @*=@" <cr> :echo @"<cr>')
-                call MyVimGoodies#util#vimmap('nnoremap <buffer>',
-                  \   '<leader>S',':JavaSearch<space>')
                 call MyVimGoodies#util#vimmap
                             \('nnoremap <buffer>','<leader>js',':JavaSearch<space>')
                 call MyVimGoodies#util#vimmap
