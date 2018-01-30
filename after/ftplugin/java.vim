@@ -15,6 +15,7 @@ inoreabbrev <buffer> mainm public static void main(final String[] args)<cr>{<cr>
 inoreabbrev <buffer> staticm public static void ()<cr>{<cr>}<cr><up><up><up><c-o>t(<right>
 inoreabbrev <buffer> publicm public void ()<cr>{<cr>}<cr><up><up><up><c-o>t(<right>
 inoreabbrev <buffer> privatem private void ()<cr>{<cr>}<cr><up><up><up><c-o>t(<right>
+inoreabbrev <buffer> protectedm protected void ()<cr>{<cr>}<cr><up><up><up><c-o>t(<right>
 inoreabbrev <buffer> privates private static
 inoreabbrev <buffer> publics public static
 inoreabbrev <buffer> forl for()<cr>{<cr>}<cr><up><up><up><c-o>f(<right>

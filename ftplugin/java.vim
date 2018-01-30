@@ -44,6 +44,8 @@ if &ft == 'java'
                             \('vnoremap <buffer>','<leader>jc',':JavaConstructor<cr>')
                 call MyVimGoodies#util#vimmap
                             \('nnoremap <buffer>','<leader>jo',':JavaImportOrganize<cr>')
+                call MyVimGoodies#util#vimmap
+                            \('nnoremap <buffer>','<leader>jm',':JavaMove<space>')
                 if executable("ctags")
                     augroup CtagsJava
                         au!
