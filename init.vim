@@ -407,6 +407,12 @@ map X <Plug>Sneak_S
 " scalpel
 nmap <Leader>x <Plug>(Scalpel)
 
+" Glaive
+augroup GlaiveInstallGroup
+    autocmd!
+    autocmd VimEnter * call glaive#Install()
+augroup END
+
 " sourcing a init.local.vim if it exists
 
 let s:init_local = s:vim_dir . "/init.local.vim"
