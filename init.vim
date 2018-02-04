@@ -312,6 +312,13 @@ if has("gui_running") || has("nvim")
     cnoremap <C-Z> <C-F>
 endif
 
+" emacs c-k behaviour
+inoremap <c-k> <c-o>D
+cnoremap <c-k> <c-f>D<c-c><c-c>:<up>
+" remapping digraph
+inoremap <c-s> <c-k>
+cnoremap <c-s> <c-k>
+
 if !has('packages')
     finish
 endif
