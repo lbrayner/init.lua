@@ -34,7 +34,7 @@ function! MyVimStatusLine#statusline#GetStatusLineTail()
     return s:status_line_tail
 endfunction
 
-function MyVimStatusLine#statusline#DefineModifiedStatusLine()
+function! MyVimStatusLine#statusline#DefineModifiedStatusLine()
     if exists("b:MVSL_custom_mod_leftline")
         exec "let &l:statusline='".b:MVSL_custom_mod_leftline."'"
     else
@@ -45,12 +45,20 @@ function MyVimStatusLine#statusline#DefineModifiedStatusLine()
     exec "let &l:statusline='".&l:statusline.s:status_line_tail."'"
 endfunction
 
-function MyVimStatusLine#statusline#DefineStatusLineNoFocus()
-    let &l:statusline='%<'
-        \ . '%{expand("%")}%='
+function! MyVimStatusLine#statusline#StatusLineNoFocus()
+    let filename=expand("%")
+    if len(filename) <= winwidth("%")
+        return filename
+    endif
+    let trunc_fname_head=strpart(expand("%:h"),0,winwidth("%")-len(expand("%:t"))-1-3)
+    return trunc_fname_head.".../".expand("%:t")
 endfunction
 
-function MyVimStatusLine#statusline#DefineStatusLine()
+function! MyVimStatusLine#statusline#DefineStatusLineNoFocus()
+    let &l:statusline='%{MyVimStatusLine#statusline#StatusLineNoFocus()}'
+endfunction
+
+function! MyVimStatusLine#statusline#DefineStatusLine()
     if exists("b:MVSL_custom_leftline")
         exec "let &l:statusline='".b:MVSL_custom_leftline."'"
     else
