@@ -321,6 +321,9 @@ if has("gui_running") || has("nvim")
     cnoremap <C-Z> <C-F>
 endif
 
+" inserting the current line
+cnoremap <c-r><c-l> <c-r>=line(".")<cr>
+
 " emacs c-k behaviour
 inoremap <c-k> <c-o>D
 cnoremap <c-k> <c-f>D<c-c><c-c>:<up>
