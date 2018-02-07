@@ -32,7 +32,6 @@ set incsearch
 set nojoinspaces
 set ignorecase
 set smartcase
-set infercase
 
 let s:ssh_client = 0
 
@@ -219,13 +218,22 @@ nmap * <Plug>CaseSensitiveStar
 
 augroup HelpAutoGroup
     autocmd!
-    " autocmd FileType help,eclimhelp nnoremap <silent> <buffer> <nowait> q :q<cr>
     autocmd FileType help,eclimhelp au BufEnter <buffer> setlocal relativenumber
 augroup END
+
+" svn commit files
 
 augroup SvnFtGroup
     autocmd!
     autocmd BufEnter *.svn set ft=svn
+augroup END
+
+" infercase
+
+augroup InferCaseGroup
+    autocmd!
+    autocmd FileType gitcommit,txt,svn au BufEnter <buffer>
+                \ setlocal ignorecase infercase
 augroup END
 
 "show existing tab with 4 spaces width
@@ -420,6 +428,14 @@ augroup GlaiveInstallGroup
     autocmd!
     autocmd VimEnter * call glaive#Install()
 augroup END
+
+" statusline
+
+if v:vim_did_enter
+    call MyVimStatusLine#initialize()
+else
+    au VimEnter * call MyVimStatusLine#MyVimStatusLine()
+endif
 
 " sourcing a init.local.vim if it exists
 
