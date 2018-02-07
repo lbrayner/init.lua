@@ -6,7 +6,7 @@ command! -nargs=* SVNDiffCursor call MyVimGoodies#SVNGoodies#SVNDiffCursor(<f-ar
 command! -nargs=* SVNDiffThis call MyVimGoodies#SVNGoodies#SVNDiffThis(<f-args>)
 command! -nargs=0 SVNDiffContextual call MyVimGoodies#SVNGoodies#SVNDiffContextual()
 
-command! -nargs=+ SVNLog !svn log -rHEAD:1 -l1 <args>
+command! -nargs=* SVNLog !svn log -rHEAD:1 -l1 % <args>
 
 nnoremap <silent> <Plug>MVGSVNDiffCursor :call MyVimGoodies#SVNGoodies#SVNDiffCursor()<CR>
 nnoremap <silent> <Plug>MVGSVNDiffThis :call MyVimGoodies#SVNGoodies#SVNDiffThis()<CR>

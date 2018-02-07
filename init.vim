@@ -232,7 +232,7 @@ augroup END
 
 augroup InferCaseGroup
     autocmd!
-    autocmd FileType gitcommit,txt,svn au BufEnter <buffer>
+    autocmd FileType gitcommit,text,svn au BufEnter <buffer>
                 \ setlocal ignorecase infercase
 augroup END
 
@@ -434,7 +434,7 @@ augroup END
 if v:vim_did_enter
     call MyVimStatusLine#initialize()
 else
-    au VimEnter * call MyVimStatusLine#MyVimStatusLine()
+    au VimEnter * call MyVimStatusLine#initialize()
 endif
 
 " sourcing a init.local.vim if it exists
