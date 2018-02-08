@@ -232,8 +232,7 @@ augroup END
 
 augroup InferCaseGroup
     autocmd!
-    autocmd FileType gitcommit,text,svn au BufEnter <buffer>
-                \ setlocal ignorecase infercase
+    autocmd FileType gitcommit,text,svn setlocal ignorecase infercase
 augroup END
 
 "show existing tab with 4 spaces width
@@ -255,9 +254,6 @@ augroup END
 command! CopyFullPath :let @*=expand('%:p') | let @+=@* | let @"=@*
 command! CopyPath :let @*=expand('%') | let @+=@* | let @"=@*
 command! CopyName :let @*=expand('%:t') | let @+=@* | let @"=@*
-command! RelativePath :let @*=@%
-command! Bwp :bp | bw #
-command! BwpForce :bp | bw! #
 
 augroup RelativeNumberAutoGroup
     autocmd InsertEnter * :set norelativenumber
@@ -280,7 +276,7 @@ endif
 
 augroup TextFormatAutoGroup
     au!
-    autocmd FileType text,svn set textwidth=80
+    autocmd FileType text,svn setlocal textwidth=80
 augroup END
 
 " diff options
