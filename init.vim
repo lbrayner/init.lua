@@ -16,7 +16,9 @@ set splitright
 set number
 set relativenumber
 set wildmenu
-set breakindent
+if has("linebreak")
+    set breakindent
+endif
 set linebreak
 set autoindent
 set hlsearch
@@ -79,12 +81,14 @@ endif
 
 " setting dir
 
-let s:swap_dir = s:vim_dir."/swap"
-exe "let s:has_swap_dir = isdirectory('".s:swap_dir."')"
-if !s:has_swap_dir
-    call mkdir(s:swap_dir)
+if !has("nvim")
+    let s:swap_dir = s:vim_dir."/swap"
+    exe "let s:has_swap_dir = isdirectory('".s:swap_dir."')"
+    if !s:has_swap_dir
+        call mkdir(s:swap_dir)
+    endif
+    let &dir=s:swap_dir."//"
 endif
-let &dir=s:swap_dir."//"
 
 nmap ç :
 vmap ç :
