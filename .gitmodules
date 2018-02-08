@@ -15,7 +15,7 @@
 	url = https://github.com/vim-scripts/L9.git
 [submodule "pack/bundle/start/LargeFile"]
 	path = pack/bundle/start/LargeFile
-	url = https://github.com/vim-scripts/LargeFile.git
+	url = https://github.com/vim-scripts/LargeFile
 [submodule "pack/bundle/start/linediff.vim"]
 	path = pack/bundle/start/linediff.vim
 	url = https://github.com/AndrewRadev/linediff.vim.git

@@ -440,6 +440,9 @@ else
     au VimEnter * call MyVimStatusLine#initialize()
 endif
 
+" LargeFile
+let g:LargeFile=1.5
+
 " sourcing a init.local.vim if it exists
 
 let s:init_local = s:vim_dir . "/init.local.vim"
