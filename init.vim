@@ -322,7 +322,9 @@ if has("gui_running") || has("nvim")
 endif
 
 " inserting the current line
-cnoremap <c-r><c-l> <c-r>=line(".")<cr>
+cnoremap <c-r><c-l> <c-r>=getline(".")<cr>
+" inserting the current line number
+cnoremap <c-r><c-n> <c-r>=line(".")<cr>
 
 " emacs c-k behaviour
 inoremap <c-k> <c-o>D
@@ -442,6 +444,13 @@ endif
 
 " LargeFile
 let g:LargeFile=1.5
+
+" dbext
+
+function! DBextPostResult(...)
+    " removing an undesirable mapping
+    unmap <buffer> q
+endfunction
 
 " sourcing a init.local.vim if it exists
 
