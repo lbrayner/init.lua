@@ -108,26 +108,7 @@ nnoremap <silent> <Esc><Esc> <Esc>:on<CR>
 
 " clear search highlights
 
-function! s:HighlightOverLength()
-    if ! exists("s:OverLength")
-        let s:OverLength = 90
-    endif
-    if ! exists("w:HighlightOverLengthFlag")
-        let w:HighlightOverLengthFlag = 1
-    endif
-    if w:HighlightOverLengthFlag
-        highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-        exec 'match OverLength /\%' . s:OverLength . 'v.\+/'
-        echo "Overlength highlighted."
-    else
-        exec "match"
-        echo "Overlength highlight cleared."
-    endif
-    let w:HighlightOverLengthFlag = ! w:HighlightOverLengthFlag
-endfunction
-
 nnoremap <silent> <f2> :set invhlsearch hlsearch?<cr>
-nnoremap <silent> <leader><f2> :call <SID>HighlightOverLength()<cr>
 
 vnoremap <silent> <leader>* y:exec 'let @/="\\V" . @"'<cr>
 

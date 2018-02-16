@@ -25,3 +25,14 @@ call MyVimGoodies#util#vimmap('vnoremap <silent>','<leader><f4>'
 
 call MyVimGoodies#util#vimmap('nnoremap <silent>','[<'
             \ ,':<c-u>call MyVimGoodies#AssortedGoodies#NavigateXmlDepth(-v:count1)<cr>')
+
+" overlength
+
+nnoremap <silent> <leader><f2> :call MyVimGoodies#AssortedGoodies#HighlightOverLength()<cr>
+
+" idle
+
+augroup InsertModeUndoPoint
+    autocmd!
+    autocmd CursorHoldI * call MyVimGoodies#AssortedGoodies#InsertModeUndoPoint() 
+augroup END
