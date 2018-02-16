@@ -141,17 +141,7 @@ nnoremap <C-L> <C-W><C-L>
 nnoremap <silent> <leader><F3> :.!<C-R>=getline('.')<CR><cr>
 
 if s:has_windows
-    function! s:FilterLine()
-        let line = getline('.')
-        let temp = tempname()
-        exe 'sil! !'.escape(line,&shellxescape).' > '.temp.' 2>&1'
-        if v:shell_error
-            exe 'throw "'.escape(readfile(temp)[0],'"').'"'
-        endif
-        exe "sil! read ".fnameescape(temp)
-        exe "sil call delete ('".temp."')"
-    endfunction
-    nnoremap <silent> <leader><F3> :call <SID>FilterLine()<cr>
+    nnoremap <silent> <leader><F3> :call MyVimGoodies#AssortedGoodies#FilterLine()<cr>
 endif
 
 
@@ -269,12 +259,6 @@ augroup END
 augroup DiffWrapAutoGroup
     autocmd FilterWritePre * if &diff | setlocal wrap< | endif
 augroup END
-
-function! g:IncrementVariable(var)
-    exe "let ".a:var." = ".a:var." + 1"
-    exe "let to_return = ".a:var
-    return to_return
-endfunction
 
 if has("gui_running") || has("nvim")
     " For Emacs-style editing on the command-line >
