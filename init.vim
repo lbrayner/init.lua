@@ -140,11 +140,6 @@ nnoremap <C-L> <C-W><C-L>
 
 nnoremap <silent> <leader><F3> :.!<C-R>=getline('.')<CR><cr>
 
-if s:has_windows
-    nnoremap <silent> <leader><F3> :call MyVimGoodies#AssortedGoodies#FilterLine()<cr>
-endif
-
-
 nnoremap <F3> :.w !$SHELL<CR>
 nnoremap <F4> :execute getline(".")<CR>
 nnoremap <leader><F5> :ls<CR>:buffer<Space>
@@ -303,6 +298,10 @@ if !has('packages')
 endif
 
 " Plugin customisation
+
+if s:has_windows
+    nnoremap <silent> <leader><F3> :call MyVimGoodies#AssortedGoodies#FilterLine()<cr>
+endif
 
 " Eclim
 
