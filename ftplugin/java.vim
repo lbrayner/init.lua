@@ -40,8 +40,7 @@ if &ft == 'java'
                             \('nnoremap <buffer>','<leader>jg',':JavaGet')
                 call MyVimGoodies#util#vimmap
                             \('nnoremap <buffer>','<leader>jc',':JavaConstructor<cr>')
-                call MyVimGoodies#util#vimmap
-                            \('vnoremap <buffer>','<leader>jc',':JavaConstructor<cr>')
+                vnoremap <buffer> <leader>jc :JavaConstructor<cr>
                 call MyVimGoodies#util#vimmap
                             \('nnoremap <buffer>','<leader>jo',':JavaImportOrganize<cr>')
                 call MyVimGoodies#util#vimmap
