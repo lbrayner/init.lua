@@ -6,8 +6,9 @@ endif
 
 " static snippets
 abclear <buffer>
-iabbrev <buffer> toString_ @Override<cr>public String toString()<cr>{<cr>}<up><cr>
-inoreabbrev <buffer> tostr toString_
+iabbrev <buffer> toStringm @Override<cr>public String
+            \ toString()<cr>{<cr>}<cr><up><up><right><cr>
+inoreabbrev <buffer> tostr toStringm
 iabbrev <buffer> sysout System.out.println();<left><left>
 inoreabbrev <buffer> sysou sysout
 inoreabbrev <buffer> syso sysout
