@@ -38,17 +38,50 @@ function! s:QuoteByteIndices(code)
 endfunction
 
 function! s:BreakString(code,blength)
+    if strlen(a:code) <= a:blength
+        return [a:code]
+    endif
     let above = strpart(a:code,0,a:blength)
     let below = strpart(a:code,a:blength)
-    return [above,below]
+    if above !~ '[^\\]\(\\\\\)\+$' && below =~ '^"'
+        let above = strpart(above,0,strlen(above)-1)
+        let below = '\' . below
+    endif
+    return [above] + s:BreakString(below,a:blength)
 endfunction
 
-function! java#format#format(code)
+function! s:AddQuotes(lines)
+    call map(a:lines,"'\"'.v:val.'\"'")
+endfunction
+
+function! s:AddPlusSigns(lines)
+    call map(a:lines,"'+'.v:val")
+    return a:lines
+endfunction
+
+function! s:Indent(lines,ilength)
+    call map(a:lines,"repeat(' ',".a:ilength.").v:val")
+    return a:lines
+endfunction
+
+function! s:AssembleLines(prefix,suffix,lines)
+    call s:AddQuotes(a:lines)
+    let lines = a:lines[0:0] + s:AddPlusSigns(a:lines[1:])
+    let lines = lines[0:0] + s:Indent(lines[1:],strlen(a:prefix)-1)
+    let lines[0] = a:prefix . lines[0]
+    let lines[len(lines)-1] = lines[len(lines)-1] . a:suffix
+    return lines
+endfunction
+
+function! java#format#break_string(code)
+    if strlen(a:code) <= g:java#format#length
+        return a:code
+    endif
     let indices = s:QuoteByteIndices(a:code)
     let slength = indices.right - indices.left - 1
     let prefix = strpart(a:code,0,indices.left-1)
     let payload = strpart(a:code,indices.left+1,slength)
     let suffix = strpart(a:code,indices.right+1)
-    " return [prefix,payload,suffix]
-    return s:BreakString(payload,g:java#format#length - indices.left - 1)
+    return s:AssembleLines(prefix,suffix
+            \,s:BreakString(payload,g:java#format#length - indices.left - 1))
 endfunction
