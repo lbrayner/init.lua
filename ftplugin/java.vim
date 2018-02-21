@@ -4,6 +4,11 @@ endif
 let b:MVGoodies_did_ftplugin = 1
 
 if &ft == 'java'
+
+    " Command Declarations
+    command! -buffer JavaBreakString
+                \ :call append(line("."),java#format#break_string(getline("."))) | delete
+
     if executable('git')
         call MyVimGoodies#util#vimmap('nmap <buffer>'
                     \ ,'<leader>G','<Plug>MVGGitDiffThisExtDiff')
