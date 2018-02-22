@@ -1,4 +1,10 @@
+function! g:IncrementVariable(var)
+    exe "let ".a:var." = ".a:var." + 1"
+    exe "let to_return = ".a:var
+    return to_return
+endfunction
 " Swap | File changes outside
+
 
 " https://github.com/neovim/neovim/issues/2127
 augroup AutoSwap
@@ -16,7 +22,7 @@ endfunction
 autocmd CursorHold,BufWritePost,BufReadPost,BufLeave *
   \ if isdirectory(expand("<amatch>:h")) | let &swapfile = &modified | endif
 
-if has("gui_running")
+if !has("nvim")
     finish
 endif
 
@@ -30,9 +36,3 @@ augroup Checktime
                     \ sil! exe "checktime"
     endif
 augroup END
-
-function! g:IncrementVariable(var)
-    exe "let ".a:var." = ".a:var." + 1"
-    exe "let to_return = ".a:var
-    return to_return
-endfunction
