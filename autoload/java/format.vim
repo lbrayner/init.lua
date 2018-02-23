@@ -42,7 +42,12 @@ function! s:BreakString(code,blength)
         return [a:code]
     endif
     let above = strpart(a:code,0,a:blength)
-    let below = strpart(a:code,a:blength)
+    let break_idx = strridx(above," ")
+    if break_idx < 0
+        let break_idx = a:blength
+    endif
+    let above = strpart(above,0,break_idx)
+    let below = strpart(a:code,break_idx)
     if above !~ '[^\\]\(\\\\\)\+$' && below =~ '^"'
         let above = strpart(above,0,strlen(above)-1)
         let below = '\' . below
