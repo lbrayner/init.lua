@@ -8,7 +8,7 @@ if &ft == 'java'
     " Command Declarations
     command! -buffer JavaBreakString
                 \ :call append(line("."),java#format#break_string(getline("."))) | delete
-    command! -range=% JavaStringify
+    command! -range JavaStringify
                 \ <line1>,<line2>call java#format#stringify()
 
     if executable('git')
