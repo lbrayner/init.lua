@@ -48,3 +48,17 @@ function! MyVimGoodies#TabGoodies#GoToLastTab()
     endif
     exe "tabn " . g:MyVimGoodies#TabGoodies#lasttab
 endfunction
+
+" https://superuser.com/a/555047
+function! MyVimGoodies#TabGoodies#TabCloseRight(bang)
+    let currrentTab = tabpagenr()
+    while currrentTab < tabpagenr('$')
+        exe 'tabclose' . a:bang . ' ' . (currrentTab + 1)
+    endwhile
+endfunction
+
+function! MyVimGoodies#TabGoodies#TabCloseLeft(bang)
+    while tabpagenr() > 1
+        exe 'tabclose' . a:bang . ' 1'
+    endwhile
+endfunction
