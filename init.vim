@@ -202,7 +202,7 @@ augroup END
 
 augroup InferCaseGroup
     autocmd!
-    autocmd FileType gitcommit,text,svn setlocal ignorecase infercase
+    autocmd FileType gitcommit,text,svn,mail setlocal ignorecase infercase
 augroup END
 
 "show existing tab with 4 spaces width
