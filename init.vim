@@ -305,6 +305,8 @@ endif
 
 " Eclim
 
+let g:EclimLogLevel = 'info'
+
 let g:EclimHighlightError = "Error"
 let g:EclimHighlightWarning = "Ignore"
 
