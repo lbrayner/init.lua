@@ -349,7 +349,7 @@ let g:ctrlp_clear_cache_on_exit = 0
 nnoremap <silent> <F5> :CtrlPBuffer<cr>
 
 " vim-rzip
-let g:zipPlugin_extra_ext = '*.odt'
+let g:rzipPlugin_extra_ext = '*.odt'
 
 " solarized
 
