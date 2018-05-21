@@ -226,8 +226,8 @@ command! CopyPath :let @*=expand('%') | let @+=@* | let @"=@*
 command! CopyName :let @*=expand('%:t') | let @+=@* | let @"=@*
 
 augroup RelativeNumberAutoGroup
-    autocmd InsertEnter * :set norelativenumber
-    autocmd InsertLeave * :set relativenumber
+    autocmd InsertEnter * if &number | :set norelativenumber | endif
+    autocmd InsertLeave * if &number | :set relativenumber | endif
 augroup END
 
 if has("nvim")
