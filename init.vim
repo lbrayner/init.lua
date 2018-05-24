@@ -34,6 +34,7 @@ set incsearch
 set nojoinspaces
 set ignorecase
 set smartcase
+set noruler
 
 let s:ssh_client = 0
 
