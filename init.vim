@@ -178,9 +178,20 @@ nnoremap <silent> <leader>cr :JumpToNextMergeConflictRight<cr>
 nnoremap <silent> <leader>cm :JumpToNextMergeConflictMiddle<cr>
 nnoremap <silent> <leader>cl :JumpToNextMergeConflictLeft<cr>
 
+" buffer aesthetics
+
+function! s:Aesthetics()
+    if &ft =~ "netrw"
+        return
+    endif
+    if len(line("$"))>3
+        setlocal nonumber
+    endif
+endfun
+
 augroup AestheticsAutoGroup
     autocmd!
-    autocmd BufEnter * if len(line("$"))>3 | setlocal nonumber
+    autocmd BufEnter * call s:Aesthetics()
 augroup END
 
 " search / pattern
