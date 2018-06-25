@@ -178,6 +178,11 @@ nnoremap <silent> <leader>cr :JumpToNextMergeConflictRight<cr>
 nnoremap <silent> <leader>cm :JumpToNextMergeConflictMiddle<cr>
 nnoremap <silent> <leader>cl :JumpToNextMergeConflictLeft<cr>
 
+augroup AestheticsAutoGroup
+    autocmd!
+    autocmd BufEnter * if len(line("$"))>3 | setlocal nonumber
+augroup END
+
 " search / pattern
 
 " force case sensitivity for *-search
