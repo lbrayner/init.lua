@@ -111,7 +111,7 @@ nnoremap <silent> <Esc><Esc> <Esc>:on<CR>
 
 nnoremap <silent> <f2> :set invhlsearch hlsearch?<cr>
 
-vnoremap <silent> <leader>* y:exec 'let @/="\\V" . @"'<cr>
+vnoremap <silent> <leader>* y:let @/="\\V" . escape(@",'\')<cr>
 
 vnoremap <C-H> <esc><C-W>h
 vnoremap <C-J> <esc><C-W>j
