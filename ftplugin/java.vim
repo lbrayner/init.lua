@@ -1,7 +1,7 @@
-if exists("b:MVGoodies_did_ftplugin")
+if exists("b:my_did_ftplugin")
     finish
 endif
-let b:MVGoodies_did_ftplugin = 1
+let b:my_did_ftplugin = 1
 
 if &ft == 'java'
 
