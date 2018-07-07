@@ -45,7 +45,8 @@ function! s:AssembleLines(quote,cat,prefix,suffix,lines)
     call s:AddQuotes(a:quote,a:lines)
     let lines = a:lines[0:0] + s:AddCatSigns(a:cat,a:lines[1:])
     let lines = lines[0:0] + s:Indent(lines[1:]
-            \,strlen(substitute(a:prefix,"\t",s:ShiftSpaces(),"g"))-1)
+            \,strlen(substitute(a:prefix,"\t"
+                \,s:ShiftSpaces(),"g"))-strlen(a:cat))
     let lines[0] = a:prefix . lines[0]
     let lines[len(lines)-1] = lines[len(lines)-1] . a:suffix
     return lines
