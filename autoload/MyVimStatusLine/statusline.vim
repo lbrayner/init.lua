@@ -27,11 +27,20 @@ endfunction
 let s:status_line_tail = ' %2*%{&ft}%*'
                      \ . ' %3*%1.(%{MyVimStatusLine#statusline#DefaultReadOnlyFlag()}%)%*'
                      \ . ' %4.(%4*%{&fileformat}%*%)'
+
+let s:status_line_tail_column = s:status_line_tail
                      \ . ' :%2.c %4*%L%* %3.P'
                      \ . ' %4*%{&fileencoding}%*'
 
+let s:status_line_tail_line_column = s:status_line_tail
+                     \ . ' %l:%2.c %4*%L%* %3.P'
+                     \ . ' %4*%{&fileencoding}%*'
+
 function! MyVimStatusLine#statusline#GetStatusLineTail()
-    return s:status_line_tail
+    if &number
+        return s:status_line_tail_column
+    endif
+    return s:status_line_tail_line_column
 endfunction
 
 function! MyVimStatusLine#statusline#DefineModifiedStatusLine()
@@ -42,7 +51,9 @@ function! MyVimStatusLine#statusline#DefineModifiedStatusLine()
             \ . '%{expand("%:t")}'
             \ . '%{MyVimStatusLine#statusline#DefaultModifiedFlag()}%*%='
     endif
-    exec "let &l:statusline='".&l:statusline.s:status_line_tail."'"
+    exec "let &l:statusline='".&l:statusline
+                \.MyVimStatusLine#statusline#GetStatusLineTail()
+                \."'"
 endfunction
 
 function! MyVimStatusLine#statusline#StatusLineNoFocus()
@@ -66,5 +77,7 @@ function! MyVimStatusLine#statusline#DefineStatusLine()
             \ . '%{expand("%:t")}'
             \ . '%{MyVimStatusLine#statusline#DefaultModifiedFlag()}%='
     endif
-    exec "let &l:statusline='".&l:statusline.s:status_line_tail."'"
+    exec "let &l:statusline='".&l:statusline
+                \.MyVimStatusLine#statusline#GetStatusLineTail()
+                \."'"
 endfunction

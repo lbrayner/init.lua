@@ -191,7 +191,7 @@ endfun
 
 augroup AestheticsAutoGroup
     autocmd!
-    autocmd BufEnter * call s:Aesthetics()
+    autocmd BufRead * call s:Aesthetics()
 augroup END
 
 " search / pattern
