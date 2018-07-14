@@ -242,7 +242,7 @@ let s:mapping = {
 \ 'x255_Grey93': {'cterm': '255', 'gui': '#eeeeee'}
 \ }
 
-function! MyVimStatusLine#themes#getColor(color,vmode)
+function! statusline#themes#getColor(color,vmode)
     let modemap = s:mapping[a:color]
     return modemap[a:vmode]
 endfunction

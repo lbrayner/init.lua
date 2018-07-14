@@ -1,4 +1,4 @@
-function! MyVimStatusLine#statusline#DefaultReadOnlyFlag()
+function! statusline#statusline#DefaultReadOnlyFlag()
     if !&modifiable
         return '-'
     endif
@@ -8,13 +8,13 @@ function! MyVimStatusLine#statusline#DefaultReadOnlyFlag()
     return ''
 endfunction
 
-function! MyVimStatusLine#statusline#DefaultModifiedFlag()
+function! statusline#statusline#DefaultModifiedFlag()
     if ! exists("w:MVSL_modified")
         let w:MVSL_modified = 0
     endif
     if w:MVSL_modified != &modified
-        if exists("#MyVimStatusLineModifiedUserGroup#User")
-            doautocmd <nomodeline> MyVimStatusLineModifiedUserGroup User
+        if exists("#StatuslineModifiedUserGroup#User")
+            doautocmd <nomodeline> StatuslineModifiedUserGroup User
         endif
         let w:MVSL_modified = &modified
     endif
@@ -25,7 +25,7 @@ function! MyVimStatusLine#statusline#DefaultModifiedFlag()
 endfunction
 
 let s:status_line_tail = ' %2*%{&ft}%*'
-                     \ . ' %3*%1.(%{MyVimStatusLine#statusline#DefaultReadOnlyFlag()}%)%*'
+                     \ . ' %3*%1.(%{statusline#statusline#DefaultReadOnlyFlag()}%)%*'
                      \ . ' %4.(%4*%{&fileformat}%*%)'
 
 let s:status_line_tail_column = s:status_line_tail
@@ -36,27 +36,27 @@ let s:status_line_tail_line_column = s:status_line_tail
                      \ . ' %l:%2.c %4*%L%* %3.P'
                      \ . ' %4*%{&fileencoding}%*'
 
-function! MyVimStatusLine#statusline#GetStatusLineTail()
+function! statusline#statusline#GetStatusLineTail()
     if &number
         return s:status_line_tail_column
     endif
     return s:status_line_tail_line_column
 endfunction
 
-function! MyVimStatusLine#statusline#DefineModifiedStatusLine()
+function! statusline#statusline#DefineModifiedStatusLine()
     if exists("b:MVSL_custom_mod_leftline")
         exec "let &l:statusline='".b:MVSL_custom_mod_leftline."'"
     else
         let &l:statusline='%<%1*'
             \ . '%{expand("%:t")}'
-            \ . '%{MyVimStatusLine#statusline#DefaultModifiedFlag()}%*%='
+            \ . '%{statusline#statusline#DefaultModifiedFlag()}%*%='
     endif
     exec "let &l:statusline='".&l:statusline
-                \.MyVimStatusLine#statusline#GetStatusLineTail()
+                \.statusline#statusline#GetStatusLineTail()
                 \."'"
 endfunction
 
-function! MyVimStatusLine#statusline#StatusLineNoFocus()
+function! statusline#statusline#StatusLineNoFocus()
     let filename=expand("%")
     if len(filename) <= winwidth("%")
         return filename
@@ -65,19 +65,19 @@ function! MyVimStatusLine#statusline#StatusLineNoFocus()
     return trunc_fname_head.".../".expand("%:t")
 endfunction
 
-function! MyVimStatusLine#statusline#DefineStatusLineNoFocus()
-    let &l:statusline='%{MyVimStatusLine#statusline#StatusLineNoFocus()}'
+function! statusline#statusline#DefineStatusLineNoFocus()
+    let &l:statusline='%{statusline#statusline#StatusLineNoFocus()}'
 endfunction
 
-function! MyVimStatusLine#statusline#DefineStatusLine()
+function! statusline#statusline#DefineStatusLine()
     if exists("b:MVSL_custom_leftline")
         exec "let &l:statusline='".b:MVSL_custom_leftline."'"
     else
         let &l:statusline='%<'
             \ . '%{expand("%:t")}'
-            \ . '%{MyVimStatusLine#statusline#DefaultModifiedFlag()}%='
+            \ . '%{statusline#statusline#DefaultModifiedFlag()}%='
     endif
     exec "let &l:statusline='".&l:statusline
-                \.MyVimStatusLine#statusline#GetStatusLineTail()
+                \.statusline#statusline#GetStatusLineTail()
                 \."'"
 endfunction

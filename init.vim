@@ -420,9 +420,9 @@ augroup END
 " statusline
 
 if v:vim_did_enter
-    call MyVimStatusLine#initialize()
+    call statusline#initialize()
 else
-    au VimEnter * call MyVimStatusLine#initialize()
+    au VimEnter * call statusline#initialize()
 endif
 
 " LargeFile

@@ -1,23 +1,23 @@
-function! MyVimStatusLine#extensions#eclim#EclimAvailable()
+function! statusline#extensions#eclim#EclimAvailable()
     return eclim#EclimAvailable(0)
 endfunction
 
-function! MyVimStatusLine#extensions#eclim#CurrentProjectName()
-    let eclimAvailable = MyVimStatusLine#extensions#eclim#EclimAvailable()
+function! statusline#extensions#eclim#CurrentProjectName()
+    let eclimAvailable = statusline#extensions#eclim#EclimAvailable()
     if eclimAvailable
         return eclim#project#util#GetCurrentProjectName()
     endif
     return ""
 endfunction
 
-function! MyVimStatusLine#extensions#eclim#WarningFlag()
+function! statusline#extensions#eclim#WarningFlag()
     if ! exists("b:MVSL_warning_flag")
         return ""
     endif
     return b:MVSL_warning_flag
 endfunction
 
-function! MyVimStatusLine#extensions#eclim#LoadWarningFlag()
+function! statusline#extensions#eclim#LoadWarningFlag()
     let b:MVSL_warning_flag = s:GetWarningFlag()
 endfunction
 

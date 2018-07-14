@@ -1,4 +1,4 @@
-function! MyVimStatusLine#themes#default#getColorMapping()
+function! statusline#themes#default#getColorMapping()
     let colorMapping = {
         \ 'normal_bg': 'x233_Grey7',
         \ 'normal_fg': 'x069_CornflowerBlue',
@@ -32,7 +32,7 @@ function! MyVimStatusLine#themes#default#getColorMapping()
     return colorMapping
 endfunction
 
-function! MyVimStatusLine#themes#default#getTermAttrList()
+function! statusline#themes#default#getTermAttrList()
     let termAttrList = {
         \ 'statuslinenc': 'NONE',
         \ 'statusline_modified': 'NONE',
