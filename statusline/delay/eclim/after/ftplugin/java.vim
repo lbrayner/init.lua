@@ -14,14 +14,14 @@ if &ft == 'java'
                                 \ call statusline#extensions#eclim#LoadWarningFlag()
               augroup END
               let b:Statusline_custom_leftline = '%<%{expand("%:t:r")}'
-              \ . '%{statusline#statusline#DefaultModifiedFlag()}%='
+              \ . '%{statusline#DefaultModifiedFlag()}%='
               \ . ' %5*%.20{statusline#extensions#eclim#CurrentProjectName()}%*'
               \ . ' %3*%{statusline#extensions#eclim#WarningFlag()}'
               let b:Statusline_custom_mod_leftline = '%<%1*%{expand("%:t:r")}'
-              \ . '%{statusline#statusline#DefaultModifiedFlag()}%*%='
+              \ . '%{statusline#DefaultModifiedFlag()}%*%='
               \ . ' %5*%.20{statusline#extensions#eclim#CurrentProjectName()}%*'
               \ . ' %3*%{statusline#extensions#eclim#WarningFlag()}'
-              call statusline#statusline#DefineStatusLine()
+              call statusline#DefineStatusLine()
               " setting &l:path
               let &l:path=projectName.",".&path
           endif
