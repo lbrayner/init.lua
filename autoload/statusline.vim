@@ -9,14 +9,14 @@ function! statusline#DefaultReadOnlyFlag()
 endfunction
 
 function! statusline#DefaultModifiedFlag()
-    if ! exists("w:MVSL_modified")
-        let w:MVSL_modified = 0
+    if ! exists("w:Statusline_modified")
+        let w:Statusline_modified = 0
     endif
-    if w:MVSL_modified != &modified
+    if w:Statusline_modified != &modified
         if exists("#StatuslineModifiedUserGroup#User")
             doautocmd <nomodeline> StatuslineModifiedUserGroup User
         endif
-        let w:MVSL_modified = &modified
+        let w:Statusline_modified = &modified
     endif
     if &modified
         return '*'
@@ -44,8 +44,8 @@ function! statusline#GetStatusLineTail()
 endfunction
 
 function! statusline#DefineModifiedStatusLine()
-    if exists("b:MVSL_custom_mod_leftline")
-        exec "let &l:statusline='".b:MVSL_custom_mod_leftline."'"
+    if exists("b:Statusline_custom_mod_leftline")
+        exec "let &l:statusline='".b:Statusline_custom_mod_leftline."'"
     else
         let &l:statusline='%<%1*'
             \ . '%{expand("%:t")}'
@@ -70,8 +70,8 @@ function! statusline#DefineStatusLineNoFocus()
 endfunction
 
 function! statusline#DefineStatusLine()
-    if exists("b:MVSL_custom_leftline")
-        exec "let &l:statusline='".b:MVSL_custom_leftline."'"
+    if exists("b:Statusline_custom_leftline")
+        exec "let &l:statusline='".b:Statusline_custom_leftline."'"
     else
         let &l:statusline='%<'
             \ . '%{expand("%:t")}'

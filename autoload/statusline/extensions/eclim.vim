@@ -11,14 +11,14 @@ function! statusline#extensions#eclim#CurrentProjectName()
 endfunction
 
 function! statusline#extensions#eclim#WarningFlag()
-    if ! exists("b:MVSL_warning_flag")
+    if ! exists("b:Statusline_warning_flag")
         return ""
     endif
-    return b:MVSL_warning_flag
+    return b:Statusline_warning_flag
 endfunction
 
 function! statusline#extensions#eclim#LoadWarningFlag()
-    let b:MVSL_warning_flag = s:GetWarningFlag()
+    let b:Statusline_warning_flag = s:GetWarningFlag()
 endfunction
 
 function! s:GetWarningFlag()
