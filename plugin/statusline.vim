@@ -6,7 +6,7 @@ endif
 
 " (not so) dexteriously copied from eclim's startup script
 
-let delaydirrel = finddir('statusline.vim/delay/eclim', escape(&runtimepath, ' '))
+let delaydirrel = finddir('statusline/delay/eclim', escape(&runtimepath, ' '))
 
 let delaydir = substitute(fnamemodify(delaydirrel, ':p'), '\', '/', 'g')
 let delaydir = substitute(delaydir, '.$', '','')
