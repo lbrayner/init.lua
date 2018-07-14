@@ -38,7 +38,7 @@ augroup END
 
 augroup StatuslineWinLeaveGroup
     autocmd!
-    autocmd BufLeave * call statusline#statusline#DefineStatusLineNoFocus()
+    autocmd BufLeave * call statusline#DefineStatusLineNoFocus()
 augroup END
 
 noremap <Plug>HighlightStatusLineNC  :call statusline#HighlightStatusLineNC()<CR>

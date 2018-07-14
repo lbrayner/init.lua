@@ -6,5 +6,5 @@ augroup MVSL_FT_netrw
                 \ . '%4*%{fnamemodify(b:netrw_curdir, ":~:h")}%*'
                 \ . ' %3*%1.(%{statusline#extensions#netrw#cwdFlag()}%)%*'
     autocmd FileType netrw
-                \ call statusline#statusline#DefineStatusLine()
+                \ call statusline#DefineStatusLine()
 augroup END
