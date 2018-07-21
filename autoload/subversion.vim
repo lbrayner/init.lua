@@ -42,29 +42,29 @@ function! s:SVNDiff(filename,...)
     endtry
 endfunction
 
-function! SVNGoodies#SVNDiffCursor(...)
+function! subversion#SVNDiffCursor(...)
     let vargs = copy(a:000)
     let filename = expand("<cfile>")
     call call(function("s:SVNDiff"),insert(vargs,filename))
 endfunction
 
-function! SVNGoodies#SVNDiffThis(...)
+function! subversion#SVNDiffThis(...)
     let vargs = copy(a:000)
     let filename = expand("%")
     call call(function("s:SVNDiff"),insert(vargs,filename))
 endfunction
 
-function! SVNGoodies#SVNDiffContextual(...)
+function! subversion#SVNDiffContextual(...)
     let filename = expand("<cfile>")
     " echomsg filename
     let filename = util#escapeFileName(fnamemodify(filename, ':p'))
     " echomsg filename
     if filereadable(filename)
-        call SVNGoodies#SVNDiffCursor()
+        call subversion#SVNDiffCursor()
     else
         let filename = expand("%")
         let filename = util#escapeFileName(fnamemodify(filename, ':p'))
         " echomsg filename
-        call SVNGoodies#SVNDiffThis()
+        call subversion#SVNDiffThis()
     endif
 endfunction

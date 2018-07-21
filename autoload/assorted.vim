@@ -1,31 +1,31 @@
 " file under the cursor
 
-function! AssortedGoodies#CopyFileNameUnderCursor()
+function! assorted#CopyFileNameUnderCursor()
     silent exec ":let @\"=expand('<cfile>:t')"
     echomsg "Yanked file name."
 endfunction
 
-function! AssortedGoodies#CopyFileParentUnderCursor()
+function! assorted#CopyFileParentUnderCursor()
     silent exec ":let @\"=expand('<cfile>:h')"
     echomsg "Yanked file's parent name."
 endfunction
 
-function! AssortedGoodies#CopyFileFullPathUnderCursor()
+function! assorted#CopyFileFullPathUnderCursor()
     silent exec ":let @\"=expand('<cfile>:p')"
     echomsg "Yanked file's full path."
 endfunction
 
-function! AssortedGoodies#CopyFilePathUnderCursor()
+function! assorted#CopyFilePathUnderCursor()
     silent exec ":let @\"=expand('<cfile>')"
     echomsg "Yanked file path."
 endfunction
 
-function! AssortedGoodies#SetDictionaryLanguage(global,language)
-    if !exists("g:AssortedGoodies#dictionaries")
+function! assorted#SetDictionaryLanguage(global,language)
+    if !exists("g:assorted#dictionaries")
         echoe "No dictionaries defined."
         return
     endif
-    let dictionaries = g:AssortedGoodies#dictionaries
+    let dictionaries = g:assorted#dictionaries
     if a:global
         let &dictionary = dictionaries[a:language]
         return
@@ -34,7 +34,7 @@ function! AssortedGoodies#SetDictionaryLanguage(global,language)
     echo "Dictionary language set to '" . a:language . "'."
 endfunction
 
-function! AssortedGoodies#SourceVisualSelection() range
+function! assorted#SourceVisualSelection() range
     let line_start = a:firstline
     let line_end = a:lastline
     let offset = 0
@@ -44,7 +44,7 @@ function! AssortedGoodies#SourceVisualSelection() range
     echom "Sourced visual selection."
 endfunction
 
-function! AssortedGoodies#FilterVisualSelection() range
+function! assorted#FilterVisualSelection() range
     let line_start = a:firstline
     let line_end = a:lastline
     let offset = 0
@@ -60,7 +60,7 @@ function! AssortedGoodies#FilterVisualSelection() range
     call cursor(line_start,0)
 endfunction
 
-function! AssortedGoodies#RemoveTrailingSpaces() range
+function! assorted#RemoveTrailingSpaces() range
     silent exec "keepp ".a:firstline.",".a:lastline.'s/\s\+$//e'
 endfunction
 
@@ -72,14 +72,14 @@ function! s:NavigateXmlNthParent(n)
     exec "silent normal! \<esc>"
 endfunction
 
-function! AssortedGoodies#NavigateXmlDepth(depth)
+function! assorted#NavigateXmlDepth(depth)
     if a:depth < 0
         call s:NavigateXmlNthParent(-a:depth)
         return
     endif
 endfunction
 
-function! AssortedGoodies#HighlightOverLength()
+function! assorted#HighlightOverLength()
     if ! exists("s:OverLength")
         let s:OverLength = 90
     endif
@@ -97,14 +97,14 @@ function! AssortedGoodies#HighlightOverLength()
     let w:HighlightOverLengthFlag = ! w:HighlightOverLengthFlag
 endfunction
 
-function! AssortedGoodies#InsertModeUndoPoint()
+function! assorted#InsertModeUndoPoint()
     if mode() != "i"
         return
     endif
     call feedkeys("\<c-g>u")
 endfunction
 
-function! AssortedGoodies#FilterLine()
+function! assorted#FilterLine()
     let line = getline('.')
     let temp = tempname()
     exe 'sil! !'.escape(line,&shellxescape).' > '.temp.' 2>&1'

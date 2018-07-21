@@ -4,7 +4,7 @@
 " Show ]I and [I results in the quickfix window.
 " See :help include-search.
 
-function! SearchGoodies#Ilist_loadQFWindow(selection,search_pattern,output)
+function! search#Ilist_loadQFWindow(selection,search_pattern,output)
     let lines = split(a:output, '\n')
 
     " better safe than sorry
@@ -28,7 +28,7 @@ function! SearchGoodies#Ilist_loadQFWindow(selection,search_pattern,output)
     cwindow
 endfunction
 
-function! SearchGoodies#Ilist_getSearchPattern()
+function! search#Ilist_getSearchPattern()
     let old_reg = @v
     normal! gv"vy
     let search_pattern = substitute(escape(@v, '\/.*$^~[]'), '\\n', '\\n', 'g')
@@ -36,9 +36,9 @@ function! SearchGoodies#Ilist_getSearchPattern()
     return search_pattern
 endfunction
 
-function! SearchGoodies#VimGrep(selection,word,...)
+function! search#VimGrep(selection,word,...)
     if a:selection
-        let search_pattern = SearchGoodies#Ilist_getSearchPattern()
+        let search_pattern = search#Ilist_getSearchPattern()
     else
         let expand_exp = a:word ? "<cword>" : "<cWORD>"
         let search_pattern = expand(expand_exp)
@@ -55,7 +55,7 @@ function! SearchGoodies#VimGrep(selection,word,...)
     exec command.paths
 endfunction
 
-function! SearchGoodies#Ilist_qf(selection, start_at_cursor)
+function! search#Ilist_qf(selection, start_at_cursor)
 
     " we are working with visually selected text
     if a:selection
@@ -64,16 +64,16 @@ function! SearchGoodies#Ilist_qf(selection, start_at_cursor)
         if len(expand('%')) > 0
 
             " and we redirect the output of our command for later use
-            let search_pattern = SearchGoodies#Ilist_getSearchPattern()
+            let search_pattern = search#Ilist_getSearchPattern()
             redir => output
                 silent! execute (a:start_at_cursor ? '+,$' : '') . 'ilist /' . search_pattern
             redir END
 
-            call SearchGoodies#Ilist_loadQFWindow(selection,search_pattern,output)
+            call search#Ilist_loadQFWindow(selection,search_pattern,output)
 
         else
 
-            let search_pattern = SearchGoodies#Ilist_getSearchPattern()
+            let search_pattern = search#Ilist_getSearchPattern()
             " and we try to perform the search
             try
                 execute (a:start_at_cursor ? '+,$' : '') . 'ilist /' .  search_pattern . '<CR>:'
@@ -90,7 +90,7 @@ function! SearchGoodies#Ilist_qf(selection, start_at_cursor)
                 silent! execute 'normal! ' . (a:start_at_cursor ? ']' : '[') . "I"
             redir END
 
-            call SearchGoodies#Ilist_loadQFWindow(0,v:null,output)
+            call search#Ilist_loadQFWindow(0,v:null,output)
 
         else
 

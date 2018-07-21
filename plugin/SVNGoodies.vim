@@ -2,15 +2,15 @@ if !executable('svn')
   finish
 endif
 
-command! -nargs=* SVNDiffCursor call SVNGoodies#SVNDiffCursor(<f-args>)
-command! -nargs=* SVNDiffThis call SVNGoodies#SVNDiffThis(<f-args>)
-command! -nargs=0 SVNDiffContextual call SVNGoodies#SVNDiffContextual()
+command! -nargs=* SVNDiffCursor call subversion#SVNDiffCursor(<f-args>)
+command! -nargs=* SVNDiffThis call subversion#SVNDiffThis(<f-args>)
+command! -nargs=0 SVNDiffContextual call subversion#SVNDiffContextual()
 
 command! -nargs=* SVNLog !svn log -rHEAD:1 -l1 % <args>
 
-nnoremap <silent> <Plug>MVGSVNDiffCursor :call SVNGoodies#SVNDiffCursor()<CR>
-nnoremap <silent> <Plug>MVGSVNDiffThis :call SVNGoodies#SVNDiffThis()<CR>
+nnoremap <silent> <Plug>MVGSVNDiffCursor :call subversion#SVNDiffCursor()<CR>
+nnoremap <silent> <Plug>MVGSVNDiffThis :call subversion#SVNDiffThis()<CR>
 nnoremap <silent> <Plug>MVGSVNDiffThisIgnoreAllWS
-            \ :call SVNGoodies#SVNDiffThis("-x -w")<CR>
+            \ :call subversion#SVNDiffThis("-x -w")<CR>
 nnoremap <silent> <Plug>MVGSVNDiffContextual
-            \ :call SVNGoodies#SVNDiffContextual()<CR>
+            \ :call subversion#SVNDiffContextual()<CR>

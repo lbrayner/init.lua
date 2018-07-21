@@ -1,15 +1,15 @@
 augroup LastTabAutoGroup
     autocmd!
-    au TabLeave * let g:TabGoodies#lasttab = tabpagenr()
+    au TabLeave * let g:tab#lasttab = tabpagenr()
 augroup END
 
 function! s:DoTabEqualizeWindows()
-    call TabGoodies#TabDo("normal! \<c-w>=")
+    call tab#TabDo("normal! \<c-w>=")
 endfunction
 
 command! TabEqualizeWindows call s:DoTabEqualizeWindows()
-command! -bang TabCloseRight call TabGoodies#TabCloseRight('<bang>')
-command! -bang TabCloseLeft call TabGoodies#TabCloseLeft('<bang>')
+command! -bang TabCloseRight call tab#TabCloseRight('<bang>')
+command! -bang TabCloseLeft call tab#TabCloseLeft('<bang>')
 
 augroup TabActionsOnVimEnter
     autocmd!

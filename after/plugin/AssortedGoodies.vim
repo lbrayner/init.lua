@@ -1,13 +1,13 @@
 " file under the cursor
 
 call util#vimmap('nnoremap <silent>','<leader>fn'
-            \ ,':call AssortedGoodies#CopyFileNameUnderCursor()<cr>')
+            \ ,':call assorted#CopyFileNameUnderCursor()<cr>')
 call util#vimmap('nnoremap <silent>','<leader>fp'
-            \ ,':call AssortedGoodies#CopyFileParentUnderCursor()<cr>')
+            \ ,':call assorted#CopyFileParentUnderCursor()<cr>')
 call util#vimmap('nnoremap <silent>','<leader>ff'
-            \ ,':call AssortedGoodies#CopyFileFullPathUnderCursor()<cr>')
+            \ ,':call assorted#CopyFileFullPathUnderCursor()<cr>')
 call util#vimmap('nnoremap <silent>','<leader>fr'
-            \ ,':call AssortedGoodies#CopyFilePathUnderCursor()<cr>')
+            \ ,':call assorted#CopyFilePathUnderCursor()<cr>')
 
 "diff
 
@@ -16,23 +16,23 @@ call util#vimmap('nnoremap <silent>','<leader>do',':diffoff!<cr>')
 " other
 
 call util#vimmap('vnoremap <silent>','<leader><f3>'
-            \ ,':call AssortedGoodies#FilterVisualSelection()<cr>')
+            \ ,':call assorted#FilterVisualSelection()<cr>')
 
 call util#vimmap('vnoremap <silent>','<leader><f4>'
-            \ ,':call AssortedGoodies#SourceVisualSelection()<cr>')
+            \ ,':call assorted#SourceVisualSelection()<cr>')
 
 " XML
 
 call util#vimmap('nnoremap <silent>','[<'
-            \ ,':<c-u>call AssortedGoodies#NavigateXmlDepth(-v:count1)<cr>')
+            \ ,':<c-u>call assorted#NavigateXmlDepth(-v:count1)<cr>')
 
 " overlength
 
-nnoremap <silent> <leader><f2> :call AssortedGoodies#HighlightOverLength()<cr>
+nnoremap <silent> <leader><f2> :call assorted#HighlightOverLength()<cr>
 
 " idle
 
 augroup InsertModeUndoPoint
     autocmd!
-    autocmd CursorHoldI * call AssortedGoodies#InsertModeUndoPoint() 
+    autocmd CursorHoldI * call assorted#InsertModeUndoPoint() 
 augroup END
