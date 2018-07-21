@@ -1,7 +1,0 @@
-command! BufWipeNotLoaded call buffer#BufWipeNotLoaded()
-command! BufWipeTab call buffer#BufWipeTab()
-command! -nargs=1 BufWipe call buffer#BufWipe(<f-args>)
-command! -nargs=1 BufWipeForce call buffer#BufWipeForce(<f-args>)
-command! -nargs=1 BufWipeHidden call buffer#BufWipeHidden(<f-args>)
-command! BufWipeTabOnly call buffer#BufWipeTabOnly()
-command! -nargs=1 BufWipeFileType call buffer#BufWipeFileType(<f-args>)

@@ -1,8 +1,13 @@
-function! g:IncrementVariable(var)
-    exe "let ".a:var." = ".a:var." + 1"
-    exe "let to_return = ".a:var
-    return to_return
-endfunction
+command! BufWipeNotLoaded call buffer#BufWipeNotLoaded()
+command! BufWipeTab call buffer#BufWipeTab()
+command! -nargs=1 BufWipe call buffer#BufWipe(<f-args>)
+command! -nargs=1 BufWipeForce call buffer#BufWipeForce(<f-args>)
+command! -nargs=1 BufWipeHidden call buffer#BufWipeHidden(<f-args>)
+command! BufWipeTabOnly call buffer#BufWipeTabOnly()
+command! -nargs=1 BufWipeFileType call buffer#BufWipeFileType(<f-args>)
+
+call util#vimmap('nnoremap','<leader>T',':BufWipeTab<cr>')
+
 " Swap | File changes outside
 
 
@@ -21,10 +26,6 @@ function! s:AS_HandleSwapfile (filename, swapname)
 endfunction
 autocmd CursorHold,BufWritePost,BufReadPost,BufLeave *
   \ if isdirectory(expand("<amatch>:h")) | let &swapfile = &modified | endif
-
-if !has("nvim")
-    finish
-endif
 
 augroup Checktime
     au!
