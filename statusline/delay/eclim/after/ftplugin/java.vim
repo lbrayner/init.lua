@@ -4,8 +4,8 @@ endif
 let b:Statusline_did_ftplugin = 1
 
 if &ft == 'java'
-  if statusline#extensions#util#EclimLoaded()
-      if statusline#extensions#eclim#EclimAvailable()
+  if extensions#util#EclimLoaded()
+      if extensions#eclim#EclimAvailable()
           let projectName = eclim#project#util#GetCurrentProjectName()
           if projectName != ""
               augroup Statusline_BWP_java

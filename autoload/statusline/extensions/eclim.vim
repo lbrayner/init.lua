@@ -1,9 +1,5 @@
-function! statusline#extensions#eclim#EclimAvailable()
-    return eclim#EclimAvailable(0)
-endfunction
-
 function! statusline#extensions#eclim#CurrentProjectName()
-    let eclimAvailable = statusline#extensions#eclim#EclimAvailable()
+    let eclimAvailable = extensions#eclim#EclimAvailable()
     if eclimAvailable
         return eclim#project#util#GetCurrentProjectName()
     endif
