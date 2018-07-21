@@ -1,5 +1,5 @@
 " http://vim.wikia.com/wiki/Run_a_command_in_multiple_buffers
-function! MyVimGoodies#TabGoodies#TabDo(command)
+function! TabGoodies#TabDo(command)
   let currentTab=tabpagenr()
   execute 'tabdo ' . a:command
   execute 'tabn ' . currentTab
@@ -28,13 +28,13 @@ function! s:PrintTabs(currentTab)
     endfor
 endfunction
 
-function! MyVimGoodies#TabGoodies#GoToTab()
+function! TabGoodies#GoToTab()
     let s:a_tab_nr=tabpagenr()
     echo "Current tabs:"
     " https://github.com/chrisbra/SaveSigns.vim
     " consider saving and restoring the signs
     sign unplace *
-    noautocmd call MyVimGoodies#TabGoodies#TabDo("call s:PrintTabs(s:a_tab_nr)")
+    noautocmd call TabGoodies#TabDo("call s:PrintTabs(s:a_tab_nr)")
     let tab = input("Go to tab (" . tabpagenr() . "): ")
     if tab == ""
         return
@@ -42,22 +42,22 @@ function! MyVimGoodies#TabGoodies#GoToTab()
     exe "tabn " . tab
 endfunction
 
-function! MyVimGoodies#TabGoodies#GoToLastTab()
-    if ! exists("g:MyVimGoodies#TabGoodies#lasttab")
-        let g:MyVimGoodies#TabGoodies#lasttab = tabpagenr()
+function! TabGoodies#GoToLastTab()
+    if ! exists("g:TabGoodies#lasttab")
+        let g:TabGoodies#lasttab = tabpagenr()
     endif
-    exe "tabn " . g:MyVimGoodies#TabGoodies#lasttab
+    exe "tabn " . g:TabGoodies#lasttab
 endfunction
 
 " https://superuser.com/a/555047
-function! MyVimGoodies#TabGoodies#TabCloseRight(bang)
+function! TabGoodies#TabCloseRight(bang)
     let currrentTab = tabpagenr()
     while currrentTab < tabpagenr('$')
         exe 'tabclose' . a:bang . ' ' . (currrentTab + 1)
     endwhile
 endfunction
 
-function! MyVimGoodies#TabGoodies#TabCloseLeft(bang)
+function! TabGoodies#TabCloseLeft(bang)
     while tabpagenr() > 1
         exe 'tabclose' . a:bang . ' 1'
     endwhile

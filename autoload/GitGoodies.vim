@@ -1,6 +1,6 @@
 let s:DiffTabMessage = 'q to close this tab.'
 
-function! MyVimGoodies#GitGoodies#GitGetProjectRoot()
+function! GitGoodies#GitGetProjectRoot()
     let gitcommand = "git rev-parse --show-toplevel"
     let stdout = systemlist(gitcommand)
     if v:shell_error
@@ -10,14 +10,14 @@ function! MyVimGoodies#GitGoodies#GitGetProjectRoot()
     return stdout[0]
 endfunction
 
-function! MyVimGoodies#GitGoodies#GitStatus(...)
+function! GitGoodies#GitStatus(...)
     try
-        let projectroot = MyVimGoodies#GitGoodies#GitGetProjectRoot()
+        let projectroot = GitGoodies#GitGetProjectRoot()
     catch /^fatal/
         echoerr v:exception
         return
     endtry
-    let tempfile = MyVimGoodies#util#escapeFileName(tempname())
+    let tempfile = util#escapeFileName(tempname())
     let gitcommand = "git status"
     if a:0 > 0
         for extrarg in a:000
@@ -53,14 +53,14 @@ function! MyVimGoodies#GitGoodies#GitStatus(...)
     endtry
 endfunction
 
-function! MyVimGoodies#GitGoodies#GitDiff(filename,...)
+function! GitGoodies#GitDiff(filename,...)
     try
-        call MyVimGoodies#GitGoodies#GitGetProjectRoot()
+        call GitGoodies#GitGetProjectRoot()
     catch /^fatal/
         echoerr v:exception
         return
     endtry
-    let tempfile = MyVimGoodies#util#escapeFileName(tempname())
+    let tempfile = util#escapeFileName(tempname())
     let gitcommand = "git -c core.fileMode=false diff -R --no-ext-diff"
     if a:0 > 0
         for extrarg in a:000
@@ -96,29 +96,29 @@ function! MyVimGoodies#GitGoodies#GitDiff(filename,...)
     endtry
 endfunction
 
-function! MyVimGoodies#GitGoodies#GitDiffCursor(...)
+function! GitGoodies#GitDiffCursor(...)
     let vargs = copy(a:000)
     let filename = expand("<cfile>")
-    call call(function("MyVimGoodies#GitGoodies#GitDiff"),insert(vargs,filename))
+    call call(function("GitGoodies#GitDiff"),insert(vargs,filename))
 endfunction
 
-function! MyVimGoodies#GitGoodies#GitDiffThis(...)
+function! GitGoodies#GitDiffThis(...)
     let vargs = copy(a:000)
     let filename = expand("%")
-    call call(function("MyVimGoodies#GitGoodies#GitDiff"),insert(vargs,filename))
+    call call(function("GitGoodies#GitDiff"),insert(vargs,filename))
 endfunction
 
-function! MyVimGoodies#GitGoodies#GitDiffContextual(...)
+function! GitGoodies#GitDiffContextual(...)
     let filename = expand("<cfile>")
     " echomsg filename
-    let filename = MyVimGoodies#util#escapeFileName(fnamemodify(filename, ':p'))
+    let filename = util#escapeFileName(fnamemodify(filename, ':p'))
     " echomsg filename
     if filereadable(filename)
-        call MyVimGoodies#GitGoodies#GitDiffCursor(filename)
+        call GitGoodies#GitDiffCursor(filename)
     else
         let filename = expand("%")
-        let filename = MyVimGoodies#util#escapeFileName(fnamemodify(filename, ':p'))
+        let filename = util#escapeFileName(fnamemodify(filename, ':p'))
         " echomsg filename
-        call MyVimGoodies#GitGoodies#GitDiffThis()
+        call GitGoodies#GitDiffThis()
     endif
 endfunction

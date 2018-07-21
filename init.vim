@@ -317,7 +317,7 @@ endif
 " Plugin customisation
 
 if s:has_windows
-    nnoremap <silent> <leader><F3> :call MyVimGoodies#AssortedGoodies#FilterLine()<cr>
+    nnoremap <silent> <leader><F3> :call AssortedGoodies#FilterLine()<cr>
 endif
 
 " Eclim

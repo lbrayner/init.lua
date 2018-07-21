@@ -12,45 +12,45 @@ if &ft == 'java'
                 \ <line1>,<line2>call java#format#stringify()
 
     if executable('git')
-        call MyVimGoodies#util#vimmap('nmap <buffer>'
+        call util#vimmap('nmap <buffer>'
                     \ ,'<leader>G','<Plug>MVGGitDiffThisExtDiff')
     endif
     if executable('svn')
-        call MyVimGoodies#util#vimmap('nmap <buffer>'
+        call util#vimmap('nmap <buffer>'
             \ ,'<leader>D'
             \ ,'<Plug>MVGSVNDiffThisIgnoreAllWS')
     endif
-    if MyVimGoodies#extensions#util#EclimLoaded()
-        if MyVimGoodies#extensions#eclim#EclimAvailable()
+    if extensions#util#EclimLoaded()
+        if extensions#eclim#EclimAvailable()
             let projectName = eclim#project#util#GetCurrentProjectName()
             if projectName != ""
                 let s:eclim = 1
-                call MyVimGoodies#util#vimmap('nnoremap <buffer>',
+                call util#vimmap('nnoremap <buffer>',
                   \   '<leader>P',':let @"=eclim#java#util#GetPackage()<cr>'
                   \ . ':let @+=@" <cr> :let @*=@" <cr> :echo @"<cr>')
-                call MyVimGoodies#util#vimmap('nnoremap <buffer> <silent>',
+                call util#vimmap('nnoremap <buffer> <silent>',
                   \   '<leader>C'
-                  \ ,':call MyVimGoodies#extensions#eclim#EclimGoToClassDeclarationLine()<cr>')
-                call MyVimGoodies#util#vimmap('nnoremap <buffer>'
+                  \ ,':call extensions#eclim#EclimGoToClassDeclarationLine()<cr>')
+                call util#vimmap('nnoremap <buffer>'
                   \,'<leader>F'
                   \,':let @"=eclim#java#util#GetPackage().".".expand("%:t:r")<cr>'
                   \ . ':let @+=@" <cr> :let @*=@" <cr> :echo @"<cr>')
-                call MyVimGoodies#util#vimmap
+                call util#vimmap
                             \('nnoremap <buffer>','<leader>js',':JavaSearch<space>')
-                call MyVimGoodies#util#vimmap
+                call util#vimmap
                             \('nnoremap <buffer>','<leader>jr',':JavaRename<space>')
-                call MyVimGoodies#util#vimmap
+                call util#vimmap
                             \('nnoremap <buffer>','<leader>ji',':JavaImport<cr>')
-                call MyVimGoodies#util#vimmap
+                call util#vimmap
                             \('nnoremap <buffer>','<leader>jn',':JavaNew<space>')
-                call MyVimGoodies#util#vimmap
+                call util#vimmap
                             \('nnoremap <buffer>','<leader>jg',':JavaGet')
-                call MyVimGoodies#util#vimmap
+                call util#vimmap
                             \('nnoremap <buffer>','<leader>jc',':JavaConstructor<cr>')
                 vnoremap <buffer> <leader>jc :JavaConstructor<cr>
-                call MyVimGoodies#util#vimmap
+                call util#vimmap
                             \('nnoremap <buffer>','<leader>jo',':JavaImportOrganize<cr>')
-                call MyVimGoodies#util#vimmap
+                call util#vimmap
                             \('nnoremap <buffer>','<leader>jm',':JavaMove<space>')
                 if executable("ctags")
                     augroup CtagsJava
@@ -59,7 +59,7 @@ if &ft == 'java'
                     augroup END
                 endif
                 if v:vim_did_enter
-                     call MyVimGoodies#extensions#eclim#EclimGoToClassDeclarationLine()
+                     call extensions#eclim#EclimGoToClassDeclarationLine()
                 endif
             endif
         endif

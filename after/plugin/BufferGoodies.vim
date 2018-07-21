@@ -1,1 +1,1 @@
-call MyVimGoodies#util#vimmap('nnoremap','<leader>T',':BufWipeTab<cr>')
+call util#vimmap('nnoremap','<leader>T',':BufWipeTab<cr>')

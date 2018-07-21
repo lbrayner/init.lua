@@ -14,7 +14,7 @@ function! s:SVNDiff(filename,...)
             let svncommand = svncommand . " " . extrarg
         endfor
     endif
-    let tempfile = MyVimGoodies#util#escapeFileName(tempname())
+    let tempfile = util#escapeFileName(tempname())
     try
         let stdout = systemlist(svncommand)
         if v:shell_error
@@ -42,29 +42,29 @@ function! s:SVNDiff(filename,...)
     endtry
 endfunction
 
-function! MyVimGoodies#SVNGoodies#SVNDiffCursor(...)
+function! SVNGoodies#SVNDiffCursor(...)
     let vargs = copy(a:000)
     let filename = expand("<cfile>")
     call call(function("s:SVNDiff"),insert(vargs,filename))
 endfunction
 
-function! MyVimGoodies#SVNGoodies#SVNDiffThis(...)
+function! SVNGoodies#SVNDiffThis(...)
     let vargs = copy(a:000)
     let filename = expand("%")
     call call(function("s:SVNDiff"),insert(vargs,filename))
 endfunction
 
-function! MyVimGoodies#SVNGoodies#SVNDiffContextual(...)
+function! SVNGoodies#SVNDiffContextual(...)
     let filename = expand("<cfile>")
     " echomsg filename
-    let filename = MyVimGoodies#util#escapeFileName(fnamemodify(filename, ':p'))
+    let filename = util#escapeFileName(fnamemodify(filename, ':p'))
     " echomsg filename
     if filereadable(filename)
-        call MyVimGoodies#SVNGoodies#SVNDiffCursor()
+        call SVNGoodies#SVNDiffCursor()
     else
         let filename = expand("%")
-        let filename = MyVimGoodies#util#escapeFileName(fnamemodify(filename, ':p'))
+        let filename = util#escapeFileName(fnamemodify(filename, ':p'))
         " echomsg filename
-        call MyVimGoodies#SVNGoodies#SVNDiffThis()
+        call SVNGoodies#SVNDiffThis()
     endif
 endfunction

@@ -33,7 +33,7 @@ function! s:LoopBuffers(predicate,command)
     call s:MessageBuffers(delete_count)
 endfunction
 
-function! MyVimGoodies#BufferGoodies#BufWipeTab()
+function! BufferGoodies#BufWipeTab()
     let tab_list = tabpagebuflist()
     let s:tab_dic = {}
     for i in tab_list
@@ -45,7 +45,7 @@ endfunction
 let s:wipe_pattern = ''
 let s:filetype = ''
 
-function! MyVimGoodies#BufferGoodies#BufWipeFileType(...)
+function! BufferGoodies#BufWipeFileType(...)
     if a:0 > 0
         let s:filetype = a:1
     else
@@ -54,7 +54,7 @@ function! MyVimGoodies#BufferGoodies#BufWipeFileType(...)
     call s:WipeBuffers(0,'getbufvar(n,"&ft") == s:filetype')
 endfunction
 
-function! MyVimGoodies#BufferGoodies#BufWipe(...)
+function! BufferGoodies#BufWipe(...)
     if a:0 > 0
         let s:wipe_pattern = a:1
     else
@@ -63,7 +63,7 @@ function! MyVimGoodies#BufferGoodies#BufWipe(...)
     call s:WipeBuffers('buflisted(n) && bufname(n) =~? s:wipe_pattern')
 endfunction
 
-function! MyVimGoodies#BufferGoodies#BufWipeHidden(...)
+function! BufferGoodies#BufWipeHidden(...)
     if a:0 > 0
         let s:wipe_pattern = a:1
     else
@@ -72,13 +72,13 @@ function! MyVimGoodies#BufferGoodies#BufWipeHidden(...)
     call s:WipeBuffers(0,'bufname(n) =~? s:wipe_pattern')
 endfunction
 
-function! MyVimGoodies#BufferGoodies#BufWipeNotLoaded()
+function! BufferGoodies#BufWipeNotLoaded()
     call s:WipeBuffers('buflisted(n) && !bufloaded(n)')
 endfunction
 
 let s:tab_dic = {}
 
-function! MyVimGoodies#BufferGoodies#BufWipeTabOnly()
+function! BufferGoodies#BufWipeTabOnly()
     let tab_list = tabpagebuflist()
     let s:tab_dic = {}
     for i in tab_list
@@ -87,7 +87,7 @@ function! MyVimGoodies#BufferGoodies#BufWipeTabOnly()
     call s:WipeBuffers('buflisted(n) && !has_key(s:tab_dic,n)')
 endfunction
 
-function! MyVimGoodies#BufferGoodies#BufWipeForce(...)
+function! BufferGoodies#BufWipeForce(...)
     if a:0 > 0
         let s:wipe_pattern = a:1
     else
