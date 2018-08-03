@@ -282,7 +282,7 @@ if has("nvim")
 endif
 
 if $MYVIMRC == ''
-    let s:vim_dir = expand("%:p:h")
+    let s:vim_dir = expand('<sfile>:p:h')
 endif
 
 if has("path_extra")
@@ -302,15 +302,12 @@ endif
 
 " packages
 
-if has('packages')
-    let &packpath.=",".s:vim_dir."/pack/bundle"
-    if !has("nvim")
-        packadd matchit
-    endif
-endif
-
 if !has('packages')
     finish
+endif
+
+if !has("nvim")
+    packadd matchit
 endif
 
 " Plugin customisation
