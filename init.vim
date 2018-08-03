@@ -300,6 +300,13 @@ if !has("nvim")
     let &dir=s:swap_dir."//"
 endif
 
+" sourcing a init.local.vim if it exists
+
+let s:init_local = fnamemodify(s:vim_dir . "/init.local.vim",":p")
+if filereadable(s:init_local)
+  execute 'source ' . s:init_local
+endif
+
 " packages
 
 if !has('packages')
@@ -426,10 +433,3 @@ function! DBextPostResult(...)
     " removing an undesirable mapping
     unmap <buffer> q
 endfunction
-
-" sourcing a init.local.vim if it exists
-
-let s:init_local = fnamemodify(s:vim_dir . "/init.local.vim",":p")
-if filereadable(s:init_local)
-  execute 'source ' . s:init_local
-endif
