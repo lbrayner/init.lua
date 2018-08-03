@@ -30,6 +30,8 @@ call util#vimmap('vnoremap <silent>','<leader><f3>'
 call util#vimmap('vnoremap <silent>','<leader><f4>'
             \ ,':call assorted#SourceVisualSelection()<cr>')
 
+vnoremap <silent> <leader>* <esc>:call assorted#SearchLastVisualSelectionNoMagic()<cr>
+
 " XML
 
 call util#vimmap('nnoremap <silent>','[<'

@@ -44,6 +44,13 @@ function! assorted#SourceVisualSelection() range
     echom "Sourced visual selection."
 endfunction
 
+function! assorted#SearchLastVisualSelectionNoMagic()
+    normal! gvy
+    let pattern = escape(@",'\/')
+    exe "normal! /\\V" . pattern
+    let @/="\\V" . pattern
+endfunction
+
 function! assorted#FilterVisualSelection() range
     let line_start = a:firstline
     let line_end = a:lastline
