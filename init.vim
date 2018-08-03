@@ -432,7 +432,7 @@ endfunction
 
 " sourcing a init.local.vim if it exists
 
-let s:init_local = s:vim_dir . "/init.local.vim"
+let s:init_local = fnamemodify(s:vim_dir . "/init.local.vim",":p")
 if filereadable(s:init_local)
   execute 'source ' . s:init_local
 endif
