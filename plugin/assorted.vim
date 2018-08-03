@@ -32,6 +32,10 @@ call util#vimmap('vnoremap <silent>','<leader><f4>'
 
 vnoremap <silent> <leader>* <esc>:call assorted#SearchLastVisualSelectionNoMagic()<cr>
 
+if has("win32")
+    nnoremap <silent> <leader><F3> :call assorted#FilterLine()<cr>
+endif
+
 " XML
 
 call util#vimmap('nnoremap <silent>','[<'

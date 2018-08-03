@@ -1,8 +1,3 @@
-let s:has_windows = 0
-if has('win32') || has('win64')
-    let s:has_windows = 1
-endif
-
 set enc=utf-8
 
 set nocompatible
@@ -27,7 +22,7 @@ set nostartofline
 set fileformats=unix,dos
 set fileformat=unix
 set backspace=indent,eol,start
-if s:has_windows
+if has("win32")
     set shellslash
 endif
 set incsearch
@@ -35,61 +30,6 @@ set nojoinspaces
 set ignorecase
 set smartcase
 set noruler
-
-let s:ssh_client = 0
-
-if $SSH_CLIENT != ''
-    let s:ssh_client = 1
-endif
-
-if has("nvim")
-    if s:ssh_client
-        set mouse=
-    else
-        set mouse=a
-    endif
-endif
-
-let s:vim_dir = $HOME . "/.vim"
-
-if s:has_windows
-    let s:vim_dir = $HOME . "/vimfiles"
-endif
-
-if has("path_extra")
-    set fileignorecase
-endif
-
-if has('packages')
-    if has('unix')
-        set packpath+=~/.vim/pack/bundle
-    endif
-    if s:has_windows
-        set packpath+=$HOME/vimfiles/pack/bundle
-    endif
-    if !has("nvim")
-        packadd matchit
-    endif
-endif
-
-if $SHELL =~# 'sh'
-    set noshelltemp
-endif
-
-if s:has_windows
-    set grepprg=grep.exe
-endif
-
-" setting dir
-
-if !has("nvim")
-    let s:swap_dir = s:vim_dir."/swap"
-    exe "let s:has_swap_dir = isdirectory('".s:swap_dir."')"
-    if !s:has_swap_dir
-        call mkdir(s:swap_dir)
-    endif
-    let &dir=s:swap_dir."//"
-endif
 
 nmap ç :
 vmap ç :
@@ -308,15 +248,72 @@ cnoremap <c-k> <c-f>D<c-c><c-c>:<up>
 inoremap <c-s> <c-k>
 cnoremap <c-s> <c-k>
 
+let s:ssh_client = 0
+
+if $SSH_CLIENT != ''
+    let s:ssh_client = 1
+endif
+
+set mouse=a
+
+if s:ssh_client
+    set mouse=
+endif
+
+if $SHELL =~# 'sh'
+    set noshelltemp
+endif
+
+if $XDG_CONFIG_HOME == ''
+    let $XDG_CONFIG_HOME = '~/.config'
+    if has("win32")
+        let $XDG_CONFIG_HOME = '~/AppData/Local'
+    endif
+endif
+
+let s:vim_dir = $HOME . "/.vim"
+
+if has("win32")
+    let s:vim_dir = $HOME . "/vimfiles"
+endif
+
+if has("nvim")
+    let s:vim_dir = $XDG_CONFIG_HOME . "/nvim"
+endif
+
+if $MYVIMRC == ''
+    let s:vim_dir = expand("%:p:h")
+endif
+
+if has("path_extra")
+    set fileignorecase
+endif
+
+" setting dir
+
+if !has("nvim")
+    let s:swap_dir = s:vim_dir."/swap"
+    exe "let s:has_swap_dir = isdirectory('".s:swap_dir."')"
+    if !s:has_swap_dir
+        call mkdir(s:swap_dir)
+    endif
+    let &dir=s:swap_dir."//"
+endif
+
+" packages
+
+if has('packages')
+    let &packpath.=",".s:vim_dir."/pack/bundle"
+    if !has("nvim")
+        packadd matchit
+    endif
+endif
+
 if !has('packages')
     finish
 endif
 
 " Plugin customisation
-
-if s:has_windows
-    nnoremap <silent> <leader><F3> :call assorted#FilterLine()<cr>
-endif
 
 " Eclim
 
