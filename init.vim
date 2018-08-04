@@ -318,18 +318,6 @@ endif
 
 let g:vim_did_enter = 1
 
-" packages
-
-if !has('packages')
-    finish
-endif
-
-if !has("nvim")
-    packadd matchit
-endif
-
-" Plugin customisation
-
 " Eclim
 
 let g:EclimLogLevel = 'info'
@@ -348,6 +336,18 @@ augroup END
 
 let g:EclimMakeLCD = 1
 let g:EclimJavaSearchSingleResult = 'edit'
+
+" packages
+
+if !has('packages')
+    finish
+endif
+
+if !has("nvim")
+    packadd matchit
+endif
+
+" Package customisation
 
 " CamelCase
 
