@@ -307,6 +307,17 @@ if filereadable(s:init_local)
   execute 'source ' . s:init_local
 endif
 
+" statusline
+
+" v:vim_did_enter not available before 8.0
+if exists("g:vim_did_enter")
+    call statusline#initialize()
+else
+    au VimEnter * call statusline#initialize()
+endif
+
+let g:vim_did_enter = 1
+
 " packages
 
 if !has('packages')
@@ -415,14 +426,6 @@ augroup GlaiveInstallGroup
     autocmd!
     autocmd VimEnter * call glaive#Install()
 augroup END
-
-" statusline
-
-if v:vim_did_enter
-    call statusline#initialize()
-else
-    au VimEnter * call statusline#initialize()
-endif
 
 " LargeFile
 let g:LargeFile=1.5
