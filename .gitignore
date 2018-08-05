@@ -3,6 +3,7 @@
 /bundle
 /doc/tags
 /eclim
+/ginit.local.vim
 /init.local.vim
 /plugin/eclim.vim
 /swap

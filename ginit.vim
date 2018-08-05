@@ -1,14 +1,3 @@
-let s:has_windows = 0
-if has('win32') || has('win64')
-    let s:has_windows = 1
-endif
-
-set gfn=Inconsolata\ for\ Powerline\ Medium\ 12
-
-if s:has_windows
-    set gfn=Consolas:h10.5
-endif
-
 set guicursor+=a:blinkon0
 set guioptions-=m  "remove menu bar
 set guioptions-=T  "remove toolbar
