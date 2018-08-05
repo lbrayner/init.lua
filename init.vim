@@ -22,6 +22,13 @@ if $MYVIMRC == ''
     let s:vim_dir = expand('<sfile>:p:h')
 endif
 
+" are we using ssh?
+let s:ssh_client = 0
+
+if $SSH_CLIENT != ''
+    let s:ssh_client = 1
+endif
+
 " Subsection: settings {{{
 
 set enc=utf-8
@@ -62,12 +69,6 @@ set tabstop=4
 " when indenting with '>', use 4 spaces width
 set shiftwidth=4
 set expandtab
-
-let s:ssh_client = 0
-
-if $SSH_CLIENT != ''
-    let s:ssh_client = 1
-endif
 
 set mouse=a
 
