@@ -1,3 +1,5 @@
+" inferring where we are
+
 if $XDG_CONFIG_HOME == ''
     let $XDG_CONFIG_HOME = '~/.config'
     if has("win32")
@@ -69,13 +71,9 @@ endif
 
 set mouse=a
 
-" mouse selection yanks to the system's clipboard when using ssh
+" mouse selection yanks to system clipboard when using ssh
 if s:ssh_client
     set mouse=
-endif
-
-if $SHELL =~# 'sh'
-    set noshelltemp
 endif
 
 if has("path_extra")
@@ -245,6 +243,14 @@ nnoremap <silent> <leader>cl :JumpToNextMergeConflictLeft<cr>
 
 " }}}
 
+" Subsection: commands
+
+" Copying the current buffer's path to system clipboard
+
+command! FullPath :let @*=expand('%:p') | let @+=@* | let @"=@*
+command! Path :let @*=expand('%') | let @+=@* | let @"=@*
+command! Name :let @*=expand('%:t') | let @+=@* | let @"=@*
+
 " Subsection: autocommands {{{
 
 " buffer aesthetics
@@ -263,8 +269,6 @@ augroup AestheticsAutoGroup
     autocmd!
     autocmd BufRead * call s:Aesthetics()
 augroup END
-
-" search / pattern
 
 "help buffers
 
@@ -294,12 +298,6 @@ augroup XmlAutoGroup
     autocmd BufRead * if &filetype ==# "xml" | let f=expand("<afile>")
             \| if getfsize(f) > s:LargeXmlFile | setlocal syntax=unknown | endif | endif
 augroup END
-
-" Copy
-
-command! FullPath :let @*=expand('%:p') | let @+=@* | let @"=@*
-command! Path :let @*=expand('%') | let @+=@* | let @"=@*
-command! Name :let @*=expand('%:t') | let @+=@* | let @"=@*
 
 " norelativenumber in insert mode
 augroup RelativeNumberAutoGroup
