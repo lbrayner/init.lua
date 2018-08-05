@@ -31,6 +31,9 @@ set ignorecase
 set smartcase
 set noruler
 
+" pt-BR keyboard
+
+" cedilla is right where : is on a en-US keyboard
 nmap ç :
 vmap ç :
 nmap Ç :<up><cr>
@@ -39,17 +42,21 @@ nnoremap ¬ ^
 nnoremap qç q:
 vnoremap qç q:
 vnoremap ¬ ^
-vnoremap <F3> :w !$SHELL<CR>
-vnoremap <F4> yy:@"<CR>
 
 nnoremap <f1> :vert h<space>
 vnoremap <f1> <esc>:vert h
 
-nnoremap <silent> <Esc><Esc> <Esc>:on<CR>
+nnoremap <silent> <Esc><Esc> <Esc>:only<CR>
 
 " clear search highlights
 
 nnoremap <silent> <f2> :set invhlsearch hlsearch?<cr>
+
+" easier window switching
+nnoremap <C-H> <C-W>h
+nnoremap <C-J> <C-W>j
+nnoremap <C-K> <C-W>k
+nnoremap <C-L> <C-W>l
 
 vnoremap <C-H> <esc><C-W>h
 vnoremap <C-J> <esc><C-W>j
@@ -61,37 +68,36 @@ nnoremap <leader>h <C-w>s
 
 nnoremap <leader>i :set invpaste paste?<CR>
 
-nnoremap <silent> <leader>yy "+yy:let @*=@"<cr>
-nnoremap <silent> <leader>p "+p
-vnoremap <silent> <leader>p "+p
-vnoremap <silent> <leader>y "+y:let @*=@"<cr>
-
-
-nnoremap <leader>A :res +10<cr>
-nnoremap <leader>S :res -10<cr>
+if has("clipboard")
+    " win32 and X11 registers
+    nnoremap <silent> <leader>yy "+yy:let @*=@"<cr>
+    nnoremap <silent> <leader>p "+p
+    vnoremap <silent> <leader>p "+p
+    vnoremap <silent> <leader>y "+y:let @*=@"<cr>
+endif
 
 nnoremap <silent> <leader>R :set relativenumber!<cr>
 
-nnoremap <C-H> <C-W><C-H>
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-
+" filtering line under cursor
 nnoremap <silent> <leader><F3> :.!<C-R>=getline('.')<CR><cr>
-
+" executing range
+vnoremap <F3> :w !$SHELL<CR>
+" evaluating selection
+vnoremap <F4> y:@"<CR>
+" executing line under cursor
 nnoremap <F3> :.w !$SHELL<CR>
+" evaluating line under cursor
 nnoremap <F4> :execute getline(".")<CR>
+
 nnoremap <leader><F5> :ls<CR>:buffer<Space>
 nnoremap <F6> :w<CR>
 nnoremap <leader><F7> :find<space>
 nnoremap <leader><F6> :w!<CR>
-nnoremap <leader>W :bw<CR>
 nnoremap <silent> <F12>  :setlocal list!<CR>
 nnoremap <leader>\| :setlocal wrap! wrap?<CR>
 nnoremap <silent> <leader>N :setlocal number!<CR>
-nnoremap <leader>L :set linebreak! linebreak?<CR>
+nnoremap <leader>N :set linebreak! linebreak?<CR>
 vnoremap . :normal .
-inoremap <S-Tab> <C-V><Tab>
 
 inoremap <F6> <esc>:w<CR>
 
@@ -101,6 +107,7 @@ nnoremap <silent> <leader><F9> :bw<cr>
 " quickfix and locallist
 
 nnoremap <silent> <leader>l :lopen<CR>
+nnoremap <silent> <leader>L :lclose<CR>
 nnoremap <silent> <leader>q :copen<CR>
 nnoremap <silent> <leader>Q :cclose<CR>
 
@@ -122,6 +129,7 @@ function! s:Aesthetics()
     if &ft =~ "netrw"
         return
     endif
+    " setting nonumber if length of line count is greater than 3
     if len(line("$"))>3
         setlocal nonumber
     endif
@@ -176,10 +184,11 @@ augroup END
 
 " Copy
 
-command! CopyFullPath :let @*=expand('%:p') | let @+=@* | let @"=@*
-command! CopyPath :let @*=expand('%') | let @+=@* | let @"=@*
-command! CopyName :let @*=expand('%:t') | let @+=@* | let @"=@*
+command! FullPath :let @*=expand('%:p') | let @+=@* | let @"=@*
+command! Path :let @*=expand('%') | let @+=@* | let @"=@*
+command! Name :let @*=expand('%:t') | let @+=@* | let @"=@*
 
+" norelativenumber in insert mode
 augroup RelativeNumberAutoGroup
     autocmd InsertEnter * if &number | :set norelativenumber | endif
     autocmd InsertLeave * if &number | :set relativenumber | endif
@@ -206,6 +215,7 @@ augroup END
 
 " diff options
 
+" reverting wrap to its global value when in diff mode
 augroup DiffWrapAutoGroup
     autocmd FilterWritePre * if &diff | setlocal wrap< | endif
 augroup END
@@ -300,7 +310,7 @@ if !has("nvim")
     let &dir=s:swap_dir."//"
 endif
 
-" sourcing a init.local.vim if it exists
+" sourcing init.local.vim if it exists
 
 let s:init_local = fnamemodify(s:vim_dir . "/init.local.vim",":p")
 if filereadable(s:init_local)
