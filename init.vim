@@ -11,7 +11,7 @@ endif
 let s:vim_dir = $HOME . "/.vim"
 
 if has("win32")
-    let s:vim_dir = $HOME . "/vimfiles"
+    let s:vim_dir = $USERPROFILE . "/vimfiles"
 endif
 
 if has("nvim")
