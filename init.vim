@@ -339,6 +339,26 @@ if filereadable(s:init_local)
   execute 'source ' . s:init_local
 endif
 
+" sourcing ginit.vim if it exists
+
+if has("gui_running")
+    if $MYGVIMRC == ''
+        let s:ginit = s:vim_dir . "/ginit.vim"
+        if filereadable(s:ginit)
+          execute 'source ' . s:ginit
+        endif
+    endif
+endif
+
+" sourcing ginit.local.vim if it exists
+
+if has("gui_running")
+    let s:ginit_local = s:vim_dir . "/ginit.local.vim"
+    if filereadable(s:ginit_local)
+      execute 'source ' . s:ginit_local
+    endif
+endif
+
 " Subsection: plugins {{{
 
 " netrw
