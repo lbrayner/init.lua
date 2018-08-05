@@ -279,6 +279,7 @@ if $XDG_CONFIG_HOME == ''
     if has("win32")
         let $XDG_CONFIG_HOME = '~/AppData/Local'
     endif
+    let $XDG_CONFIG_HOME = fnamemodify($XDG_CONFIG_HOME,":p")
 endif
 
 let s:vim_dir = $HOME . "/.vim"
@@ -312,7 +313,7 @@ endif
 
 " sourcing init.local.vim if it exists
 
-let s:init_local = fnamemodify(s:vim_dir . "/init.local.vim",":p")
+let s:init_local = s:vim_dir . "/init.local.vim"
 if filereadable(s:init_local)
   execute 'source ' . s:init_local
 endif
@@ -327,6 +328,10 @@ else
 endif
 
 let g:vim_did_enter = 1
+
+" netrw
+let g:netrw_bufsettings = 'noma nomod number relativenumber nobl wrap ro hidden'
+let g:netrw_liststyle = 3
 
 " Eclim
 
@@ -406,10 +411,6 @@ if s:enable_solarized
     colorscheme solarized
     set background=dark
 endif
-
-" netrw
-let g:netrw_bufsettings = 'noma nomod number relativenumber nobl wrap ro hidden'
-let g:netrw_liststyle = 3
 
 " paredit
 let g:paredit_leader = '\'
