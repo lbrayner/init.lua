@@ -1,3 +1,27 @@
+if $XDG_CONFIG_HOME == ''
+    let $XDG_CONFIG_HOME = '~/.config'
+    if has("win32")
+        let $XDG_CONFIG_HOME = '~/AppData/Local'
+    endif
+    let $XDG_CONFIG_HOME = fnamemodify($XDG_CONFIG_HOME,":p")
+endif
+
+let s:vim_dir = $HOME . "/.vim"
+
+if has("win32")
+    let s:vim_dir = $HOME . "/vimfiles"
+endif
+
+if has("nvim")
+    let s:vim_dir = $XDG_CONFIG_HOME . "/nvim"
+endif
+
+if $MYVIMRC == ''
+    let s:vim_dir = expand('<sfile>:p:h')
+endif
+
+" Subsection: settings {{{
+
 set enc=utf-8
 
 set nocompatible
@@ -31,7 +55,47 @@ set ignorecase
 set smartcase
 set noruler
 
-" pt-BR keyboard
+"show existing tab with 4 spaces width
+set tabstop=4
+" when indenting with '>', use 4 spaces width
+set shiftwidth=4
+set expandtab
+
+let s:ssh_client = 0
+
+if $SSH_CLIENT != ''
+    let s:ssh_client = 1
+endif
+
+set mouse=a
+
+" mouse selection yanks to the system's clipboard when using ssh
+if s:ssh_client
+    set mouse=
+endif
+
+if $SHELL =~# 'sh'
+    set noshelltemp
+endif
+
+if has("path_extra")
+    set fileignorecase
+endif
+
+" setting dir
+
+if !has("nvim")
+    let s:swap_dir = s:vim_dir."/swap"
+    exe "let s:has_swap_dir = isdirectory('".s:swap_dir."')"
+    if !s:has_swap_dir
+        call mkdir(s:swap_dir)
+    endif
+    let &dir=s:swap_dir."//"
+endif
+
+" }}}
+
+" Subsection: mappings — pt-BR keyboard {{{1
 
 " cedilla is right where : is on a en-US keyboard
 nmap ç :
@@ -113,87 +177,12 @@ nnoremap <silent> <leader>Q :cclose<CR>
 
 nnoremap <silent> <leader>B :b#<CR>
 
-" merge
-
-command! JumpToNextMergeConflictLeft   :keepp keepj ?^<<<<<<<
-command! JumpToNextMergeConflictMiddle :keepp /^=======
-command! JumpToNextMergeConflictRight  :keepp keepj /^>>>>>>>
-
-nnoremap <silent> <leader>cr :JumpToNextMergeConflictRight<cr>
-nnoremap <silent> <leader>cm :JumpToNextMergeConflictMiddle<cr>
-nnoremap <silent> <leader>cl :JumpToNextMergeConflictLeft<cr>
-
-" buffer aesthetics
-
-function! s:Aesthetics()
-    if &ft =~ "netrw"
-        return
-    endif
-    " setting nonumber if length of line count is greater than 3
-    if len(line("$"))>3
-        setlocal nonumber
-    endif
-endfun
-
-augroup AestheticsAutoGroup
-    autocmd!
-    autocmd BufRead * call s:Aesthetics()
-augroup END
-
-" search / pattern
-
 " force case sensitivity for *-search
 nnoremap <Plug>CaseSensitiveStar /\C\V\<<c-r>=expand("<cword>")<cr>\><cr>
 nmap <kmultiply> <Plug>CaseSensitiveStar
 nmap * <Plug>CaseSensitiveStar
 
-"help buffers
-
-augroup HelpAutoGroup
-    autocmd!
-    autocmd FileType help,eclimhelp au BufEnter <buffer> setlocal relativenumber
-augroup END
-
-" svn commit files
-
-augroup SvnFtGroup
-    autocmd!
-    autocmd BufEnter *.svn set ft=svn
-augroup END
-
-" infercase
-
-augroup InferCaseGroup
-    autocmd!
-    autocmd FileType gitcommit,text,svn,mail setlocal ignorecase infercase
-augroup END
-
-"show existing tab with 4 spaces width
-set tabstop=4
-" when indenting with '>', use 4 spaces width
-set shiftwidth=4
-set expandtab
-
-" XML
-
-let s:LargeXmlFile = 1024 * 512
-augroup XmlAutoGroup
-    autocmd BufRead * if &filetype ==# "xml" | let f=expand("<afile>")
-            \| if getfsize(f) > s:LargeXmlFile | setlocal syntax=unknown | endif | endif
-augroup END
-
-" Copy
-
-command! FullPath :let @*=expand('%:p') | let @+=@* | let @"=@*
-command! Path :let @*=expand('%') | let @+=@* | let @"=@*
-command! Name :let @*=expand('%:t') | let @+=@* | let @"=@*
-
-" norelativenumber in insert mode
-augroup RelativeNumberAutoGroup
-    autocmd InsertEnter * if &number | :set norelativenumber | endif
-    autocmd InsertLeave * if &number | :set relativenumber | endif
-augroup END
-
+" neovim terminal
 if has("nvim")
     tnoremap <A-h> <C-\><C-n><C-w>h
     tnoremap <A-j> <C-\><C-n><C-w>j
@@ -205,20 +194,6 @@ if has("nvim")
     nnoremap <A-k> <C-w>k
     nnoremap <A-l> <C-w>l
 endif
-
-" text format options
-
-augroup TextFormatAutoGroup
-    au!
-    autocmd FileType text,svn setlocal textwidth=80
-augroup END
-
-" diff options
-
-" reverting wrap to its global value when in diff mode
-augroup DiffWrapAutoGroup
-    autocmd FilterWritePre * if &diff | setlocal wrap< | endif
-augroup END
 
 if has("gui_running") || has("nvim")
     " For Emacs-style editing on the command-line >
@@ -258,58 +233,105 @@ cnoremap <c-k> <c-f>D<c-c><c-c>:<up>
 inoremap <c-s> <c-k>
 cnoremap <c-s> <c-k>
 
-let s:ssh_client = 0
+" merge
 
-if $SSH_CLIENT != ''
-    let s:ssh_client = 1
-endif
+command! JumpToNextMergeConflictLeft   :keepp keepj ?^<<<<<<<
+command! JumpToNextMergeConflictMiddle :keepp /^=======
+command! JumpToNextMergeConflictRight  :keepp keepj /^>>>>>>>
 
-set mouse=a
+nnoremap <silent> <leader>cr :JumpToNextMergeConflictRight<cr>
+nnoremap <silent> <leader>cm :JumpToNextMergeConflictMiddle<cr>
+nnoremap <silent> <leader>cl :JumpToNextMergeConflictLeft<cr>
 
-if s:ssh_client
-    set mouse=
-endif
+" }}}
 
-if $SHELL =~# 'sh'
-    set noshelltemp
-endif
+" Subsection: autocommands {{{
 
-if $XDG_CONFIG_HOME == ''
-    let $XDG_CONFIG_HOME = '~/.config'
-    if has("win32")
-        let $XDG_CONFIG_HOME = '~/AppData/Local'
+" buffer aesthetics
+
+function! s:Aesthetics()
+    if &ft =~ "netrw"
+        return
     endif
-    let $XDG_CONFIG_HOME = fnamemodify($XDG_CONFIG_HOME,":p")
-endif
-
-let s:vim_dir = $HOME . "/.vim"
-
-if has("win32")
-    let s:vim_dir = $HOME . "/vimfiles"
-endif
-
-if has("nvim")
-    let s:vim_dir = $XDG_CONFIG_HOME . "/nvim"
-endif
-
-if $MYVIMRC == ''
-    let s:vim_dir = expand('<sfile>:p:h')
-endif
-
-if has("path_extra")
-    set fileignorecase
-endif
-
-" setting dir
-
-if !has("nvim")
-    let s:swap_dir = s:vim_dir."/swap"
-    exe "let s:has_swap_dir = isdirectory('".s:swap_dir."')"
-    if !s:has_swap_dir
-        call mkdir(s:swap_dir)
+    " setting nonumber if length of line count is greater than 3
+    if len(line("$"))>3
+        setlocal nonumber
     endif
-    let &dir=s:swap_dir."//"
-endif
+endfun
+
+augroup AestheticsAutoGroup
+    autocmd!
+    autocmd BufRead * call s:Aesthetics()
+augroup END
+
+" search / pattern
+
+"help buffers
+
+augroup HelpAutoGroup
+    autocmd!
+    autocmd FileType help,eclimhelp au BufEnter <buffer> setlocal relativenumber
+augroup END
+
+" svn commit files
+
+augroup SvnFtGroup
+    autocmd!
+    autocmd BufEnter *.svn set ft=svn
+augroup END
+
+" infercase
+
+augroup InferCaseGroup
+    autocmd!
+    autocmd FileType gitcommit,text,svn,mail setlocal ignorecase infercase
+augroup END
+
+" XML
+
+let s:LargeXmlFile = 1024 * 512
+augroup XmlAutoGroup
+    autocmd BufRead * if &filetype ==# "xml" | let f=expand("<afile>")
+            \| if getfsize(f) > s:LargeXmlFile | setlocal syntax=unknown | endif | endif
+augroup END
+
+" Copy
+
+command! FullPath :let @*=expand('%:p') | let @+=@* | let @"=@*
+command! Path :let @*=expand('%') | let @+=@* | let @"=@*
+command! Name :let @*=expand('%:t') | let @+=@* | let @"=@*
+
+" norelativenumber in insert mode
+augroup RelativeNumberAutoGroup
+    autocmd InsertEnter * if &number | :set norelativenumber | endif
+    autocmd InsertLeave * if &number | :set relativenumber | endif
+augroup END
+
+" text format options
+
+augroup TextFormatAutoGroup
+    au!
+    autocmd FileType text,svn setlocal textwidth=80
+augroup END
+
+" diff options
+
+" reverting wrap to its global value when in diff mode
+augroup DiffWrapAutoGroup
+    autocmd FilterWritePre * if &diff | setlocal wrap< | endif
+augroup END
+
+" VimEnter
+
+augroup VimEnterAutoGroup
+    au!
+    " v:vim_did_enter not available before 8.0
+    au VimEnter * let g:vim_did_enter = 1
+    " statusline
+    au VimEnter * call statusline#initialize()
+augroup END
+
+" }}}
 
 " sourcing init.local.vim if it exists
 
@@ -318,18 +340,10 @@ if filereadable(s:init_local)
   execute 'source ' . s:init_local
 endif
 
-" statusline
-
-" v:vim_did_enter not available before 8.0
-if exists("g:vim_did_enter")
-    call statusline#initialize()
-else
-    au VimEnter * call statusline#initialize()
-endif
-
-let g:vim_did_enter = 1
+" Subsection: plugins {{{
 
 " netrw
+
 let g:netrw_bufsettings = 'noma nomod number relativenumber nobl wrap ro hidden'
 let g:netrw_liststyle = 3
 
@@ -344,15 +358,20 @@ let g:EclimXmlValidate=0
 let g:EclimXsdValidate=0
 let g:EclimDtdValidate=0
 
-augroup EclimAutoGroup
-    autocmd FileType java nnoremap <buffer> <F11> :JavaCorrect<CR>
-    autocmd FileType java nnoremap <buffer> <leader><F11> :JavaSearchContext<CR>
-augroup END
-
 let g:EclimMakeLCD = 1
 let g:EclimJavaSearchSingleResult = 'edit'
 
-" packages
+if extensions#util#EclimLoaded()
+    augroup EclimAutoGroup
+        au!
+        autocmd FileType java nnoremap <buffer> <F11> :JavaCorrect<CR>
+        autocmd FileType java nnoremap <buffer> <leader><F11> :JavaSearchContext<CR>
+    augroup END
+endif
+
+" }}}
+
+" Subsection: packages
 
 if !has('packages')
     finish
@@ -362,7 +381,7 @@ if !has("nvim")
     packadd matchit
 endif
 
-" Package customisation
+" Subsection: package customisation {{{
 
 " CamelCase
 
@@ -410,6 +429,9 @@ if s:enable_solarized
     let g:solarized_italic = 1
     colorscheme solarized
     set background=dark
+    if exists("g:vim_did_enter")
+        call statusline#initialize()
+    endif
 endif
 
 " paredit
@@ -447,3 +469,7 @@ function! DBextPostResult(...)
     " removing an undesirable mapping
     unmap <buffer> q
 endfunction
+
+" }}}
+
+"  vim: fdm=marker
