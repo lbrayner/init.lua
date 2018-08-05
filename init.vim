@@ -71,7 +71,7 @@ endif
 
 set mouse=a
 
-" mouse selection yanks to system clipboard when using ssh
+" mouse selection yanks to the system clipboard when using ssh
 if s:ssh_client
     set mouse=
 endif
@@ -245,9 +245,9 @@ nnoremap <silent> <leader>cl :JumpToNextMergeConflictLeft<cr>
 
 " Subsection: commands
 
-" Copying the current buffer's path to system clipboard
+" Copying the current buffer's path to the system clipboard
 
-command! FullPath :let @*=expand('%:p') | let @+=@* | let @"=@*
+command! FullPath :let @*=expand('%:p:~') | let @+=@* | let @"=@*
 command! Path :let @*=expand('%') | let @+=@* | let @"=@*
 command! Name :let @*=expand('%:t') | let @+=@* | let @"=@*
 
