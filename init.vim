@@ -380,13 +380,11 @@ let g:EclimDtdValidate=0
 let g:EclimMakeLCD = 1
 let g:EclimJavaSearchSingleResult = 'edit'
 
-if extensions#util#EclimLoaded()
-    augroup EclimAutoGroup
-        au!
-        autocmd FileType java nnoremap <buffer> <F11> :JavaCorrect<CR>
-        autocmd FileType java nnoremap <buffer> <leader><F11> :JavaSearchContext<CR>
-    augroup END
-endif
+augroup EclimAutoGroup
+    au!
+    autocmd FileType java nnoremap <buffer> <F11> :JavaCorrect<CR>
+    autocmd FileType java nnoremap <buffer> <leader><F11> :JavaSearchContext<CR>
+augroup END
 
 " }}}
 
