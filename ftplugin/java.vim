@@ -52,10 +52,12 @@ if &ft == 'java'
                             \('nnoremap <buffer>','<leader>jo',':JavaImportOrganize<cr>')
                 call util#vimmap
                             \('nnoremap <buffer>','<leader>jm',':JavaMove<space>')
+                nnoremap <buffer> <F11> :JavaCorrect<CR>
+                nnoremap <buffer> <leader><F11> :JavaSearchContext<CR>
                 if executable("ctags")
                     augroup CtagsJava
                         au!
-                        autocmd  BufWritePost <buffer> call ctags#UpdateTags()
+                        autocmd BufWritePost <buffer> call ctags#UpdateTags()
                     augroup END
                 endif
                 if v:vim_did_enter
