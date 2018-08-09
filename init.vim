@@ -481,6 +481,10 @@ function! DBextPostResult(...)
     unmap <buffer> q
 endfunction
 
+" ragtag
+
+let g:ragtag_global_maps = 1
+
 " }}}
 
 "  vim: fdm=marker
