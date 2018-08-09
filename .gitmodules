@@ -109,3 +109,6 @@
 [submodule "pack/bundle/start/vim-maktaba"]
 	path = pack/bundle/start/vim-maktaba
 	url = https://github.com/google/vim-maktaba
+[submodule "pack/bundle/start/vim-ragtag"]
+	path = pack/bundle/start/vim-ragtag
+	url = https://github.com/tpope/vim-ragtag
