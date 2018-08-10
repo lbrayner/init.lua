@@ -11,7 +11,7 @@ endfunction
 
 function! s:Linkify(text)
     let lines = split(a:text,"\n")
-    return s:LinkifyList(lines)
+    return join(s:LinkifyList(lines),"\n")
 endfunction
 
 function! s:LinkifyLastVisualSelection()
@@ -20,9 +20,9 @@ function! s:LinkifyLastVisualSelection()
 endfunction
 
 function! html#linkify() range
-    let line_start = a:firstline
-    let line_end = a:lastline
-    let lines = s:LinkifyLastVisualSelection()
-    normal! gvd
-    call append(a:firstline-1,lines)
+    let text = s:LinkifyLastVisualSelection()
+    let old_reg = @"
+    let @" = text
+    normal! gvp
+    let @" = old_reg
 endfunction
