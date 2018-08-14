@@ -1,2 +1,1 @@
-command! -range Linkify
-            \ <line1>,<line2>call html#linkify()
+vnoremap <silent> <Plug>Linkify :<C-U>call html#linkify(visualmode())<CR>

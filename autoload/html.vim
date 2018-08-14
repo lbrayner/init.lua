@@ -19,10 +19,13 @@ function! s:LinkifyLastVisualSelection()
     return s:Linkify(last_visual_selection)
 endfunction
 
-function! html#linkify() range
+" Based on tpope's vim-surround
+function! html#linkify(type) range
     let text = s:LinkifyLastVisualSelection()
-    let old_reg = @"
-    let @" = text
-    normal! gvp
-    let @" = old_reg
+    let reg = '"'
+    let reg_save = getreg(reg)
+    let reg_type = getregtype(reg)
+    call setreg('"',text,a:type)
+    silent exe 'norm! gv'.(reg == '"' ? '' : '"' . reg).'p`['
+    call setreg(reg,reg_save,reg_type)
 endfunction
