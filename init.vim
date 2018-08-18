@@ -106,7 +106,7 @@ endif
 
 " Subsection: mappings — pt-BR keyboard {{{1
 
-" cedilla is right where : is on a en-US keyboard
+" cedilla is right where : is on an en-US keyboard
 nmap ç :
 vmap ç :
 nmap Ç :<up><cr>
