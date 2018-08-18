@@ -56,6 +56,16 @@ set fileformats=unix,dos
 set fileformat=unix
 set backspace=indent,eol,start
 if has("win32")
+    if isdirectory('c:/cygwin64/bin')
+        let $PATH .= ';c:\cygwin64\bin'
+    endif
+    if executable("bash.exe")
+        set shell=bash.exe
+        set noshelltemp
+    endif
+    if executable("grep.exe")
+        set grepprg=grep.exe
+    endif
     set shellslash
 endif
 set incsearch
