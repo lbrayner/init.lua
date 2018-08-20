@@ -30,6 +30,8 @@ if has('packages')
     if has("nvim")
         set packpath-=$XDG_CONFIG_HOME/nvim
         set packpath-=$XDG_CONFIG_HOME/nvim/after
+        " set packpath-=$XDG_CONFIG_HOME/nvim/site
+        " set packpath-=$XDG_CONFIG_HOME/nvim/site/after
     endif
 endif
 
