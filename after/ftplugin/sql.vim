@@ -12,3 +12,4 @@ inoreabbrev <buffer> counta count()<left>
 inoreabbrev <buffer> maxa max()<left>
 inoreabbrev <buffer> mina min()<left>
 inoreabbrev <buffer> suma sum()<left>
+inoreabbrev <buffer> blk (<cr>)<c-o>O
