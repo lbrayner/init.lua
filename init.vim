@@ -378,17 +378,19 @@ let g:netrw_liststyle = 3
 
 " Eclim
 
-let g:EclimLogLevel = 'info'
+if !has("win32unix")
+    let g:EclimLogLevel = 'info'
 
-let g:EclimHighlightError = "Error"
-let g:EclimHighlightWarning = "Ignore"
+    let g:EclimHighlightError = "Error"
+    let g:EclimHighlightWarning = "Ignore"
 
-let g:EclimXmlValidate=0
-let g:EclimXsdValidate=0
-let g:EclimDtdValidate=0
+    let g:EclimXmlValidate=0
+    let g:EclimXsdValidate=0
+    let g:EclimDtdValidate=0
 
-let g:EclimMakeLCD = 1
-let g:EclimJavaSearchSingleResult = 'edit'
+    let g:EclimMakeLCD = 1
+    let g:EclimJavaSearchSingleResult = 'edit'
+endif
 
 " }}}
 
