@@ -497,6 +497,10 @@ endfunction
 
 let g:ragtag_global_maps = 1
 
+" supertab
+
+let g:SuperTabCtrlXCtrlPCtrlNSearchPlaces = 1
+
 " }}}
 
 "  vim: fdm=marker
