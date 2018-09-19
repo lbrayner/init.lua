@@ -30,7 +30,7 @@
 	url = https://github.com/yssl/QFEnter.git
 [submodule "pack/bundle/start/supertab"]
 	path = pack/bundle/start/supertab
-	url = https://github.com/ervandew/supertab.git
+	url = https://github.com/lbrayner/supertab.git
 [submodule "pack/bundle/start/syntastic"]
 	path = pack/bundle/start/syntastic
 	url = https://github.com/scrooloose/syntastic.git
