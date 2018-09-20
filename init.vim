@@ -242,16 +242,6 @@ cnoremap <c-k> <c-f>D<c-c><c-c>:<up>
 inoremap <c-s> <c-k>
 cnoremap <c-s> <c-k>
 
-" merge
-
-command! JumpToNextMergeConflictLeft   :keepp keepj ?^<<<<<<<
-command! JumpToNextMergeConflictMiddle :keepp /^=======
-command! JumpToNextMergeConflictRight  :keepp keepj /^>>>>>>>
-
-nnoremap <silent> <leader>cr :JumpToNextMergeConflictRight<cr>
-nnoremap <silent> <leader>cm :JumpToNextMergeConflictMiddle<cr>
-nnoremap <silent> <leader>cl :JumpToNextMergeConflictLeft<cr>
-
 " }}}
 
 " Subsection: commands
