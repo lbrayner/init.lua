@@ -493,4 +493,4 @@ let g:SuperTabCtrlXCtrlPCtrlNSearchPlaces = 1
 
 " }}}
 
-"  vim: fdm=marker
+" vim: fdm=marker
