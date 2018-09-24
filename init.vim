@@ -489,7 +489,7 @@ let g:ragtag_global_maps = 1
 
 " supertab
 
-let g:SuperTabRetainCompletionDuration = 'session'
+let g:SuperTabCtrlXCtrlPCtrlNSearchPlaces = 1
 
 " }}}
 
