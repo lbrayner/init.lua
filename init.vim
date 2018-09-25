@@ -124,6 +124,7 @@ nnoremap <silent> <Esc><Esc> <Esc>:only<CR>
 " clear search highlights
 
 nnoremap <silent> <f2> :set invhlsearch hlsearch?<cr>
+inoremap <silent> <f2> <esc>:set invhlsearch hlsearch?<cr>a
 
 " easier window switching
 nnoremap <C-H> <C-W>h
