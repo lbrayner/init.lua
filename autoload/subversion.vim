@@ -2,8 +2,7 @@ let s:DiffTabMessage = 'q to close this tab.'
 
 function! s:SVNDiff(filename,...)
     let escaped_filename = shellescape(a:filename)
-    let svncommand = "svn diff --old=" . escaped_filename
-            \ . " --new=" . escaped_filename . "@HEAD"
+    let svncommand = "svn diff " . escaped_filename
     if exists("g:MVGoodies_svn_diff_cmd")
         let svncommand = svncommand . " --diff-cmd " . g:MVGoodies_svn_diff_cmd
     else
@@ -14,18 +13,28 @@ function! s:SVNDiff(filename,...)
             let svncommand = svncommand . " " . extrarg
         endfor
     endif
-    let tempfile = util#escapeFileName(tempname())
+    let patch = util#escapeFileName(tempname())
+    let reversed_patch = util#escapeFileName(tempname())
     try
+        if !has("unix") && !has("win32")
+            throw "Only unix and win32 supported."
+        endif
         let stdout = systemlist(svncommand)
         if v:shell_error
             let message = stdout[0]
-            echoerr message
-            return
+            throw message
         endif
-        call writefile(stdout,tempfile)
-        if getfsize(tempfile) != 0
+        call writefile(stdout,patch)
+        " On win32 use cygwin's interdiff
+        let stdout = systemlist("interdiff " . patch . " /dev/null")
+        if v:shell_error
+            let message = stdout[0]
+            throw message
+        endif
+        call writefile(stdout,reversed_patch)
+        if getfsize(reversed_patch) != 0
             let s:current_tab = tabpagenr()
-            silent exec ":tab sview ".a:filename." | sil lefta vert diffpa ".tempfile
+            silent exec ":tab sview ".a:filename." | sil lefta vert diffpa ".reversed_patch
                       \ . ' | exec "file ".expand("%:t")'
                       \ . ' | setlocal noma'
                       \ . ' | setlocal buftype=nofile'
@@ -37,8 +46,11 @@ function! s:SVNDiff(filename,...)
         else
             echomsg "Contents equal HEAD."
         endif
+    catch
+        echoerr v:exception
     finally
-        call delete(tempfile)
+        call delete(patch)
+        call delete(reversed_patch)
     endtry
 endfunction
 
