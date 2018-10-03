@@ -243,6 +243,10 @@ cnoremap <c-k> <c-f>D<c-c><c-c>:<up>
 inoremap <c-s> <c-k>
 cnoremap <c-s> <c-k>
 
+" spell
+
+nnoremap <silent> <leader>d :setlocal invspell spell?<CR>
+
 " }}}
 
 " Subsection: commands
