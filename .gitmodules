@@ -112,3 +112,6 @@
 [submodule "pack/bundle/start/vim-ragtag"]
 	path = pack/bundle/start/vim-ragtag
 	url = https://github.com/tpope/vim-ragtag
+[submodule "pack/bundle/start/email.vim"]
+	path = pack/bundle/start/email.vim
+	url = https://github.com/lbrayner/email.vim
