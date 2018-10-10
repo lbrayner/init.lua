@@ -14,4 +14,4 @@ if &ft == 'mail'
     endif
     vmap <buffer> <leader>a <Plug>Linkify
 endif
-setlocal completefunc=EmailComplete
+setlocal completefunc=email#EmailComplete
