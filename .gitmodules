@@ -115,3 +115,6 @@
 [submodule "pack/bundle/start/email.vim"]
 	path = pack/bundle/start/email.vim
 	url = https://github.com/lbrayner/email.vim
+[submodule "pack/bundle/start/delimitMate"]
+	path = pack/bundle/start/delimitMate
+	url = https://github.com/Raimondi/delimitMate
