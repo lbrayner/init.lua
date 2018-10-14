@@ -496,6 +496,11 @@ let g:ragtag_global_maps = 1
 
 let g:SuperTabCtrlXCtrlPCtrlNSearchPlaces = 1
 
+" delimitMate
+
+" paredit is used instead
+au FileType lisp,*clojure*,scheme,racket let b:loaded_delimitMate = 1
+
 " }}}
 
 " vim: fdm=marker
