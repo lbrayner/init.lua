@@ -41,10 +41,11 @@ augroup StatuslineWinLeaveGroup
     autocmd BufLeave * call statusline#DefineStatusLineNoFocus()
 augroup END
 
-noremap <Plug>HighlightStatusLineNC  :call statusline#HighlightStatusLineNC()<CR>
+augroup StatuslineVimEnterAutoGroup
+    au!
+    au VimEnter * call statusline#initialize()
+augroup END
 
-if !exists(":HighlightStatusLineNC")
-    command -nargs=0  HighlightStatusLineNC  :call s:HighlightStatusLineNC()
-endif
+noremap <Plug>HighlightStatusLineNC  :call statusline#HighlightStatusLineNC()<CR>
 
 command! -nargs=0 StatusLineInitialize call statusline#initialize()

@@ -331,9 +331,11 @@ augroup VimEnterAutoGroup
     au!
     " v:vim_did_enter not available before 8.0
     au VimEnter * let g:vim_did_enter = 1
-    " statusline
-    au VimEnter * call statusline#initialize()
 augroup END
+
+" indentexpr
+
+au BufRead *.sql setlocal indentexpr=indent
 
 " }}}
 
