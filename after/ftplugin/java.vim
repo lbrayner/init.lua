@@ -26,4 +26,3 @@ inoreabbrev <buffer> fmt formats
 inoreabbrev <buffer> info_ logger.info();<left><left>
 inoreabbrev <buffer> debug_ logger.debug();<left><left>
 inoreabbrev <buffer> error_ logger.error();<left><left>
-inoreabbrev <buffer> blk {<cr>}<c-o>O
