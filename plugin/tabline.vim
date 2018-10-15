@@ -7,7 +7,9 @@ set showtabline=2
 function! RedefineTabline()
     let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '
         \ . '%#NonText#%{fnamemodify(getcwd(),":~")}%=%#Directory# %{expand("%:h")} '
-    let isabsolute=expand("%:p") !~# getcwd() " is an absolute path
+    " Is an absolute path? Recent versions of getcwd() will return backward
+    " slashes on win32
+    let isabsolute=expand("%:p") !~# fnamemodify(getcwd(),":p:gs?\\?/?")
     if isabsolute
         let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '
             \ . '%#NonText#%{fnamemodify(getcwd(),":~")}%=%#WarningMsg#'
