@@ -1,4 +1,5 @@
 " TODO add the first 16 colors
+" http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim
 let s:mapping = {
 \ 'x016_Grey0': {'cterm': '16', 'gui': '#000000'},
 \ 'x017_NavyBlue': {'cterm': '17', 'gui': '#00005f'},
@@ -246,4 +247,3 @@ function! statusline#themes#getColor(color,vmode)
     let modemap = s:mapping[a:color]
     return modemap[a:vmode]
 endfunction
-

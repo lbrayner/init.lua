@@ -21,3 +21,11 @@ function! util#getVisualSelection()
     let &virtualedit = ve
     return visual_selection
 endfunction
+
+function! util#trivialHorizontalMotion()
+    let col = getpos('.')[2]
+    if col <= 1
+        return 'h'
+    endif
+    return 'lh'
+endfunction

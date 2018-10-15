@@ -49,3 +49,27 @@ augroup END
 noremap <Plug>HighlightStatusLineNC  :call statusline#HighlightStatusLineNC()<CR>
 
 command! -nargs=0 StatusLineInitialize call statusline#initialize()
+
+" Visual Mode
+
+function! VisualModeEnter()
+    set updatetime=0
+    call statusline#HighlightMode('visual')
+    return util#trivialHorizontalMotion()
+endfunction
+
+function! VisualModeLeave()
+    set updatetime=4000
+    call statusline#HighlightMode('normal')
+    return util#trivialHorizontalMotion()
+endfunction
+
+augroup StatuslineCursorHoldAutoGroup
+    au!
+    autocmd CursorHold * call VisualModeLeave()
+augroup END
+
+vnoremap <silent> <expr> <SID>VisualModeEnter VisualModeEnter()
+nnoremap <silent> <script> v v<SID>VisualModeEnter
+nnoremap <silent> <script> V V<SID>VisualModeEnter
+nnoremap <silent> <script> <C-v> <C-v><SID>VisualModeEnter
