@@ -46,11 +46,15 @@ augroup StatuslineVimEnterAutoGroup
     au VimEnter * call statusline#initialize()
 augroup END
 
-noremap <Plug>HighlightStatusLineNC  :call statusline#HighlightStatusLineNC()<CR>
+noremap <Plug>HighlightStatusLineNC :call statusline#HighlightStatusLineNC()<CR>
 
 command! -nargs=0 StatusLineInitialize call statusline#initialize()
 
 " Visual Mode
+
+" References {{{
+" https://stackoverflow.com/questions/16165350/how-to-emulate-autocmd-visualleave-or-autocmd-visualenter-in-vim
+" }}}
 
 function! VisualModeEnter()
     set updatetime=1
@@ -73,3 +77,5 @@ vnoremap <silent> <expr> <SID>VisualModeEnter VisualModeEnter()
 nnoremap <silent> <script> v v<SID>VisualModeEnter
 nnoremap <silent> <script> V V<SID>VisualModeEnter
 nnoremap <silent> <script> <C-v> <C-v><SID>VisualModeEnter
+
+" vim: fdm=marker
