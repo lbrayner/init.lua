@@ -61,6 +61,7 @@ function! statusline#StatusLineNoFocus()
     if len(filename) <= winwidth("%")
         return filename
     endif
+    " -1 (forward slash), -3 (three dots)
     let trunc_fname_head=strpart(expand("%:h"),0,winwidth("%")-len(expand("%:t"))-1-3)
     return trunc_fname_head.".../".expand("%:t")
 endfunction

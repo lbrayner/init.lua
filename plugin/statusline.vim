@@ -53,7 +53,7 @@ command! -nargs=0 StatusLineInitialize call statusline#initialize()
 " Visual Mode
 
 function! VisualModeEnter()
-    set updatetime=0
+    set updatetime=1
     call statusline#HighlightMode('visual')
     return util#trivialHorizontalMotion()
 endfunction
