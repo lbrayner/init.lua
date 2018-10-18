@@ -118,3 +118,6 @@
 [submodule "pack/bundle/start/delimitMate"]
 	path = pack/bundle/start/delimitMate
 	url = https://github.com/Raimondi/delimitMate
+[submodule "pack/bundle/start/vim-easy-align"]
+	path = pack/bundle/start/vim-easy-align
+	url = https://github.com/junegunn/vim-easy-align

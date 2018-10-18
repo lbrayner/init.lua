@@ -503,6 +503,13 @@ let g:SuperTabCtrlXCtrlPCtrlNSearchPlaces = 1
 " paredit is used instead
 au FileType lisp,*clojure*,scheme,racket let b:loaded_delimitMate = 1
 
+" vim-easy-align
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
 " }}}
 
 " vim: fdm=marker
