@@ -1,20 +1,10 @@
 let s:DiffTabMessage = 'q to close this tab.'
 
 function! s:SVNDiff(filename,...)
+    exec "let extension = fnamemodify('".a:filename."',':t:e')"
+    let pristine = util#escapeFileName(tempname()).".".extension
     let escaped_filename = shellescape(a:filename)
-    let svncommand = "svn diff " . escaped_filename
-    if exists("g:MVGoodies_svn_diff_cmd")
-        let svncommand = svncommand . " --diff-cmd " . g:MVGoodies_svn_diff_cmd
-    else
-        let svncommand = svncommand . " --internal-diff"
-    endif
-    if a:0 > 0
-        for extrarg in a:000
-            let svncommand = svncommand . " " . extrarg
-        endfor
-    endif
-    let patch = util#escapeFileName(tempname())
-    let reversed_patch = util#escapeFileName(tempname())
+    let svncommand = "svn export -r BASE " . escaped_filename . " " . pristine
     try
         if !has("unix") && !has("win32")
             throw "Only unix and win32 supported."
@@ -24,18 +14,12 @@ function! s:SVNDiff(filename,...)
             let message = stdout[0]
             throw message
         endif
-        call writefile(stdout,patch)
-        " On win32 use cygwin's interdiff
-        let stdout = systemlist("interdiff " . patch . " /dev/null")
-        if v:shell_error
-            let message = stdout[0]
-            throw message
-        endif
-        call writefile(stdout,reversed_patch)
-        if getfsize(reversed_patch) != 0
+        if getfsize(pristine) != 0
             let s:current_tab = tabpagenr()
-            silent exec ":tab sview ".a:filename." | sil lefta vert diffpa ".reversed_patch
-                      \ . ' | exec "file ".expand("%:t")'
+            silent exec ":tab sview ".a:filename." | diffthis "
+                      \ . " | lefta vs ".pristine
+                      \ . ' | diffthis '
+                      \ . ' | exec "file ".fnamemodify("'.a:filename.'",":t")'
                       \ . ' | setlocal noma'
                       \ . ' | setlocal buftype=nofile'
                       \ . ' | setlocal bufhidden=wipe'
@@ -49,8 +33,7 @@ function! s:SVNDiff(filename,...)
     catch
         echoerr v:exception
     finally
-        call delete(patch)
-        call delete(reversed_patch)
+        call delete(pristine)
     endtry
 endfunction
 
