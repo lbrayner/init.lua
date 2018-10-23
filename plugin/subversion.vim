@@ -11,7 +11,7 @@ command! -nargs=* SVNLog !svn log -rHEAD:1 -l1 % <args>
 nnoremap <silent> <Plug>MVGSVNDiffCursor :call subversion#SVNDiffCursor()<CR>
 nnoremap <silent> <Plug>MVGSVNDiffThis :call subversion#SVNDiffThis()<CR>
 nnoremap <silent> <Plug>MVGSVNDiffThisIgnoreAllWS
-            \ :call subversion#SVNDiffThis("-x -w")<CR>
+            \ :call subversion#SVNDiffThis("-w")<CR>
 nnoremap <silent> <Plug>MVGSVNDiffContextual
             \ :call subversion#SVNDiffContextual()<CR>
 

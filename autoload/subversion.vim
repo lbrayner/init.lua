@@ -5,6 +5,7 @@ function! s:SVNDiff(filename,...)
     let pristine = util#escapeFileName(tempname()).".".extension
     let escaped_filename = shellescape(a:filename)
     let svncommand = "svn export -r BASE " . escaped_filename . " " . pristine
+    let patch = util#escapeFileName(tempname())
     try
         if !has("unix") && !has("win32")
             throw "Only unix and win32 supported."
@@ -14,12 +15,24 @@ function! s:SVNDiff(filename,...)
             let message = stdout[0]
             throw message
         endif
-        if getfsize(pristine) != 0
+        " On win32 use cygwin's diff
+        let diffcommand = "diff -u"
+        if a:0 > 0
+            for extrarg in a:000
+                let diffcommand = diffcommand . " " . extrarg
+            endfor
+        endif
+        let diffcommand = diffcommand . " " . escaped_filename . " " . pristine
+        let stdout = systemlist(diffcommand)
+        if v:shell_error > 1 " only values greater than 1 indicate error
+            let message = stdout[0]
+            throw message
+        endif
+        call writefile(stdout,patch)
+        if getfsize(patch) != 0
             let s:current_tab = tabpagenr()
-            silent exec ":tab sview ".a:filename." | diffthis "
-                      \ . " | lefta vs ".pristine
-                      \ . ' | diffthis '
-                      \ . ' | exec "file ".fnamemodify("'.a:filename.'",":t")'
+            silent exec ":tab sview ".a:filename." | sil lefta vert diffpa ".patch
+                      \ . ' | exec "file ".expand("%:t")'
                       \ . ' | setlocal noma'
                       \ . ' | setlocal buftype=nofile'
                       \ . ' | setlocal bufhidden=wipe'
@@ -34,6 +47,7 @@ function! s:SVNDiff(filename,...)
         echoerr v:exception
     finally
         call delete(pristine)
+        call delete(patch)
     endtry
 endfunction
 
