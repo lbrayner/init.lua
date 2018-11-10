@@ -29,3 +29,23 @@ function! util#trivialHorizontalMotion()
     endif
     return 'lh'
 endfunction
+
+function! util#truncateFilename(filename,maxlength)
+    if len(a:filename) <= a:maxlength
+        return a:filename
+    endif
+    if len(fnamemodify(a:filename,":t")) < a:maxlength
+        " -1 (forward slash), -3 (three dots)
+        let trunc_fname_head=strpart(fnamemodify(a:filename,":h"),0,
+                    \a:maxlength-len(fnamemodify(a:filename,":t"))-1-3)
+        return trunc_fname_head.".../".fnamemodify(a:filename,":t")
+    endif
+    if fnamemodify(a:filename,":e") != ""
+        " -1 (a dot), -3 (three dots)
+        let trunc_fname_tail=strpart(fnamemodify(a:filename,":t"),0,
+                    \a:maxlength-len(fnamemodify(a:filename,":e"))-1-3)
+        return trunc_fname_tail."....".fnamemodify(a:filename,":e")
+    endif
+    let trunc_fname_tail=strpart(fnamemodify(a:filename,":t"),0,a:maxlength-3)
+    return trunc_fname_tail."..."
+endfunction
