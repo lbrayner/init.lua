@@ -61,9 +61,20 @@ function! statusline#StatusLineNoFocus()
     if len(filename) <= winwidth("%")
         return filename
     endif
-    " -1 (forward slash), -3 (three dots)
-    let trunc_fname_head=strpart(expand("%:h"),0,winwidth("%")-len(expand("%:t"))-1-3)
-    return trunc_fname_head.".../".expand("%:t")
+    if len(expand("%:t")) < winwidth("%")
+        " -1 (forward slash), -3 (three dots)
+        let trunc_fname_head=strpart(expand("%:h"),0,
+                    \winwidth("%")-len(expand("%:t"))-1-3)
+        return trunc_fname_head.".../".expand("%:t")
+    endif
+    if expand("%:e") != ""
+        " -1 (a dot), -3 (three dots)
+        let trunc_fname_tail=strpart(expand("%:t"),0,
+                    \winwidth("%")-len(expand("%:e"))-1-3)
+        return trunc_fname_tail."....".expand("%:e")
+    endif
+    let trunc_fname_tail=strpart(expand("%:t"),0,winwidth("%")-3)
+    return trunc_fname_tail."..."
 endfunction
 
 function! statusline#DefineStatusLineNoFocus()

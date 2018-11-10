@@ -414,7 +414,7 @@ map <silent> <leader>ge <Plug>CamelCaseMotion_ge
 let g:ctrlp_working_path_mode = ''
 let g:ctrlp_reuse_window = 'netrw\|help'
 let s:ctrlp_custom_ignore = {
-            \ 'file': '\v\.o$|\.exe$|\.lnk$|\.bak$|\.swp$|\.class$|\.jasper$'
+            \ 'file': '\v\.o$|\.exe$|\.lnk$|\.bak$|\.sw[a-z]$|\.class$|\.jasper$'
             \               . '|\.r[0-9]+$|\.mine$',
             \ 'dir': '\C\V' . escape(expand('~'),' \') . '\$\|'
             \               . '\v[\/](classes|target|build|test-classes|dumps)$'
