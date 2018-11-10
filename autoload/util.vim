@@ -30,7 +30,7 @@ function! util#trivialHorizontalMotion()
     return 'lh'
 endfunction
 
-function! util#truncateFilename(filename,maxlength)
+function! s:truncateNode(filename,maxlength,...)
     if len(a:filename) <= a:maxlength
         return a:filename
     endif
@@ -40,12 +40,22 @@ function! util#truncateFilename(filename,maxlength)
                     \a:maxlength-len(fnamemodify(a:filename,":t"))-1-3)
         return trunc_fname_head.".../".fnamemodify(a:filename,":t")
     endif
-    if fnamemodify(a:filename,":e") != ""
-        " -1 (a dot), -3 (three dots)
-        let trunc_fname_tail=strpart(fnamemodify(a:filename,":t"),0,
-                    \a:maxlength-len(fnamemodify(a:filename,":e"))-1-3)
-        return trunc_fname_tail."....".fnamemodify(a:filename,":e")
+    if a:0 > 0 && a:1
+        if fnamemodify(a:filename,":e") != ""
+            " -1 (a dot), -3 (three dots)
+            let trunc_fname_tail=strpart(fnamemodify(a:filename,":t"),0,
+                        \a:maxlength-len(fnamemodify(a:filename,":e"))-1-3)
+            return trunc_fname_tail."....".fnamemodify(a:filename,":e")
+        endif
     endif
     let trunc_fname_tail=strpart(fnamemodify(a:filename,":t"),0,a:maxlength-3)
     return trunc_fname_tail."..."
+endfunction
+
+function! util#truncateFilename(filename,maxlength,...)
+    return s:truncateNode(a:filename,a:maxlength,1)
+endfunction
+
+function! util#truncateDirname(dirname,maxlength)
+    return s:truncateNode(a:dirname,a:maxlength)
 endfunction
