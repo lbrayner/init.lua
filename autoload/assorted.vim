@@ -22,7 +22,9 @@ endfunction
 
 function! assorted#SetDictionaryLanguage(global,language)
     if !exists("g:assorted#dictionaries")
-        echoe "No dictionaries defined."
+        if exists("g:vim_did_enter")
+            echoe "No dictionaries defined."
+        endif
         return
     endif
     let dictionaries = g:assorted#dictionaries
