@@ -126,7 +126,7 @@ endfunction
 
 " format
 
-function! assorted#CNPJFormat(...) range
+function! assorted#CNPJFormat() range
     let visual = ''
     if a:firstline != a:lastline
         let visual = "'<,'>"
