@@ -123,3 +123,22 @@ function! assorted#FilterLine()
     exe "sil! read ".fnameescape(temp)
     exe "sil call delete ('".temp."')"
 endfunction
+
+" format
+
+function! assorted#CNPJFormat(...) range
+    let visual = ''
+    if a:firstline != a:lastline
+        let visual = "'<,'>"
+    endif
+    exec visual 
+        \ . 's/\v<([0-9]{2})([0-9]{3})([0-9]{3})([0-9]{4})([0-9]{2})>/\1.\2.\3\/\4-\5/g'
+endfunction
+
+function! assorted#CPFFormat() range
+    let visual = ''
+    if a:firstline != a:lastline
+        let visual = "'<,'>"
+    endif
+    exec visual . 's/\v<([0-9]{3})([0-9]{3})([0-9]{3})([0-9]{2})>/\1.\2.\3-\4/g'
+endfunction

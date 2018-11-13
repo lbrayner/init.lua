@@ -46,3 +46,8 @@ augroup InsertModeUndoPoint
     autocmd!
     autocmd CursorHoldI * call assorted#InsertModeUndoPoint() 
 augroup END
+
+" format
+
+command! -range -nargs=0 CNPJFormat <line1>,<line2>call assorted#CNPJFormat()
+command! -range -nargs=0 CPFFormat <line1>,<line2>call assorted#CPFFormat()
