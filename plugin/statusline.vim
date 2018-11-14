@@ -75,6 +75,7 @@ augroup END
 
 vnoremap <silent> <expr> <SID>VisualModeEnter VisualModeEnter()
 nnoremap <silent> <script> v v<SID>VisualModeEnter
+nnoremap <silent> <script> gv gv<SID>VisualModeEnter
 nnoremap <silent> <script> V V<SID>VisualModeEnter
 nnoremap <silent> <script> <C-v> <C-v><SID>VisualModeEnter
 
