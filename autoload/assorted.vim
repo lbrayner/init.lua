@@ -132,7 +132,7 @@ function! assorted#CNPJFormat() range
         let visual = "'<,'>"
     endif
     exec visual 
-        \ . 's/\v<([0-9]{2})([0-9]{3})([0-9]{3})([0-9]{4})([0-9]{2})>/\1.\2.\3\/\4-\5/g'
+        \ . 's/\v<(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})>/\1.\2.\3\/\4-\5/g'
 endfunction
 
 function! assorted#CPFFormat() range
@@ -140,5 +140,5 @@ function! assorted#CPFFormat() range
     if a:firstline != a:lastline
         let visual = "'<,'>"
     endif
-    exec visual . 's/\v<([0-9]{3})([0-9]{3})([0-9]{3})([0-9]{2})>/\1.\2.\3-\4/g'
+    exec visual . 's/\v<(\d{3})(\d{3})(\d{3})(\d{2})>/\1.\2.\3-\4/g'
 endfunction
