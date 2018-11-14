@@ -294,7 +294,7 @@ augroup END
 
 augroup InferCaseGroup
     autocmd!
-    autocmd FileType gitcommit,text,svn,mail setlocal ignorecase infercase
+    autocmd FileType markdown,gitcommit,text,svn,mail setlocal ignorecase infercase
 augroup END
 
 " XML
