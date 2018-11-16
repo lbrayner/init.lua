@@ -43,9 +43,12 @@ function! statusline#GetStatusLineTail()
     return s:status_line_tail_line_column
 endfunction
 
+" b:Statusline_custom_mod_leftline and b:Statusline_custom_mod_rightline are
+" joined with %=
+
 function! statusline#DefineModifiedStatusLine()
     if exists("b:Statusline_custom_mod_leftline")
-        exec "let &l:statusline='".b:Statusline_custom_mod_leftline."'"
+        exec "let &l:statusline='".b:Statusline_custom_mod_leftline."%='"
     else
         let &l:statusline='%<%1*'
             \ . '%{expand("%:t")}'
@@ -69,9 +72,12 @@ function! statusline#DefineStatusLineNoFocus()
     let &l:statusline='%{statusline#StatusLineNoFocus()}'
 endfunction
 
+" b:Statusline_custom_leftline and b:Statusline_custom_rightline are
+" joined with %=
+
 function! statusline#DefineStatusLine()
     if exists("b:Statusline_custom_leftline")
-        exec "let &l:statusline='".b:Statusline_custom_leftline."'"
+        exec "let &l:statusline='".b:Statusline_custom_leftline."%='"
     else
         let &l:statusline='%<'
             \ . '%{expand("%:t")}'
