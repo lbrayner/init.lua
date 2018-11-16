@@ -1,4 +1,4 @@
-" https://github.com/wincent/ferret
+" https://github.com/wincent/ferret: ferret#private#qargs()
 
 function! s:QFBufnr2Bufname()
     let l:buffer_numbers={}

@@ -3,8 +3,8 @@ let s:DiffTabMessage = 'q to close this tab.'
 function! s:SVNDiff(filename,...)
     exec "let extension = fnamemodify('".a:filename."',':t:e')"
     let pristine = util#escapeFileName(tempname()).".".extension
-    let escaped_filename = shellescape(a:filename)
-    let svncommand = "svn export -r BASE " . escaped_filename . " " . pristine
+    let fnshell = shellescape(a:filename)
+    let svncommand = "svn export -r BASE " . fnshell . " " . pristine
     let patch = util#escapeFileName(tempname())
     try
         if !has("unix") && !has("win32")
@@ -22,7 +22,7 @@ function! s:SVNDiff(filename,...)
                 let diffcommand = diffcommand . " " . extrarg
             endfor
         endif
-        let diffcommand = diffcommand . " " . escaped_filename . " " . pristine
+        let diffcommand = diffcommand . " " . fnshell . " " . pristine
         let stdout = systemlist(diffcommand)
         if v:shell_error > 1 " only values greater than 1 indicate error
             let message = stdout[0]
@@ -31,7 +31,8 @@ function! s:SVNDiff(filename,...)
         call writefile(stdout,patch)
         if getfsize(patch) != 0
             let s:current_tab = tabpagenr()
-            silent exec ":tab sview ".a:filename." | sil lefta vert diffpa ".patch
+            let fncommand = fnameescape(a:filename)
+            silent exec ":tab sview ".fncommand." | sil lefta vert diffpa ".patch
                       \ . ' | exec "file ".expand("%:t")'
                       \ . ' | setlocal noma'
                       \ . ' | setlocal buftype=nofile'
