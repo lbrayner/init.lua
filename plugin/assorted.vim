@@ -40,13 +40,6 @@ nnoremap <silent> [< :<c-u>call assorted#NavigateXmlDepth(-v:count1)<cr>
 
 nnoremap <silent> <leader><f2> :call assorted#HighlightOverLength()<cr>
 
-" idle
-
-augroup InsertModeUndoPoint
-    autocmd!
-    autocmd CursorHoldI * call assorted#InsertModeUndoPoint() 
-augroup END
-
 " format
 
 command! -range -nargs=0 CNPJFormat <line1>,<line2>call assorted#CNPJFormat()

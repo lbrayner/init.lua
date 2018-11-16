@@ -267,6 +267,20 @@ endif
 
 " Subsection: autocommands {{{
 
+" idle
+
+function! s:InsertModeUndoPoint()
+    if mode() != "i"
+        return
+    endif
+    call feedkeys("\<c-g>u")
+endfunction
+
+augroup InsertModeUndoPoint
+    autocmd!
+    autocmd CursorHoldI * call s:InsertModeUndoPoint() 
+augroup END
+
 " buffer aesthetics
 
 function! s:Aesthetics()

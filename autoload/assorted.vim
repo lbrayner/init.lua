@@ -106,13 +106,6 @@ function! assorted#HighlightOverLength()
     let w:HighlightOverLengthFlag = ! w:HighlightOverLengthFlag
 endfunction
 
-function! assorted#InsertModeUndoPoint()
-    if mode() != "i"
-        return
-    endif
-    call feedkeys("\<c-g>u")
-endfunction
-
 function! assorted#FilterLine()
     let line = getline('.')
     let temp = tempname()
