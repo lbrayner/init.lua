@@ -9,7 +9,8 @@ endfunction
 augroup Statusline_FT_netrw
     autocmd!
     autocmd  FileType netrw
-                \ let b:Statusline_custom_leftline = '%<%{fnamemodify(b:netrw_curdir, ":t")}%='
+                \ let b:Statusline_custom_leftline = 
+                \   '%<%{fnamemodify(b:netrw_curdir, ":t")}%='
                 \ . '%4*%{StatuslineNetrwCurdirHead()}%*'
                 \ . ' %3*%1.(%{statusline#extensions#netrw#cwdFlag()}%)%*'
     autocmd  FileType netrw
