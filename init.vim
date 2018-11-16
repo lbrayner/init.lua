@@ -43,6 +43,7 @@ set splitbelow
 set splitright
 set number
 set relativenumber
+set wildmode=longest,list,full
 set wildmenu
 if has("linebreak")
     set breakindent
