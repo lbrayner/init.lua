@@ -1,4 +1,4 @@
-command! -range=% RemoveTrailingSpaces
+command! -bar -range=% RemoveTrailingSpaces
             \ <line1>,<line2>call assorted#RemoveTrailingSpaces()
 
 " dictionaries
