@@ -11,10 +11,11 @@ augroup Statusline_FT_netrw
     autocmd  FileType netrw
                 \ let b:Statusline_custom_leftline = 
                 \   '%<%{fnamemodify(b:netrw_curdir, ":t")}%='
-                \ . '%4*%{StatuslineNetrwCurdirHead()}%*'
-                \ . ' %3*%1.(%{statusline#extensions#netrw#cwdFlag()}%)%*'
     autocmd  FileType netrw
-                \ let b:Statusline_custom_rightline = ' %2*%{&ft}%*'
+                \ let b:Statusline_custom_rightline =
+                \   '%4*%{StatuslineNetrwCurdirHead()}%*'
+                \ . ' %3*%1.(%{statusline#extensions#netrw#cwdFlag()}%)%*'
+                \ . ' %2*%{&ft}%*'
                 \ . ' %3*%1.(%{statusline#DefaultReadOnlyFlag()}%)%*'
                 \ . ' %3.P'
     autocmd FileType netrw

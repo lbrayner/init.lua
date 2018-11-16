@@ -51,6 +51,11 @@ function! statusline#DefineModifiedStatusLine()
             \ . '%{expand("%:t")}'
             \ . '%{statusline#DefaultModifiedFlag()}%*%='
     endif
+    if exists("b:Statusline_custom_mod_rightline")
+        exec "let &l:statusline='".&l:statusline
+                    \.b:Statusline_custom_mod_rightline."'"
+        return
+    endif
     exec "let &l:statusline='".&l:statusline
                 \.statusline#GetStatusLineTail()
                 \."'"
