@@ -253,9 +253,16 @@ nnoremap <silent> <leader>d :setlocal invspell spell?<CR>
 
 " Copying the current buffer's path to the system clipboard
 
-command! FullPath :let @*=expand('%:p:~') | let @+=@* | let @"=@*
-command! Path :let @*=expand('%') | let @+=@* | let @"=@*
-command! Name :let @*=expand('%:t') | let @+=@* | let @"=@*
+if has("clipboard")
+    command! FullPath :let @"=expand('%:p:~') | let @+=@" | let @*=@"
+    command! Path :let @"=expand('%') | let @+=@" | let @*=@"
+    command! Name :let @"=expand('%:t') | let @+=@" | let @*=@"
+else
+    command! FullPath :let @"=expand('%:p:~')
+    command! Path :let @"=expand('%')
+    command! Name :let @"=expand('%:t')
+endif
+
 
 " Subsection: autocommands {{{
 
