@@ -9,7 +9,7 @@
 	url = https://github.com/ctrlpvim/ctrlp.vim.git
 [submodule "pack/bundle/start/dbext.vim"]
 	path = pack/bundle/start/dbext.vim
-	url = https://github.com/vim-scripts/dbext.vim.git
+	url = https://github.com/lbrayner/dbext.vim.git
 [submodule "pack/bundle/start/L9"]
 	path = pack/bundle/start/L9
 	url = https://github.com/vim-scripts/L9.git
