@@ -496,12 +496,6 @@ map X <Plug>Sneak_S
 " scalpel
 nmap <Leader>x <Plug>(Scalpel)
 
-" Glaive
-augroup GlaiveInstallGroup
-    autocmd!
-    autocmd VimEnter * call glaive#Install()
-augroup END
-
 " LargeFile
 let g:LargeFile=1.5
 

@@ -100,15 +100,6 @@
 [submodule "pack/bundle/start/scalpel"]
 	path = pack/bundle/start/scalpel
 	url = https://github.com/wincent/scalpel
-[submodule "pack/bundle/start/vim-codefmt"]
-	path = pack/bundle/start/vim-codefmt
-	url = https://github.com/google/vim-codefmt
-[submodule "pack/bundle/start/vim-glaive"]
-	path = pack/bundle/start/vim-glaive
-	url = https://github.com/google/vim-glaive
-[submodule "pack/bundle/start/vim-maktaba"]
-	path = pack/bundle/start/vim-maktaba
-	url = https://github.com/google/vim-maktaba
 [submodule "pack/bundle/start/vim-ragtag"]
 	path = pack/bundle/start/vim-ragtag
 	url = https://github.com/tpope/vim-ragtag
