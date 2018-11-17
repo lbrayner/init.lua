@@ -8,18 +8,18 @@ if $XDG_CONFIG_HOME == ''
     let $XDG_CONFIG_HOME = fnamemodify($XDG_CONFIG_HOME,":p")
 endif
 
-let s:vim_dir = $HOME . "/.vim"
+let g:vim_dir = $HOME . "/.vim"
 
 if has("win32")
-    let s:vim_dir = $USERPROFILE . "/vimfiles"
+    let g:vim_dir = $USERPROFILE . "/vimfiles"
 endif
 
 if has("nvim")
-    let s:vim_dir = $XDG_CONFIG_HOME . "/nvim"
+    let g:vim_dir = $XDG_CONFIG_HOME . "/nvim"
 endif
 
 if $MYVIMRC == ''
-    let s:vim_dir = expand('<sfile>:p:h')
+    let g:vim_dir = expand('<sfile>:p:h')
 endif
 
 " are we using ssh?
@@ -95,7 +95,7 @@ endif
 " setting dir
 
 if !has("nvim")
-    let s:swap_dir = s:vim_dir."/swap"
+    let s:swap_dir = g:vim_dir."/swap"
     exe "let s:has_swap_dir = isdirectory('".s:swap_dir."')"
     if !s:has_swap_dir
         call mkdir(s:swap_dir)
@@ -363,7 +363,7 @@ au BufRead *.sql setlocal indentexpr=indent
 
 " sourcing init.local.vim if it exists
 
-let s:init_local = s:vim_dir . "/init.local.vim"
+let s:init_local = g:vim_dir . "/init.local.vim"
 if filereadable(s:init_local)
   execute 'source ' . s:init_local
 endif
@@ -372,7 +372,7 @@ endif
 
 if has("gui_running")
     if $MYGVIMRC == ''
-        let s:ginit = s:vim_dir . "/ginit.vim"
+        let s:ginit = g:vim_dir . "/ginit.vim"
         if filereadable(s:ginit)
           execute 'source ' . s:ginit
         endif
@@ -382,7 +382,7 @@ endif
 " sourcing ginit.local.vim if it exists
 
 if has("gui_running")
-    let s:ginit_local = s:vim_dir . "/ginit.local.vim"
+    let s:ginit_local = g:vim_dir . "/ginit.local.vim"
     if filereadable(s:ginit_local)
       execute 'source ' . s:ginit_local
     endif
@@ -435,14 +435,16 @@ map <silent> <leader>ge <Plug>CamelCaseMotion_ge
 " ctrlp
 let g:ctrlp_working_path_mode = ''
 let g:ctrlp_reuse_window = 'netrw\|help'
-let s:ctrlp_custom_ignore = {
+let g:extensions#ctrlp#ctrlp_custom_ignore = {
             \ 'file': '\v\.o$|\.exe$|\.lnk$|\.bak$|\.sw[a-z]$|\.class$|\.jasper$'
             \               . '|\.r[0-9]+$|\.mine$',
             \ 'dir': '\C\V' . escape(expand('~'),' \') . '\$\|'
             \               . '\v[\/](classes|target|build|test-classes|dumps)$'
             \ }
 
-let g:ctrlp_custom_ignore = deepcopy(s:ctrlp_custom_ignore)
+let g:ctrlp_custom_ignore = {
+            \ 'func': 'extensions#ctrlp#ignore'
+            \ }
 
 let g:ctrlp_switch_buffer = 't'
 let g:ctrlp_map = '<f7>'
