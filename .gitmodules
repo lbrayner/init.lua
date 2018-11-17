@@ -34,18 +34,9 @@
 [submodule "pack/bundle/start/syntastic"]
 	path = pack/bundle/start/syntastic
 	url = https://github.com/scrooloose/syntastic.git
-[submodule "pack/bundle/start/tabman.vim"]
-	path = pack/bundle/start/tabman.vim
-	url = https://github.com/kien/tabman.vim.git
 [submodule "pack/bundle/start/tpope-vim-abolish"]
 	path = pack/bundle/start/tpope-vim-abolish
 	url = https://github.com/tpope/tpope-vim-abolish.git
-[submodule "pack/bundle/start/vim-airline"]
-	path = pack/bundle/start/vim-airline
-	url = https://github.com/vim-airline/vim-airline.git
-[submodule "pack/bundle/start/vim-airline-themes"]
-	path = pack/bundle/start/vim-airline-themes
-	url = https://github.com/vim-airline/vim-airline-themes.git
 [submodule "pack/bundle/start/vim-colors-solarized"]
 	path = pack/bundle/start/vim-colors-solarized
 	url = https://github.com/altercation/vim-colors-solarized.git
