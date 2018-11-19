@@ -8,6 +8,11 @@ function! util#escapeFileName(filename)
     return substitute(a:filename, '\', '/', 'g')
 endfunction
 
+function! util#GetComparableNodeName(filename)
+    let node = resolve(util#escapeFileName(fnamemodify(a:filename,":p")))
+    return substitute(node,"/$","","")
+endfunction
+
 " Based on tpope's vim-surround
 function! util#getVisualSelection()
     let ve = &virtualedit

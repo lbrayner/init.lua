@@ -1,7 +1,7 @@
 function! s:IsVimDir()
     if exists("g:vim_dir")
-        let vim_dir = resolve(util#escapeFileName(g:vim_dir))
-        let cwd = resolve(util#escapeFileName(getcwd()))
+        let vim_dir = util#GetComparableNodeName(g:vim_dir)
+        let cwd = util#GetComparableNodeName(getcwd())
         return vim_dir ==# cwd
     endif
     return 0
