@@ -103,3 +103,6 @@
 [submodule "pack/bundle/start/vim-easy-align"]
 	path = pack/bundle/start/vim-easy-align
 	url = https://github.com/junegunn/vim-easy-align
+[submodule "pack/bundle/start/vim-matchit"]
+	path = pack/bundle/start/vim-matchit
+	url = https://github.com/lbrayner/vim-matchit
