@@ -2,10 +2,10 @@ let s:DiffTabMessage = 'q to close this tab.'
 
 function! s:SVNDiff(filename,...)
     exec "let extension = fnamemodify('".a:filename."',':t:e')"
-    let pristine = util#escapeFileName(tempname()).".".extension
+    let pristine = shellescape(tempname()).".".extension
     let fnshell = shellescape(a:filename)
     let svncommand = "svn export -r BASE " . fnshell . " " . pristine
-    let patch = util#escapeFileName(tempname())
+    let patch = tempname()
     try
         if !has("unix") && !has("win32")
             throw "Only unix and win32 supported."
@@ -66,15 +66,10 @@ endfunction
 
 function! subversion#SVNDiffContextual(...)
     let filename = expand("<cfile>")
-    " echomsg filename
-    let filename = util#escapeFileName(fnamemodify(filename, ':p'))
-    " echomsg filename
+    let filename = fnamemodify(filename, ':p')
     if filereadable(filename)
         call subversion#SVNDiffCursor()
     else
-        let filename = expand("%")
-        let filename = util#escapeFileName(fnamemodify(filename, ':p'))
-        " echomsg filename
         call subversion#SVNDiffThis()
     endif
 endfunction

@@ -4,12 +4,8 @@ function! util#vimmap(leftside,keyseq,keyseqtarget)
     endif
 endfunction
 
-function! util#escapeFileName(filename)
-    return substitute(a:filename, '\', '/', 'g')
-endfunction
-
 function! util#GetComparableNodeName(filename)
-    let node = resolve(util#escapeFileName(fnamemodify(a:filename,":p")))
+    let node = resolve(substitute(fnamemodify(a:filename,":p"),'\','/','g'))
     return substitute(node,"/$","","")
 endfunction
 
