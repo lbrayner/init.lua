@@ -33,7 +33,7 @@ function! extensions#ctrlp#ignore(item,type)
             if s:IsVimDir()
                 let vim_dir = s:GetVimDir()
                 let dir = g:extensions#ctrlp#ctrlp_custom_ignore.dir
-                let dir .= '|\V' . vim_dir . '/\v(eclim|pack)$'
+                let dir .= '\V\|' . vim_dir . '/\v(eclim|pack)$'
                 return a:item =~# dir
             endif
             return a:item =~# g:extensions#ctrlp#ctrlp_custom_ignore.dir

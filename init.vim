@@ -438,8 +438,7 @@ let g:ctrlp_reuse_window = 'netrw\|help'
 let g:extensions#ctrlp#ctrlp_custom_ignore = {
             \ 'file': '\v\.o$|\.exe$|\.lnk$|\.bak$|\.sw[a-z]$|\.class$|\.jasper$'
             \               . '|\.r[0-9]+$|\.mine$',
-            \ 'dir': '\C\V' . escape(expand('~'),' \') . '\$\|'
-            \               . '\v[\/](classes|target|build|test-classes|dumps)$'
+            \ 'dir': '\C\V' . escape(expand('~'),' \') . '\$'
             \ }
 
 let g:ctrlp_custom_ignore = {
