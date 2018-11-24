@@ -60,3 +60,7 @@ endfunction
 function! util#truncateDirname(dirname,maxlength)
     return s:truncateNode(a:dirname,a:maxlength)
 endfunction
+
+function! util#IsEclipseProject()
+    return filereadable(".project")
+endfunction
