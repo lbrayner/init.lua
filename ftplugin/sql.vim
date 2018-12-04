@@ -8,3 +8,7 @@ if &ft == 'sql'
     command! -buffer SqlBreakString
                 \ :call append(line("."),sql#format#break_string(getline("."))) | delete
 endif
+
+" delimitMate
+
+let b:delimitMate_matchpairs = "(:)"
