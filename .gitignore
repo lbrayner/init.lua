@@ -1,5 +1,6 @@
 .netrwhist
 /after/plugin/init.vim
+/plugin/init.vim
 /bundle
 /doc/tags
 /eclim
