@@ -501,13 +501,6 @@ nmap <Leader>x <Plug>(Scalpel)
 " LargeFile
 let g:LargeFile=1.5
 
-" dbext
-
-function! DBextPostResult(...)
-    " removing an undesirable mapping
-    unmap <buffer> q
-endfunction
-
 " ragtag
 
 let g:ragtag_global_maps = 1
