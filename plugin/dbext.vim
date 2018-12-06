@@ -7,6 +7,7 @@ function! DBextPostResult(...)
                         \ keepend transparent fold
             syn sync fromstart
             setlocal foldmethod=syntax
+            normal! 2j
         endif
     endif
 endfunction
