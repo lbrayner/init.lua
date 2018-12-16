@@ -248,6 +248,11 @@ cnoremap <c-s> <c-k>
 
 nnoremap <silent> <leader>d :setlocal invspell spell?<CR>
 
+" diff
+
+nnoremap <silent> <leader>do :diffoff!<cr>
+nnoremap <silent> <leader>di :let &l:diffopt=&diffopt.',iwhite'<cr>
+
 " }}}
 
 " Subsection: commands

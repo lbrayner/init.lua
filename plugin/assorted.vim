@@ -18,10 +18,6 @@ nnoremap <silent> <leader>ff
 nnoremap <silent> <leader>fr
             \ :call assorted#CopyFilePathUnderCursor()<cr>
 
-"diff
-
-nnoremap <silent> <leader>do :diffoff!<cr>
-
 " other
 
 vnoremap <silent> <leader><f3> :call assorted#FilterVisualSelection()<cr>
