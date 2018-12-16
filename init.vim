@@ -260,7 +260,7 @@ function! s:ToggleIWhite()
     echo '+iwhite'
 endfunction
 
-nnoremap <leader>do :diffoff! <bar> echo 'diffoff!'<cr>
+nnoremap <leader>do :diffoff!<cr>
 nnoremap <leader>di :call <SID>ToggleIWhite()<cr>
 
 " }}}
