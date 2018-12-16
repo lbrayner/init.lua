@@ -250,8 +250,18 @@ nnoremap <silent> <leader>d :setlocal invspell spell?<CR>
 
 " diff
 
-nnoremap <silent> <leader>do :diffoff!<cr>
-nnoremap <silent> <leader>di :let &l:diffopt=&diffopt.',iwhite'<cr>
+function! s:ToggleIWhite()
+    if &l:diffopt =~# 'iwhite'
+        setlocal diffopt-=iwhite
+        echo '-iwhite'
+        return
+    endif
+    setlocal diffopt+=iwhite
+    echo '+iwhite'
+endfunction
+
+nnoremap <leader>do :diffoff! <bar> echo 'diffoff!'<cr>
+nnoremap <leader>di :call <SID>ToggleIWhite()<cr>
 
 " }}}
 
