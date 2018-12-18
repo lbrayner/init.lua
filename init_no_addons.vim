@@ -51,3 +51,13 @@ endif
 if sysvimrcreadable
     exe "source ".sysvimrc
 endif
+
+if $MYVIMRC != ''
+    let g:vim_dir = expand('<sfile>:p:h')
+    exe "set runtimepath+=".g:vim_dir
+    exe "set runtimepath+=".g:vim_dir."/after"
+endif
+
+if $MYVIMRC != ''
+    exe "source ".$MYVIMRC
+endif

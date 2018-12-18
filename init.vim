@@ -486,7 +486,7 @@ endif
 if s:enable_solarized
     set cursorline
     let g:solarized_italic = 1
-    colorscheme solarized
+    silent! colorscheme solarized
     set background=dark
     if exists("g:vim_did_enter")
         call statusline#initialize()
