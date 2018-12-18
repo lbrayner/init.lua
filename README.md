@@ -18,3 +18,5 @@ If you use *vim*:
 dotvim$ ln -s "$(readlink -f ..)"/dotvim ~/.vim
 dotvim$ ln -s "$(readlink -f ..)"/dotvim/init.vim ~/.vimrc
 ```
+
+Packages (`:h packages`) are submodules in `pack/bundle/start`.
