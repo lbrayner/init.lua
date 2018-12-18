@@ -438,6 +438,11 @@ if !has("nvim")
     packadd matchit
 endif
 
+if !filereadable(g:vim_dir.'/pack/bundle/start/vim-surround/plugin/surround.vim')
+    " this means we haven't initialized the submodules
+    finish
+endif
+
 " Subsection: package customisation {{{
 
 " CamelCase

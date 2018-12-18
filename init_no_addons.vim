@@ -59,5 +59,7 @@ if $MYVIMRC != ''
 endif
 
 if $MYVIMRC != ''
-    exe "source ".$MYVIMRC
+    let vimrc = $MYVIMRC
+    let $MYVIMRC = ''
+    exe "source ".vimrc
 endif
