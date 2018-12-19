@@ -263,6 +263,13 @@ endfunction
 nnoremap <leader>do :diffoff!<cr>
 nnoremap <leader>di :call <SID>ToggleIWhite()<cr>
 
+" windows stdin garbles line endings
+set patchexpr=MyPatch()
+function MyPatch()
+   :call system("patch -o " . v:fname_out . " " . v:fname_in . 
+               \ " " . v:fname_diff)
+endfunction
+
 " }}}
 
 " Subsection: commands
