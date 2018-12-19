@@ -263,7 +263,8 @@ endfunction
 nnoremap <leader>do :diffoff!<cr>
 nnoremap <leader>di :call <SID>ToggleIWhite()<cr>
 
-" windows stdin garbles line endings
+" Microsoft Windows standard input converts line endings, so it's best to
+" avoid using it
 set patchexpr=MyPatch()
 function MyPatch()
    :call system("patch -o " . v:fname_out . " " . v:fname_in . 
