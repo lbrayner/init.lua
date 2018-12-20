@@ -103,6 +103,16 @@ if !has("nvim")
     let &dir=s:swap_dir."//"
 endif
 
+" diff & patch
+
+" Microsoft Windows standard input converts line endings, so it's best to
+" avoid using it
+set patchexpr=MyPatch()
+function MyPatch()
+   :call system("patch -o " . v:fname_out . " " . v:fname_in . 
+               \ " " . v:fname_diff)
+endfunction
+
 " }}}
 
 " Subsection: mappings — pt-BR keyboard {{{1
@@ -248,7 +258,7 @@ cnoremap <c-s> <c-k>
 
 nnoremap <silent> <leader>d :setlocal invspell spell?<CR>
 
-" diff
+" diff & patch
 
 function! s:ToggleIWhite()
     if &l:diffopt =~# 'iwhite'
@@ -262,14 +272,6 @@ endfunction
 
 nnoremap <leader>do :diffoff!<cr>
 nnoremap <leader>di :call <SID>ToggleIWhite()<cr>
-
-" Microsoft Windows standard input converts line endings, so it's best to
-" avoid using it
-set patchexpr=MyPatch()
-function MyPatch()
-   :call system("patch -o " . v:fname_out . " " . v:fname_in . 
-               \ " " . v:fname_diff)
-endfunction
 
 " }}}
 
