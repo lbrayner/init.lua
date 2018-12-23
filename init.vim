@@ -330,7 +330,14 @@ augroup HelpAutoGroup
     autocmd FileType help,eclimhelp au BufEnter <buffer> setlocal relativenumber
 augroup END
 
+" comment string
+
 " svn commit files
+
+augroup PoundComment
+    autocmd!
+    autocmd FileType apache,fstab au BufEnter <buffer> let &l:commentstring = "# %s"
+augroup END
 
 augroup SvnFtGroup
     autocmd!
