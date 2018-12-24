@@ -332,12 +332,12 @@ augroup END
 
 " comment string
 
-" svn commit files
-
 augroup PoundComment
     autocmd!
     autocmd FileType apache,fstab au BufEnter <buffer> let &l:commentstring = "# %s"
 augroup END
+
+" svn commit files
 
 augroup SvnFtGroup
     autocmd!
