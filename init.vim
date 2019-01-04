@@ -551,6 +551,9 @@ let g:SuperTabCtrlXCtrlPCtrlNSearchPlaces = 1
 " paredit is used instead
 au FileType lisp,*clojure*,scheme,racket let b:loaded_delimitMate = 1
 
+" apache
+au FileType apache let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
+
 " vim-easy-align
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
