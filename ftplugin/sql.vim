@@ -12,3 +12,7 @@ endif
 " delimitMate
 
 let b:delimitMate_matchpairs = "(:),[:],{:}"
+
+" vim-surround
+
+let b:surround_indent = 0
