@@ -240,6 +240,10 @@ if has("gui_running") || has("nvim")
     cnoremap <C-G> <C-C>
     " open the command line buffer
     cnoremap <C-Z> <C-F>
+    " one word forward
+    inoremap <M-f> <C-Right>
+    " one word backward
+    inoremap <M-b> <C-Left>
 endif
 
 " inserting the current line
