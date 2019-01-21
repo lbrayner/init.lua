@@ -255,8 +255,8 @@ cnoremap <c-r><c-n> <c-r>=line(".")<cr>
 inoremap <c-k> <c-o>D
 cnoremap <c-k> <c-f>D<c-c><c-c>:<up>
 " remapping digraph
-inoremap <c-s> <c-k>
-cnoremap <c-s> <c-k>
+inoremap <c-b> <c-k>
+cnoremap <c-b> <c-k>
 
 " spell
 
