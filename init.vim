@@ -256,7 +256,6 @@ inoremap <c-k> <c-o>D
 cnoremap <c-k> <c-f>D<c-c><c-c>:<up>
 " remapping digraph
 inoremap <c-b> <c-k>
-cnoremap <c-b> <c-k>
 
 " spell
 
