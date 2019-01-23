@@ -6,7 +6,11 @@ endfunction
 
 function! util#GetComparableNodeName(filename)
     let node = resolve(substitute(fnamemodify(a:filename,":p"),'\','/','g'))
-    return substitute(node,"/$","","")
+    let node = substitute(node,"/$","","")
+    if has("win32") || has ("win64")
+        return tolower(node)
+    endif
+    return node
 endfunction
 
 " Based on tpope's vim-surround
