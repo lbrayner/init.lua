@@ -117,6 +117,9 @@ endfunction
 
 " Subsection: mappings — pt-BR keyboard {{{1
 
+" disable Ex mode mapping
+nmap Q <nop>
+
 " cedilla is right where : is on an en-US keyboard
 nmap ç :
 vmap ç :
