@@ -133,5 +133,14 @@ function! assorted#CPFFormat() range
     if a:firstline != a:lastline
         let visual = "'<,'>"
     endif
+    let is_visual = len(visual) != 0
+    let text = getline(line('.'))
+    if is_visual
+        let text = util#getVisualSelection()
+    endif
+    if text =~# '\v^\d{3}.\d{3}.\d{3}-\d{2}$'
+        exec visual . 's/[.-]//g'
+        return
+    endif
     exec visual . 's/\v<(\d{3})(\d{3})(\d{3})(\d{2})>/\1.\2.\3-\4/g'
 endfunction
