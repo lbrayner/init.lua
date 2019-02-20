@@ -14,6 +14,6 @@ if &ft == 'mail'
     endif
     vmap <buffer> <leader>a <Plug>Linkify
     setlocal completefunc=email#EmailComplete
-    autocmd! CursorMoved,CursorMovedI
+    autocmd! CursorMoved,CursorMovedI <buffer>
     autocmd CursorMoved,CursorMovedI <buffer> call mail#mail_textwidth()
 endif
