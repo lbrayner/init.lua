@@ -13,5 +13,7 @@ if &ft == 'mail'
         \ '<\@<=\([^/][^ \t>]*\)[^>]*\%(>\|$\):<\@<=/\1>'
     endif
     vmap <buffer> <leader>a <Plug>Linkify
+    setlocal completefunc=email#EmailComplete
+    autocmd! CursorMoved,CursorMovedI
+    autocmd CursorMoved,CursorMovedI <buffer> call mail#mail_textwidth()
 endif
-setlocal completefunc=email#EmailComplete
