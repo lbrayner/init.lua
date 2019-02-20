@@ -18,7 +18,7 @@ function! extensions#ctrlp#ignore(item,type)
                 let vim_dir = s:GetVimDir()
                 let file = g:extensions#ctrlp#ctrlp_custom_ignore.file
                 let file .= '|\V' . vim_dir . '/\vplugin/eclim\.vim$'
-                return a:item =~# file
+                return util#GetComparableNodeName(a:item) =~# file
             endif
             return a:item =~# g:extensions#ctrlp#ctrlp_custom_ignore.file
         endif
@@ -34,7 +34,7 @@ function! extensions#ctrlp#ignore(item,type)
             if s:IsVimDir()
                 let vim_dir = s:GetVimDir()
                 let dir .= '\V\|' . vim_dir . '/\v(eclim|pack)$'
-                return a:item =~# dir
+                return util#GetComparableNodeName(a:item) =~# dir
             endif
             if util#IsEclipseProject()
                 let dir .= '\v|[\/](classes|target|build|test-classes|dumps)$'
