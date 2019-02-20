@@ -3,10 +3,14 @@
 
 function! mail#mail_textwidth()
     if index(["mailHeaderKey", "mailSubject", "mailHeaderEmail",
-                \ "mailHeader"], synIDattr(synID(line('.'), col('.'), 1),
+                \ "mailHeader"], synIDattr(synID(line('.'), 1, 1),
                 \ 'name')) >= 0
-        setlocal textwidth=500
+        if &textwidth != 0
+            setlocal textwidth=0
+        endif
     else
-        setlocal textwidth=72
+        if &textwidth != 72
+            setlocal textwidth=72
+        endif
     endif
 endfun
