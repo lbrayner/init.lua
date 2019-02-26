@@ -138,7 +138,7 @@ function! assorted#CPFFormat() range
     if is_visual
         let text = util#getVisualSelection()
     endif
-    if text =~# '\v^\d{3}.\d{3}.\d{3}-\d{2}$'
+    if text =~# '\v<\d{3}.\d{3}.\d{3}-\d{2}>'
         exec visual . 's/[.-]//g'
         return
     endif
