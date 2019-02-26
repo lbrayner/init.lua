@@ -120,27 +120,26 @@ endfunction
 " format
 
 function! assorted#CNPJFormat() range
-    let visual = ''
-    if a:firstline != a:lastline
-        let visual = "'<,'>"
+    let range = a:firstline . ',' . a:lastline
+    let is_visual = len(range) != 0
+    let text = getline(a:firstline)
+    let regex = '\v<(\d{2})\.(\d{3})\.(\d{3})/(\d{4})-(\d{2})>'
+    if text =~# regex
+        exec range . 's#' . regex . '#\1\2\3\4\5#g'
+        return
     endif
-    exec visual 
-        \ . 's/\v<(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})>/\1.\2.\3\/\4-\5/g'
+    exec range 
+        \ . 's#\v<(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})>#\1.\2.\3/\4-\5#g'
 endfunction
 
 function! assorted#CPFFormat() range
-    let visual = ''
-    if a:firstline != a:lastline
-        let visual = "'<,'>"
-    endif
-    let is_visual = len(visual) != 0
-    let text = getline(line('.'))
-    if is_visual
-        let text = util#getVisualSelection()
-    endif
-    if text =~# '\v<\d{3}.\d{3}.\d{3}-\d{2}>'
-        exec visual . 's/[.-]//g'
+    let range = a:firstline . ',' . a:lastline
+    let is_visual = len(range) != 0
+    let text = getline(a:firstline)
+    let regex = '\v<(\d{3})\.(\d{3})\.(\d{3})-(\d{2})>'
+    if text =~# regex
+        exec range . 's#' . regex . '#\1\2\3\4#g'
         return
     endif
-    exec visual . 's/\v<(\d{3})(\d{3})(\d{3})(\d{2})>/\1.\2.\3-\4/g'
+    exec range . 's#\v<(\d{3})(\d{3})(\d{3})(\d{2})>#\1.\2.\3-\4#g'
 endfunction
