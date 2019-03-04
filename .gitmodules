@@ -106,3 +106,6 @@
 [submodule "pack/bundle/start/vim-matchit"]
 	path = pack/bundle/start/vim-matchit
 	url = https://github.com/lbrayner/vim-matchit
+[submodule "pack/bundle/start/fzf.vim"]
+	path = pack/bundle/start/fzf.vim
+	url = https://github.com/junegunn/fzf.vim

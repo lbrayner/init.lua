@@ -179,7 +179,6 @@ nnoremap <F4> :execute getline(".")<CR>
 
 nnoremap <leader><F5> :ls<CR>:buffer<Space>
 nnoremap <F6> :w<CR>
-nnoremap <leader><F7> :find<space>
 nnoremap <leader><F6> :w!<CR>
 nnoremap <silent> <F12>  :setlocal list!<CR>
 nnoremap <leader>\| :setlocal wrap! wrap?<CR>
@@ -494,6 +493,11 @@ let g:ctrlp_tabpage_position = 'bc'
 let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max:10,results:10'
 let g:ctrlp_clear_cache_on_exit = 0
 nnoremap <silent> <F5> :CtrlPBuffer<cr>
+
+" fzf.vim
+let g:fzf_buffers_jump = 1
+command! -bar -bang -nargs=? -complete=buffer Buffers
+            \ call fzf#vim#buffers(<q-args>, <bang>0) " eclim shadows this command
 
 " vim-rzip
 
