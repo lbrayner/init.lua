@@ -496,7 +496,7 @@ nnoremap <silent> <F5> :CtrlPBuffer<cr>
 
 " fzf.vim
 let g:fzf_buffers_jump = 1
-let g:fzf_history_dir = '~/.cache/fzf_cache/production'
+let g:fzf_history_dir = $HOME . '/.cache/fzf_cache/production'
 command! -bar -bang -nargs=? -complete=buffer Buffers
             \ call fzf#vim#buffers(<q-args>, <bang>0) " eclim shadows this command
 
