@@ -9,28 +9,22 @@ function! s:MessageBuffers(buffer_count)
 endfunction
 
 function! s:WipeBuffers(predicate)
-    call s:LoopBuffers(a:predicate,'bwipe')
+    let buffer_count = s:LoopBuffers(a:predicate,'bwipe')
+    call s:MessageBuffers(buffer_count)
 endfunction
 
 function! s:LoopBuffers(predicate,command)
 	let last_buffer = bufnr('$')
-	let delete_count = 0
+	let buffer_count = 0
 	let n = 1
-        " let buflisted_pred = 'buflisted(n) && '
 	while n <= last_buffer
         if eval(a:predicate)
-            if getbufvar(n, '&modified')
-                echoe 'No write since last change for buffer' n '(add ! to override)'
-            else
-                silent exe a:command . ' ' . n
-				if ! buflisted(n)
-					let delete_count = delete_count+1
-				endif
-            endif
+            silent exe a:command . ' ' . n
+            let buffer_count = buffer_count+1
         endif
 		let n = n+1
 	endwhile
-    call s:MessageBuffers(delete_count)
+    return buffer_count
 endfunction
 
 function! buffer#BufWipeTab()
@@ -93,5 +87,18 @@ function! buffer#BufWipeForce(...)
     else
         let s:wipe_pattern = expand('%:t')
     endif
-    call s:LoopBuffers('buflisted(n) && bufname(n) =~? s:wipe_pattern','bwipe!')
+    let buffer_count = s:LoopBuffers('buflisted(n) && bufname(n) =~?'
+                                    \ . ' s:wipe_pattern','bwipe!')
+    call s:MessageBuffers(buffer_count)
+endfunction
+
+function! buffer#BufWipeForceUnlisted(...)
+    if a:0 > 0
+        let s:wipe_pattern = a:1
+    else
+        let s:wipe_pattern = expand('%:t')
+    endif
+    let buffer_count =  s:LoopBuffers('!buflisted(n) && bufname(n) =~?'
+                                    \ . ' s:wipe_pattern','bwipe!')
+    call s:MessageBuffers(buffer_count)
 endfunction
