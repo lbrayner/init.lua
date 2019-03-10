@@ -109,3 +109,6 @@
 [submodule "pack/bundle/start/fzf.vim"]
 	path = pack/bundle/start/fzf.vim
 	url = https://github.com/junegunn/fzf.vim
+[submodule "pack/bundle/start/easy_dbext.vim"]
+	path = pack/bundle/start/easy_dbext.vim
+	url = https://github.com/lbrayner/easy_dbext.vim
