@@ -1,3 +1,22 @@
+let sysvimrcreadable = 0
+let sysvimrc = ""
+
+if has("win32")
+    let sysvimrc = $VIM."/_vimrc"
+endif
+
+if has("unix")
+    let sysvimrc = $VIM."/vimrc"
+endif
+
+if !empty(sysvimrc)
+    exe "let sysvimrcreadable = filereadable('".sysvimrc."')"
+endif
+
+if sysvimrcreadable
+    exe "source ".sysvimrc
+endif
+
 if $XDG_CONFIG_HOME == ''
     let $XDG_CONFIG_HOME = '~/.config'
     if has("win32")
@@ -31,25 +50,6 @@ if has('packages')
         set packpath-=$XDG_CONFIG_HOME/nvim
         set packpath-=$XDG_CONFIG_HOME/nvim/after
     endif
-endif
-
-let sysvimrcreadable = 0
-let sysvimrc = ""
-
-if has("win32")
-    let sysvimrc = $VIM."/_vimrc"
-endif
-
-if has("unix")
-    let sysvimrc = $VIM."/vimrc"
-endif
-
-if !empty(sysvimrc)
-    exe "let sysvimrcreadable = filereadable('".sysvimrc."')"
-endif
-
-if sysvimrcreadable
-    exe "source ".sysvimrc
 endif
 
 if $MYVIMRC != ''
