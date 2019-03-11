@@ -53,9 +53,11 @@ if sysvimrcreadable
 endif
 
 if $MYVIMRC != ''
-    let g:vim_dir = expand('<sfile>:p:h')
+    let g:vim_dir = fnamemodify($MYVIMRC,':p:h')
     exe "set runtimepath+=".g:vim_dir
     exe "set runtimepath+=".g:vim_dir."/after"
+    exe "set packpath+=".g:vim_dir
+    exe "set packpath+=".g:vim_dir."/after"
 endif
 
 if $MYVIMRC != ''
