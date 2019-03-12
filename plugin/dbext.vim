@@ -15,7 +15,9 @@ function! DBextPostResult(...)
 endfunction
 
 function! s:SQL_SelectParagraph()
+    let winview = winsaveview()
     exe "normal! vip:\<c-u>call dbext#DB_execSql(DB_getVisualBlock())\<cr>"
+    call winrestview(winview)
 endfunction
 
 let s:toggle_window_size = 0
