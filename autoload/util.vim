@@ -68,3 +68,15 @@ endfunction
 function! util#IsEclipseProject()
     return filereadable(".project")
 endfunction
+
+function! util#PreserveViewPort(command)
+    let winview = winsaveview()
+    exec a:command
+    call winrestview(winview)
+endfunction
+
+function! util#PreservePosition(command)
+    let cursor_pos = getpos('.')
+    exec a:command
+    call setpos('.',cursor_pos)
+endfunction
