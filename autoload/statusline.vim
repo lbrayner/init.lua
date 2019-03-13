@@ -174,7 +174,7 @@ endfunction
 
 function! statusline#LoadTheme(colorTheme)
     if exists("*statusline#themes#".a:colorTheme."#getColorMapping")
-        exec "source autoload/statusline/themes/".a:colorTheme.".vim"
+        exec "source " . g:vim_dir . "/autoload/statusline/themes/".a:colorTheme.".vim"
     endif
 
     exec "let colorMapping = statusline#themes#".a:colorTheme."#getColorMapping()"
