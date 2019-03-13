@@ -1,10 +1,5 @@
-function! s:IsVimDir()
-    if exists("g:vim_dir")
-        let vim_dir = util#GetComparableNodeName(g:vim_dir)
-        let cwd = util#GetComparableNodeName(getcwd())
-        return vim_dir ==# cwd
-    endif
-    return 0
+function! s:IsVimBundle()
+    return filereadable("init.vim")
 endfunction
 
 function! s:GetVimDir()
@@ -14,7 +9,7 @@ endfunction
 function! extensions#ctrlp#ignore(item,type)
     if a:type ==# 'file'
         if has_key(g:extensions#ctrlp#ctrlp_custom_ignore,'file')
-            if s:IsVimDir()
+            if s:IsVimBundle()
                 let vim_dir = s:GetVimDir()
                 let file = g:extensions#ctrlp#ctrlp_custom_ignore.file
                 let file .= '|\V' . vim_dir . '/\vplugin/eclim\.vim$'
@@ -31,7 +26,7 @@ function! extensions#ctrlp#ignore(item,type)
     if a:type ==# 'dir'
         if has_key(g:extensions#ctrlp#ctrlp_custom_ignore,'dir')
             let dir = g:extensions#ctrlp#ctrlp_custom_ignore.dir
-            if s:IsVimDir()
+            if s:IsVimBundle()
                 let vim_dir = s:GetVimDir()
                 let dir .= '\V\|' . vim_dir . '/\v(eclim|pack)$'
                 return util#GetComparableNodeName(a:item) =~# dir
