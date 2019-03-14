@@ -2,6 +2,10 @@ function! s:IsVimBundle()
     return filereadable("init.vim")
 endfunction
 
+function! s:IsEclipseProject()
+    return filereadable(".project")
+endfunction
+
 function! s:GetVimDir()
     return util#GetComparableNodeName(g:vim_dir)
 endfunction
@@ -31,7 +35,7 @@ function! extensions#ctrlp#ignore(item,type)
                 let dir .= '\V\|' . vim_dir . '/\v(eclim|pack)$'
                 return util#GetComparableNodeName(a:item) =~# dir
             endif
-            if util#IsEclipseProject()
+            if s:IsEclipseProject()
                 let dir .= '\v|[\/](classes|target|build|test-classes|dumps)$'
                 return a:item =~# dir
             endif
