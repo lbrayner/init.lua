@@ -2,7 +2,7 @@ function s:Error(message)
     return "jasper.vim: " . a:message
 endfunction
 
-function! s:JasperVerticalDisplacement(displacement,...) range
+function! s:JasperVerticalDisplacement(displacement,...)
     if a:0 > 2
         echoerr s:Error("Three arguments at most.")
         return
@@ -15,7 +15,8 @@ function! s:JasperVerticalDisplacement(displacement,...) range
     if a:0 >= 2
         let maxheight = a:2
     endif
-    exe a:firstline.','.a:lastline
+    normal! v2atv
+    exe "'<".','."'>"
                 \ . 's/\(y="\)\@<=\(\d\+\)/\=(submatch(2) >= minheight'
                 \ . ' && (maxheight < 0 || submatch(2) <= maxheight) ?'
                 \ . ' submatch(2)+a:displacement : submatch(2) )/'
@@ -34,8 +35,8 @@ function! s:JasperHorizontalDisplacement(displacement,...)
                 \ submatch(2)+a:displacement : submatch(2) )/
 endfunction
 
-command! -range=% -nargs=+ JasperVerticalDisplacement
-            \ <line1>,<line2>call <SID>JasperVerticalDisplacement(<f-args>)
+command! -nargs=+ JasperVerticalDisplacement
+            \ call <SID>JasperVerticalDisplacement(<f-args>)
 
 command! -nargs=+ JasperHorizontalDisplacement
             \ call <SID>JasperHorizontalDisplacement(<f-args>)
