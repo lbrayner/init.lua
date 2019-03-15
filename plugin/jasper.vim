@@ -1,5 +1,5 @@
 function s:Error(message)
-    return "Jasper.vim: " . a:message
+    return "jasper.vim: " . a:message
 endfunction
 
 function! s:JasperVerticalDisplacement(displacement,...)
