@@ -78,7 +78,6 @@ endfunction
 function! s:NavigateXmlNthParent(n)
     let n_command = "v" . (a:n+1) . "at"
     exec "silent normal! " . n_command . "v"
-    exec "silent normal! \<esc>"
 endfunction
 
 function! assorted#NavigateXmlDepth(depth)
