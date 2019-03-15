@@ -18,7 +18,7 @@ function! s:JasperVerticalDisplacement(displacement,...) range
     exe a:firstline.','.a:lastline
                 \ . 's/\(y="\)\@<=\(\d\+\)/\=(submatch(2) >= minheight'
                 \ . ' && (maxheight < 0 || submatch(2) <= maxheight) ?'
-                \ . ' submatch(2)+a:displacement : submatch(2) )/g'
+                \ . ' submatch(2)+a:displacement : submatch(2) )/'
 endfunction
 
 function! s:JasperHorizontalDisplacement(displacement,...)
@@ -31,7 +31,7 @@ function! s:JasperHorizontalDisplacement(displacement,...)
         let minwidth = a:1
     endif
     %s/\(x="\)\@<=\(\d\+\)/\=(submatch(2) >= minwidth ?
-                \ submatch(2)+a:displacement : submatch(2) )/g
+                \ submatch(2)+a:displacement : submatch(2) )/
 endfunction
 
 command! -range=% -nargs=+ JasperVerticalDisplacement
