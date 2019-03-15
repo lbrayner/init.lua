@@ -17,9 +17,9 @@ function! s:JasperVerticalDisplacement(displacement,...)
     endif
     normal! v2atv
     exe "'<".','."'>"
-                \ . 's/\(y="\)\@<=\(\d\+\)/\=(submatch(2) >= minheight'
-                \ . ' && (maxheight < 0 || submatch(2) <= maxheight) ?'
-                \ . ' submatch(2)+a:displacement : submatch(2) )/'
+                \ . 's/\(y="\)\@<=\(\d\+\)/\=(str2nr(submatch(2)) >= minheight'
+                \ . ' && (maxheight < 0 || str2nr(submatch(2)) <= maxheight) ?'
+                \ . ' str2nr(submatch(2))+a:displacement : submatch(2))/'
 endfunction
 
 function! s:JasperHorizontalDisplacement(displacement,...)
@@ -31,8 +31,8 @@ function! s:JasperHorizontalDisplacement(displacement,...)
     if a:0 > 0
         let minwidth = a:1
     endif
-    %s/\(x="\)\@<=\(\d\+\)/\=(submatch(2) >= minwidth ?
-                \ submatch(2)+a:displacement : submatch(2) )/
+    %s/\(x="\)\@<=\(\d\+\)/\=(str2nr(submatch(2)) >= minwidth ?
+                \ str2nr(submatch(2))+a:displacement : str2nr(submatch(2)))/
 endfunction
 
 command! -nargs=+ JasperVerticalDisplacement
