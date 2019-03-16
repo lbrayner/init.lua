@@ -1,9 +1,3 @@
-function! util#vimmap(leftside,keyseq,keyseqtarget)
-    if ! hasmapto(a:keyseqtarget)
-        exec a:leftside." "a:keyseq." "a:keyseqtarget
-    endif
-endfunction
-
 function! util#GetComparableNodeName(filename)
     let node = resolve(substitute(fnamemodify(a:filename,":p"),'\','/','g'))
     let node = substitute(node,"/$","","")

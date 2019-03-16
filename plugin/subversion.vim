@@ -15,4 +15,4 @@ nnoremap <silent> <Plug>MVGSVNDiffThisIgnoreAllWS
 nnoremap <silent> <Plug>MVGSVNDiffContextual
             \ :call subversion#SVNDiffContextual()<CR>
 
-call util#vimmap('nmap <unique>','<leader>D','<Plug>MVGSVNDiffContextual')
+nmap <unique><leader>D <Plug>MVGSVNDiffContextual
