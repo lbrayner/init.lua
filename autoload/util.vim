@@ -59,14 +59,24 @@ function! util#truncateDirname(dirname,maxlength)
     return s:truncateNode(a:dirname,a:maxlength)
 endfunction
 
+" a string or a 0-arg funcref
 function! util#PreserveViewPort(command)
     let winview = winsaveview()
-    exec a:command
+    if type(a:command) == type(function("tr"))
+        call a:command()
+    else
+        exe command
+    endif
     call winrestview(winview)
 endfunction
 
+" a string or a 0-arg funcref
 function! util#PreservePosition(command)
     let cursor_pos = getpos('.')
-    exec a:command
+    if type(a:command) == type(function("tr"))
+        call a:command()
+    else
+        exe command
+    endif
     call setpos('.',cursor_pos)
 endfunction
