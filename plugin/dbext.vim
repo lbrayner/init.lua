@@ -1,3 +1,6 @@
+" - Whether to use separate result buffers for each file
+let g:dbext_default_use_sep_result_buffer = 1
+
 function! DBextPostResult(...)
     " removing an undesirable mapping
     unmap <buffer> q
