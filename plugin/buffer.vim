@@ -10,8 +10,6 @@ command! -nargs=1 BufWipeFileType call buffer#BufWipeFileType(<f-args>)
 nnoremap<leader>T :BufWipeTab<cr>
 
 " Swap | File changes outside
-
-
 " https://github.com/neovim/neovim/issues/2127
 augroup AutoSwap
         autocmd!
