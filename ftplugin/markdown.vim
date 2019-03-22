@@ -10,5 +10,5 @@ function! s:Italicize(text)
     return '*'.a:text.'*'
 endfunction
 
-nnoremap <buffer> <silent> gB ciW<c-r>=<SID>Bolden(getreg('"'))<cr><esc>B2l
-nnoremap <buffer> <silent> gI ciW<c-r>=<SID>Italicize(getreg('"'))<cr><esc>Bl
+nnoremap <buffer> <silent> gB ciw<c-r>=<SID>Bolden(getreg('"'))<cr><esc>B2l
+nnoremap <buffer> <silent> gI ciw<c-r>=<SID>Italicize(getreg('"'))<cr><esc>Bl
