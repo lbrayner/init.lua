@@ -117,13 +117,19 @@ endfunction
 
 " Subsection: highlight & match
 
+function! s:WhiteSpaceOnlyHighlight()
+    highlight WhiteSpaceOnly ctermbg=red ctermfg=white guibg=#ff0000
+endfunction
+
 function! s:HighlightWhiteSpaceOnly()
     match WhiteSpaceOnly /^\s\+$/
 endfunction
 
+call s:WhiteSpaceOnlyHighlight()
+
 augroup HighlightAndMatch
     au!
-    au ColorScheme * highlight WhiteSpaceOnly ctermbg=red ctermfg=white guibg=#ff0000
+    au ColorScheme * call s:WhiteSpaceOnlyHighlight()
     au BufWinEnter * call s:HighlightWhiteSpaceOnly()
     au VimEnter * call s:HighlightWhiteSpaceOnly()
     au BufWinLeave * call clearmatches()
