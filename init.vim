@@ -115,6 +115,20 @@ endfunction
 
 " }}}
 
+" Subsection: highlight & match
+
+function! s:HighlightWhiteSpaceOnly()
+    match WhiteSpaceOnly /^\s\+$/
+endfunction
+
+augroup HighlightAndMatch
+    au!
+    au ColorScheme * highlight WhiteSpaceOnly ctermbg=red ctermfg=white guibg=#ff0000
+    au BufWinEnter * call s:HighlightWhiteSpaceOnly()
+    au VimEnter * call s:HighlightWhiteSpaceOnly()
+    au BufWinLeave * call clearmatches()
+augroup END
+
 " Subsection: mappings — pt-BR keyboard {{{1
 
 " disable Ex mode mapping
