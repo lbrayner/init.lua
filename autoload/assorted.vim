@@ -1,3 +1,7 @@
+" highlight
+
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+
 " file under the cursor
 
 function! assorted#CopyFileNameUnderCursor()
@@ -95,7 +99,6 @@ function! assorted#HighlightOverLength()
         let w:HighlightOverLengthFlag = 1
     endif
     if w:HighlightOverLengthFlag
-        highlight OverLength ctermbg=red ctermfg=white guibg=#592929
         exec 'match OverLength /\%' . s:OverLength . 'v.\+/'
         echo "Overlength highlighted."
     else
