@@ -7,4 +7,5 @@
 /ginit.local.vim
 /init.local.vim
 /plugin/eclim.vim
+/pack/local
 /swap

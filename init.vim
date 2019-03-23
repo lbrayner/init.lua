@@ -524,28 +524,6 @@ command! -bar -bang -nargs=? -complete=buffer Buffers
 
 let g:rzipPlugin_extra_ext = '*.odt'
 
-" solarized
-
-let s:enable_solarized = 1
-
-if !has("nvim") && !has("gui_running") && s:ssh_client
-    let s:enable_solarized = 0
-endif
-
-if has("win32unix")
-    let s:enable_solarized = 0
-endif
-
-if s:enable_solarized
-    set cursorline
-    let g:solarized_italic = 1
-    silent! colorscheme solarized
-    set background=dark
-    if exists("g:vim_did_enter")
-        call statusline#initialize()
-    endif
-endif
-
 " paredit
 let g:paredit_leader = '\'
 
