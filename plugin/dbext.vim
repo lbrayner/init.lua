@@ -17,11 +17,17 @@ function! DBextPostResult(...)
     setlocal nomodified
 endfunction
 
-function! s:SQL_SelectParagraph()
-    let winview = winsaveview()
+" SQL_SelectParagraph
+
+function! s:Do_SQL_SelectParagraph()
     exe "normal! vip:\<c-u>call dbext#DB_execSql(DB_getVisualBlock())\<cr>"
-    call winrestview(winview)
 endfunction
+
+function! s:SQL_SelectParagraph()
+    call util#PreserveViewPort(funcref("<SID>Do_SQL_SelectParagraph"))
+endfunction
+
+" ToggleSizeOrOpenResults
 
 let s:toggle_window_size = 0
 let s:result_window_small_size = 10
