@@ -45,7 +45,7 @@ function! buffer#BufWipeFileType(...)
     else
         let s:filetype = &ft
     endif
-    call s:WipeBuffers(0,'getbufvar(n,"&ft") == s:filetype')
+    call s:WipeBuffers('getbufvar(n,"&ft") == s:filetype')
 endfunction
 
 function! buffer#BufWipe(...)
@@ -63,7 +63,7 @@ function! buffer#BufWipeHidden(...)
     else
         let s:wipe_pattern = expand('%:t')
     endif
-    call s:WipeBuffers(0,'bufname(n) =~? s:wipe_pattern')
+    call s:WipeBuffers('bufname(n) =~? s:wipe_pattern')
 endfunction
 
 function! buffer#BufWipeNotLoaded()
