@@ -109,3 +109,6 @@
 [submodule "pack/bundle/start/fzf.vim"]
 	path = pack/bundle/start/fzf.vim
 	url = https://github.com/junegunn/fzf.vim
+[submodule "pack/bundle/start/birl.vim"]
+	path = pack/bundle/start/birl.vim
+	url = https://github.com/lbrayner/birl.vim
