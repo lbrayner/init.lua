@@ -55,6 +55,14 @@ function! search#VimGrep(selection,word,...)
     exec command.paths
 endfunction
 
+function! search#Ilist_Search(start_at_cursor,search_pattern)
+    redir => output
+        silent! execute (a:start_at_cursor ? '+,$' : '') . 'ilist /' . a:search_pattern
+    redir END
+
+    call search#Ilist_loadQFWindow(0,a:search_pattern,output)
+endfunction
+
 function! search#Ilist_qf(selection, start_at_cursor)
 
     " we are working with visually selected text
