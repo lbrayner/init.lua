@@ -54,7 +54,7 @@ function! buffer#BufWipe(...)
     else
         let s:wipe_pattern = expand('%:t')
     endif
-    call s:WipeBuffers('buflisted(n) && bufname(n) =~? s:wipe_pattern')
+    call s:WipeBuffers('buflisted(n) && bufname(n) =~# s:wipe_pattern')
 endfunction
 
 function! buffer#BufWipeHidden(...)
@@ -63,7 +63,7 @@ function! buffer#BufWipeHidden(...)
     else
         let s:wipe_pattern = expand('%:t')
     endif
-    call s:WipeBuffers('bufname(n) =~? s:wipe_pattern')
+    call s:WipeBuffers('bufname(n) =~# s:wipe_pattern')
 endfunction
 
 function! buffer#BufWipeNotLoaded()
@@ -87,7 +87,7 @@ function! buffer#BufWipeForce(...)
     else
         let s:wipe_pattern = expand('%:t')
     endif
-    let buffer_count = s:LoopBuffers('buflisted(n) && bufname(n) =~?'
+    let buffer_count = s:LoopBuffers('buflisted(n) && bufname(n) =~#'
                                     \ . ' s:wipe_pattern','bwipe!')
     call s:MessageBuffers(buffer_count)
 endfunction
@@ -98,7 +98,7 @@ function! buffer#BufWipeForceUnlisted(...)
     else
         let s:wipe_pattern = expand('%:t')
     endif
-    let buffer_count =  s:LoopBuffers('!buflisted(n) && bufname(n) =~?'
+    let buffer_count =  s:LoopBuffers('!buflisted(n) && bufname(n) =~#'
                                     \ . ' s:wipe_pattern','bwipe!')
     call s:MessageBuffers(buffer_count)
 endfunction
