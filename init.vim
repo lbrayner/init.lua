@@ -130,8 +130,7 @@ call s:WhiteSpaceOnlyHighlight()
 augroup HighlightAndMatch
     au!
     au ColorScheme * call s:WhiteSpaceOnlyHighlight()
-    au BufEnter,BufWinEnter * call s:HighlightWhiteSpaceOnly()
-    au VimEnter * call s:HighlightWhiteSpaceOnly()
+    au VimEnter,BufEnter,BufWinEnter * call s:HighlightWhiteSpaceOnly()
     au BufWinLeave * call clearmatches()
 augroup END
 
