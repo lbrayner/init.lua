@@ -34,11 +34,7 @@ let s:result_window_small_size = 10
 
 function! s:ToggleSizeOrOpenResults()
     let last_winnr = winnr()
-    call dbext#DB_windowOpen()
-
-    " dbext code sets modified
-    setlocal nomodifiable
-    setlocal nomodified
+    call dbext#DB_openResults()
 
     let current_winnr = winnr()
     if last_winnr != current_winnr
