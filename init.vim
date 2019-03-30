@@ -224,6 +224,26 @@ nnoremap <Plug>CaseSensitiveStar /\C\V\<<c-r>=expand("<cword>")<cr>\><cr>
 nmap <kmultiply> <Plug>CaseSensitiveStar
 nmap * <Plug>CaseSensitiveStar
 
+" sometimes you want to search with no noincsearch set
+
+function! s:NoIncSearchStart()
+    set updatetime=1
+    let s:incsearch = &incsearch
+    set noincsearch
+endfunction
+
+function! s:NoIncSearchEnd()
+    set updatetime=4000
+    let &incsearch = s:incsearch
+endfunction
+
+augroup NoIncSearchCursorHoldAutoGroup
+    au!
+    autocmd CursorHold * call s:NoIncSearchEnd()
+augroup END
+
+nnoremap <kDivide> :call <SID>NoIncSearchStart()<cr>/
+
 " neovim terminal
 if has("nvim")
     tnoremap <A-h> <C-\><C-n><C-w>h
