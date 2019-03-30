@@ -233,6 +233,9 @@ function! s:NoIncSearchStart()
 endfunction
 
 function! s:NoIncSearchEnd()
+    if !exists("s:incsearch")
+        return
+    endif
     set updatetime=4000
     let &incsearch = s:incsearch
 endfunction
