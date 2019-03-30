@@ -2,8 +2,6 @@
 let g:dbext_default_use_sep_result_buffer = 1
 
 function! DBextPostResult(...)
-    " removing an undesirable mapping
-    unmap <buffer> q
     if b:dbext_type ==# "MYSQL"
         if b:dbext_extra =~# "vvv"
             syn region ResultFold start="^--------------$" end="^--------------$"
@@ -13,6 +11,9 @@ function! DBextPostResult(...)
             normal! 2j
         endif
     endif
+    " clearing buffer local mappings
+    mapclear <buffer>
+    setlocal readonly
     setlocal nomodifiable
     setlocal nomodified
 endfunction
