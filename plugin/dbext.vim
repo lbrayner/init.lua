@@ -38,6 +38,7 @@ function! s:ToggleSizeOrOpenResults()
     call dbext#DB_openResults()
 
     " dbext code sets modified
+    setlocal readonly
     setlocal nomodifiable
     setlocal nomodified
 
