@@ -320,6 +320,10 @@ endfunction
 nnoremap <leader>do :diffoff!<cr>
 nnoremap <leader>di :call <SID>ToggleIWhite()<cr>
 
+" tabs
+
+nnoremap <leader>t :tabc<cr>
+
 " }}}
 
 " Subsection: commands
