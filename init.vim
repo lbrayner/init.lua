@@ -324,6 +324,10 @@ nnoremap <leader>di :call <SID>ToggleIWhite()<cr>
 
 nnoremap <leader>t :tabc<cr>
 
+if has("gui_running") || has("nvim")
+    nnoremap <M-t> :tabe<space>
+endif
+
 " }}}
 
 " Subsection: commands
