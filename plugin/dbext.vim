@@ -2,6 +2,11 @@
 let g:dbext_default_use_sep_result_buffer = 1
 
 function! DBextPostResult(...)
+    " clearing buffer local mappings
+    mapclear <buffer>
+    setlocal readonly
+    setlocal nomodifiable
+    setlocal nomodified
     if b:dbext_type ==# "PGSQL"
         if b:dbext_extra =~# "QUIET=off"
             syn region ResultFold start="\%2l" end="^SET$"
@@ -10,6 +15,7 @@ function! DBextPostResult(...)
             setlocal foldmethod=syntax
             normal! 2j
         endif
+        return
     endif
     if b:dbext_type ==# "MYSQL"
         if b:dbext_extra =~# "vvv"
@@ -19,12 +25,8 @@ function! DBextPostResult(...)
             setlocal foldmethod=syntax
             normal! 2j
         endif
+        return
     endif
-    " clearing buffer local mappings
-    mapclear <buffer>
-    setlocal readonly
-    setlocal nomodifiable
-    setlocal nomodified
 endfunction
 
 " SQL_SelectParagraph
