@@ -2,6 +2,15 @@
 let g:dbext_default_use_sep_result_buffer = 1
 
 function! DBextPostResult(...)
+    if b:dbext_type ==# "PGSQL"
+        if b:dbext_extra =~# "QUIET=off"
+            syn region ResultFold start="\%2l" end="^SET$"
+                        \ keepend transparent fold
+            syn sync fromstart
+            setlocal foldmethod=syntax
+            normal! 2j
+        endif
+    endif
     if b:dbext_type ==# "MYSQL"
         if b:dbext_extra =~# "vvv"
             syn region ResultFold start="^--------------$" end="^--------------$"
