@@ -80,3 +80,15 @@ function! util#PreservePosition(command)
     endif
     call setpos('.',cursor_pos)
 endfunction
+
+function! util#random()
+    if &sh =~# 'sh'
+        return system('echo $RANDOM')[:-2]
+    endif
+    if has("win32") || has("win64")
+        if sh =~# 'cmd.exe'
+            return system('echo %RANDOM%')
+        endif
+    endif
+    return -1
+endfunction
