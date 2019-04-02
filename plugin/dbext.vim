@@ -8,8 +8,12 @@ function! DBextPostResult(...)
     setlocal readonly
     setlocal nomodifiable
     setlocal nomodified
-    if b:dbext_type ==# "PGSQL"
-        if b:dbext_extra =~# "QUIET=off"
+    call s:ResultBufferSyntax(b:)
+endfunction
+
+function! s:ResultBufferSyntax(dbext_opts)
+    if a:dbext_opts['dbext_type'] ==# "PGSQL"
+        if a:dbext_opts['dbext_extra'] =~# "QUIET=off"
             syn region ResultFold start="\%2l" end="^SET$"
                         \ keepend transparent fold
             syn sync fromstart
@@ -18,8 +22,8 @@ function! DBextPostResult(...)
         endif
         return
     endif
-    if b:dbext_type ==# "MYSQL"
-        if b:dbext_extra =~# "vvv"
+    if a:dbext_opts['dbext_type'] ==# "MYSQL"
+        if a:dbext_opts['dbext_extra'] =~# "vvv"
             syn region ResultFold start="^--------------$" end="^--------------$"
                         \ keepend transparent fold
             syn sync fromstart
@@ -68,6 +72,7 @@ function! s:ToggleSizeOrOpenResults()
 endfunction
 
 function! s:CloneResultBuffer()
+    let dbext_opts = b:
     let buf_nr = bufnr('%')
     let buf_name = bufname('%')
     silent! keepalt topleft 10 new
@@ -84,6 +89,8 @@ function! s:CloneResultBuffer()
     setlocal buftype=nofile
     setlocal bufhidden=wipe
     setlocal noswapfile
+    call s:ResultBufferSyntax(dbext_opts)
+    exec bufwinnr(buf_nr)."wincmd w"
 endfunction
 
 nnoremap <silent> <leader><return> :call <SID>SQL_SelectParagraph()<cr>
