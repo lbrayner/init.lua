@@ -4,6 +4,7 @@ let g:dbext_default_use_sep_result_buffer = 1
 function! DBextPostResult(...)
     " clearing buffer local mappings
     mapclear <buffer>
+    nnoremap <buffer> <silent> C :call <SID>CloneResultBuffer()<cr>
     setlocal readonly
     setlocal nomodifiable
     setlocal nomodified
@@ -64,6 +65,25 @@ function! s:ToggleSizeOrOpenResults()
         exe "res " . s:result_window_small_size
     endif
     let s:toggle_window_size = (s:toggle_window_size+1)%2
+endfunction
+
+function! s:CloneResultBuffer()
+    let buf_nr = bufnr('%')
+    let buf_name = bufname('%')
+    silent! keepalt topleft 10 new
+    setlocal modifiable
+    setlocal noreadonly
+    exec "file ".buf_name."-".util#random()
+    silent! put =getbufline(buf_nr,1,'$')
+    1d_
+    setlocal readonly
+    setlocal nomodified
+    setlocal nomodifiable
+    setlocal nowrap
+    setlocal nonumber
+    setlocal buftype=nofile
+    setlocal bufhidden=wipe
+    setlocal noswapfile
 endfunction
 
 nnoremap <silent> <leader><return> :call <SID>SQL_SelectParagraph()<cr>
