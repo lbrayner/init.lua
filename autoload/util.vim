@@ -86,8 +86,8 @@ function! util#random()
         return system('echo $RANDOM')[:-2]
     endif
     if has("win32") || has("win64")
-        if sh =~# 'cmd.exe'
-            return system('echo %RANDOM%')
+        if &sh =~# 'cmd.exe'
+            return system('echo %RANDOM%')[:-2]
         endif
     endif
     return -1
