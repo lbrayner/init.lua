@@ -43,4 +43,4 @@ command! -range -nargs=0 CPFFormat <line1>,<line2>call assorted#CPFFormat()
 
 " Save any buffer
 
-command! -nargs=1 -complete=file Save call assorted#Save(<f-args>)
+command! -nargs=1 -bang -complete=file Save call assorted#Save(<f-args>,<bang>0)

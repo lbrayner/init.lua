@@ -148,16 +148,24 @@ endfunction
 
 " Save any buffer
 
-function! assorted#Save(name)
+function! assorted#Save(name,bang)
     try
         let buf_nr = bufnr('%')
+        let win_height = winheight(0)
         set lazyredraw
         keepalt new
+        let new_buf_nr = bufnr('%')
         silent! put =getbufline(buf_nr,1,'$')
         1d_
-        exec "w " . fnameescape(a:name)
+        let write = "w"
+        if a:bang
+            let write = "w!"
+        endif
+        exec write . " " . fnameescape(a:name)
         exec bufwinnr(buf_nr)."wincmd w"
         quit
+        exec bufwinnr(new_buf_nr)."wincmd w"
+        exec "resize " . win_height
     finally
         set nolazyredraw
     endtry
