@@ -145,3 +145,20 @@ function! assorted#CPFFormat() range
     endif
     exec range . 's#\v<(\d{3})(\d{3})(\d{3})(\d{2})>#\1.\2.\3-\4#g'
 endfunction
+
+" Save any buffer
+
+function! assorted#Save(name)
+    try
+        let buf_nr = bufnr('%')
+        set lazyredraw
+        keepalt new
+        silent! put =getbufline(buf_nr,1,'$')
+        1d_
+        exec "w " . fnameescape(a:name)
+        exec bufwinnr(buf_nr)."wincmd w"
+        quit
+    finally
+        set nolazyredraw
+    endtry
+endfunction

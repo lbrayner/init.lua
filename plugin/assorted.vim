@@ -40,3 +40,7 @@ nnoremap <silent> <leader><f2> :call assorted#HighlightOverLength()<cr>
 
 command! -range -nargs=0 CNPJFormat <line1>,<line2>call assorted#CNPJFormat()
 command! -range -nargs=0 CPFFormat <line1>,<line2>call assorted#CPFFormat()
+
+" Save any buffer
+
+command! -nargs=1 -complete=file Save call assorted#Save(<f-args>)
