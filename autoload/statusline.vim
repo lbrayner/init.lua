@@ -47,6 +47,7 @@ endfunction
 " joined with %=
 
 function! statusline#DefineModifiedStatusLine()
+    call statusline#HighlightModifiedStatusLineGroup()
     if exists("b:Statusline_custom_mod_leftline")
         exec "let &l:statusline='".b:Statusline_custom_mod_leftline."%='"
     else
@@ -78,6 +79,11 @@ endfunction
 function! statusline#DefineStatusLine()
     if exists("b:Statusline_custom_leftline")
         exec "let &l:statusline='".b:Statusline_custom_leftline."%='"
+    elseif util#isDisposableBuffer()
+        call statusline#HighlightDisposableStatusLineGroup()
+        let &l:statusline='%<%1*'
+            \ . '%{expand("%:t")}'
+            \ . '%{statusline#DefaultModifiedFlag()}%*%='
     else
         let &l:statusline='%<'
             \ . '%{expand("%:t")}'
@@ -139,6 +145,11 @@ function! statusline#HighlightModifiedStatusLineGroup()
         \ 'User1': {'fg': s:user1_modified_fg}})
 endfunction
 
+function! statusline#HighlightDisposableStatusLineGroup()
+    call statusline#Highlight({
+        \ 'User1': {'fg': s:user1_disposable_fg}})
+endfunction
+
 function! statusline#loadColorTheme(colorTheme)
     let colorMapping = a:colorTheme
     if type(a:colorTheme) == type("")
@@ -184,7 +195,6 @@ function! statusline#LoadTheme(colorTheme)
     call statusline#loadTermAttrList(termAttrList)
     call statusline#HighlightMode('normal')
     call statusline#HighlightStatusLineNC()
-    call statusline#HighlightModifiedStatusLineGroup()
 endfunction
 
 function! statusline#initialize()

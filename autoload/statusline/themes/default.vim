@@ -9,6 +9,7 @@ function! statusline#themes#default#getColorMapping()
         \ 'user1_normal_bg': 'x233_Grey7',
         \ 'user1_insert_bg': 'x048_SpringGreen1',
         \ 'user1_visual_bg': 'x123_DarkSlateGray1',
+        \ 'user1_disposable_fg': 'x100_Yellow4',
         \ 'user1_modified_fg': 'x161_DeepPink3',
         \ 'user2_normal_bg': 'x233_Grey7',
         \ 'user2_normal_fg': 'x183_Plum2',
