@@ -40,7 +40,10 @@ function! s:SVNDiff(filename,...)
                       \ . ' | setlocal noswapfile'
                       \ . ' | nnoremap <silent> <buffer> <nowait> q :bw<cr>:tabc<cr>'
                       \         .s:current_tab.'gt'
-                      \ . ' | autocmd WinEnter <buffer> echo "'.s:DiffTabMessage.'"'
+
+            autocmd WinLeave <buffer> echo ""
+            exe 'autocmd WinEnter <buffer> echo "'.s:DiffTabMessage.'"'
+            wincmd w
         else
             echomsg "Contents equal HEAD."
         endif
