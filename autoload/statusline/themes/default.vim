@@ -9,7 +9,6 @@ function! statusline#themes#default#getColorMapping()
         \ 'user1_normal_bg': 'x233_Grey7',
         \ 'user1_insert_bg': 'x048_SpringGreen1',
         \ 'user1_visual_bg': 'x123_DarkSlateGray1',
-        \ 'user1_disposable_fg': 'x248_Grey66',
         \ 'user1_modified_fg': 'x161_DeepPink3',
         \ 'user2_normal_bg': 'x233_Grey7',
         \ 'user2_normal_fg': 'x183_Plum2',
@@ -41,6 +40,7 @@ function! statusline#themes#default#getColorMapping()
         \ 'user6_visual_fg': 'x128_DarkViolet',
         \ 'user6_insert_bg': 'x048_SpringGreen1',
         \ 'user6_insert_fg': 'x172_Orange3',
+        \ 'user7_disposable_fg': 'x248_Grey66',
         \ 'not_current_bg': 'x236_Grey19',
         \ 'not_current_fg': 'x240_Grey35'}
     return colorMapping
