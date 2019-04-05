@@ -547,9 +547,15 @@ let g:ctrlp_custom_ignore = {
 let g:ctrlp_switch_buffer = 't'
 let g:ctrlp_map = '<f7>'
 let g:ctrlp_tabpage_position = 'bc'
-let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max:10,results:10'
 let g:ctrlp_clear_cache_on_exit = 0
 nnoremap <silent> <F5> :CtrlPBuffer<cr>
+
+let g:ctrlp_prompt_mappings = {
+    \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
+    \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
+    \ 'PrtHistory(-1)':       ['<c-j>'],
+    \ 'PrtHistory(1)':        ['<c-k>'],
+    \ }
 
 " fzf.vim
 let g:fzf_buffers_jump = 1
