@@ -40,7 +40,12 @@ function! statusline#themes#default#getColorMapping()
         \ 'user6_visual_fg': 'x128_DarkViolet',
         \ 'user6_insert_bg': 'x048_SpringGreen1',
         \ 'user6_insert_fg': 'x172_Orange3',
-        \ 'user7_disposable_fg': 'x248_Grey66',
+        \ 'user7_normal_bg': 'x233_Grey7',
+        \ 'user7_normal_fg': 'x248_Grey66',
+        \ 'user7_insert_bg': 'x233_Grey7',
+        \ 'user7_insert_fg': 'x233_Grey7',
+        \ 'user7_visual_bg': 'x123_DarkSlateGray1',
+        \ 'user7_visual_fg': 'x233_Grey7',
         \ 'not_current_bg': 'x236_Grey19',
         \ 'not_current_fg': 'x240_Grey35'}
     return colorMapping

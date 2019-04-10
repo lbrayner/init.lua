@@ -119,7 +119,8 @@ function! statusline#HighlightMode(mode)
         \ . "'User3': {'bg': s:user3_".a:mode."_bg, 'fg': s:user3_".a:mode."_fg},"
         \ . "'User4': {'bg': s:user4_".a:mode."_bg, 'fg': s:user4_".a:mode."_fg},"
         \ . "'User5': {'bg': s:user5_".a:mode."_bg, 'fg': s:user5_".a:mode."_fg},"
-        \ . "'User6': {'bg': s:user6_".a:mode."_bg, 'fg': s:user6_".a:mode."_fg}})"
+        \ . "'User6': {'bg': s:user6_".a:mode."_bg, 'fg': s:user6_".a:mode."_fg},"
+        \ . "'User7': {'bg': s:user7_".a:mode."_bg, 'fg': s:user7_".a:mode."_fg}})"
     exe "call statusline#Highlight({"
         \ . "'StatusLine': s:statusline_".a:mode.","
         \ . "'User1': s:statusline_".a:mode.","
@@ -141,11 +142,6 @@ endfunction
 function! statusline#HighlightModifiedStatusLineGroup()
     call statusline#Highlight({
         \ 'User1': {'fg': s:user1_modified_fg}})
-endfunction
-
-function! statusline#HighlightDisposableStatusLineGroup()
-    call statusline#Highlight({
-        \ 'User7': {'fg': s:user7_disposable_fg}})
 endfunction
 
 function! statusline#loadColorTheme(colorTheme)
@@ -194,7 +190,6 @@ function! statusline#LoadTheme(colorTheme)
     call statusline#HighlightMode('normal')
     call statusline#HighlightStatusLineNC()
     call statusline#HighlightModifiedStatusLineGroup()
-    call statusline#HighlightDisposableStatusLineGroup()
 endfunction
 
 function! statusline#initialize()
