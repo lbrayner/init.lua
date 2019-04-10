@@ -128,7 +128,8 @@ function! statusline#HighlightMode(mode)
         \ . "'User3': s:statusline_".a:mode.","
         \ . "'User4': s:statusline_".a:mode.","
         \ . "'User5': s:statusline_".a:mode.","
-        \ . "'User6': s:statusline_".a:mode."})"
+        \ . "'User6': s:statusline_".a:mode.","
+        \ . "'User7': s:statusline_".a:mode."})"
 endfunction
 
 function! statusline#RedefineStatusLine()
