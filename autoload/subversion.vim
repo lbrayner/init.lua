@@ -32,7 +32,7 @@ function! s:SVNDiff(filename,...)
         if getfsize(patch) != 0
             let s:current_tab = tabpagenr()
             let fncommand = fnameescape(a:filename)
-            silent exec ":tab sview ".fncommand." | sil leftabove vert diffpatch ".patch
+            silent exec ":tab split ".fncommand." | sil leftabove vert diffpatch ".patch
                       \ . ' | exec "file ".expand("%:t")'
                       \ . ' | setlocal nomodifiable'
                       \ . ' | setlocal buftype=nofile'

@@ -103,3 +103,8 @@ function! util#isDisposableBuffer(...)
                 \ && !getbufvar(buf_nr,"&swapfile")
                 \ && getbufvar(buf_nr,"&buftype") == "nofile"
 endfunction
+
+function! util#getTempDirectory()
+    let tempfile = tempname()
+    return fnamemodify(tempfile,':h:h')
+endfunction
