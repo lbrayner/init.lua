@@ -8,18 +8,20 @@ if $XDG_CONFIG_HOME == ''
     let $XDG_CONFIG_HOME = fnamemodify($XDG_CONFIG_HOME,":p")
 endif
 
-let g:vim_dir = $HOME . "/.vim"
+if !exists("g:vim_dir") || g:vim_dir == ''
+    let g:vim_dir = $HOME . "/.vim"
 
-if has("win32")
-    let g:vim_dir = $USERPROFILE . "/vimfiles"
-endif
+    if has("win32")
+        let g:vim_dir = $USERPROFILE . "/vimfiles"
+    endif
 
-if has("nvim")
-    let g:vim_dir = $XDG_CONFIG_HOME . "/nvim"
-endif
+    if has("nvim")
+        let g:vim_dir = $XDG_CONFIG_HOME . "/nvim"
+    endif
 
-if $MYVIMRC == ''
-    let g:vim_dir = expand('<sfile>:p:h')
+    if $MYVIMRC == ''
+        let g:vim_dir = expand('<sfile>:p:h')
+    endif
 endif
 
 " are we using ssh?
