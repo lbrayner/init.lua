@@ -34,9 +34,6 @@
 [submodule "pack/bundle/start/tpope-vim-abolish"]
 	path = pack/bundle/start/tpope-vim-abolish
 	url = https://github.com/tpope/tpope-vim-abolish.git
-[submodule "pack/bundle/start/vim-colors-solarized"]
-	path = pack/bundle/start/vim-colors-solarized
-	url = https://github.com/altercation/vim-colors-solarized.git
 [submodule "pack/bundle/start/vim-commentary"]
 	path = pack/bundle/start/vim-commentary
 	url = https://github.com/tpope/vim-commentary.git
@@ -109,3 +106,6 @@
 [submodule "pack/bundle/start/birl.vim"]
 	path = pack/bundle/start/birl.vim
 	url = https://github.com/lbrayner/birl.vim
+[submodule "pack/bundle/start/flattened"]
+	path = pack/bundle/start/flattened
+	url = https://github.com/romainl/flattened

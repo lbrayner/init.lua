@@ -1,4 +1,4 @@
-" solarized
+" flattened-solarized
 
 if exists("g:disable_default_colorscheme") && g:disable_default_colorscheme
     finish
@@ -16,9 +16,7 @@ endif
 
 if s:enable_solarized
     set cursorline
-    let g:solarized_italic = 1
-    silent! colorscheme solarized
-    set background=dark
+    colorscheme flattened_dark
     if exists("g:vim_did_enter")
         call statusline#initialize()
     endif
