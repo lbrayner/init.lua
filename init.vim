@@ -534,6 +534,12 @@ map <silent> <leader>e <Plug>CamelCaseMotion_e
 map <silent> <leader>ge <Plug>CamelCaseMotion_ge
 
 " ctrlp
+let s:ctrlp_cache_dir = g:vim_dir."/ctrlp_cache"
+exe "let s:has_ctrlp_cache_dir = isdirectory('".s:ctrlp_cache_dir."')"
+if !s:has_ctrlp_cache_dir
+    call mkdir(s:ctrlp_cache_dir)
+endif
+let g:ctrlp_cache_dir = s:ctrlp_cache_dir
 let g:ctrlp_working_path_mode = ''
 let g:ctrlp_reuse_window = 'netrw\|help'
 let g:extensions#ctrlp#ctrlp_custom_ignore = {

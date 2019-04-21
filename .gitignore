@@ -2,6 +2,7 @@
 /after/plugin/init.vim
 /plugin/init.vim
 /bundle
+/ctrlp_cache
 /doc/tags
 /eclim
 /ginit.local.vim
