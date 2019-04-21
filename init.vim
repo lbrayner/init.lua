@@ -25,10 +25,10 @@ if !exists("g:vim_dir") || g:vim_dir == ''
 endif
 
 " are we using ssh?
-let s:ssh_client = 0
+let g:ssh_client = 0
 
 if $SSH_CLIENT != ''
-    let s:ssh_client = 1
+    let g:ssh_client = 1
 endif
 
 " Subsection: settings {{{
@@ -86,7 +86,7 @@ set expandtab
 set mouse=a
 
 " mouse selection yanks to the system clipboard when using ssh
-if s:ssh_client
+if g:ssh_client
     set mouse=
 endif
 

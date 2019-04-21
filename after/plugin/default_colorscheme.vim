@@ -6,7 +6,8 @@ endif
 
 let s:enable_solarized = 1
 
-if !has("nvim") && !has("gui_running") && s:ssh_client
+if !has("nvim") && !has("gui_running") 
+            \ && exists("g:ssh_client") && g:ssh_client
     let s:enable_solarized = 0
 endif
 
