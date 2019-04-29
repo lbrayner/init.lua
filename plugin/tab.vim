@@ -4,7 +4,7 @@ augroup LastTabAutoGroup
 augroup END
 
 function! s:DoTabEqualizeWindows()
-    call tab#TabDo("normal! \<c-w>=")
+    call tab#TabDo("res 1000 | normal! \<c-w>=")
 endfunction
 
 command! TabEqualizeWindows call s:DoTabEqualizeWindows()
