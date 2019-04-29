@@ -247,7 +247,8 @@ augroup NoIncSearchCursorHoldAutoGroup
     autocmd CursorHold * call s:NoIncSearchEnd()
 augroup END
 
-nnoremap <kDivide> :call <SID>NoIncSearchStart()<cr>/
+nnoremap <leader><kDivide> :call <SID>NoIncSearchStart()<cr>/
+nnoremap <leader>/ :call <SID>NoIncSearchStart()<cr>/
 
 " neovim terminal
 if has("nvim")
