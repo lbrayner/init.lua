@@ -22,9 +22,15 @@ function! s:PrintTabs(currentTab)
         else
             let spacing = "  "
         endif
-        echo "\t" . spacing . fnamemodify(getbufinfo(getwininfo(window)
-                \[0]["bufnr"])[0]["name"]
-                \,":~:.")
+        let buf_nr = getwininfo(window)[0]["bufnr"]
+        let file_type = getbufvar(buf_nr,"&ft")
+        let prefix = "\t" . spacing
+        if file_type == "qf"
+            echo prefix . "[quickfix]"
+        else
+            echo prefix . fnamemodify(getbufinfo(buf_nr)[0]["name"]
+                    \,":~:.")
+        endif
     endfor
 endfunction
 
