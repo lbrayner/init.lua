@@ -23,9 +23,9 @@ function! s:PrintTabs(currentTab)
             let spacing = "  "
         endif
         let buf_nr = getwininfo(window)[0]["bufnr"]
-        let file_type = getbufvar(buf_nr,"&ft")
+        let buf_type = getbufvar(buf_nr,"&bt")
         let prefix = "\t" . spacing
-        if file_type == "qf"
+        if buf_type == "quickfix"
             echo prefix . "[quickfix]"
         else
             echo prefix . fnamemodify(getbufinfo(buf_nr)[0]["name"]
