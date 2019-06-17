@@ -108,3 +108,19 @@ function! util#getTempDirectory()
     let tempfile = tempname()
     return fnamemodify(tempfile,':h:h')
 endfunction
+
+function! util#isLocationList(...)
+    let winid = win_getid()
+    if a:0 && a:1
+        let winid = a:1
+    endif
+    return getwininfo(winid)[0]["loclist"]
+endfunction
+
+function! util#isQuickfixList(...)
+    let winid = win_getid()
+    if a:0 && a:1
+        let winid = a:1
+    endif
+    return getwininfo(winid)[0]["quickfix"] && !util#isLocationList(winid)
+endfunction
