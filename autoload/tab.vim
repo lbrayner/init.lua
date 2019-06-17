@@ -23,10 +23,13 @@ function! s:PrintTabs(currentTab)
             let spacing = "  "
         endif
         let buf_nr = getwininfo(window)[0]["bufnr"]
-        let buf_type = getbufvar(buf_nr,"&bt")
+        let loclist = getwininfo(window)[0]["loclist"]
+        let quickfix = getwininfo(window)[0]["quickfix"]
         let prefix = "\t" . spacing
-        if buf_type == "quickfix"
-            echo prefix . "[quickfix]"
+        if loclist
+            echo prefix . "[Location List]"
+        elseif quickfix
+            echo prefix . "[Quickfix List]"
         else
             echo prefix . fnamemodify(getbufinfo(buf_nr)[0]["name"]
                     \,":~:.")
