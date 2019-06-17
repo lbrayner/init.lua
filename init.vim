@@ -214,9 +214,9 @@ nnoremap <silent> <leader><F9> :bw<cr>
 
 " quickfix and locallist
 
-nnoremap <silent> <leader>l :lopen<CR>
+nnoremap <silent> <leader>l :botright lopen<CR>
 nnoremap <silent> <leader>L :lclose<CR>
-nnoremap <silent> <leader>q :copen<CR>
+nnoremap <silent> <leader>q :botright copen<CR>
 nnoremap <silent> <leader>Q :cclose<CR>
 
 nnoremap <silent> <leader>B :b#<CR>
