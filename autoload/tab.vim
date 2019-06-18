@@ -23,6 +23,7 @@ function! s:PrintTabs(currentTab)
             let spacing = "  "
         endif
         let buf_nr = getwininfo(window)[0]["bufnr"]
+        let nofile = !filereadable(bufname(buf_nr))
         let loclist = getwininfo(window)[0]["loclist"]
         let quickfix = getwininfo(window)[0]["quickfix"]
         let prefix = "\t" . spacing
@@ -30,6 +31,8 @@ function! s:PrintTabs(currentTab)
             echo prefix . "[Location List]"
         elseif quickfix
             echo prefix . "[Quickfix List]"
+        elseif nofile
+            echo prefix . "[No Name]"
         else
             echo prefix . fnamemodify(getbufinfo(buf_nr)[0]["name"]
                     \,":~:.")
