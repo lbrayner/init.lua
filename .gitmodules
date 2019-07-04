@@ -111,4 +111,4 @@
 	url = https://github.com/romainl/flattened
 [submodule "pack/bundle/start/vim-DetectSpellLang"]
 	path = pack/bundle/start/vim-DetectSpellLang
-	url = https://github.com/Konfekt/vim-DetectSpellLang
+	url = https://github.com/lbrayner/vim-DetectSpellLang
