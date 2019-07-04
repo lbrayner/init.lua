@@ -624,6 +624,8 @@ nmap ga <Plug>(EasyAlign)
 
 " vim-DetectSpellLang
 
+" disabled by default
+let g:guesslang_disable = 1
 let g:guesslang_langs = [ 'en', 'pt' ]
 
 " }}}
