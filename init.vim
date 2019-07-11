@@ -312,11 +312,11 @@ nnoremap <silent> <leader>d :setlocal invspell spell?<CR>
 
 function! s:ToggleIWhite()
     if &l:diffopt =~# 'iwhite'
-        setlocal diffopt-=iwhite
+        set diffopt-=iwhite
         echo '-iwhite'
         return
     endif
-    setlocal diffopt+=iwhite
+    set diffopt+=iwhite
     echo '+iwhite'
 endfunction
 
