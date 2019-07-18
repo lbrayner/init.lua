@@ -6,6 +6,19 @@ $ cd dotvim
 dotvim$ git submodule update --init
 ```
 
+# As a bundle
+
+You can use these configurations (`init.vim` + plugins) without affecting your
+setup (`:h -u`).
+
+```
+dotvim$ vim -u bundle.vim
+```
+
+Note that vim could also be `nvim` or `gvim`.
+
+# The regular way
+
 If you use *neovim*:
 
 ```
