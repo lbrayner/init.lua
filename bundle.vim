@@ -14,6 +14,8 @@ if !empty(sysvimrc)
 endif
 
 if sysvimrcreadable
+    " skipping defaults.vim
+    let skip_defaults_vim = 1
     exe "source ".sysvimrc
 endif
 
