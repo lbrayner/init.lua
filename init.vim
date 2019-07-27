@@ -279,14 +279,17 @@ if has("gui_running") || has("nvim")
     cnoremap <C-N> <Down>
     " recall previous (older) command-line
     cnoremap <C-P> <Up>
-    " back one word
-    cnoremap <M-b> <S-Left>
-    " forward one word
-    cnoremap <M-f> <S-Right>
     " cancel
     cnoremap <C-G> <C-C>
     " open the command line buffer
     cnoremap <C-Z> <C-F>
+endif
+
+if has("nvim")
+    " back one word
+    cnoremap <M-b> <S-Left>
+    " forward one word
+    cnoremap <M-f> <S-Right>
     " one word forward
     inoremap <M-f> <C-Right>
     " one word backward
