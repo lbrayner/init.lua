@@ -402,7 +402,8 @@ augroup END
 
 augroup PoundComment
     autocmd!
-    autocmd FileType apache,fstab,samba au BufEnter <buffer> let &l:commentstring = "# %s"
+    autocmd FileType apache,crontab,fstab,samba
+                \ au BufEnter <buffer> let &l:commentstring = "# %s"
 augroup END
 
 " svn commit files
