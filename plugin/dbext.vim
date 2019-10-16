@@ -89,6 +89,9 @@ function! s:CloneResultBuffer()
     setlocal buftype=nofile
     setlocal bufhidden=wipe
     setlocal noswapfile
+    setlocal complete-=wbuU
+    setlocal nowritebackup
+    setlocal undolevels=-1
     call s:ResultBufferSyntax(dbext_opts)
     exec bufwinnr(buf_nr)."wincmd w"
 endfunction
