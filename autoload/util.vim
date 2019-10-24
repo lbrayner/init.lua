@@ -65,7 +65,7 @@ function! util#PreserveViewPort(command)
     if type(a:command) == type(function("tr"))
         call a:command()
     else
-        exe command
+        exe a:command
     endif
     call winrestview(winview)
 endfunction
