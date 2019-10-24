@@ -156,6 +156,10 @@ function! assorted#DmyYmdToggle() range
     exec range . 's#' . regex . '#\3-\2-\1#g'
 endfunction
 
+function! assorted#AllLowercase()
+    call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
+endfunction
+
 " Save any buffer
 
 function! assorted#Save(name,bang)
