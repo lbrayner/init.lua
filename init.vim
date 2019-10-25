@@ -601,9 +601,6 @@ map X <Plug>Sneak_S
 " scalpel
 nmap <Leader>x <Plug>(Scalpel)
 
-" LargeFile
-let g:LargeFile=1.5
-
 " ragtag
 
 let g:ragtag_global_maps = 1
