@@ -74,7 +74,7 @@ function! assorted#FilterVisualSelection() range
 endfunction
 
 function! assorted#RemoveTrailingSpaces() range
-    silent exec "keepp ".a:firstline.",".a:lastline.'s/\s\+$//e'
+    call util#PreserveViewPort('keeppatterns '.a:firstline.','.a:lastline.'s/\s\+$//e')
 endfunction
 
 " XML
@@ -166,6 +166,7 @@ function! assorted#Save(name,bang)
     try
         let buf_nr = bufnr('%')
         let win_height = winheight(0)
+        let lazyr = &lazyredraw
         set lazyredraw
         keepalt new
         let new_buf_nr = bufnr('%')
@@ -181,6 +182,6 @@ function! assorted#Save(name,bang)
         exec bufwinnr(new_buf_nr)."wincmd w"
         silent exec "resize " . win_height
     finally
-        set nolazyredraw
+        let &lazyredraw = lazyr
     endtry
 endfunction
