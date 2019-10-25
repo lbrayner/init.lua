@@ -425,7 +425,8 @@ augroup END
 let s:LargeXmlFile = 1024 * 512
 augroup XmlAutoGroup
     autocmd BufRead * if &filetype ==# "xml" | let f=expand("<afile>")
-            \| if getfsize(f) > s:LargeXmlFile | setlocal syntax=unknown | endif | endif
+            \| if getfsize(f) > s:LargeXmlFile | unlet f
+                \| setlocal syntax=unknown | endif | endif
 augroup END
 
 " norelativenumber in insert mode
