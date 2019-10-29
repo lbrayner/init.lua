@@ -34,7 +34,7 @@ endif
 " Subsection: settings {{{
 
 set enc=utf-8
-
+filetype plugin indent on
 set nocompatible
 syntax on
 
