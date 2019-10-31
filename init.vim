@@ -429,9 +429,9 @@ augroup END
 " XML
 
 let s:LargeXmlFile = 1024 * 512
-augroup XmlAutoGroup
-    autocmd BufRead * if &filetype ==# "xml" | let f=expand("<afile>")
-            \| if getfsize(f) > s:LargeXmlFile | unlet f
+augroup LargeXmlAutoGroup
+    autocmd BufRead * if "\v(xml|html)" =~# &filetype
+            \| if getfsize(expand("<afile>")) > s:LargeXmlFile
                 \| setlocal syntax=unknown | endif | endif
 augroup END
 
