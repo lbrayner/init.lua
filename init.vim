@@ -115,6 +115,12 @@ function MyPatch()
                \ " " . v:fname_diff)
 endfunction
 
+" From tpope's vim-sensible
+if &synmaxcol == 3000
+  " Lowering this improves performance in files with long lines.
+  set synmaxcol=500
+endif
+
 " }}}
 
 " Subsection: highlight & match
