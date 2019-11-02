@@ -356,7 +356,6 @@ else
     command! Name :let @"=expand('%:t')
 endif
 
-
 " Subsection: autocommands {{{
 
 " Color scheme
