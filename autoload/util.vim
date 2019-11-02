@@ -130,3 +130,11 @@ function! util#isQuickfixList(...)
     endif
     return getwininfo(winid)[0]["quickfix"] && !util#isLocationList(winid)
 endfunction
+
+function! util#IsVimBundle()
+    return filereadable("init.vim")
+endfunction
+
+function! util#IsEclipseProject()
+    return filereadable(".project")
+endfunction

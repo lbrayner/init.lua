@@ -1,7 +1,3 @@
-function! s:IsVimBundle()
-    return filereadable("init.vim")
-endfunction
-
 function! s:IsEclipseProject()
     return filereadable(".project")
 endfunction
@@ -13,7 +9,7 @@ endfunction
 function! extensions#ctrlp#ignore(item,type)
     if a:type ==# 'file'
         if has_key(g:extensions#ctrlp#ctrlp_custom_ignore,'file')
-            if s:IsVimBundle()
+            if util#IsVimBundle()
                 let vim_dir = s:GetVimDir()
                 let file = g:extensions#ctrlp#ctrlp_custom_ignore.file
                 let file .= '|\V' . vim_dir . '/\vplugin/eclim\.vim$'
@@ -30,13 +26,13 @@ function! extensions#ctrlp#ignore(item,type)
     if a:type ==# 'dir'
         if has_key(g:extensions#ctrlp#ctrlp_custom_ignore,'dir')
             let dir = g:extensions#ctrlp#ctrlp_custom_ignore.dir
-            if s:IsVimBundle()
+            if util#IsVimBundle()
                 let vim_dir = s:GetVimDir()
                 let dir .= '\V\|' . vim_dir . '/\veclim$'
                 let dir .= '\V\|/\v(backup|pack|swap)$'
                 return util#GetComparableNodeName(a:item) =~# dir
             endif
-            if s:IsEclipseProject()
+            if util#IsEclipseProject()
                 let dir .= '\v|[\/](classes|target|build|test-classes|dumps)$'
                 return a:item =~# dir
             endif
