@@ -1,0 +1,3 @@
+" indentexpr
+
+setlocal indentexpr=indent

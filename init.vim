@@ -462,9 +462,13 @@ augroup VimEnterAutoGroup
     au VimEnter * let g:vim_did_enter = 1
 augroup END
 
-" indentexpr
+" tabs
 
-au BufRead *.sql setlocal indentexpr=indent
+augroup TabCloseAutoGroup
+    autocmd!
+    autocmd TabClosed * if tabpagenr() > 1 | tabprevious | endif
+augroup END
+
 
 " }}}
 
