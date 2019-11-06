@@ -34,6 +34,7 @@ if &ft == 'java'
                 nnoremap <buffer> <leader>ji :JavaImport<cr>
                 nnoremap <buffer> <leader>jn :JavaNew<space>
                 nnoremap <buffer> <leader>jg :JavaGet
+                vnoremap <buffer> <leader>jg :JavaGet
                 nnoremap <buffer> <leader>jc :JavaConstructor<cr>
                 vnoremap <buffer> <leader>jc :JavaConstructor<cr>
                 nnoremap <buffer> <leader>jo :JavaImportOrganize<cr>
