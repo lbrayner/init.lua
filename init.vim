@@ -474,13 +474,6 @@ augroup VimEnterAutoGroup
     au VimEnter * let g:vim_did_enter = 1
 augroup END
 
-" tabs
-
-augroup TabCloseAutoGroup
-    autocmd!
-    autocmd TabClosed * if tabpagenr() > 1 | tabprevious | endif
-augroup END
-
 " }}}
 
 " sourcing init.local.vim if it exists

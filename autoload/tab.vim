@@ -58,10 +58,11 @@ function! tab#GoToTab()
 endfunction
 
 function! tab#GoToLastTab()
-    if ! exists("g:tab#lasttab")
-        let g:tab#lasttab = tabpagenr()
+    if !exists("g:tab#lastTab")
+        let g:tab#lastTab = tabpagenr()
+        let g:tab#beforeLastTab = tabpagenr()
     endif
-    exe "tabn " . g:tab#lasttab
+    exe "tabn " . g:tab#lastTab
 endfunction
 
 " https://superuser.com/a/555047

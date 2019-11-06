@@ -1,6 +1,17 @@
 augroup LastTabAutoGroup
     autocmd!
-    au TabLeave * let g:tab#lasttab = tabpagenr()
+    au TabLeave * if exists("g:tab#lastTab")
+                \| let g:tab#beforeLastTab = g:tab#lastTab
+                \| endif
+                \| let g:tab#lastTab = tabpagenr()
+augroup END
+
+augroup TabCloseAutoGroup
+    autocmd!
+    autocmd TabClosed * if exists("g:tab#lastTab")
+                \| let g:tab#lastTab = g:tab#beforeLastTab
+                \| endif
+                \| call tab#GoToLastTab()
 augroup END
 
 function! s:DoTabEqualizeWindows()
