@@ -419,7 +419,7 @@ augroup END
 
 augroup PoundComment
     autocmd!
-    autocmd FileType apache,crontab,fstab,samba
+    autocmd FileType apache,crontab,debsources,fstab,samba
                 \ au BufEnter <buffer> let &l:commentstring = "# %s"
 augroup END
 
