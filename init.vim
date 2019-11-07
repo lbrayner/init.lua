@@ -117,6 +117,17 @@ if !has("nvim")
     let &backupdir=s:bkp_dir."/"
 endif
 
+" setting undodir
+
+if !has("nvim")
+    let s:undo_dir = g:vim_dir."/undo"
+    exe "let s:has_undo_dir = isdirectory('".s:undo_dir."')"
+    if !s:has_undo_dir
+        call mkdir(s:undo_dir)
+    endif
+    let &undodir=s:undo_dir."/"
+endif
+
 " diff & patch
 
 " Microsoft Windows standard input converts line endings, so it's best to
