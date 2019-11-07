@@ -43,7 +43,7 @@ if &ft == 'java'
                 nnoremap <buffer> <leader><F11> :JavaSearchContext<CR>
                 if executable("ctags")
                     augroup CtagsJava
-                        au!
+                        autocmd!
                         autocmd BufWritePost <buffer> call ctags#UpdateTags()
                     augroup END
                 endif

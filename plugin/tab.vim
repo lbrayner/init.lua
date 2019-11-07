@@ -1,6 +1,6 @@
 augroup LastTabAutoGroup
     autocmd!
-    au TabLeave * if exists("g:tab#lastTab")
+    autocmd TabLeave * if exists("g:tab#lastTab")
                 \| let g:tab#beforeLastTab = g:tab#lastTab
                 \| endif
                 \| let g:tab#lastTab = tabpagenr()
@@ -24,7 +24,7 @@ command! -bang TabCloseLeft call tab#TabCloseLeft('<bang>')
 
 augroup TabActionsOnVimEnter
     autocmd!
-    au VimEnter * call s:DoTabEqualizeWindows()
+    autocmd VimEnter * call s:DoTabEqualizeWindows()
 augroup END
 
 if exists("*gettabinfo")
@@ -34,4 +34,4 @@ else
     nmap <silent> <F8> :tabs<cr>
 endif
 
-nmap <silent> <Leader><f8> :call tab#GoToLastTab()<cr>
+nnoremap <silent> <Leader><f8> :call tab#GoToLastTab()<cr>

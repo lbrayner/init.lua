@@ -27,7 +27,7 @@ autocmd CursorHold,BufWritePost,BufReadPost,BufLeave *
   \ if isdirectory(expand("<amatch>:h")) | let &swapfile = &modified | endif
 
 augroup Checktime
-    au!
+    autocmd!
     if !has("gui_running")
         "silent! necessary otherwise throws errors when using command
         "line window.

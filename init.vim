@@ -148,10 +148,10 @@ endfunction
 call s:WhiteSpaceOnlyHighlight()
 
 augroup HighlightAndMatch
-    au!
-    au ColorScheme * call s:WhiteSpaceOnlyHighlight()
-    au VimEnter,WinEnter,BufWinEnter * call s:HighlightWhiteSpaceOnly()
-    au BufWinLeave * call clearmatches()
+    autocmd!
+    autocmd ColorScheme * call s:WhiteSpaceOnlyHighlight()
+    autocmd VimEnter,WinEnter,BufWinEnter * call s:HighlightWhiteSpaceOnly()
+    autocmd BufWinLeave * call clearmatches()
 augroup END
 
 " Subsection: mappings — pt-BR keyboard {{{1
@@ -261,7 +261,7 @@ function! s:NoIncSearchEnd()
 endfunction
 
 augroup NoIncSearchCursorHoldAutoGroup
-    au!
+    autocmd!
     autocmd CursorHold * call s:NoIncSearchEnd()
 augroup END
 
@@ -412,7 +412,7 @@ augroup END
 
 augroup HelpAutoGroup
     autocmd!
-    autocmd FileType help,eclimhelp au BufEnter <buffer> setlocal relativenumber
+    autocmd FileType help,eclimhelp autocmd BufEnter <buffer> setlocal relativenumber
 augroup END
 
 " comment string
@@ -420,7 +420,7 @@ augroup END
 augroup PoundComment
     autocmd!
     autocmd FileType apache,crontab,debsources,fstab,samba
-                \ au BufEnter <buffer> let &l:commentstring = "# %s"
+                \ autocmd BufEnter <buffer> let &l:commentstring = "# %s"
 augroup END
 
 " svn commit files
@@ -455,7 +455,7 @@ augroup END
 " text format options
 
 augroup TextFormatAutoGroup
-    au!
+    autocmd!
     autocmd FileType text,svn setlocal textwidth=80
 augroup END
 
@@ -469,9 +469,9 @@ augroup END
 " VimEnter
 
 augroup VimEnterAutoGroup
-    au!
+    autocmd!
     " v:vim_did_enter not available before 8.0
-    au VimEnter * let g:vim_did_enter = 1
+    autocmd VimEnter * let g:vim_did_enter = 1
 augroup END
 
 " }}}
@@ -625,10 +625,10 @@ let g:SuperTabCtrlXCtrlPCtrlNSearchPlaces = 1
 " delimitMate
 
 " paredit is used instead
-au FileType lisp,*clojure*,scheme,racket let b:loaded_delimitMate = 1
+autocmd FileType lisp,*clojure*,scheme,racket let b:loaded_delimitMate = 1
 
 " apache
-au FileType apache let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
+autocmd FileType apache let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
 
 " vim-easy-align
 " Start interactive EasyAlign in visual mode (e.g. vipga)

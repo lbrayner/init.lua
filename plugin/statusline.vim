@@ -42,8 +42,8 @@ augroup StatuslineWinLeaveGroup
 augroup END
 
 augroup StatuslineVimEnterAutoGroup
-    au!
-    au VimEnter * call statusline#initialize()
+    autocmd!
+    autocmd VimEnter * call statusline#initialize()
 augroup END
 
 noremap <Plug>HighlightStatusLineNC :call statusline#HighlightStatusLineNC()<CR>
@@ -69,7 +69,7 @@ function! VisualModeLeave()
 endfunction
 
 augroup StatuslineCursorHoldAutoGroup
-    au!
+    autocmd!
     autocmd CursorHold * call VisualModeLeave()
 augroup END
 
