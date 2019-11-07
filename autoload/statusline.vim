@@ -24,17 +24,18 @@ function! statusline#DefaultModifiedFlag()
     return ''
 endfunction
 
-let s:status_line_tail = ' %2*%{&ft}%*'
+let s:status_line_tail = ' %2*%{&filetype}%*'
                      \ . ' %3*%1.(%{statusline#DefaultReadOnlyFlag()}%)%*'
-                     \ . ' %4.(%4*%{&fileformat}%*%)'
 
 let s:status_line_tail_column = s:status_line_tail
-                     \ . ' :%2.c %4*%L%* %3.P'
                      \ . ' %4*%{&fileencoding}%*'
+                     \ . ' %4.(%4*%{&fileformat}%*%)'
+                     \ . ' :%2.c %4*%3.P%* %L'
 
 let s:status_line_tail_line_column = s:status_line_tail
-                     \ . ' %l:%2.c %4*%L%* %3.P'
                      \ . ' %4*%{&fileencoding}%*'
+                     \ . ' %4.(%4*%{&fileformat}%*%)'
+                     \ . ' %l:%2.c %4*%3.P%* %L'
 
 function! statusline#GetStatusLineTail()
     if &number
