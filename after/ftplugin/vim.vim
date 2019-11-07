@@ -3,6 +3,7 @@ if !exists('g:FerretLoaded') || !g:FerretLoaded
 endif
 
 " Ignore submodules when searching the dotvim folder
+" Ignore documentation
 if executable("rg")
-    cnoreabbrev <buffer> Rg Ack -g !pack<S-Left><S-Left><left>
+    cnoreabbrev <buffer> Rg Ack -g !pack -g !doc<S-Left><S-Left><left>
 endif
