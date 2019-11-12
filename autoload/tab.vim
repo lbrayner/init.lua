@@ -62,7 +62,11 @@ function! tab#GoToLastTab()
         let g:tab#lastTab = tabpagenr()
         let g:tab#beforeLastTab = tabpagenr()
     endif
-    exe "tabn " . g:tab#lastTab
+    if len(gettabinfo(g:tab#lastTab)) > 0
+        exe "tabn " . g:tab#lastTab
+    else
+        echom "Tab " . g:tab#lastTab . " doesn't exist."
+    endif
 endfunction
 
 " https://superuser.com/a/555047
