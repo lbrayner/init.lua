@@ -11,7 +11,9 @@ augroup TabCloseAutoGroup
     autocmd TabClosed * if exists("g:tab#lastTab")
                 \| let g:tab#lastTab = g:tab#beforeLastTab
                 \| endif
-                \| call tab#GoToLastTab()
+                \| if g:tab#beforeLastTab != g:tab#lastTab
+                \| call tab#GoToLastTab() " Tab closed was the current tab
+                \| endif
 augroup END
 
 function! s:DoTabEqualizeWindows()
