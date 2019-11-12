@@ -69,12 +69,12 @@ endfunction
 function! tab#TabCloseRight(bang)
     let currrentTab = tabpagenr()
     while currrentTab < tabpagenr('$')
-        exe 'tabclose' . a:bang . ' ' . (currrentTab + 1)
+        noautocmd exe 'tabclose' . a:bang . ' ' . (currrentTab + 1)
     endwhile
 endfunction
 
 function! tab#TabCloseLeft(bang)
     while tabpagenr() > 1
-        exe 'tabclose' . a:bang . ' 1'
+        noautocmd exe 'tabclose' . a:bang . ' 1'
     endwhile
 endfunction
