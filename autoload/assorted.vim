@@ -163,10 +163,10 @@ endfunction
 " Save any buffer
 
 function! assorted#Save(name,bang)
+    let lazyr = &lazyredraw
     try
         let buf_nr = bufnr('%')
         let win_height = winheight(0)
-        let lazyr = &lazyredraw
         set lazyredraw
         keepalt new
         let new_buf_nr = bufnr('%')
