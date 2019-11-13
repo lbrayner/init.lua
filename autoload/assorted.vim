@@ -168,9 +168,11 @@ function! assorted#Save(name,bang)
         let buf_nr = bufnr('%')
         let win_height = winheight(0)
         set lazyredraw
+        let temp_file = tempname()
+        silent exec 'write ' . fnameescape(temp_file)
         keepalt new
         let new_buf_nr = bufnr('%')
-        silent put =getbufline(buf_nr,1,'$')
+        silent exec "read " . fnameescape(temp_file)
         1d_
         let write = "w"
         if a:bang
@@ -183,5 +185,6 @@ function! assorted#Save(name,bang)
         silent exec "resize " . win_height
     finally
         let &lazyredraw = lazyr
+        call delete(temp_file)
     endtry
 endfunction
