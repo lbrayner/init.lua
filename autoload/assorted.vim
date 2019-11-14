@@ -163,8 +163,8 @@ endfunction
 " Save any buffer
 
 function! assorted#Save(name,bang)
-    let lazyr = &lazyredraw
     try
+        let lazyr = &lazyredraw
         let buf_nr = bufnr('%')
         let win_height = winheight(0)
         set lazyredraw
