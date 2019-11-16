@@ -109,3 +109,6 @@
 [submodule "pack/bundle/start/vim-DetectSpellLang"]
 	path = pack/bundle/start/vim-DetectSpellLang
 	url = https://github.com/lbrayner/vim-DetectSpellLang
+[submodule "pack/bundle/start/vim-quickhl"]
+	path = pack/bundle/start/vim-quickhl
+	url = https://github.com/t9md/vim-quickhl

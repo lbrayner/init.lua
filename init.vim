@@ -656,6 +656,19 @@ if !exists("g:guesslang_disable")
 endif
 let g:guesslang_langs = [ 'en', 'pt' ]
 
+" vim-quickhl
+
+nmap <Space>m <Plug>(quickhl-manual-this)
+xmap <Space>m <Plug>(quickhl-manual-this)
+nmap <Space>M <Plug>(quickhl-manual-reset)
+xmap <Space>M <Plug>(quickhl-manual-reset)
+
+nmap <Space>w <Plug>(quickhl-manual-this-whole-word)
+xmap <Space>w <Plug>(quickhl-manual-this-whole-word)
+
+nmap <Space>c <Plug>(quickhl-manual-clear)
+vmap <Space>c <Plug>(quickhl-manual-clear)
+
 " }}}
 
 " vim: fdm=marker
