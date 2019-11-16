@@ -30,12 +30,12 @@ let s:status_line_tail = ' %2*%{&filetype}%*'
 let s:status_line_tail_column = s:status_line_tail
                      \ . ' %4*%{&fileencoding}%*'
                      \ . ' %4.(%4*%{&fileformat}%*%)'
-                     \ . ' :%2.c %4*%3.P%* %L'
+                     \ . ' :%-2.c %4*%3.P%* %L'
 
 let s:status_line_tail_line_column = s:status_line_tail
                      \ . ' %4*%{&fileencoding}%*'
                      \ . ' %4.(%4*%{&fileformat}%*%)'
-                     \ . ' %l:%2.c %4*%3.P%* %L'
+                     \ . ' %l:%-2.c %4*%3.P%* %L'
 
 function! statusline#GetStatusLineTail()
     if &number
