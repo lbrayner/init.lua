@@ -179,6 +179,7 @@ function! assorted#Save(name,bang)
             let write = "w!"
         endif
         silent exec write . " " . fnameescape(a:name)
+        edit
         exec bufwinnr(buf_nr)."wincmd w"
         quit
         exec bufwinnr(new_buf_nr)."wincmd w"
