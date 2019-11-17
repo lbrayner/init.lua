@@ -24,6 +24,10 @@ function! statusline#DefaultModifiedFlag()
     return ''
 endfunction
 
+function! s:GetLineFormat()
+    return '%' . len(line("$")) . 'l'
+endfunction
+
 let s:status_line_tail = ' %2*%{&filetype}%*'
                      \ . ' %3*%1.(%{statusline#DefaultReadOnlyFlag()}%)%*'
 
@@ -32,16 +36,18 @@ let s:status_line_tail_column = s:status_line_tail
                      \ . ' %4.(%4*%{&fileformat}%*%)'
                      \ . ' :%-2.c %4*%3.P%* %L'
 
-let s:status_line_tail_line_column = s:status_line_tail
+function! s:StatusLineTailLineColumn()
+    return s:status_line_tail
                      \ . ' %4*%{&fileencoding}%*'
                      \ . ' %4.(%4*%{&fileformat}%*%)'
-                     \ . ' %l:%-2.c %4*%3.P%* %L'
+                     \ . ' ' . s:GetLineFormat() . ':%-2.c %4*%3.P%* %L'
+endfunction
 
 function! statusline#GetStatusLineTail()
     if &number
         return s:status_line_tail_column
     endif
-    return s:status_line_tail_line_column
+    return s:StatusLineTailLineColumn()
 endfunction
 
 " b:Statusline_custom_mod_leftline and b:Statusline_custom_mod_rightline are
