@@ -34,4 +34,4 @@ dotvim$ ln -s "$(readlink -f ..)"/dotvim/init.vim ~/.vimrc
 
 Packages (`:h packages`) are submodules in `pack/bundle/start`.
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/50127612-a3304680-0250-11e9-9021-a733449ceaa2.PNG)
+![Screenshot](https://user-images.githubusercontent.com/5733531/69013343-b3b7d800-095d-11ea-8f93-423edb5addd1.png)
