@@ -112,3 +112,6 @@
 [submodule "pack/bundle/start/vim-quickhl"]
 	path = pack/bundle/start/vim-quickhl
 	url = https://github.com/t9md/vim-quickhl
+[submodule "pack/bundle/start/vim-characterize"]
+	path = pack/bundle/start/vim-characterize
+	url = https://github.com/tpope/vim-characterize
