@@ -564,6 +564,7 @@ map <silent> <leader>e <Plug>CamelCaseMotion_e
 map <silent> <leader>ge <Plug>CamelCaseMotion_ge
 
 " ctrlp
+
 let s:ctrlp_cache_dir = g:vim_dir."/ctrlp_cache"
 exe "let s:has_ctrlp_cache_dir = isdirectory('".s:ctrlp_cache_dir."')"
 if !s:has_ctrlp_cache_dir
@@ -596,6 +597,7 @@ let g:ctrlp_prompt_mappings = {
     \ }
 
 " fzf.vim
+
 let g:fzf_buffers_jump = 1
 let g:fzf_history_dir = $HOME . '/.cache/fzf_cache'
 command! -bar -bang -nargs=? -complete=buffer Buffers
@@ -606,14 +608,17 @@ command! -bar -bang -nargs=? -complete=buffer Buffers
 let g:rzipPlugin_extra_ext = '*.odt'
 
 " paredit
+
 let g:paredit_leader = '\'
 
 " syntastic
+
 " autocmd FileType java SyntasticToggleMode
 let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': []}
 let g:syntastic_java_javac_config_file_enabled = 1
 
 " sneak
+
 map f <Plug>Sneak_f
 map F <Plug>Sneak_F
 map t <Plug>Sneak_t
@@ -623,6 +628,7 @@ map x <Plug>Sneak_s
 map X <Plug>Sneak_S
 
 " scalpel
+
 nmap <Leader>x <Plug>(Scalpel)
 
 " ragtag
