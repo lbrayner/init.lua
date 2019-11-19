@@ -649,10 +649,10 @@ autocmd FileType apache let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
 
 " vim-easy-align
 " Start interactive EasyAlign in visual mode (e.g. vipga)
-xmap ge <Plug>(EasyAlign)
+xmap gy <Plug>(EasyAlign)
 
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nmap ge <Plug>(EasyAlign)
+nmap gy <Plug>(EasyAlign)
 
 " vim-DetectSpellLang
 
