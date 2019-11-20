@@ -39,7 +39,7 @@
 	url = https://github.com/tpope/vim-fireplace.git
 [submodule "pack/bundle/start/vim-fugitive"]
 	path = pack/bundle/start/vim-fugitive
-	url = https://github.com/tpope/vim-fugitive.git
+	url = https://github.com/lbrayner/vim-fugitive
 [submodule "pack/bundle/start/vim-gfm-syntax"]
 	path = pack/bundle/start/vim-gfm-syntax
 	url = https://github.com/rhysd/vim-gfm-syntax.git
