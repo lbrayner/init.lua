@@ -30,7 +30,6 @@ function! s:SVNDiff(filename,...)
         endif
         call writefile(stdout,patch)
         if getfsize(patch) != 0
-            let s:current_tab = tabpagenr()
             let fncommand = fnameescape(a:filename)
             silent exec ":tab split ".fncommand." | sil leftabove vert diffpatch ".patch
                       \ . ' | exec "file ".expand("%:t")'
@@ -38,8 +37,7 @@ function! s:SVNDiff(filename,...)
                       \ . ' | setlocal buftype=nofile'
                       \ . ' | setlocal bufhidden=wipe'
                       \ . ' | setlocal noswapfile'
-                      \ . ' | nnoremap <silent> <buffer> <nowait> q :bw<cr>:tabc<cr>'
-                      \         .s:current_tab.'gt'
+                      \ . ' | nnoremap <silent> <buffer> <nowait> q :bw<cr>:diffoff<cr>:tabc<cr>'
 
             autocmd WinLeave <buffer> echo ""
             exe 'autocmd WinEnter <buffer> echo "'.s:DiffTabMessage.'"'
