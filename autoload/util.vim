@@ -138,3 +138,7 @@ endfunction
 function! util#IsEclipseProject()
     return filereadable(".project")
 endfunction
+
+function! util#TabExists(tabnr)
+    return len(gettabinfo(a:tabnr)) > 0
+endfunction

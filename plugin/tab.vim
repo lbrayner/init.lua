@@ -1,19 +1,59 @@
+function! s:TabLeave()
+    let g:tab#tabLeaveTriggered = 1
+    if exists("g:tab#lastTab")
+        let g:tab#beforeLastTab = g:tab#lastTab
+    endif
+    let g:tab#lastTab = tabpagenr()
+endfunction
+
+function! s:TabClosed()
+    if exists("g:tab#tabLeaveTriggered") && g:tab#tabLeaveTriggered
+        let g:tab#tabLeaveTriggered = 0
+        if exists("g:tab#beforeLastTab")
+            let g:tab#lastTab = g:tab#beforeLastTab
+            if util#TabExists(g:tab#lastTab)
+                call tab#GoToLastTab()
+            endif
+        endif
+    else
+        if exists("g:tab#lastTab") 
+            if !util#TabExists(g:tab#lastTab)
+                        \|| g:tab#lastTab < gettabvar(g:tab#lastTab,'tab_tabnr')
+                let g:tab#lastTab = g:tab#lastTab - 1
+            endif
+        endif
+        if exists("g:tab#beforeLastTab") 
+            if !util#TabExists(g:tab#beforeLastTab)
+                        \|| g:tab#beforeLastTab != gettabvar(g:tab#beforeLastTab,'tab_tabnr')
+                unlet g:tab#beforeLastTab
+            endif
+        endif
+    endif
+endfunction
+
 augroup LastTabAutoGroup
     autocmd!
-    autocmd TabLeave * if exists("g:tab#lastTab")
-                \| let g:tab#beforeLastTab = g:tab#lastTab
-                \| endif
-                \| let g:tab#lastTab = tabpagenr()
-augroup END
-
-augroup TabCloseAutoGroup
-    autocmd!
-    autocmd TabClosed * if exists("g:tab#lastTab")
-                \| let g:tab#lastTab = g:tab#beforeLastTab
-                \| endif
-                \| if g:tab#beforeLastTab != g:tab#lastTab
-                \| call tab#GoToLastTab() " Tab closed was the current tab
-                \| endif
+    " autocmd TabEnter * let g:tab#tabLeaveTriggered = 0
+    autocmd TabEnter * let t:tab_tabnr = tabpagenr()
+                \| let g:tab#tabLeaveTriggered = 0
+    " autocmd TabLeave * let g:tab#tabLeaveTriggered = 1 
+    "             \| let g:tab#lastTab = tabpagenr()
+    " autocmd TabLeave * let current_tab = tabpagenr()
+    autocmd TabLeave * call s:TabLeave()
+    " autocmd TabLeave * let g:tab#tabLeaveTriggered = 1
+    "             \| if exists("g:tab#lastTab")
+    "             \| let g:tab#beforeLastTab = g:tab#lastTab
+    "             \| endif
+    "             \| let g:tab#lastTab = tabpagenr()
+    autocmd TabClosed * call s:TabClosed()
+    " autocmd TabClosed * let current_tab = tabpagenr()
+    " autocmd TabClosed * if !util#TabExists(g:tab#lastTab)
+    "             \|| g:tab#lastTab != gettabvar(g:tab#lastTab,'tab_tabnr')
+    "             \| if !util#TabExists(g:tab#lastTab)
+    "             \| let g:tab#lastTab = g:tab#beforeLastTab
+    "             \| endif
+    "             \| call tab#GoToLastTab() " Tab closed was the current tab
+    "             \| endif
 augroup END
 
 function! s:DoTabEqualizeWindows()
