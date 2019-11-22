@@ -33,27 +33,10 @@ endfunction
 
 augroup LastTabAutoGroup
     autocmd!
-    " autocmd TabEnter * let g:tab#tabLeaveTriggered = 0
     autocmd TabEnter * let t:tab_tabnr = tabpagenr()
                 \| let g:tab#tabLeaveTriggered = 0
-    " autocmd TabLeave * let g:tab#tabLeaveTriggered = 1 
-    "             \| let g:tab#lastTab = tabpagenr()
-    " autocmd TabLeave * let current_tab = tabpagenr()
     autocmd TabLeave * call s:TabLeave()
-    " autocmd TabLeave * let g:tab#tabLeaveTriggered = 1
-    "             \| if exists("g:tab#lastTab")
-    "             \| let g:tab#beforeLastTab = g:tab#lastTab
-    "             \| endif
-    "             \| let g:tab#lastTab = tabpagenr()
     autocmd TabClosed * call s:TabClosed()
-    " autocmd TabClosed * let current_tab = tabpagenr()
-    " autocmd TabClosed * if !util#TabExists(g:tab#lastTab)
-    "             \|| g:tab#lastTab != gettabvar(g:tab#lastTab,'tab_tabnr')
-    "             \| if !util#TabExists(g:tab#lastTab)
-    "             \| let g:tab#lastTab = g:tab#beforeLastTab
-    "             \| endif
-    "             \| call tab#GoToLastTab() " Tab closed was the current tab
-    "             \| endif
 augroup END
 
 function! s:DoTabEqualizeWindows()
