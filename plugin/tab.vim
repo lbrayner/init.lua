@@ -8,25 +8,26 @@ endfunction
 
 function! s:TabClosed()
     if exists("g:tab#tabLeaveTriggered") && g:tab#tabLeaveTriggered
-        let g:tab#tabLeaveTriggered = 0
         if exists("g:tab#beforeLastTab")
             let g:tab#lastTab = g:tab#beforeLastTab
-            if util#TabExists(g:tab#lastTab)
-                call tab#GoToLastTab()
-            endif
         endif
-    else
-        if exists("g:tab#lastTab") 
-            if !util#TabExists(g:tab#lastTab)
-                        \|| g:tab#lastTab < gettabvar(g:tab#lastTab,'tab_tabnr')
-                let g:tab#lastTab = g:tab#lastTab - 1
-            endif
+    endif
+    if exists("g:tab#lastTab") 
+        if !util#TabExists(g:tab#lastTab)
+                    \|| g:tab#lastTab < gettabvar(g:tab#lastTab,'tab_tabnr')
+            let g:tab#lastTab = g:tab#lastTab - 1
         endif
-        if exists("g:tab#beforeLastTab") 
-            if !util#TabExists(g:tab#beforeLastTab)
-                        \|| g:tab#beforeLastTab != gettabvar(g:tab#beforeLastTab,'tab_tabnr')
-                unlet g:tab#beforeLastTab
-            endif
+    endif
+    if exists("g:tab#beforeLastTab") 
+        if !util#TabExists(g:tab#beforeLastTab)
+                    \|| g:tab#beforeLastTab != gettabvar(g:tab#beforeLastTab,'tab_tabnr')
+            unlet g:tab#beforeLastTab
+        endif
+    endif
+    if exists("g:tab#tabLeaveTriggered") && g:tab#tabLeaveTriggered
+        let g:tab#tabLeaveTriggered = 0
+        if util#TabExists(g:tab#lastTab)
+            call tab#GoToLastTab()
         endif
     endif
 endfunction
