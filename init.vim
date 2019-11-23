@@ -674,6 +674,10 @@ xmap <Space>w <Plug>(quickhl-manual-this-whole-word)
 nmap <Space>c <Plug>(quickhl-manual-clear)
 vmap <Space>c <Plug>(quickhl-manual-clear)
 
+" vim-choosewin
+
+nmap <F10> <Plug>(choosewin)
+
 " }}}
 
 " vim: fdm=marker

@@ -115,3 +115,6 @@
 [submodule "pack/bundle/start/vim-characterize"]
 	path = pack/bundle/start/vim-characterize
 	url = https://github.com/tpope/vim-characterize
+[submodule "pack/bundle/start/vim-choosewin"]
+	path = pack/bundle/start/vim-choosewin
+	url = https://github.com/t9md/vim-choosewin
