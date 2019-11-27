@@ -34,13 +34,13 @@ let s:status_line_tail = ' %2*%{&filetype}%*'
 let s:status_line_tail_column = s:status_line_tail
                      \ . ' %4*%{&fileencoding}%*'
                      \ . ' %4.(%4*%{&fileformat}%*%)'
-                     \ . ' :%-2.c %4*%3.P%* %L'
+                     \ . ' :%-2.c %4*%3.P%* %L '
 
 function! s:StatusLineTailLineColumn()
     return s:status_line_tail
                      \ . ' %4*%{&fileencoding}%*'
                      \ . ' %4.(%4*%{&fileformat}%*%)'
-                     \ . ' ' . s:GetLineFormat() . ':%-2.c %4*%3.P%* %L'
+                     \ . ' ' . s:GetLineFormat() . ':%-2.c %4*%3.P%* %L '
 endfunction
 
 function! statusline#GetStatusLineTail()
@@ -53,17 +53,18 @@ endfunction
 " b:Statusline_custom_mod_leftline and b:Statusline_custom_mod_rightline are
 " joined with %=
 
+" margins of 1 column (on both sides)
 function! statusline#DefineModifiedStatusLine()
     if exists("b:Statusline_custom_mod_leftline")
-        exec "let &l:statusline='".b:Statusline_custom_mod_leftline."%='"
+        exec "let &l:statusline=' ".b:Statusline_custom_mod_leftline."%='"
     else
-        let &l:statusline='%<%1*'
+        let &l:statusline=' %<%1*'
             \ . '%{expand("%:t")}'
             \ . '%{statusline#DefaultModifiedFlag()}%*%='
     endif
     if exists("b:Statusline_custom_mod_rightline")
         exec "let &l:statusline='".&l:statusline
-                    \.b:Statusline_custom_mod_rightline."'"
+                    \.b:Statusline_custom_mod_rightline." '"
         return
     endif
     exec "let &l:statusline='".&l:statusline
@@ -72,31 +73,34 @@ function! statusline#DefineModifiedStatusLine()
 endfunction
 
 function! statusline#StatusLineNoFocus()
-    return util#truncateFilename(expand("%"),winwidth("%"))
+    " margins of 1 column (on both sides)
+    return util#truncateFilename(expand("%"),winwidth("%")-2)
 endfunction
 
+" margins of 1 column (on both sides)
 function! statusline#DefineStatusLineNoFocus()
-    let &l:statusline='%{statusline#StatusLineNoFocus()}'
+    let &l:statusline=' %{statusline#StatusLineNoFocus()} '
 endfunction
 
 " b:Statusline_custom_leftline and b:Statusline_custom_rightline are
 " joined with %=
 
+" margins of 1 column (on both sides)
 function! statusline#DefineStatusLine()
     if exists("b:Statusline_custom_leftline")
-        exec "let &l:statusline='".b:Statusline_custom_leftline."%='"
+        exec "let &l:statusline=' ".b:Statusline_custom_leftline."%='"
     elseif util#isDisposableBuffer()
-        let &l:statusline='%<%7*'
+        let &l:statusline=' %<%7*'
             \ . '%{expand("%:t")}'
             \ . '%{statusline#DefaultModifiedFlag()}%*%='
     else
-        let &l:statusline='%<'
+        let &l:statusline=' %<'
             \ . '%{expand("%:t")}'
             \ . '%{statusline#DefaultModifiedFlag()}%='
     endif
     if exists("b:Statusline_custom_rightline")
         exec "let &l:statusline='".&l:statusline
-                    \.b:Statusline_custom_rightline."'"
+                    \.b:Statusline_custom_rightline." '"
         return
     endif
     exec "let &l:statusline='".&l:statusline

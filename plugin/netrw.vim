@@ -1,7 +1,9 @@
 function! StatuslineNetrwCurdirHead()
     " left: a space + 2 extra spaces = 3
     " right: ft (netrw), RO Flag, 3 spaces, P(ercentage) = 12
-    let maxlength = winwidth("%") - len(fnamemodify(b:netrw_curdir,":t")) - 3 - 12
+    " margins of 1 column (on both sides)
+    let maxlength = winwidth("%") - len(fnamemodify(b:netrw_curdir,":t"))
+                \- 3 - 12 - 2
     return util#truncateDirname(fnamemodify(b:netrw_curdir,":~:h"),maxlength)
 endfunction
 
