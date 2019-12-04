@@ -118,3 +118,6 @@
 [submodule "pack/bundle/start/vim-choosewin"]
 	path = pack/bundle/start/vim-choosewin
 	url = https://github.com/t9md/vim-choosewin
+[submodule "pack/bundle/start/vim-diminactive"]
+	path = pack/bundle/start/vim-diminactive
+	url = https://github.com/blueyed/vim-diminactive
