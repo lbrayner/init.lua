@@ -46,7 +46,7 @@ function! statusline#themes#default#getColorMapping()
         \ 'user7_insert_fg': 'x233_Grey7',
         \ 'user7_visual_bg': 'x123_DarkSlateGray1',
         \ 'user7_visual_fg': 'x233_Grey7',
-        \ 'not_current_bg': 'x236_Grey19',
+        \ 'not_current_bg': 'x234_Grey11',
         \ 'not_current_fg': 'x240_Grey35'}
     return colorMapping
 endfunction

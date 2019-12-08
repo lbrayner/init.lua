@@ -22,3 +22,9 @@ if s:enable_solarized
         call statusline#initialize()
     endif
 endif
+
+if s:enable_solarized
+    execute "highlight ColorColumn ctermbg=" 
+                \. statusline#themes#getColor("x236_Grey19","cterm")
+                \. " guibg=" . statusline#themes#getColor("x236_Grey19","gui")
+endif
