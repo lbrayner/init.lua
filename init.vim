@@ -148,20 +148,24 @@ endif
 
 " Subsection: highlight & match
 
-function! s:WhiteSpaceOnlyHighlight()
-    highlight WhiteSpaceOnly ctermbg=red ctermfg=white guibg=#ff0000
+function! s:WhiteSpaceErrorHighlight()
+    highlight WhiteSpaceError ctermbg=red ctermfg=white guibg=#ff0000
 endfunction
 
-function! s:HighlightWhiteSpaceOnly()
-    match WhiteSpaceOnly /^\s\+$/
+function! s:HighlightWhiteSpaceError()
+    if &ft == "markdown"
+        match WhiteSpaceError /^\s\+$/
+        return
+    endif
+    match WhiteSpaceError /\s\+$/
 endfunction
 
-call s:WhiteSpaceOnlyHighlight()
+call s:WhiteSpaceErrorHighlight()
 
 augroup HighlightAndMatch
     autocmd!
-    autocmd ColorScheme * call s:WhiteSpaceOnlyHighlight()
-    autocmd VimEnter,WinEnter,BufWinEnter * call s:HighlightWhiteSpaceOnly()
+    autocmd ColorScheme * call s:WhiteSpaceErrorHighlight()
+    autocmd VimEnter,WinEnter,BufWinEnter * call s:HighlightWhiteSpaceError()
     autocmd BufWinLeave * call clearmatches()
 augroup END
 
