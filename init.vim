@@ -153,7 +153,7 @@ function! s:WhiteSpaceErrorHighlight()
 endfunction
 
 function! s:HighlightWhiteSpaceError()
-    if &ft == "markdown"
+    if "\v(markdown|mail)" =~# &ft
         match WhiteSpaceError /^\s\+$/
         return
     endif
