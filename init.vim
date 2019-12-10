@@ -644,11 +644,12 @@ let g:SuperTabCtrlXCtrlPCtrlNSearchPlaces = 1
 
 " delimitMate
 
-" paredit is used instead
-autocmd FileType lisp,*clojure*,scheme,racket let b:loaded_delimitMate = 1
-
-" apache
-autocmd FileType apache let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
+augroup DelimitMatePackageGroup
+    autocmd!
+    autocmd FileType lisp,*clojure*,scheme,racket let b:loaded_delimitMate = 1
+    " apache
+    autocmd FileType apache let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
+augroup END
 
 " vim-easy-align
 " Start interactive EasyAlign in visual mode (e.g. vipga)
@@ -681,6 +682,26 @@ vmap <Space>c <Plug>(quickhl-manual-clear)
 " vim-choosewin
 
 nmap <F10> <Plug>(choosewin)
+
+" matchit
+
+function! s:MatchitXmlSettings()
+    if exists("g:loaded_matchit")
+        let b:match_ignorecase=0
+        let b:match_words =
+                    \  '<:>,' .
+                    \  '<\@<=!\[CDATA\[:]]>,'.
+                    \  '<\@<=!--:-->,'.
+                    \  '<\@<=?\k\+:?>,'.
+                    \  '<\@<=\([^ \t>/]\+\)\%(\s\+[^>]*\%([^/]>\|$\)\|>\|$\):<\@<=/\1>,'.
+                    \  '<\@<=\%([^ \t>/]\+\)\%(\s\+[^/>]*\|$\):/>'
+    endif
+endfunction
+
+augroup MatchitPackageGroup
+    autocmd!
+    autocmd FileType mail,wsdl call s:MatchitXmlSettings()
+augroup END
 
 " }}}
 
