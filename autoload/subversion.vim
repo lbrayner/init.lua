@@ -1,4 +1,4 @@
-let s:DiffTabMessage = 'q to close this tab.'
+let s:DiffTabMessage = 'q to close this tab'
 
 function! s:SVNDiff(filename,...)
     exec "let extension = fnamemodify('".a:filename."',':t:e')"
@@ -37,13 +37,14 @@ function! s:SVNDiff(filename,...)
                       \ . ' | setlocal buftype=nofile'
                       \ . ' | setlocal bufhidden=wipe'
                       \ . ' | setlocal noswapfile'
-                      \ . ' | nnoremap <silent> <buffer> <nowait> q :bw<cr>:diffoff<cr>:tabc<cr>'
+                      \ . ' | nnoremap <silent> <buffer> <nowait> q'
+                      \ . ' :bw<cr>:diffoff<cr>:tabc<cr>'
 
             autocmd WinLeave <buffer> echo ""
             exe 'autocmd WinEnter <buffer> echo "'.s:DiffTabMessage.'"'
             wincmd w
         else
-            echomsg "Contents equal HEAD."
+            echomsg "Contents equal HEAD"
         endif
     catch
         echoerr v:exception
