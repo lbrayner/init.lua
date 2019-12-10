@@ -552,8 +552,29 @@ if !has("nvim")
     packadd matchit
 endif
 
+" matchit configuration
+
+function! s:MatchitXmlSettings()
+    if exists("g:loaded_matchit")
+        let b:match_ignorecase=0
+        let b:match_words =
+                    \  '<:>,' .
+                    \  '<\@<=!\[CDATA\[:]]>,'.
+                    \  '<\@<=!--:-->,'.
+                    \  '<\@<=?\k\+:?>,'.
+                    \  '<\@<=\([^ \t>/]\+\)\%(\s\+[^>]*\%([^/]>\|$\)\|>\|$\):<\@<=/\1>,'.
+                    \  '<\@<=\%([^ \t>/]\+\)\%(\s\+[^/>]*\|$\):/>'
+    endif
+endfunction
+
+augroup MatchitPackageGroup
+    autocmd!
+    autocmd FileType mail,wsdl call s:MatchitXmlSettings()
+augroup END
+
+" Finish here if we haven't initialized the submodules
+
 if !filereadable(g:vim_dir.'/pack/bundle/start/vim-surround/plugin/surround.vim')
-    " this means we haven't initialized the submodules
     finish
 endif
 
@@ -682,26 +703,6 @@ vmap <Space>c <Plug>(quickhl-manual-clear)
 " vim-choosewin
 
 nmap <F10> <Plug>(choosewin)
-
-" matchit
-
-function! s:MatchitXmlSettings()
-    if exists("g:loaded_matchit")
-        let b:match_ignorecase=0
-        let b:match_words =
-                    \  '<:>,' .
-                    \  '<\@<=!\[CDATA\[:]]>,'.
-                    \  '<\@<=!--:-->,'.
-                    \  '<\@<=?\k\+:?>,'.
-                    \  '<\@<=\([^ \t>/]\+\)\%(\s\+[^>]*\%([^/]>\|$\)\|>\|$\):<\@<=/\1>,'.
-                    \  '<\@<=\%([^ \t>/]\+\)\%(\s\+[^/>]*\|$\):/>'
-    endif
-endfunction
-
-augroup MatchitPackageGroup
-    autocmd!
-    autocmd FileType mail,wsdl call s:MatchitXmlSettings()
-augroup END
 
 " }}}
 
