@@ -73,10 +73,6 @@ function! assorted#FilterVisualSelection() range
     call cursor(line_start,0)
 endfunction
 
-function! assorted#RemoveTrailingSpaces() range
-    call util#PreserveViewPort('keeppatterns '.a:firstline.','.a:lastline.'s/\s\+$//e')
-endfunction
-
 " XML
 
 function! s:NavigateXmlNthParent(n)
@@ -154,10 +150,6 @@ function! assorted#DmyYmdToggle() range
     endif
     let regex = '\v<(\d{4})-(\d{2})-(\d{2})>'
     exec range . 's#' . regex . '#\3-\2-\1#g'
-endfunction
-
-function! assorted#AllLowercase()
-    call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
 endfunction
 
 " Save any buffer

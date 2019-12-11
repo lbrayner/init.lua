@@ -1,5 +1,5 @@
 command! -bar -range=% RemoveTrailingSpaces
-            \ <line1>,<line2>call assorted#RemoveTrailingSpaces()
+            \ call util#PreserveViewPort('keeppatterns '.<line1>.','.<line2>.'s/\s\+$//e')
 
 " dictionaries
 command! -nargs=1 SetDictionaryLanguage
@@ -41,7 +41,7 @@ nnoremap <silent> <leader><f2> :call assorted#HighlightOverLength()<cr>
 command! -range -nargs=0 CNPJFormat <line1>,<line2>call assorted#CNPJFormat()
 command! -range -nargs=0 CPFFormat <line1>,<line2>call assorted#CPFFormat()
 command! -range -nargs=0 DmyYmdToggle <line1>,<line2>call assorted#DmyYmdToggle()
-command! AllLowercase <line1>,<line2>call assorted#AllLowercase()
+command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
 
 " Save any buffer
 
