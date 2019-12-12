@@ -704,6 +704,13 @@ vmap <Space>c <Plug>(quickhl-manual-clear)
 
 nmap <F10> <Plug>(choosewin)
 
+" vim-fugitive
+
+augroup FugitiveAutoGroup
+    autocmd!
+    autocmd FileType fugitive Glcd
+augroup END
+
 " }}}
 
 " vim: fdm=marker
