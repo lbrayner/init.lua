@@ -711,6 +711,8 @@ augroup FugitiveAutoGroup
     autocmd FileType fugitive Glcd
 augroup END
 
+command! Gdi call fugitive#Diffsplit(1, 1, "<mods>", "", [])
+
 " }}}
 
 " vim: fdm=marker
