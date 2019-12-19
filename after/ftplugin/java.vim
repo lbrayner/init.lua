@@ -16,3 +16,4 @@ inoreabbrev <buffer> privatem private void ()<cr>{<cr>}<up><up><c-o>t(<right>
 inoreabbrev <buffer> protectedm protected void ()<cr>{<cr>}<up><up><c-o>t(<right>
 iabbrev <buffer> formats String.format("")<c-o>F"
 inoreabbrev <buffer> fmt formats
+inoreabbrev <buffer> /* /*<cr>*/<up>
