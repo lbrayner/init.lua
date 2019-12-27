@@ -1,11 +1,11 @@
 let s:DiffTabMessage = 'q to close this tab'
 
-function! s:SVNDiff(filename,...)
-    exec "let extension = fnamemodify('".a:filename."',':t:e')"
-    let pristine = shellescape(tempname()).".".extension
-    let fnshell = shellescape(a:filename)
-    let svncommand = "svn export -r BASE " . fnshell . " " . pristine
-    let patch = tempname()
+function! s:SVNDiff(filename)
+    let tempdir = tempname()
+    call mkdir(tempdir)
+    let pristine = tempdir."/".fnamemodify(a:filename,":t")." (BASE)"
+    let svncommand = "svn export -r BASE " . shellescape(a:filename)
+                \ . " " . shellescape(pristine)
     try
         if !has("unix") && !has("win32")
             throw "Only unix and win32 supported."
@@ -15,60 +15,40 @@ function! s:SVNDiff(filename,...)
             let message = stdout[0]
             throw message
         endif
-        " On win32 use cygwin's diff
-        let diffcommand = "diff -u"
-        if a:0 > 0
-            for extrarg in a:000
-                let diffcommand = diffcommand . " " . extrarg
-            endfor
-        endif
-        let diffcommand = diffcommand . " " . fnshell . " " . pristine
-        let stdout = systemlist(diffcommand)
-        if v:shell_error > 1 " only values greater than 1 indicate error
-            let message = stdout[0]
-            throw message
-        endif
-        call writefile(stdout,patch)
-        if getfsize(patch) != 0
-            let fncommand = fnameescape(a:filename)
-            silent exec ":tab split ".fncommand." | sil leftabove vert diffpatch ".patch
-                      \ . ' | exec "file ".expand("%:t")'
-                      \ . ' | setlocal nomodifiable'
-                      \ . ' | setlocal buftype=nofile'
-                      \ . ' | setlocal bufhidden=wipe'
-                      \ . ' | setlocal noswapfile'
-                      \ . ' | nnoremap <silent> <buffer> <nowait> q'
-                      \ . ' :bw<cr>:diffoff<cr>:tabc<cr>'
-
-            autocmd WinLeave <buffer> echo ""
-            exe 'autocmd WinEnter <buffer> echo "'.s:DiffTabMessage.'"'
-            wincmd w
-        else
-            echomsg "Contents equal HEAD"
-        endif
+        silent exec ":tabedit ".fnameescape(a:filename)
+        let file_type = &filetype
+        diffthis
+        exec "silent leftabove vsplit ".fnameescape(pristine)
+                    \ . " | setfiletype ".file_type
+        diffthis
+        setlocal nomodifiable
+        setlocal buftype=nofile
+        setlocal bufhidden=wipe
+        setlocal noswapfile
+        nnoremap <silent> <buffer> <nowait> q :bw<cr>:diffoff<cr>:tabc<cr>
+        autocmd WinLeave <buffer> echo ""
+        exe 'autocmd WinEnter <buffer> echo "'.s:DiffTabMessage.'"'
+        wincmd w
     catch
         echoerr v:exception
     finally
-        call delete(pristine)
-        call delete(patch)
+        call delete(tempdir,"rf")
     endtry
 endfunction
 
-function! subversion#SVNDiffCursor(...)
-    let vargs = copy(a:000)
+function! subversion#SVNDiffCursor()
     let filename = expand("<cfile>")
-    call call(function("s:SVNDiff"),insert(vargs,filename))
+    call s:SVNDiff(filename)
 endfunction
 
-function! subversion#SVNDiffThis(...)
-    let vargs = copy(a:000)
+function! subversion#SVNDiffThis()
     let filename = expand("%")
-    call call(function("s:SVNDiff"),insert(vargs,filename))
+    call s:SVNDiff(filename)
 endfunction
 
-function! subversion#SVNDiffContextual(...)
+function! subversion#SVNDiffContextual()
     let filename = expand("<cfile>")
-    let filename = fnamemodify(filename, ':p')
+    let filename = fnamemodify(filename,':p')
     if filereadable(filename)
         call subversion#SVNDiffCursor()
     else
