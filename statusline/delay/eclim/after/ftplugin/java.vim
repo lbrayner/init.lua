@@ -25,7 +25,7 @@ if &ft == 'java'
             if projectName != ""
                 augroup Statusline_BWP_java
                     autocmd! BufWritePost <buffer>
-                    autocmd  BufWritePost <buffer> 
+                    autocmd  BufWritePost <buffer>
                                 \ call statusline#extensions#eclim#LoadWarningFlag()
                 augroup END
                 " setting &l:path
