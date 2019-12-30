@@ -1,7 +1,7 @@
 let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
 
-command! -buffer -nargs=+ JasperVerticalDisplacement
-            \ call jasper#JasperVerticalDisplacement(<f-args>)
+command! -buffer -range=% -nargs=+ JasperVerticalDisplacement
+            \ call jasper#JasperVerticalDisplacement(<line1>,<line2>,<f-args>)
 
-command! -buffer -nargs=+ JasperHorizontalDisplacement
-            \ call jasper#JasperHorizontalDisplacement(<f-args>)
+command! -buffer -range=% -nargs=+ JasperHorizontalDisplacement
+            \ call jasper#JasperHorizontalDisplacement(<line1>,<line2>,<f-args>)
