@@ -19,7 +19,9 @@ function! s:SVNDiff(filename)
         let file_type = &filetype
         diffthis
         exec "silent leftabove vsplit ".fnameescape(pristine)
-                    \ . " | setfiletype ".file_type
+        if file_type != ""
+            exec "setfiletype ".file_type
+        endif
         diffthis
         setlocal nomodifiable
         setlocal buftype=nofile
