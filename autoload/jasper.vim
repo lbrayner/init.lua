@@ -26,7 +26,8 @@ function! jasper#JasperHorizontalDisplacement(first,last,displacement,...)
     if a:0 >= 3
         let minwidth = a:3
     endif
-    call util#PreserveViewPort('%s/\(x="\)\@<=\(\d\+\)/\=(str2nr(submatch(2)) >='
+    call util#PreserveViewPort('keeppatterns '.a:first.','.a:last
+                \ .'s/\(x="\)\@<=\(\d\+\)/\=(str2nr(submatch(2)) >='
                 \ .minwidth.' ? '
                 \ .'str2nr(submatch(2))+'.a:displacement.' : str2nr(submatch(2)))/')
 endfunction
