@@ -57,10 +57,14 @@ endfunction
 function! statusline#DefineModifiedStatusLine()
     if exists("b:Statusline_custom_mod_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_mod_leftline."%='"
+    elseif &previewwindow
+        let &l:statusline=' %<%1*'
+                    \ . '[%{expand("%:t")}'
+                    \ . '%{statusline#DefaultModifiedFlag()}]%*%='
     else
         let &l:statusline=' %<%1*'
-            \ . '%{expand("%:t")}'
-            \ . '%{statusline#DefaultModifiedFlag()}%*%='
+                    \ . '%{expand("%:t")}'
+                    \ . '%{statusline#DefaultModifiedFlag()}%*%='
     endif
     if exists("b:Statusline_custom_mod_rightline")
         exec "let &l:statusline='".&l:statusline
@@ -74,12 +78,24 @@ endfunction
 
 function! statusline#StatusLineNoFocus()
     " margins of 1 column (on both sides)
-    return util#truncateFilename(expand("%"),winwidth("%")-2)
+    if &previewwindow
+        return util#truncateFilename(expand("%"),winwidth("%")-4)
+    else
+        return util#truncateFilename(expand("%"),winwidth("%")-2)
+    endif
 endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineStatusLineNoFocus()
-    let &l:statusline=' %{statusline#StatusLineNoFocus()} '
+    if &previewwindow
+        if expand("%") == ""
+            let &l:statusline=' [Preview] '
+        else
+            let &l:statusline=' [%{statusline#StatusLineNoFocus()}] '
+        endif
+    else
+        let &l:statusline=' %{statusline#StatusLineNoFocus()} '
+    endif
 endfunction
 
 " b:Statusline_custom_leftline and b:Statusline_custom_rightline are
@@ -89,6 +105,15 @@ endfunction
 function! statusline#DefineStatusLine()
     if exists("b:Statusline_custom_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_leftline."%='"
+    elseif &previewwindow
+        if expand("%") == ""
+            let &l:statusline=' %<'
+                \ . '[Preview]%='
+        else
+            let &l:statusline=' %<'
+                \ . '[%{expand("%:t")}'
+                \ . '%{statusline#DefaultModifiedFlag()}]%='
+        endif
     elseif util#isDisposableBuffer()
         let &l:statusline=' %<%7*'
             \ . '%{expand("%:t")}'
