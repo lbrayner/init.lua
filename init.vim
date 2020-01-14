@@ -205,6 +205,7 @@ vnoremap <C-J> <esc><C-W>j
 vnoremap <C-K> <esc><C-W>k
 vnoremap <C-L> <esc><C-W>l
 
+" splits
 nnoremap <leader>v <C-w>v
 nnoremap <leader>h <C-w>s
 
@@ -365,6 +366,10 @@ nnoremap <leader>t :tabc<cr>
 if has("gui_running") || has("nvim")
     nnoremap <M-t> :tabe<space>
 endif
+
+" Preview window
+
+nnoremap <silent> <space>p :pclose<cr>
 
 " }}}
 
@@ -711,7 +716,7 @@ augroup FugitiveAutoGroup
     autocmd FileType fugitive Glcd
 augroup END
 
-command! Gdi call fugitive#Diffsplit(1, 1, "<mods>", "", [])
+command! -nargs=* Gdi call fugitive#Diffsplit(1, 1, "<mods>", "", [<f-args>])
 
 " }}}
 
