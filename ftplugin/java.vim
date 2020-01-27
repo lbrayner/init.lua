@@ -1,7 +1,7 @@
-if exists("b:my_did_ftplugin")
-    finish
-endif
-let b:my_did_ftplugin = 1
+" if exists("b:my_did_ftplugin")
+"     finish
+" endif
+" let b:my_did_ftplugin = 1
 
 if &ft == 'java'
 
@@ -17,15 +17,15 @@ if &ft == 'java'
             if projectName != ""
                 let s:eclim = 1
                 nnoremap <buffer> <leader>P
-                            \ :let @"=eclim#java#util#GetPackage()<cr>
-                            \ :let @+=@"<cr>
-                            \ :let @*=@"<cr>
-                            \ :echo @"<cr>
+                           \ :let @"=eclim#java#util#GetPackage()<cr>
+                            \:let @+=@"<cr>
+                            \:let @*=@"<cr>
+                            \:echo @"<cr>
                 nnoremap <buffer> <silent> <leader>C
                             \ :call extensions#eclim#EclimGoToClassDeclarationLine()<cr>
                 nnoremap <buffer> <leader>F
-                            \ :let @"=eclim#java#util#GetPackage().".".expand("%:t:r")<cr>
-                            \ :let @+=@"<cr> :let @*=@"<cr> :echo @"<cr>
+                           \ :let @"=eclim#java#util#GetPackage().".".expand("%:t:r")<cr>
+                            \:let @+=@"<cr>:let @*=@"<cr>:echo @"<cr>
                 nnoremap <buffer> <leader>js :JavaSearch<space>
                 nnoremap <buffer> <leader>jr :JavaRename<space>
                 nnoremap <buffer> <leader>ji :JavaImport<cr>
