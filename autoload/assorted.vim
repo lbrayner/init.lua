@@ -125,7 +125,7 @@ function! assorted#CNPJFormat() range
         exec range . 's#' . regex . '#\1\2\3\4\5#g'
         return
     endif
-    exec range 
+    exec range
         \ . 's#\v<(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})>#\1.\2.\3/\4-\5#g'
 endfunction
 
