@@ -13,7 +13,7 @@ function! s:TabClosed()
             unlet g:tab#beforeLastTab
         endif
     endif
-    if exists("g:tab#lastTab") 
+    if exists("g:tab#lastTab")
         if !util#TabExists(g:tab#lastTab)
                     \|| g:tab#lastTab < gettabvar(g:tab#lastTab,'tab_tabnr')
             let g:tab#lastTab = g:tab#lastTab - 1
@@ -42,6 +42,7 @@ endfunction
 command! TabEqualizeWindows call s:DoTabEqualizeWindows()
 command! -bang TabCloseRight call tab#TabCloseRight('<bang>')
 command! -bang TabCloseLeft call tab#TabCloseLeft('<bang>')
+command! Tabnew call util#PreserveViewPort("tabe ".fnameescape(expand("%")))
 
 augroup TabActionsOnVimEnter
     autocmd!
