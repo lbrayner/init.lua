@@ -76,17 +76,6 @@ function! util#PreserveViewPort(command)
     endtry
 endfunction
 
-" a string or a 0-arg funcref
-function! util#PreservePosition(command)
-    let cursor_pos = getpos('.')
-    if type(a:command) == type(function("tr"))
-        call a:command()
-    else
-        exe command
-    endif
-    call setpos('.',cursor_pos)
-endfunction
-
 function! util#random()
     if &sh =~# 'sh'
         return system('echo $RANDOM')[:-2]
