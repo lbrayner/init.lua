@@ -154,19 +154,25 @@ endfunction
 
 function! s:HighlightWhiteSpaceError()
     if "\v(markdown|mail)" =~# &ft
-        match WhiteSpaceError /^\s\+$/
+        let w:HighlightWhiteSpaceErrorMatchId = matchadd("WhiteSpaceError",'^\s\+$')
         return
     endif
-    match WhiteSpaceError /\s\+$/
+    let w:HighlightWhiteSpaceErrorMatchId = matchadd("WhiteSpaceError",'\s\+$')
 endfunction
 
 call s:WhiteSpaceErrorHighlight()
+
+function! ClearWhiteSpaceErrorHighlight()
+    if exists("w:HighlightWhiteSpaceErrorMatchId")
+        call matchdelete(w:HighlightWhiteSpaceErrorMatchId)
+    endif
+endfunction
 
 augroup HighlightAndMatch
     autocmd!
     autocmd ColorScheme * call s:WhiteSpaceErrorHighlight()
     autocmd VimEnter,WinEnter,BufWinEnter * call s:HighlightWhiteSpaceError()
-    autocmd BufWinLeave * call clearmatches()
+    autocmd BufWinLeave * call ClearWhiteSpaceErrorHighlight()
 augroup END
 
 " Subsection: mappings — pt-BR keyboard {{{1
