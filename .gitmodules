@@ -25,9 +25,6 @@
 [submodule "pack/bundle/start/supertab"]
 	path = pack/bundle/start/supertab
 	url = https://github.com/lbrayner/supertab.git
-[submodule "pack/bundle/start/syntastic"]
-	path = pack/bundle/start/syntastic
-	url = https://github.com/scrooloose/syntastic.git
 [submodule "pack/bundle/start/tpope-vim-abolish"]
 	path = pack/bundle/start/tpope-vim-abolish
 	url = https://github.com/tpope/tpope-vim-abolish.git

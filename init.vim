@@ -642,12 +642,6 @@ let g:rzipPlugin_extra_ext = '*.odt'
 
 let g:paredit_leader = '\'
 
-" syntastic
-
-" autocmd FileType java SyntasticToggleMode
-let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': []}
-let g:syntastic_java_javac_config_file_enabled = 1
-
 " sneak
 
 map f <Plug>Sneak_f
