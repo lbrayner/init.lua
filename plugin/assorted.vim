@@ -30,6 +30,7 @@ endif
 
 " XML
 
+nnoremap <silent> [< :call assorted#NavigateXmlDepthBackward(-v:count1)<cr>
 nnoremap <silent> ]> :call assorted#NavigateXmlDepth(-v:count1)<cr>
 
 " overlength

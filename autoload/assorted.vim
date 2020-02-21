@@ -77,7 +77,7 @@ endfunction
 
 function! s:NavigateXmlNthParent(n)
     let n_command = "v" . (a:n+1) . "at"
-    exec "silent normal! " . n_command . "v"
+    exec "silent normal! " . n_command . "vh"
 endfunction
 
 function! assorted#NavigateXmlDepth(depth)
@@ -85,6 +85,11 @@ function! assorted#NavigateXmlDepth(depth)
         call s:NavigateXmlNthParent(-a:depth)
         return
     endif
+endfunction
+
+function! assorted#NavigateXmlDepthBackward(depth)
+    call assorted#NavigateXmlDepth(a:depth)
+    call matchit#Match_wrapper('',1,'n')
 endfunction
 
 function! assorted#HighlightOverLength()
