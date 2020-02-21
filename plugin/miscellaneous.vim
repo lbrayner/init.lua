@@ -24,7 +24,7 @@ vnoremap <silent> <leader><f3> :call miscellaneous#FilterVisualSelection()<cr>
 vnoremap <silent> <leader><f4> :call miscellaneous#SourceVisualSelection()<cr>
 vnoremap <silent> <leader>* <esc>:call miscellaneous#SearchLastVisualSelectionNoMagic()<cr>
 
-if has("win32")
+if has("win32") || has("win64")
     nnoremap <silent> <leader><F3> :call miscellaneous#FilterLine()<cr>
 endif
 
@@ -33,7 +33,7 @@ endif
 nnoremap <silent> [< :call miscellaneous#NavigateXmlDepthBackward(-v:count1)<cr>
 nnoremap <silent> ]> :call miscellaneous#NavigateXmlDepth(-v:count1)<cr>
 
-" overlength
+" Overlength
 
 nnoremap <silent> <leader><f2> :call miscellaneous#HighlightOverLength()<cr>
 

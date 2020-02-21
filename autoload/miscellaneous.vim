@@ -1,7 +1,3 @@
-" highlight
-
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-
 " file under the cursor
 
 function! miscellaneous#CopyFileNameUnderCursor()
@@ -24,6 +20,8 @@ function! miscellaneous#CopyFilePathUnderCursor()
     echomsg "Yanked file path."
 endfunction
 
+" dictionaries
+
 function! miscellaneous#SetDictionaryLanguage(global,language)
     if !exists("g:miscellaneous#dictionaries")
         if exists("g:vim_did_enter")
@@ -39,6 +37,8 @@ function! miscellaneous#SetDictionaryLanguage(global,language)
     let &l:dictionary = dictionaries[a:language]
     echo "Dictionary language set to '" . a:language . "'."
 endfunction
+
+" other
 
 function! miscellaneous#SourceVisualSelection() range
     let line_start = a:firstline
@@ -73,6 +73,17 @@ function! miscellaneous#FilterVisualSelection() range
     call cursor(line_start,0)
 endfunction
 
+function! miscellaneous#FilterLine()
+    let line = getline('.')
+    let temp = tempname()
+    exe 'sil! !'.escape(line,&shellxescape).' > '.temp.' 2>&1'
+    if v:shell_error
+        exe 'throw "'.escape(readfile(temp)[0],'"').'"'
+    endif
+    exe "sil! read ".fnameescape(temp)
+    exe "sil call delete ('".temp."')"
+endfunction
+
 " XML
 
 function! s:NavigateXmlNthParent(n)
@@ -92,6 +103,10 @@ function! miscellaneous#NavigateXmlDepthBackward(depth)
     call matchit#Match_wrapper('',1,'n')
 endfunction
 
+" OverLength
+
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+
 function! miscellaneous#HighlightOverLength()
     if ! exists("s:OverLength")
         let s:OverLength = 90
@@ -107,17 +122,6 @@ function! miscellaneous#HighlightOverLength()
         echo "Overlength highlight cleared."
     endif
     let w:HighlightOverLengthFlag = ! w:HighlightOverLengthFlag
-endfunction
-
-function! miscellaneous#FilterLine()
-    let line = getline('.')
-    let temp = tempname()
-    exe 'sil! !'.escape(line,&shellxescape).' > '.temp.' 2>&1'
-    if v:shell_error
-        exe 'throw "'.escape(readfile(temp)[0],'"').'"'
-    endif
-    exe "sil! read ".fnameescape(temp)
-    exe "sil call delete ('".temp."')"
 endfunction
 
 " Save any buffer
