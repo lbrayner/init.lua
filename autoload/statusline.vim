@@ -114,7 +114,7 @@ function! statusline#DefineStatusLine()
                 \ . '[%{expand("%:t")}'
                 \ . '%{statusline#DefaultModifiedFlag()}]%='
         endif
-    elseif util#isDisposableBuffer()
+    elseif &buftype == "nofile"
         let &l:statusline=' %<%7*'
             \ . '%{expand("%:t")}'
             \ . '%{statusline#DefaultModifiedFlag()}%*%='

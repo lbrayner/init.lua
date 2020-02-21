@@ -88,17 +88,6 @@ function! util#random()
     return -1
 endfunction
 
-function! util#isDisposableBuffer(...)
-    let buf_nr = bufnr('%')
-    if a:0 && a:1
-        let buf_nr = a:1
-    endif
-    return bufname('%') != "[Command Line]"
-                \ && getbufvar(buf_nr,"&bufhidden") == "wipe"
-                \ && !getbufvar(buf_nr,"&swapfile")
-                \ && getbufvar(buf_nr,"&buftype") == "nofile"
-endfunction
-
 function! util#getTempDirectory()
     let tempfile = tempname()
     return fnamemodify(tempfile,':h:h')
