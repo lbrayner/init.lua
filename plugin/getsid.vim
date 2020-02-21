@@ -13,7 +13,7 @@
 "   the second is observer. holder of callback function.
 "
 "   script1.vim:
-"     
+"
 "     function! Caller(fn)
 "       call a:fn("foo")
 "     endfunction
@@ -28,12 +28,12 @@
 "
 "    call Caller(function('s:Callback'))
 "
-"  But it can't. Caller don't know 'What is s:Callback, Where is s:'. 
+"  But it can't. Caller don't know 'What is s:Callback, Where is s:'.
 "  This script is helpful for this case. You can do it as following.
 "
 "    call Caller(ScriptFuncref('Callback', expand('<sfile>:p')))
 "
-"  If you want to get own script id in your script, 
+"  If you want to get own script id in your script,
 "
 "    let mysid =  GetSID(expand('<sfile>:p'))
 "
