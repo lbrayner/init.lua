@@ -395,6 +395,9 @@ endif
 
 command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
 
+command! -bar -range=% RemoveTrailingSpaces
+            \ call util#PreserveViewPort('keeppatterns '.<line1>.','.<line2>.'s/\s\+$//e')
+
 " Subsection: autocommands {{{
 
 " Color scheme
