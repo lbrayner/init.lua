@@ -134,7 +134,7 @@ endif
 " avoid using it
 set patchexpr=MyPatch()
 function MyPatch()
-   :call system("patch -o " . v:fname_out . " " . v:fname_in . 
+   :call system("patch -o " . v:fname_out . " " . v:fname_in .
                \ " " . v:fname_diff)
 endfunction
 
@@ -409,7 +409,7 @@ endfunction
 
 augroup InsertModeUndoPoint
     autocmd!
-    autocmd CursorHoldI * call s:InsertModeUndoPoint() 
+    autocmd CursorHoldI * call s:InsertModeUndoPoint()
 augroup END
 
 " buffer aesthetics
