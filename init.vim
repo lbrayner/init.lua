@@ -8,7 +8,7 @@ if $XDG_CONFIG_HOME == ''
     let $XDG_CONFIG_HOME = fnamemodify($XDG_CONFIG_HOME,":p")
 endif
 
-if !exists("g:vim_dir") || g:vim_dir == ''
+if !exists("g:vim_dir") || g:vim_dir == ""
     let g:vim_dir = $HOME . "/.vim"
 
     if has("win32") || has("win64")
@@ -19,15 +19,15 @@ if !exists("g:vim_dir") || g:vim_dir == ''
         let g:vim_dir = $XDG_CONFIG_HOME . "/nvim"
     endif
 
-    if $MYVIMRC == ''
-        let g:vim_dir = expand('<sfile>:p:h')
+    if $MYVIMRC == ""
+        let g:vim_dir = expand("<sfile>:p:h")
     endif
 endif
 
 " are we using ssh?
 let g:ssh_client = 0
 
-if $SSH_CLIENT != ''
+if $SSH_CLIENT != ""
     let g:ssh_client = 1
 endif
 
@@ -228,7 +228,7 @@ endif
 nnoremap <silent> <leader>R :set relativenumber!<cr>
 
 " filtering line under cursor
-nnoremap <silent> <leader><F3> :.!<C-R>=getline('.')<CR><cr>
+nnoremap <silent> <leader><F3> :.!<C-R>=getline(".")<CR><cr>
 " executing range
 vnoremap <F3> :w !$SHELL<CR>
 " evaluating selection
@@ -353,13 +353,13 @@ nnoremap <silent> <leader>d :setlocal invspell spell?<CR>
 " diff & patch
 
 function! s:ToggleIWhite()
-    if &l:diffopt =~# 'iwhite'
+    if &l:diffopt =~# "iwhite"
         set diffopt-=iwhite
-        echo '-iwhite'
+        echo "-iwhite"
         return
     endif
     set diffopt+=iwhite
-    echo '+iwhite'
+    echo "+iwhite"
 endfunction
 
 nnoremap <leader>do :diffoff!<cr>
@@ -384,19 +384,19 @@ nnoremap <silent> <space>p :pclose<cr>
 " Copying the current buffer's path to the system clipboard
 
 if has("clipboard")
-    command! FullPath :let @"=expand('%:p:~') | let @+=@" | let @*=@"
-    command! Path :let @"=expand('%') | let @+=@" | let @*=@"
-    command! Name :let @"=expand('%:t') | let @+=@" | let @*=@"
+    command! FullPath :let @"=expand("%:p:~") | let @+=@" | let @*=@"
+    command! Path :let @"=expand("%") | let @+=@" | let @*=@"
+    command! Name :let @"=expand("%:t") | let @+=@" | let @*=@"
 else
-    command! FullPath :let @"=expand('%:p:~')
-    command! Path :let @"=expand('%')
-    command! Name :let @"=expand('%:t')
+    command! FullPath :let @"=expand("%:p:~")
+    command! Path :let @"=expand("%")
+    command! Name :let @"=expand("%:t")
 endif
 
 command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
 
 command! -bar -range=% RemoveTrailingSpaces
-            \ call util#PreserveViewPort('keeppatterns '.<line1>.','.<line2>.'s/\s\+$//e')
+            \ call util#PreserveViewPort("keeppatterns ".<line1>.",".<line2>.'s/\s\+$//e')
 
 " Subsection: autocommands {{{
 
@@ -510,16 +510,16 @@ augroup END
 
 let s:init_local = g:vim_dir . "/init.local.vim"
 if filereadable(s:init_local)
-  execute 'source ' . s:init_local
+  execute "source " . s:init_local
 endif
 
 " sourcing ginit.vim if it exists
 
 if has("gui_running")
-    if $MYGVIMRC == ''
+    if $MYGVIMRC == ""
         let s:ginit = g:vim_dir . "/ginit.vim"
         if filereadable(s:ginit)
-          execute 'source ' . s:ginit
+          execute "source " . s:ginit
         endif
     endif
 endif
@@ -529,7 +529,7 @@ endif
 if has("gui_running")
     let s:ginit_local = g:vim_dir . "/ginit.local.vim"
     if filereadable(s:ginit_local)
-      execute 'source ' . s:ginit_local
+      execute "source " . s:ginit_local
     endif
 endif
 
@@ -537,13 +537,13 @@ endif
 
 " netrw
 
-let g:netrw_bufsettings = 'noma nomod number relativenumber nobl wrap ro hidden'
+let g:netrw_bufsettings = "noma nomod number relativenumber nobl wrap ro hidden"
 let g:netrw_liststyle = 3
 
 " Eclim
 
 if !has("win32unix")
-    let g:EclimLogLevel = 'info'
+    let g:EclimLogLevel = "info"
 
     let g:EclimHighlightError = "Error"
     let g:EclimHighlightWarning = "Todo"
@@ -553,14 +553,14 @@ if !has("win32unix")
     let g:EclimDtdValidate=0
 
     let g:EclimMakeLCD = 1
-    let g:EclimJavaSearchSingleResult = 'edit'
+    let g:EclimJavaSearchSingleResult = "edit"
 endif
 
 " }}}
 
 " Subsection: packages
 
-if !has('packages')
+if !has("packages")
     finish
 endif
 
@@ -611,21 +611,21 @@ if !s:has_ctrlp_cache_dir
     call mkdir(s:ctrlp_cache_dir)
 endif
 let g:ctrlp_cache_dir = s:ctrlp_cache_dir
-let g:ctrlp_working_path_mode = ''
+let g:ctrlp_working_path_mode = ""
 let g:ctrlp_reuse_window = 'netrw\|help'
 let g:extensions#ctrlp#ctrlp_custom_ignore = {
-            \ 'file': '\v\.o$|\.exe$|\.lnk$|\.bak$|\.sw[a-z]$|\.class$|\.jasper$'
+            \ "file": '\v\.o$|\.exe$|\.lnk$|\.bak$|\.sw[a-z]$|\.class$|\.jasper$'
             \               . '|\.r[0-9]+$|\.mine$',
-            \ 'dir': '\C\V' . escape(expand('~'),' \') . '\$' . '\|ctrlp_cache\$'
+            \ "dir": '\C\V' . escape(expand('~'),' \') . '\$' . '\|ctrlp_cache\$'
             \ }
 
 let g:ctrlp_custom_ignore = {
-            \ 'func': 'extensions#ctrlp#ignore'
+            \ "func": "extensions#ctrlp#ignore"
             \ }
 
-let g:ctrlp_switch_buffer = 't'
-let g:ctrlp_map = '<f7>'
-let g:ctrlp_tabpage_position = 'bc'
+let g:ctrlp_switch_buffer = "t"
+let g:ctrlp_map = "<f7>"
+let g:ctrlp_tabpage_position = "bc"
 let g:ctrlp_clear_cache_on_exit = 0
 nnoremap <silent> <F5> :CtrlPBuffer<cr>
 
@@ -645,7 +645,7 @@ command! -bar -bang -nargs=? -complete=buffer Buffers
 
 " vim-rzip
 
-let g:rzipPlugin_extra_ext = '*.odt'
+let g:rzipPlugin_extra_ext = "*.odt"
 
 " paredit
 
@@ -695,7 +695,7 @@ nmap gy <Plug>(EasyAlign)
 if !exists("g:guesslang_disable")
     let g:guesslang_disable = 1
 endif
-let g:guesslang_langs = [ 'en', 'pt' ]
+let g:guesslang_langs = [ "en", "pt" ]
 
 " vim-quickhl
 
