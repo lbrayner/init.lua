@@ -1,7 +1,7 @@
 let sysvimrcreadable = 0
 let sysvimrc = ""
 
-if has("win32")
+if has("win32") || has("win64")
     let sysvimrc = $VIM."/_vimrc"
 endif
 
@@ -19,13 +19,13 @@ endif
 
 if $XDG_CONFIG_HOME == ''
     let $XDG_CONFIG_HOME = '~/.config'
-    if has("win32")
+    if has("win32") || has("win64")
         let $XDG_CONFIG_HOME = '~/AppData/Local'
     endif
     let $XDG_CONFIG_HOME = fnamemodify($XDG_CONFIG_HOME,":p")
 endif
 
-if has("win32")
+if has("win32") || has("win64")
     set runtimepath-=$HOME/vimfiles
     set runtimepath-=$HOME/vimfiles/after
 else
@@ -39,7 +39,7 @@ if has("nvim")
 endif
 
 if has('packages')
-    if has("win32")
+    if has("win32") || has("win64")
         set packpath-=$HOME/vimfiles
         set packpath-=$HOME/vimfiles/after
     else

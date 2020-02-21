@@ -6,6 +6,6 @@ set guioptions-=L  "remove left-hand scroll bar
 set guioptions-=e  "do not use guitablabel
 set guioptions+=c
 
-if has("win32")
+if has("win32") || has("win64")
     set gfn=Consolas:h10.5
 endif

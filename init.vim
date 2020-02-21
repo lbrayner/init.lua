@@ -2,7 +2,7 @@
 
 if $XDG_CONFIG_HOME == ''
     let $XDG_CONFIG_HOME = '~/.config'
-    if has("win32")
+    if has("win32") || has("win64")
         let $XDG_CONFIG_HOME = '~/AppData/Local'
     endif
     let $XDG_CONFIG_HOME = fnamemodify($XDG_CONFIG_HOME,":p")
@@ -11,7 +11,7 @@ endif
 if !exists("g:vim_dir") || g:vim_dir == ''
     let g:vim_dir = $HOME . "/.vim"
 
-    if has("win32")
+    if has("win32") || has("win64")
         let g:vim_dir = $USERPROFILE . "/vimfiles"
     endif
 
@@ -58,7 +58,7 @@ set nostartofline
 set fileformats=unix,dos
 set fileformat=unix
 set backspace=indent,eol,start
-if has("win32")
+if has("win32") || has("win64")
     if isdirectory('c:/cygwin64/bin')
         let $PATH .= ';c:\cygwin64\bin'
     endif
