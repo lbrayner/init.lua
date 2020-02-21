@@ -153,7 +153,7 @@ function! s:WhiteSpaceErrorHighlight()
 endfunction
 
 function! s:HighlightWhiteSpaceError()
-    if "\v(markdown|mail)" =~# &ft
+    if &ft =~# '\v(markdown|mail)'
         let w:HighlightWhiteSpaceErrorMatchId = matchadd("WhiteSpaceError",'^\s\+$')
         return
     endif
