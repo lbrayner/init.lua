@@ -1,12 +1,6 @@
 command! -bar -range=% RemoveTrailingSpaces
             \ call util#PreserveViewPort('keeppatterns '.<line1>.','.<line2>.'s/\s\+$//e')
 
-" dictionaries
-command! -nargs=1 SetDictionaryLanguage
-            \ call miscellaneous#SetDictionaryLanguage(0,<f-args>)
-command! -nargs=1 SetGlobalDictionaryLanguage
-            \ call miscellaneous#SetDictionaryLanguage(1,<f-args>)
-
 " file under the cursor
 
 nnoremap <silent> <leader>fn

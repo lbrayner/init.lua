@@ -20,24 +20,6 @@ function! miscellaneous#CopyFilePathUnderCursor()
     echomsg "Yanked file path."
 endfunction
 
-" dictionaries
-
-function! miscellaneous#SetDictionaryLanguage(global,language)
-    if !exists("g:miscellaneous#dictionaries")
-        if exists("g:vim_did_enter")
-            echoe "No dictionaries defined."
-        endif
-        return
-    endif
-    let dictionaries = g:miscellaneous#dictionaries
-    if a:global
-        let &dictionary = dictionaries[a:language]
-        return
-    endif
-    let &l:dictionary = dictionaries[a:language]
-    echo "Dictionary language set to '" . a:language . "'."
-endfunction
-
 " other
 
 function! miscellaneous#SourceVisualSelection() range
