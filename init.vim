@@ -387,6 +387,8 @@ else
     command! Name :let @"=expand('%:t')
 endif
 
+command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
+
 " Subsection: autocommands {{{
 
 " Color scheme

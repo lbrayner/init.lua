@@ -37,13 +37,6 @@ nnoremap <silent> ]> :call miscellaneous#NavigateXmlDepth(-v:count1)<cr>
 
 nnoremap <silent> <leader><f2> :call miscellaneous#HighlightOverLength()<cr>
 
-" format
-
-command! -range -nargs=0 CNPJFormat <line1>,<line2>call format#CNPJFormat()
-command! -range -nargs=0 CPFFormat <line1>,<line2>call format#CPFFormat()
-command! -range -nargs=0 DmyYmdToggle <line1>,<line2>call format#DmyYmdToggle()
-command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
-
 " Save any buffer
 
 command! -nargs=1 -bang -complete=file Save call miscellaneous#Save(<f-args>,<bang>0)
