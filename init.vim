@@ -162,9 +162,9 @@ endfunction
 
 call s:WhiteSpaceErrorHighlight()
 
-function! ClearWhiteSpaceErrorHighlight()
+function! s:ClearWhiteSpaceErrorHighlight()
     if exists("w:HighlightWhiteSpaceErrorMatchId")
-        call matchdelete(w:HighlightWhiteSpaceErrorMatchId)
+        silent! call matchdelete(w:HighlightWhiteSpaceErrorMatchId)
     endif
 endfunction
 
@@ -172,7 +172,7 @@ augroup HighlightAndMatch
     autocmd!
     autocmd ColorScheme * call s:WhiteSpaceErrorHighlight()
     autocmd VimEnter,WinEnter,BufWinEnter * call s:HighlightWhiteSpaceError()
-    autocmd BufWinLeave * call ClearWhiteSpaceErrorHighlight()
+    autocmd BufWinLeave * call s:ClearWhiteSpaceErrorHighlight()
 augroup END
 
 " Subsection: mappings — pt-BR keyboard {{{1
