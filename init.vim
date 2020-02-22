@@ -648,18 +648,18 @@ if has("unix") && !has("win32unix") && executable("fzf")
     nnoremap <F7> :FZF<cr>
     " else the F7 mapping is going to be overridden
     unlet g:ctrlp_map
-endif
 
-function! s:dfzf_clear_cache()
-    let fzf_command=$FZF_DEFAULT_COMMAND
-    let $FZF_DEFAULT_COMMAND='dfzf -C'
-    FZF
-    let $FZF_DEFAULT_COMMAND=fzf_command
-endfunction
+    function! s:dfzf_clear_cache()
+        let fzf_command=$FZF_DEFAULT_COMMAND
+        let $FZF_DEFAULT_COMMAND='dfzf -C'
+        FZF
+        let $FZF_DEFAULT_COMMAND=fzf_command
+    endfunction
 
-if executable("dfzf")
-    let $FZF_DEFAULT_COMMAND='dfzf'
-    nnoremap <silent> <leader><f7> :call <SID>dfzf_clear_cache()<cr>
+    if executable("dfzf")
+        let $FZF_DEFAULT_COMMAND='dfzf'
+        nnoremap <silent> <leader><f7> :call <SID>dfzf_clear_cache()<cr>
+    endif
 endif
 
 " vim-rzip
