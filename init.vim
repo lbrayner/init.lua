@@ -643,7 +643,7 @@ let g:fzf_history_dir = $HOME . '/.cache/fzf_cache'
 command! -bar -bang -nargs=? -complete=buffer Buffers
             \ call fzf#vim#buffers(<q-args>, <bang>0) " eclim shadows this command
 
-if executable("fzf")
+if has("unix") && !has("win32unix") && executable("fzf")
     nnoremap <F5> :Buffers<cr>
     nnoremap <F7> :FZF<cr>
     " else the F7 mapping is going to be overridden
