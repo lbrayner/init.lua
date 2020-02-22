@@ -627,7 +627,7 @@ let g:ctrlp_switch_buffer = "t"
 let g:ctrlp_map = "<f7>"
 let g:ctrlp_tabpage_position = "bc"
 let g:ctrlp_clear_cache_on_exit = 0
-nnoremap <silent> <F5> :CtrlPBuffer<cr>
+nnoremap <F5> :CtrlPBuffer<cr>
 
 let g:ctrlp_prompt_mappings = {
     \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
@@ -642,6 +642,25 @@ let g:fzf_buffers_jump = 1
 let g:fzf_history_dir = $HOME . '/.cache/fzf_cache'
 command! -bar -bang -nargs=? -complete=buffer Buffers
             \ call fzf#vim#buffers(<q-args>, <bang>0) " eclim shadows this command
+
+if executable("fzf")
+    nnoremap <F5> :Buffers<cr>
+    nnoremap <F7> :FZF<cr>
+    " else the F7 mapping is going to be overridden
+    unlet g:ctrlp_map
+endif
+
+function! s:dfzf_clear_cache()
+    let fzf_command=$FZF_DEFAULT_COMMAND
+    let $FZF_DEFAULT_COMMAND='dfzf -C'
+    FZF
+    let $FZF_DEFAULT_COMMAND=fzf_command
+endfunction
+
+if executable("dfzf")
+    let $FZF_DEFAULT_COMMAND='dfzf'
+    nnoremap <silent> <leader><f7> :call <SID>dfzf_clear_cache()<cr>
+endif
 
 " vim-rzip
 
