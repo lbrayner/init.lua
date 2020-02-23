@@ -4,7 +4,6 @@ endif
 let b:my_did_ftplugin = 1
 
 if &ft == 'mail'
-    vmap <buffer> <leader>a <Plug>Linkify
     setlocal completefunc=email#EmailComplete
     " Buffer local CursorMoved & CursorMovedI autocommands are deleted
     autocmd! CursorMoved,CursorMovedI <buffer>
