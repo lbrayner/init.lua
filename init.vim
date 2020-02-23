@@ -342,7 +342,7 @@ inoremap <c-b> <c-k>
 
 " spell
 
-nnoremap <silent> <leader>d :setlocal invspell spell?<CR>
+nnoremap <silent> <leader>c :setlocal invspell spell?<CR>
 
 " diff & patch
 
