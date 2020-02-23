@@ -690,6 +690,12 @@ map T <Plug>Sneak_T
 map x <Plug>Sneak_s
 map X <Plug>Sneak_S
 
+" ferret
+
+let g:FerretMap = 0
+
+nmap <Leader>a <Plug>(FerretAck)
+
 " scalpel
 
 nmap <Leader>x <Plug>(Scalpel)
