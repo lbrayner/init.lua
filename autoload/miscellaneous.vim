@@ -1,25 +1,3 @@
-" file under the cursor
-
-function! miscellaneous#CopyFileNameUnderCursor()
-    silent exec ":let @\"=expand('<cfile>:t')"
-    echomsg "Yanked file name."
-endfunction
-
-function! miscellaneous#CopyFileParentUnderCursor()
-    silent exec ":let @\"=expand('<cfile>:h')"
-    echomsg "Yanked file's parent name."
-endfunction
-
-function! miscellaneous#CopyFileFullPathUnderCursor()
-    silent exec ":let @\"=expand('<cfile>:p')"
-    echomsg "Yanked file's full path."
-endfunction
-
-function! miscellaneous#CopyFilePathUnderCursor()
-    silent exec ":let @\"=expand('<cfile>')"
-    echomsg "Yanked file path."
-endfunction
-
 " other
 
 function! miscellaneous#SourceVisualSelection() range

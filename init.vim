@@ -373,12 +373,18 @@ nnoremap <silent> <space>p :pclose<cr>
 
 " Subsection: commands
 
-" Copying the current buffer's path to the system clipboard
-
 if has("clipboard")
-    command! FullPath :let @"=expand("%:p:~") | let @+=@" | let @*=@"
-    command! Path :let @"=expand("%") | let @+=@" | let @*=@"
-    command! Name :let @"=expand("%:t") | let @+=@" | let @*=@"
+    function! s:Clip(text)
+        let @"=a:text | let @+=@" | let @*=@"
+        echo @"
+    endfunction
+
+    " Copies arg to the system's clipboard
+    command! -nargs=1 Clip call s:Clip(<f-args>)
+
+    command! FullPath call s:Clip(expand("%:p:~"))
+    command! Path call s:Clip(expand("%"))
+    command! Name call s:Clip(expand("%:t"))
 else
     command! FullPath :let @"=expand("%:p:~")
     command! Path :let @"=expand("%")

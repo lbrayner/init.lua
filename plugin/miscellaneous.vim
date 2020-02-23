@@ -1,13 +1,20 @@
 " file under the cursor
 
-nnoremap <silent> <leader>fn
-            \ :call miscellaneous#CopyFileNameUnderCursor()<cr>
-nnoremap <silent> <leader>fp
-            \ :call miscellaneous#CopyFileParentUnderCursor()<cr>
-nnoremap <silent> <leader>ff
-            \ :call miscellaneous#CopyFileFullPathUnderCursor()<cr>
-nnoremap <silent> <leader>fr
-            \ :call miscellaneous#CopyFilePathUnderCursor()<cr>
+function! FileNameUnderCursor()
+    return expand("<cfile>:t")
+endfunction
+
+function! FileParentUnderCursor()
+    return expand("<cfile>:h")
+endfunction
+
+function! FileFullPathUnderCursor()
+    return expand("<cfile>:p")
+endfunction
+
+function! FilePathUnderCursor()
+    return expand("<cfile>")
+endfunction
 
 " other
 
