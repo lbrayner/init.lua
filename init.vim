@@ -321,7 +321,7 @@ if has("gui_running") || has("nvim")
     " cancel
     cnoremap <C-G> <C-C>
     " open the command line buffer
-    cnoremap <C-Z> <C-F>
+    cnoremap <C-X> <C-F>
 endif
 
 if has("nvim")
