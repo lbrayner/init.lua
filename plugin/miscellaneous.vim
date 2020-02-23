@@ -1,21 +1,3 @@
-" file under the cursor
-
-function! FileNameUnderCursor()
-    return expand("<cfile>:t")
-endfunction
-
-function! FileParentUnderCursor()
-    return expand("<cfile>:h")
-endfunction
-
-function! FileFullPathUnderCursor()
-    return expand("<cfile>:p")
-endfunction
-
-function! FilePathUnderCursor()
-    return expand("<cfile>")
-endfunction
-
 " other
 
 vnoremap <silent> <leader><f3> :call miscellaneous#FilterVisualSelection()<cr>
