@@ -225,8 +225,6 @@ if has("clipboard")
     vnoremap <silent> <leader>y "+y:let @*=@"<cr>
 endif
 
-nnoremap <silent> <leader>R :set relativenumber!<cr>
-
 " filtering line under cursor
 nnoremap <silent> <leader><F3> :.!<C-R>=getline(".")<CR><cr>
 " executing range
@@ -242,9 +240,6 @@ nnoremap <leader><F5> :ls<CR>:buffer<Space>
 nnoremap <F6> :w<CR>
 nnoremap <leader><F6> :w!<CR>
 nnoremap <silent> <F12>  :setlocal list!<CR>
-nnoremap <leader>\| :setlocal wrap! wrap?<CR>
-nnoremap <silent> <leader>N :setlocal number!<CR>
-nnoremap <leader>N :set linebreak! linebreak?<CR>
 vnoremap . :normal .
 
 inoremap <F6> <esc>:w<CR>
@@ -255,7 +250,6 @@ nnoremap <silent> <leader><F9> :bw<cr>
 " quickfix and locallist
 
 nnoremap <silent> <leader>l :botright lopen<CR>
-nnoremap <silent> <leader>L :lclose<CR>
 nnoremap <silent> <leader>q :botright copen<CR>
 
 nnoremap <silent> <leader>B :b#<CR>
@@ -366,8 +360,6 @@ nnoremap <leader>do :diffoff!<cr>
 nnoremap <leader>di :call <SID>ToggleIWhite()<cr>
 
 " tabs
-
-nnoremap <leader>t :tabc<cr>
 
 if has("gui_running") || has("nvim")
     nnoremap <M-t> :tabe<space>
