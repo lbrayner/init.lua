@@ -371,7 +371,19 @@ nnoremap <silent> <space>p :pclose<cr>
 
 " }}}
 
-" Subsection: commands
+" Subsection: functions & commands
+
+function! Path()
+    return expand("%")
+endfunction
+
+function! FullPath()
+    return expand("%:p:~")
+endfunction
+
+function! Name()
+    return expand("%:t")
+endfunction
 
 if has("clipboard")
     function! s:Clip(text)
@@ -382,13 +394,13 @@ if has("clipboard")
     " Copies arg to the system's clipboard
     command! -nargs=1 Clip call s:Clip(<f-args>)
 
-    command! FullPath call s:Clip(expand("%:p:~"))
-    command! Path call s:Clip(expand("%"))
-    command! Name call s:Clip(expand("%:t"))
+    command! Path call s:Clip(Path())
+    command! FullPath call s:Clip(FullPath())
+    command! Name call s:Clip(Name())
 else
-    command! FullPath :let @"=expand("%:p:~")
-    command! Path :let @"=expand("%")
-    command! Name :let @"=expand("%:t")
+    command! Path :let @"=Path()
+    command! FullPath :let @"=FullPath()
+    command! Name :let @"=Name()
 endif
 
 command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
