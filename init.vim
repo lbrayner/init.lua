@@ -1,6 +1,6 @@
 " inferring where we are
 
-if $XDG_CONFIG_HOME == ''
+if $XDG_CONFIG_HOME == ""
     let $XDG_CONFIG_HOME = '~/.config'
     if has("win32") || has("win64")
         let $XDG_CONFIG_HOME = '~/AppData/Local'
@@ -651,13 +651,13 @@ if has("unix") && !has("win32unix") && executable("fzf")
 
     function! s:dfzf_clear_cache()
         let fzf_command=$FZF_DEFAULT_COMMAND
-        let $FZF_DEFAULT_COMMAND='dfzf -C'
+        let $FZF_DEFAULT_COMMAND="dfzf -C"
         FZF
         let $FZF_DEFAULT_COMMAND=fzf_command
     endfunction
 
     if executable("dfzf")
-        let $FZF_DEFAULT_COMMAND='dfzf'
+        let $FZF_DEFAULT_COMMAND="dfzf"
         nnoremap <silent> <leader><f7> :call <SID>dfzf_clear_cache()<cr>
     endif
 endif
