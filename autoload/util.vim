@@ -120,3 +120,33 @@ endfunction
 function! util#TabExists(tabnr)
     return len(gettabinfo(a:tabnr)) > 0
 endfunction
+
+" Adapted from
+" https://www.reddit.com/r/vim/comments/1rzvsm/do_any_of_you_redirect_results_of_i_to_the/
+function! util#Ilist_Search(start_at_cursor,search_pattern)
+    redir => output
+        silent! execute (a:start_at_cursor ? '+,$' : '') . 'ilist! /' . a:search_pattern
+    redir END
+
+    let lines = split(output, '\n')
+
+    " better safe than sorry
+    if lines[0] =~ '^Error detected'
+        echomsg 'Could not find "' . a:search_pattern . '".'
+        return
+    endif
+
+    " we retrieve the filename
+    let [filename, line_info] = [lines[0], lines[1:-1]]
+
+    " we turn the :ilist output into a quickfix dictionary
+    let qf_entries = map(line_info, "{
+                \ 'filename': filename,
+                \ 'lnum': split(v:val)[1],
+                \ 'text': getline(split(v:val)[1])
+                \ }")
+    call setqflist(qf_entries)
+
+    " and we finally open the quickfix window if there's something to show
+    cwindow
+endfunction
