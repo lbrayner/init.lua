@@ -192,9 +192,6 @@ nnoremap qç q:
 vnoremap qç q:
 vnoremap ¬ ^
 
-nnoremap <f1> :vert h<space>
-vnoremap <f1> <esc>:vert h
-
 nnoremap <silent> <Esc><Esc> <Esc>:only<CR>
 
 " clear search highlights
@@ -369,7 +366,7 @@ endif
 
 " Preview window
 
-nnoremap <silent> <space>p :pclose<cr>
+nnoremap <F1> :pclose<cr>
 
 " }}}
 
