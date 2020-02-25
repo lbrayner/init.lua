@@ -138,7 +138,7 @@ function MyPatch()
                \ " " . v:fname_diff)
 endfunction
 
-command! MergeMarkers call util#Ilist_Search(0,"<<<<<<<\\||||||||\\|=======\\|>>>>>>>")
+command! MergeMarkers call util#Ilist_Search(0,"<<<<<<<\\||||||||\\|=======\\|>>>>>>>",1)
 
 " From tpope's vim-sensible
 if &synmaxcol == 3000
@@ -407,7 +407,7 @@ command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g'
 command! -bar -range=% RemoveTrailingSpaces
             \ call util#PreserveViewPort("keeppatterns ".<line1>.",".<line2>.'s/\s\+$//e')
 
-command! -nargs=1 SearchFileQF call util#Ilist_Search(0,<f-args>)
+command! -nargs=1 SearchFileQF call util#Ilist_Search(0,<f-args>,1)
 
 " Subsection: autocommands {{{
 
