@@ -20,34 +20,6 @@ exec 'set runtimepath+='
     \ . delaydir . ','
     \ . delaydir . '/after'
 
-augroup StatuslineInsertEnterLeaveGroup
-    autocmd!
-    autocmd InsertEnter * call statusline#HighlightMode('insert')
-    autocmd InsertLeave * call statusline#HighlightMode('normal')
-augroup END
-
-augroup StatuslineModifiedUserGroup
-    autocmd!
-    autocmd User CustomStatusline call statusline#RedefineStatusLine()
-augroup END
-
-augroup StatuslineModifiedBWEGroup
-    autocmd!
-    autocmd VimEnter * autocmd StatuslineModifiedBWEGroup
-                \ BufEnter,WinEnter * call statusline#RedefineStatusLine()
-    autocmd VimEnter * call statusline#RedefineStatusLine()
-augroup END
-
-augroup StatuslineWinLeaveGroup
-    autocmd!
-    autocmd BufLeave * call statusline#DefineStatusLineNoFocus()
-augroup END
-
-augroup StatuslineVimEnterAutoGroup
-    autocmd!
-    autocmd VimEnter * call statusline#initialize()
-augroup END
-
 noremap <Plug>HighlightStatusLineNC :call statusline#HighlightStatusLineNC()<CR>
 
 command! -nargs=0 StatusLineInitialize call statusline#initialize()
@@ -70,9 +42,17 @@ function! VisualModeLeave()
     return util#trivialHorizontalMotion()
 endfunction
 
-augroup StatuslineCursorHoldAutoGroup
+augroup Statusline
     autocmd!
+    autocmd InsertEnter * call statusline#HighlightMode('insert')
+    autocmd InsertLeave * call statusline#HighlightMode('normal')
     autocmd CursorHold * call VisualModeLeave()
+    autocmd User CustomStatusline call statusline#RedefineStatusLine()
+    autocmd VimEnter * autocmd Statusline
+                \ BufEnter,WinEnter * call statusline#RedefineStatusLine()
+    autocmd BufLeave * call statusline#DefineStatusLineNoFocus()
+    autocmd VimEnter * call statusline#initialize()
+    autocmd VimEnter * call statusline#RedefineStatusLine()
 augroup END
 
 vnoremap <silent> <expr> <SID>VisualModeEnter VisualModeEnter()
