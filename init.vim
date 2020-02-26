@@ -157,6 +157,10 @@ endfunction
 call WhiteSpaceErrorGroup()
 
 function! HighlightWhiteSpaceError()
+    if &ft == "help"
+        call ClearWhiteSpaceError()
+        return
+    endif
     if &ft =~# '\v(mail|markdown)'
         call ClearWhiteSpaceError()
         let w:WhiteSpaceErrorID = matchadd("WhiteSpaceError",'^\s\+$')
