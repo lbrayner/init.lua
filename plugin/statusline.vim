@@ -28,12 +28,14 @@ augroup END
 
 augroup StatuslineModifiedUserGroup
     autocmd!
-    autocmd User * call statusline#RedefineStatusLine()
+    autocmd User CustomStatusline call statusline#RedefineStatusLine()
 augroup END
 
 augroup StatuslineModifiedBWEGroup
     autocmd!
-    autocmd BufWinEnter,WinEnter * call statusline#RedefineStatusLine()
+    autocmd VimEnter * autocmd StatuslineModifiedBWEGroup
+                \ BufEnter,WinEnter * call statusline#RedefineStatusLine()
+    autocmd VimEnter * call statusline#RedefineStatusLine()
 augroup END
 
 augroup StatuslineWinLeaveGroup

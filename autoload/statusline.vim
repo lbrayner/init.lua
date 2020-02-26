@@ -14,7 +14,7 @@ function! statusline#DefaultModifiedFlag()
     endif
     if w:Statusline_modified != &modified
         if exists("#StatuslineModifiedUserGroup#User")
-            doautocmd <nomodeline> StatuslineModifiedUserGroup User
+            doautocmd <nomodeline> User CustomStatusline
         endif
         let w:Statusline_modified = &modified
     endif

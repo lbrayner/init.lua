@@ -19,7 +19,9 @@ function! RedefineTabline()
     endif
 endfunction
 
-augroup TablineBufWinEnter
+augroup Tabline
     autocmd!
-    autocmd WinEnter,BufEnter * call RedefineTabline()
+    autocmd VimEnter * autocmd Tabline BufEnter * call RedefineTabline()
+    autocmd VimEnter * autocmd Tabline WinEnter * call RedefineTabline()
+    autocmd VimEnter * call RedefineTabline()
 augroup END

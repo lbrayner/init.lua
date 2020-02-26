@@ -148,34 +148,44 @@ endif
 
 " }}}
 
-" Subsection: highlight & match
+" Subsection: highlight & match {{{
 
-function! s:WhiteSpaceErrorHighlight()
+function! WhiteSpaceErrorGroup()
     highlight WhiteSpaceError ctermbg=red ctermfg=white guibg=#ff0000
 endfunction
 
-function! s:HighlightWhiteSpaceError()
-    if &ft =~# '\v(markdown|mail)'
-        let w:HighlightWhiteSpaceErrorMatchId = matchadd("WhiteSpaceError",'^\s\+$')
+call WhiteSpaceErrorGroup()
+
+function! HighlightWhiteSpaceError()
+    if &ft =~# '\v(mail|markdown)'
+        call ClearWhiteSpaceError()
+        let w:WhiteSpaceErrorID = matchadd("WhiteSpaceError",'^\s\+$')
         return
     endif
-    let w:HighlightWhiteSpaceErrorMatchId = matchadd("WhiteSpaceError",'\s\+$')
+    call ClearWhiteSpaceError()
+    let w:WhiteSpaceErrorID = matchadd("WhiteSpaceError",'\s\+$')
 endfunction
 
-call s:WhiteSpaceErrorHighlight()
-
-function! s:ClearWhiteSpaceErrorHighlight()
-    if exists("w:HighlightWhiteSpaceErrorMatchId")
-        silent! call matchdelete(w:HighlightWhiteSpaceErrorMatchId)
+function! ClearWhiteSpaceError()
+    if exists("w:WhiteSpaceErrorID")
+        silent! call matchdelete(w:WhiteSpaceErrorID)
+        unlet w:WhiteSpaceErrorID
     endif
 endfunction
 
 augroup HighlightAndMatch
     autocmd!
-    autocmd ColorScheme * call s:WhiteSpaceErrorHighlight()
-    autocmd VimEnter,WinEnter,BufWinEnter * call s:HighlightWhiteSpaceError()
-    autocmd BufWinLeave * call s:ClearWhiteSpaceErrorHighlight()
+    autocmd ColorScheme * call WhiteSpaceErrorGroup()
+    autocmd BufWinLeave * call ClearWhiteSpaceError()
+    " BufWinEnter covers all windows on startup (think of sessions)
+    autocmd BufWinEnter * call HighlightWhiteSpaceError()
+    " But it becomes insufficient and redundant after that
+    autocmd VimEnter * autocmd! HighlightAndMatch BufWinEnter
+    autocmd VimEnter * autocmd HighlightAndMatch WinEnter * call HighlightWhiteSpaceError()
+    autocmd VimEnter * autocmd HighlightAndMatch FileType * call HighlightWhiteSpaceError()
 augroup END
+
+" }}}
 
 " Subsection: mappings — pt-BR keyboard {{{1
 
