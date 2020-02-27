@@ -123,7 +123,7 @@ endfunction
 
 " Adapted from
 " https://www.reddit.com/r/vim/comments/1rzvsm/do_any_of_you_redirect_results_of_i_to_the/
-function! util#Ilist_Search(start_at_cursor,search_pattern,loclist)
+function! util#Ilist_Search(start_at_cursor,search_pattern,loclist,open)
     redir => output
         silent! execute (a:start_at_cursor ? '+,$' : '') . 'ilist! /' . a:search_pattern
     redir END
@@ -147,15 +147,21 @@ function! util#Ilist_Search(start_at_cursor,search_pattern,loclist)
                 \ }")
 
     if a:loclist
-        call setloclist(0,qf_entries)
+        let set_list = "call setloclist(0,qf_entries)"
+        let open_list = "lwindow"
+        let go_to_first_entry = "lrewind"
     else
-        call setqflist(qf_entries)
+        let set_list = "call setqflist(qf_entries)"
+        let open_list = "cwindow"
+        let go_to_first_entry = "crewind"
     endif
 
-    " and we finally open the quickfix or location list window if there's something to show
-    if a:loclist
-        lwindow
+    exec set_list
+
+    if a:open
+        exec open_list
     else
-        cwindow
+        exec go_to_first_entry
+        normal! zz
     endif
 endfunction
