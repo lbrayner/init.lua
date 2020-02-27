@@ -230,14 +230,6 @@ nnoremap <leader>h <C-w>s
 
 nnoremap <leader>i :set invpaste paste?<CR>
 
-if has("clipboard")
-    " win32 and X11 registers
-    nnoremap <silent> <leader>yy "+yy:let @*=@"<cr>
-    nnoremap <silent> <leader>p "+p
-    vnoremap <silent> <leader>p "+p
-    vnoremap <silent> <leader>y "+y:let @*=@"<cr>
-endif
-
 " filtering line under cursor
 nnoremap <silent> <leader><F3> :.!<C-R>=getline(".")<CR><cr>
 " executing range
@@ -353,10 +345,6 @@ cnoremap <c-k> <c-f>D<c-c><c-c>:<up>
 " remapping digraph
 inoremap <c-b> <c-k>
 
-" spell
-
-nnoremap <silent> <leader>c :setlocal invspell spell?<CR>
-
 " diff & patch
 
 function! s:ToggleIWhite()
@@ -399,13 +387,19 @@ function! Name()
 endfunction
 
 if has("clipboard")
-    function! s:Clip(text)
-        let @"=a:text | let @+=@" | let @*=@"
+    function! s:Clip(...)
+        if a:0 > 0
+            let text = string(a:1)
+            let @"=text
+        endif
+        let @+=@" | let @*=@"
         echo @"
     endfunction
 
     " Copies arg to the system's clipboard
-    command! -nargs=1 Clip call s:Clip(<f-args>)
+    command! -nargs=? Clip call s:Clip(<f-args>)
+
+    nnoremap <leader>c :Clip<cr>
 
     command! Path call s:Clip(Path())
     command! FullPath call s:Clip(FullPath())
