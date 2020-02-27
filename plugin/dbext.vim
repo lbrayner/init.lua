@@ -5,6 +5,7 @@ function! DBextPostResult(...)
     " clearing buffer local mappings
     mapclear <buffer>
     nnoremap <buffer> <silent> C :call <SID>CloneResultBuffer()<cr>
+    nnoremap <buffer> <silent> <F11> :call DBextToggleSizeOrOpenResults()<cr>
     setlocal readonly
     setlocal nomodifiable
     setlocal nomodified
@@ -44,12 +45,12 @@ function! s:SQL_SelectParagraph()
     call util#PreserveViewPort(funcref("<SID>Do_SQL_SelectParagraph"))
 endfunction
 
-" ToggleSizeOrOpenResults
+" DBextToggleSizeOrOpenResults
 
 let s:toggle_window_size = 0
 let s:result_window_small_size = 10
 
-function! s:ToggleSizeOrOpenResults()
+function! DBextToggleSizeOrOpenResults()
     let last_winnr = winnr()
     call dbext#DB_openResults()
 
@@ -97,4 +98,3 @@ function! s:CloneResultBuffer()
 endfunction
 
 nnoremap <silent> <leader><return> :call <SID>SQL_SelectParagraph()<cr>
-nnoremap <silent> <F11> :call <SID>ToggleSizeOrOpenResults()<cr>
