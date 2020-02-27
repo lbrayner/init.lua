@@ -20,8 +20,6 @@ exec 'set runtimepath+='
     \ . delaydir . ','
     \ . delaydir . '/after'
 
-noremap <Plug>HighlightStatusLineNC :call statusline#HighlightStatusLineNC()<CR>
-
 command! -nargs=0 StatusLineInitialize call statusline#initialize()
 
 " Visual Mode
@@ -42,6 +40,14 @@ function! VisualModeLeave()
     return util#trivialHorizontalMotion()
 endfunction
 
+vnoremap <silent> <expr> <SID>VisualModeEnter VisualModeEnter()
+nnoremap <silent> <script> v v<SID>VisualModeEnter
+nnoremap <silent> <script> gv gv<SID>VisualModeEnter
+nnoremap <silent> <script> V V<SID>VisualModeEnter
+nnoremap <silent> <script> <C-v> <C-v><SID>VisualModeEnter
+
+" Autocommands
+
 augroup Statusline
     autocmd!
     autocmd InsertEnter * call statusline#HighlightMode('insert')
@@ -54,11 +60,5 @@ augroup Statusline
     autocmd VimEnter * call statusline#initialize()
     autocmd VimEnter * call statusline#RedefineStatusLine()
 augroup END
-
-vnoremap <silent> <expr> <SID>VisualModeEnter VisualModeEnter()
-nnoremap <silent> <script> v v<SID>VisualModeEnter
-nnoremap <silent> <script> gv gv<SID>VisualModeEnter
-nnoremap <silent> <script> V V<SID>VisualModeEnter
-nnoremap <silent> <script> <C-v> <C-v><SID>VisualModeEnter
 
 " vim: fdm=marker
