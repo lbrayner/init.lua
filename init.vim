@@ -250,7 +250,7 @@ vnoremap . :normal .
 inoremap <F6> <esc>:w<CR>
 
 nnoremap <silent> <F9> :q<cr>
-nnoremap <silent> <leader><F9> :bw<cr>
+nnoremap <silent> <leader><F9> :tabc<cr>
 
 " quickfix and locallist
 
