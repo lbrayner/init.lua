@@ -257,7 +257,7 @@ nnoremap <silent> <leader><F9> :tabc<cr>
 nnoremap <silent> <leader>l :botright lopen<CR>
 nnoremap <silent> <leader>q :botright copen<CR>
 
-nnoremap <silent> <leader>B :b#<CR>
+nnoremap <silent> <space>b :b#<CR>
 
 " force case sensitivity for *-search
 nnoremap <Plug>CaseSensitiveStar /\C\V\<<c-r>=expand("<cword>")<cr>\><cr>
@@ -389,7 +389,10 @@ endfunction
 if has("clipboard")
     function! s:Clip(...)
         if a:0 > 0
-            let text = string(a:1)
+            let text = a:1
+            if type(a:1) != type("")
+                let text = string(a:1)
+            endif
             let @"=text
         endif
         let @+=@" | let @*=@"
@@ -727,10 +730,10 @@ augroup DelimitMatePackageGroup
 augroup END
 
 " vim-easy-align
-" Start interactive EasyAlign in visual mode (e.g. vipga)
+" Start interactive EasyAlign in visual mode (e.g. vip<Plug>(EasyAlign))
 xmap gy <Plug>(EasyAlign)
 
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+" Start interactive EasyAlign for a motion/text object (e.g. <Plug>(EasyAlign)ip)
 nmap gy <Plug>(EasyAlign)
 
 " vim-DetectSpellLang
