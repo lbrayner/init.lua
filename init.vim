@@ -403,6 +403,7 @@ if has("clipboard")
     command! -nargs=? Clip call s:Clip(<f-args>)
 
     nnoremap <leader>c :Clip<cr>
+    vnoremap <leader>c y:Clip<cr>
 
     command! Path call s:Clip(Path())
     command! FullPath call s:Clip(FullPath())
