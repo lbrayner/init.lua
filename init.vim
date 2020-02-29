@@ -396,7 +396,11 @@ if has("clipboard")
             let @"=text
         endif
         let @+=@" | let @*=@"
-        echo @"
+        if stridx(getreg('"'),"\n") < 0
+            echo @"
+        elseif len(getreg('"',1,1)) > 2
+            echo len(getreg('"',1,1)) . " lines clipped"
+        endif
     endfunction
 
     " Copies arg to the system's clipboard
