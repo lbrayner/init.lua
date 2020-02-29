@@ -396,7 +396,7 @@ if has("clipboard")
             let @"=text
         endif
         let @+=@" | let @*=@"
-        if stridx(getreg('"'),"\n") < 0
+        if stridx(getreg('"'),"\n") < 0 && len(getreg('"')) <= &columns*0.9
             echo @"
         elseif len(getreg('"',1,1)) > 2
             echo len(getreg('"',1,1)) . " lines clipped"
