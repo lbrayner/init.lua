@@ -428,6 +428,13 @@ command! -nargs=1 SearchFile call util#Ilist_Search(0,<f-args>,1,1)
 
 " Subsection: autocommands {{{
 
+" Command-line Window
+
+augroup CmdWindow
+    autocmd!
+    autocmd CmdwinEnter * setlocal nospell
+augroup END
+
 " Color scheme
 
 augroup ColorSchemeGroup
