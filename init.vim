@@ -157,11 +157,11 @@ endfunction
 call WhiteSpaceErrorGroup()
 
 function! HighlightWhiteSpaceError()
-    if &ft == "help"
+    if &syntax == "help"
         call ClearWhiteSpaceError()
         return
     endif
-    if &ft =~# '\v(mail|markdown)'
+    if &syntax =~# '\v(mail|markdown)'
         call ClearWhiteSpaceError()
         let w:WhiteSpaceErrorID = matchadd("WhiteSpaceError",'^\s\+$')
         return
@@ -185,8 +185,9 @@ augroup HighlightAndMatch
     autocmd BufWinEnter * call HighlightWhiteSpaceError()
     " But it becomes insufficient and redundant after that
     autocmd VimEnter * autocmd! HighlightAndMatch BufWinEnter
-    autocmd VimEnter * autocmd HighlightAndMatch WinEnter * call HighlightWhiteSpaceError()
-    autocmd VimEnter * autocmd HighlightAndMatch FileType * call HighlightWhiteSpaceError()
+    autocmd VimEnter * autocmd HighlightAndMatch
+                \ WinEnter,Syntax * call HighlightWhiteSpaceError()
+    autocmd VimEnter * call HighlightWhiteSpaceError()
 augroup END
 
 " }}}
