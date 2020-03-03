@@ -369,7 +369,15 @@ endif
 
 " Close the Preview, Quickfix and Local List windows
 
-nnoremap <F1> :pclose <bar> cclose <bar> lclose<cr>
+function! s:LCloseAllWindows()
+    let current_window=winnr()
+    noautocmd windo lclose
+    exe "wincmd " . current_window
+endfunction
+
+command! LCloseAllWindows call s:LCloseAllWindows()
+
+nnoremap <F1> :pclose <bar> cclose <bar> LCloseAllWindows<cr>
 
 " }}}
 
