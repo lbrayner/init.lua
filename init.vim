@@ -372,7 +372,7 @@ endif
 function! s:LCloseAllWindows()
     let current_window=winnr()
     noautocmd windo lclose
-    exe "wincmd " . current_window
+    exe current_window . "wincmd w"
 endfunction
 
 command! LCloseAllWindows call s:LCloseAllWindows()
