@@ -367,9 +367,9 @@ if has("gui_running") || has("nvim")
     nnoremap <M-t> :tabe<space>
 endif
 
-" Preview window
+" Close the Preview, Quickfix and Local List windows
 
-nnoremap <F1> :pclose<cr>
+nnoremap <F1> :pclose <bar> cclose <bar> lclose<cr>
 
 " }}}
 
