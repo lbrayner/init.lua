@@ -6,9 +6,9 @@ if &ft == 'qf'
 endif
 
 if util#isLocationList()
-    nnoremap <buffer> <silent> <F3> :lprevious<cr>zz<c-w>ww
-    nnoremap <buffer> <silent> <F4> :lnext<cr>zz<c-w>ww
+    nnoremap <buffer> <silent> <F3> <c-w>p:lprevious<cr>zz:lopen<cr>
+    nnoremap <buffer> <silent> <F4> <c-w>p:lnext<cr>zz:lopen<cr>
 else
-    nnoremap <buffer> <silent> <F3> :cprevious<cr>zz<c-w>ww
-    nnoremap <buffer> <silent> <F4> :cnext<cr>zz<c-w>ww
+    nnoremap <buffer> <silent> <F3> <c-w>p:cprevious<cr>zz:copen<cr>
+    nnoremap <buffer> <silent> <F4> <c-w>p:cnext<cr>zz:copen<cr>
 endif
