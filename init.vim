@@ -361,12 +361,6 @@ endfunction
 nnoremap <leader>do :diffoff!<cr>
 nnoremap <leader>di :call <SID>ToggleIWhite()<cr>
 
-" tabs
-
-if has("gui_running") || has("nvim")
-    nnoremap <M-t> :tabe<space>
-endif
-
 " Close the Preview, Quickfix and Local List windows
 
 function! s:LCloseAllWindows()
