@@ -785,6 +785,10 @@ augroup END
 
 command! -nargs=* Gdi call fugitive#Diffsplit(1, 1, "<mods>", "", [<f-args>])
 
+" Tagbar
+
+command! Tbar TagbarToggle
+
 " }}}
 
 " vim: fdm=marker
