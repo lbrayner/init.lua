@@ -28,6 +28,7 @@ function! s:PrintTabs(currentTab)
         let is_help = getbufvar(buf_nr,"&buftype") == "help"
         let loclist = getwininfo(window)[0]["loclist"]
         let quickfix = getwininfo(window)[0]["quickfix"]
+        let is_tagbar = getbufvar(buf_nr,"&filetype") == "tagbar"
         let prefix = "\t" . spacing
         if loclist
             echo prefix . "[Location List]"
@@ -37,6 +38,8 @@ function! s:PrintTabs(currentTab)
             echo prefix . "[help] " . fnamemodify(buf_name,":t")
         elseif noname
             echo prefix . "[No Name]"
+        elseif is_tagbar
+            echo prefix . "[Tagbar]"
         else
             echo prefix . fnamemodify(buf_name,":~:.")
         endif
