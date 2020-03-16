@@ -157,7 +157,7 @@ endfunction
 call WhiteSpaceErrorGroup()
 
 function! HighlightWhiteSpaceError()
-    if &syntax == "help"
+    if &syntax =~# '\v(help|netrw)'
         call ClearWhiteSpaceError()
         return
     endif

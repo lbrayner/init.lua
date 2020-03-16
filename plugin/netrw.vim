@@ -11,7 +11,7 @@ endfunction
 augroup Statusline_FT_netrw
     autocmd!
     autocmd  FileType netrw
-                \ let b:Statusline_custom_leftline = 
+                \ let b:Statusline_custom_leftline =
                 \   '%{fnamemodify(b:netrw_curdir,":t")}'
     autocmd  FileType netrw
                 \ let b:Statusline_custom_rightline =
