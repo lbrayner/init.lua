@@ -108,14 +108,12 @@ endif
 
 " setting backupdir
 
-if !has("nvim")
-    let s:bkp_dir = g:vim_dir."/backup"
-    exe "let s:has_bkp_dir = isdirectory('".s:bkp_dir."')"
-    if !s:has_bkp_dir
-        call mkdir(s:bkp_dir)
-    endif
-    let &backupdir=s:bkp_dir."/"
+let s:bkp_dir = g:vim_dir."/backup"
+exe "let s:has_bkp_dir = isdirectory('".s:bkp_dir."')"
+if !s:has_bkp_dir
+    call mkdir(s:bkp_dir)
 endif
+let &backupdir=s:bkp_dir."/"
 
 " setting undodir
 
