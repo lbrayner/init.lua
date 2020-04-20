@@ -375,6 +375,14 @@ nnoremap <F1> :pclose <bar> cclose <bar> LCloseAllWindows<cr>
 
 " Subsection: functions & commands
 
+" Clear the Quickfix List
+
+function s:ClearQuickfixList()
+  call setqflist([])
+endfunction
+
+command! ClearQuickfixList call s:ClearQuickfixList()
+
 function! Path()
     return expand("%")
 endfunction
