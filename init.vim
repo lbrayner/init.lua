@@ -720,8 +720,8 @@ map F <Plug>Sneak_F
 map t <Plug>Sneak_t
 map T <Plug>Sneak_T
 
-map x <Plug>Sneak_s
-map X <Plug>Sneak_S
+map <Space>f <Plug>Sneak_s
+map <Space>F <Plug>Sneak_S
 
 " ferret
 
