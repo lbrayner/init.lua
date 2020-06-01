@@ -1,3 +1,4 @@
+" TODO possibly legacy code (in favor of dirvish)
 function! StatuslineNetrwCurdirHead()
     " left: a space + 2 extra spaces = 3
     " right: ft (netrw), RO Flag, 3 spaces, P(ercentage) = 12

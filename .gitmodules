@@ -67,9 +67,6 @@
 [submodule "pack/bundle/start/vim-unimpaired"]
 	path = pack/bundle/start/vim-unimpaired
 	url = https://github.com/tpope/vim-unimpaired.git
-[submodule "pack/bundle/start/vim-vinegar"]
-	path = pack/bundle/start/vim-vinegar
-	url = https://github.com/tpope/vim-vinegar.git
 [submodule "pack/bundle/start/vissort"]
 	path = pack/bundle/start/vissort
 	url = https://github.com/yaroot/vissort.git
@@ -121,3 +118,9 @@
 [submodule "pack/bundle/start/tagbar"]
 	path = pack/bundle/start/tagbar
 	url = https://github.com/majutsushi/tagbar
+[submodule "pack/bundle/start/vim-dirvish"]
+	path = pack/bundle/start/vim-dirvish
+	url = https://github.com/justinmk/vim-dirvish
+[submodule "pack/bundle/start/vim-eunuch"]
+	path = pack/bundle/start/vim-eunuch
+	url = https://github.com/tpope/vim-eunuch
