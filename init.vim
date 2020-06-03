@@ -795,6 +795,14 @@ command! -nargs=* Gdi call fugitive#Diffsplit(1, 1, "<mods>", "", [<f-args>])
 
 command! Tbar TagbarToggle
 
+" dirvish
+
+" How to override the netrw :Explore, :Sexplore, :Vexplore commands?
+let g:loaded_netrwPlugin = 1
+command! -nargs=? -complete=dir Explore Dirvish <args>
+command! -nargs=? -complete=dir Sexplore belowright split | silent Dirvish <args>
+command! -nargs=? -complete=dir Vexplore leftabove vsplit | silent Dirvish <args>
+
 " }}}
 
 " vim: fdm=marker
