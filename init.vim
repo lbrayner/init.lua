@@ -429,7 +429,7 @@ endif
 
 command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
 
-command! -bar -range=% RemoveTrailingSpaces
+command! -bar -range=% FixWhiteSpaceErrors
             \ call util#PreserveViewPort("keeppatterns ".<line1>.",".<line2>.'s/\s\+$//e')
 
 command! -nargs=1 SearchFile call util#Ilist_Search(0,<f-args>,1,1)
