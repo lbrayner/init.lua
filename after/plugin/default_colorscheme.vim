@@ -13,10 +13,6 @@ endfunction
 
 command! DefaultColorscheme call s:DefaultColorscheme()
 
-if exists("g:disable_default_colorscheme") && g:disable_default_colorscheme
-    finish
-endif
-
 let s:enable_default_colorscheme = 1
 
 if !has("nvim") && !has("gui_running")
@@ -26,6 +22,10 @@ endif
 
 if has("win32unix")
     let s:enable_default_colorscheme = 0
+endif
+
+if exists("g:disable_default_colorscheme")
+    let s:enable_default_colorscheme = !g:disable_default_colorscheme
 endif
 
 if s:enable_default_colorscheme
