@@ -136,7 +136,8 @@ function MyPatch()
                \ " " . v:fname_diff)
 endfunction
 
-command! MergeMarkers call util#Ilist_Search(0,"<<<<<<<\\||||||||\\|=======\\|>>>>>>>",1,0)
+command! MergeMarkers call util#Ilist_Search(0
+            \,"^\\(<<<<<<<\\||||||||\\|=======\\|>>>>>>>\\)",1,0)
 
 " From tpope's vim-sensible
 if &synmaxcol == 3000
