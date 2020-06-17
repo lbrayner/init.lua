@@ -435,9 +435,19 @@ command! -bar -range=% FixWhiteSpaceErrors
 
 command! -nargs=1 SearchFile call util#Ilist_Search(0,<f-args>,1,1)
 
-command! -nargs=0 NumberToggle if &relativenumber
-            \| setlocal norelativenumber number
-            \| else | setlocal relativenumber number | endif
+function! s:NumberToggle()
+    if !&number
+        setlocal relativenumber number
+        return
+    endif
+    if !&relativenumber
+        setlocal norelativenumber nonumber
+        return
+    endif
+    setlocal norelativenumber number
+endfunction
+
+command! -nargs=0 NumberToggle call s:NumberToggle()
 
 " Subsection: autocommands {{{
 
