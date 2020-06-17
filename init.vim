@@ -435,6 +435,10 @@ command! -bar -range=% FixWhiteSpaceErrors
 
 command! -nargs=1 SearchFile call util#Ilist_Search(0,<f-args>,1,1)
 
+command! -nargs=0 NumberToggle if &relativenumber
+            \| setlocal norelativenumber number
+            \| else | setlocal relativenumber number | endif
+
 " Subsection: autocommands {{{
 
 " Command-line Window
