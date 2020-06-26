@@ -1,12 +1,14 @@
 .netrwhist
 /after/plugin/init.vim
-/plugin/init.vim
+/backup
 /bundle
 /ctrlp_cache
 /doc/tags
 /eclim
 /ginit.local.vim
 /init.local.vim
-/plugin/eclim.vim
 /pack/local
+/plugin/eclim.vim
+/plugin/init.vim
 /swap
+/undo
