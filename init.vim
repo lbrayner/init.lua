@@ -422,7 +422,7 @@ command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g'
 command! -bar -range=% FixWhiteSpaceErrors
             \ call util#PreserveViewPort("keeppatterns ".<line1>.",".<line2>.'s/\s\+$//e')
 
-command! -nargs=1 SearchFile call util#Ilist_Search(0,<f-args>,1,1)
+command! -nargs=1 FileSearch call util#Ilist_Search(0,<f-args>,1,1)
 
 function! s:NumberToggle()
     if !&number
@@ -485,6 +485,15 @@ function! s:OverlengthToggle()
 endfunction
 
 command! -nargs=0 OverlengthToggle call s:OverlengthToggle()
+
+function! s:SearchLastVisualSelectionNoMagic()
+    normal! gvy
+    let pattern = escape(@",'\/')
+    exe "normal! /\\V" . pattern
+    let @/="\\V" . pattern
+endfunction
+
+command! -nargs=0 -range SearchVisualSelectionNoMagic call s:SearchLastVisualSelectionNoMagic()
 
 " Subsection: autocommands {{{
 
