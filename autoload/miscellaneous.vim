@@ -7,25 +7,6 @@ function! miscellaneous#SearchLastVisualSelectionNoMagic()
     let @/="\\V" . pattern
 endfunction
 
-" XML
-
-function! s:NavigateXmlNthParent(n)
-    let n_command = "v" . (a:n+1) . "at"
-    exec "silent normal! " . n_command . "vh"
-endfunction
-
-function! miscellaneous#NavigateXmlDepth(depth)
-    if a:depth < 0
-        call s:NavigateXmlNthParent(-a:depth)
-        return
-    endif
-endfunction
-
-function! miscellaneous#NavigateXmlDepthBackward(depth)
-    call miscellaneous#NavigateXmlDepth(a:depth)
-    call matchit#Match_wrapper('',1,'n')
-endfunction
-
 " OverLength
 
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
