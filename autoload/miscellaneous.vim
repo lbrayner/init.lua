@@ -28,32 +28,3 @@ function! miscellaneous#HighlightOverLength()
     let w:HighlightOverLengthFlag = ! w:HighlightOverLengthFlag
 endfunction
 
-" Save any buffer
-
-function! miscellaneous#Save(name,bang)
-    try
-        let lazyr = &lazyredraw
-        let buf_nr = bufnr('%')
-        let win_height = winheight(0)
-        set lazyredraw
-        let temp_file = tempname()
-        silent exec 'write ' . fnameescape(temp_file)
-        keepalt new
-        let new_buf_nr = bufnr('%')
-        silent exec "read " . fnameescape(temp_file)
-        1d_
-        let write = "w"
-        if a:bang
-            let write = "w!"
-        endif
-        silent exec write . " " . fnameescape(a:name)
-        edit
-        exec bufwinnr(buf_nr)."wincmd w"
-        quit
-        exec bufwinnr(new_buf_nr)."wincmd w"
-        silent exec "resize " . win_height
-    finally
-        let &lazyredraw = lazyr
-        call delete(temp_file)
-    endtry
-endfunction
