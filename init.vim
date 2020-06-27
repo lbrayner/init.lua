@@ -464,6 +464,28 @@ endfunction
 
 command! -nargs=0 -range Filter call s:Filter(<line1>,<line2>)
 
+" Overlength
+
+function! s:OverlengthToggle()
+    if !exists("w:Overlength")
+        let w:Overlength = 90
+    endif
+    if !exists("w:HighlightOverlengthFlag")
+        let w:HighlightOverlengthFlag = 1
+    endif
+    if w:HighlightOverlengthFlag
+        highlight Overlength ctermbg=red ctermfg=white guibg=#592929
+        exec 'match Overlength /\%' . w:Overlength . 'v.\+/'
+        echo "Overlength highlighted."
+    else
+        exec "match"
+        echo "Overlength highlight cleared."
+    endif
+    let w:HighlightOverlengthFlag = ! w:HighlightOverlengthFlag
+endfunction
+
+command! -nargs=0 OverlengthToggle call s:OverlengthToggle()
+
 " Subsection: autocommands {{{
 
 " Command-line Window
