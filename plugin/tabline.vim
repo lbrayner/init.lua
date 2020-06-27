@@ -11,13 +11,15 @@ function! RedefineTabline()
     " slashes on win32
     let isabsolute=expand("%:p") !~# fnamemodify(getcwd(),":p:gs?\\?/?")
     if isabsolute
+        " At least one column separating left and right and a 1 column margin
         let absolute_path=util#truncateFilename(fnamemodify(expand("%"),
-                    \":p:~"),float2nr(0.5*&columns))
+                    \":p:~"),float2nr(0.5*&columns)-2)
         let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '
             \ .'%#NonText#'.cwd.'%=%#WarningMsg# '.absolute_path.' '
         return
     endif
-    let relative_dir=util#truncateFilename(expand("%:h"),float2nr(0.5*&columns))
+    " At least one column separating left and right and a 1 column margin
+    let relative_dir=util#truncateFilename(expand("%:h"),float2nr(0.5*&columns)-2)
     let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '
         \ .'%#NonText#'.cwd.'%=%#Directory# '.relative_dir.' '
 endfunction
