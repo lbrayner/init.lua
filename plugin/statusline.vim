@@ -55,8 +55,9 @@ augroup Statusline
     autocmd CursorHold * call VisualModeLeave()
     autocmd User CustomStatusline call statusline#RedefineStatusLine()
     autocmd VimEnter * autocmd Statusline
-                \ BufWinEnter,WinEnter * call statusline#RedefineStatusLine()
-    autocmd BufLeave * call statusline#DefineStatusLineNoFocus()
+                \ BufWritePost,BufWinEnter,WinEnter * call statusline#RedefineStatusLine()
+    autocmd VimEnter * autocmd Statusline
+                \ BufLeave * call statusline#DefineStatusLineNoFocus()
     autocmd VimEnter * call statusline#initialize()
     autocmd VimEnter * call statusline#RedefineStatusLine()
 augroup END

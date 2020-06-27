@@ -55,15 +55,16 @@ endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineModifiedStatusLine()
+    let filename=expand("%:t")
     if exists("b:Statusline_custom_mod_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_mod_leftline."%='"
     elseif &previewwindow
         let &l:statusline=' %<%1*'
-                    \ . '[%{expand("%:t")}'
+                    \ . '['.filename
                     \ . '%{statusline#DefaultModifiedFlag()}]%*%='
     else
         let &l:statusline=' %<%1*'
-                    \ . '%{expand("%:t")}'
+                    \ . filename
                     \ . '%{statusline#DefaultModifiedFlag()}%*%='
     endif
     if exists("b:Statusline_custom_mod_rightline")
@@ -76,25 +77,16 @@ function! statusline#DefineModifiedStatusLine()
                 \."'"
 endfunction
 
-function! statusline#StatusLineNoFocus()
-    " margins of 1 column (on both sides)
-    if &previewwindow
-        return util#truncateFilename(expand("%"),winwidth("%")-4)
-    else
-        return util#truncateFilename(expand("%"),winwidth("%")-2)
-    endif
-endfunction
-
 " margins of 1 column (on both sides)
 function! statusline#DefineStatusLineNoFocus()
     if &previewwindow
         if expand("%") == ""
             let &l:statusline=' [Preview] '
-        else
-            let &l:statusline=' [%{statusline#StatusLineNoFocus()}] '
+            return
         endif
+        let &l:statusline=' [%{util#truncateFilename(expand("%"),winwidth("%")-4)}] '
     else
-        let &l:statusline=' %{statusline#StatusLineNoFocus()} '
+        let &l:statusline=' %{util#truncateFilename(expand("%"),winwidth("%")-2)} '
     endif
 endfunction
 
@@ -103,6 +95,7 @@ endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineStatusLine()
+    let filename=expand("%:t")
     if exists("b:Statusline_custom_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_leftline."%='"
     elseif &previewwindow
@@ -111,16 +104,16 @@ function! statusline#DefineStatusLine()
                 \ . '[Preview]%='
         else
             let &l:statusline=' %<'
-                \ . '[%{expand("%:t")}'
+                \ . '['.filename
                 \ . '%{statusline#DefaultModifiedFlag()}]%='
         endif
     elseif &buftype == "nofile"
         let &l:statusline=' %<%7*'
-            \ . '%{expand("%:t")}'
+            \ . filename
             \ . '%{statusline#DefaultModifiedFlag()}%*%='
     else
         let &l:statusline=' %<'
-            \ . '%{expand("%:t")}'
+            \ . filename
             \ . '%{statusline#DefaultModifiedFlag()}%='
     endif
     if exists("b:Statusline_custom_rightline")

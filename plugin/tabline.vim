@@ -24,7 +24,7 @@ endfunction
 
 augroup Tabline
     autocmd!
-    autocmd VimEnter * autocmd Tabline BufEnter * call RedefineTabline()
-    autocmd VimEnter * autocmd Tabline WinEnter * call RedefineTabline()
+    autocmd VimEnter * autocmd Tabline
+                \ BufWritePost,BufEnter,WinEnter * call RedefineTabline()
     autocmd VimEnter * call RedefineTabline()
 augroup END
