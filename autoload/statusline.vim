@@ -79,6 +79,12 @@ endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineStatusLineNoFocus()
+    let filename=expand('%')
+    let isnumbersonly=str2nr(filename) == filename
+    if isnumbersonly
+        let &l:statusline=' '.filename.' '
+        return
+    endif
     if &previewwindow
         if expand("%") == ""
             let &l:statusline=' [Preview] '
