@@ -493,7 +493,8 @@ function! s:SearchLastVisualSelectionNoMagic()
     let @/="\\V" . pattern
 endfunction
 
-command! -nargs=0 -range SearchVisualSelectionNoMagic call s:SearchLastVisualSelectionNoMagic()
+command! -nargs=0 -range SearchVisualSelectionNoMagic
+            \ call s:SearchLastVisualSelectionNoMagic()
 
 " Subsection: autocommands {{{
 
