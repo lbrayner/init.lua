@@ -1,36 +1,10 @@
 " other
 
-function! miscellaneous#SourceVisualSelection() range
-    let line_start = a:firstline
-    let line_end = a:lastline
-    let offset = 0
-    for linenr in range(line_start,line_end)
-        exe getline(linenr)
-    endfor
-    echom "Sourced visual selection."
-endfunction
-
 function! miscellaneous#SearchLastVisualSelectionNoMagic()
     normal! gvy
     let pattern = escape(@",'\/')
     exe "normal! /\\V" . pattern
     let @/="\\V" . pattern
-endfunction
-
-function! miscellaneous#FilterVisualSelection() range
-    let line_start = a:firstline
-    let line_end = a:lastline
-    let offset = 0
-    for linenr in range(line_start,line_end)
-        call cursor(linenr+offset,0)
-        let output = systemlist(getline(linenr+offset))
-        exe "delete"
-        call append(linenr+offset-1,output)
-        if len(offset) > 0
-            let offset += len(output) - 1
-        endif
-    endfor
-    call cursor(line_start,0)
 endfunction
 
 function! miscellaneous#FilterLine()

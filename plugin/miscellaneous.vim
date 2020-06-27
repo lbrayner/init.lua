@@ -1,7 +1,5 @@
 " other
 
-vnoremap <silent> <leader><f3> :call miscellaneous#FilterVisualSelection()<cr>
-vnoremap <silent> <leader><f4> :call miscellaneous#SourceVisualSelection()<cr>
 vnoremap <silent> <leader>* <esc>:call miscellaneous#SearchLastVisualSelectionNoMagic()<cr>
 
 if has("win32") || has("win64")

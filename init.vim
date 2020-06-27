@@ -230,17 +230,6 @@ nnoremap <leader>h <C-w>s
 
 nnoremap <leader>i :set invpaste paste?<CR>
 
-" filtering line under cursor
-nnoremap <silent> <leader><F3> :.!<C-R>=getline(".")<CR><cr>
-" executing range
-vnoremap <F3> :w !$SHELL<CR>
-" evaluating selection
-vnoremap <F4> y:@"<CR>
-" executing line under cursor
-nnoremap <F3> :.w !$SHELL<CR>
-" evaluating line under cursor
-nnoremap <F4> :execute getline(".")<CR>
-
 nnoremap <leader><F5> :ls<CR>:buffer<Space>
 nnoremap <F6> :w<CR>
 nnoremap <leader><F6> :w!<CR>
@@ -448,6 +437,32 @@ function! s:NumberToggle()
 endfunction
 
 command! -nargs=0 NumberToggle call s:NumberToggle()
+
+function! s:Source(line_start,line_end)
+    let offset = 0
+    for linenr in range(a:line_start,a:line_end)
+        exe getline(linenr)
+    endfor
+    echom "Sourced visual selection."
+endfunction
+
+command! -nargs=0 -range Source call s:Source(<line1>,<line2>)
+
+function! s:Filter(line_start,line_end)
+    let offset = 0
+    for linenr in range(a:line_start,a:line_end)
+        call cursor(linenr+offset,0)
+        let output = systemlist(getline(linenr+offset))
+        exe "delete"
+        call append(linenr+offset-1,output)
+        if len(offset) > 0
+            let offset += len(output) - 1
+        endif
+    endfor
+    call cursor(a:line_start,0)
+endfunction
+
+command! -nargs=0 -range Filter call s:Filter(<line1>,<line2>)
 
 " Subsection: autocommands {{{
 
