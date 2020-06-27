@@ -60,6 +60,7 @@ augroup Statusline
                 \ BufLeave * call statusline#DefineStatusLineNoFocus()
     autocmd VimEnter * call statusline#initialize()
     autocmd VimEnter * call statusline#RedefineStatusLine()
+    autocmd ColorScheme * call statusline#initialize()
 augroup END
 
 " vim: fdm=marker

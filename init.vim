@@ -458,13 +458,6 @@ augroup CmdWindow
     autocmd CmdwinEnter * setlocal nospell
 augroup END
 
-" Color scheme
-
-augroup ColorSchemeGroup
-    autocmd!
-    autocmd ColorScheme * call statusline#initialize()
-augroup END
-
 " idle
 
 function! s:InsertModeUndoPoint()
