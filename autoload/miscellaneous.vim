@@ -7,17 +7,6 @@ function! miscellaneous#SearchLastVisualSelectionNoMagic()
     let @/="\\V" . pattern
 endfunction
 
-function! miscellaneous#FilterLine()
-    let line = getline('.')
-    let temp = tempname()
-    exe 'sil! !'.escape(line,&shellxescape).' > '.temp.' 2>&1'
-    if v:shell_error
-        exe 'throw "'.escape(readfile(temp)[0],'"').'"'
-    endif
-    exe "sil! read ".fnameescape(temp)
-    exe "sil call delete ('".temp."')"
-endfunction
-
 " XML
 
 function! s:NavigateXmlNthParent(n)
