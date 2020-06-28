@@ -19,7 +19,7 @@ function! s:StatusLine()
 endfunction
 
 if &ft == 'java'
-    if extensions#util#EclimLoaded()
+    if util#EclimLoaded()
         if extensions#eclim#EclimAvailable()
             let projectName = eclim#project#util#GetCurrentProjectName()
             if projectName != ""

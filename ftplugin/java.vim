@@ -11,7 +11,7 @@ if &ft == 'java'
     command! -buffer -range JavaStringify
                 \ <line1>,<line2>call java#format#stringify()
 
-    if extensions#util#EclimLoaded()
+    if util#EclimLoaded()
         if extensions#eclim#EclimAvailable()
             let projectName = eclim#project#util#GetCurrentProjectName()
             if projectName != ""

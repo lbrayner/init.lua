@@ -165,3 +165,7 @@ function! util#Ilist_Search(start_at_cursor,search_pattern,loclist,open)
         normal! zz
     endif
 endfunction
+
+function! util#EclimLoaded()
+    return exists(':ProjectCreate')
+endfunction
