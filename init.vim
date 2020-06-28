@@ -523,6 +523,12 @@ endfunction
 command! -nargs=0 -range SearchVisualSelectionNoMagic
             \ call s:SearchLastVisualSelectionNoMagic()
 
+if executable('svn')
+    command! Scursor call subversion#SVNDiffCursor()
+    command! Sthis call subversion#SVNDiffThis()
+    command! Sdiff call subversion#SVNDiffContextual()
+endif
+
 " Subsection: autocommands {{{
 
 " Command-line Window
