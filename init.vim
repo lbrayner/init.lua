@@ -591,7 +591,13 @@ augroup END
 
 " reverting wrap to its global value when in diff mode
 augroup DiffWrapAutoGroup
+    autocmd!
     autocmd FilterWritePre * if &diff | setlocal wrap< | endif
+augroup END
+
+augroup GitCommit
+    autocmd!
+    autocmd BufWinEnter COMMIT_EDITMSG startinsert
 augroup END
 
 " VimEnter
