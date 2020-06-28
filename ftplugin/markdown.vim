@@ -2,6 +2,7 @@ setlocal textwidth=80
 setlocal tabstop=2
 setlocal shiftwidth=2
 
+" TODO Redo functionality. See tpope's vim-surround
 function! s:Bolden(text)
     return '**'.a:text.'**'
 endfunction
