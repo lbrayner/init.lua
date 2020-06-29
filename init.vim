@@ -491,6 +491,8 @@ endfunction
 
 command! -nargs=0 -range Filter call s:Filter(<line1>,<line2>)
 
+command! -nargs=0 -range Execute <line1>,<line2>w !$SHELL
+
 " Overlength
 
 function! s:OverlengthToggle()
