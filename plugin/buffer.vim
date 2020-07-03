@@ -40,11 +40,11 @@ augroup END
 function! s:Save(name,bang)
     try
         let lazyr = &lazyredraw
-        let buf_nr = bufnr('%')
-        let win_height = winheight(0)
         set lazyredraw
+        let buf_nr = bufnr('%')
         let temp_file = tempname()
         silent exec 'write ' . fnameescape(temp_file)
+        let win_height = winheight(0)
         keepalt new
         let new_buf_nr = bufnr('%')
         silent exec "read " . fnameescape(temp_file)
