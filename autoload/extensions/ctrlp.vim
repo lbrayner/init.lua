@@ -29,7 +29,7 @@ function! extensions#ctrlp#ignore(item,type)
             if util#IsVimBundle()
                 let vim_dir = s:GetVimDir()
                 let dir .= '\V\|' . vim_dir . '/\veclim$'
-                let dir .= '\V\|/\v(backup|pack|swap)$'
+                let dir .= '\V\|/\v(backup|pack|swap|undo)$'
                 return util#GetComparableNodeName(a:item) =~# dir
             endif
             if util#IsEclipseProject()
