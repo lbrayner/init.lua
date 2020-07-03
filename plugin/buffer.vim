@@ -37,15 +37,15 @@ augroup END
 
 " Save any buffer
 
-function! s:Save(name,bang)
+function! s:SaveAs(name,bang)
     try
         let lazyr = &lazyredraw
         set lazyredraw
         let buf_nr = bufnr('%')
         let temp_file = tempname()
         silent exec 'write ' . fnameescape(temp_file)
-        let win_height = winheight(0)
-        keepalt new
+        enew
+        normal! dG
         let new_buf_nr = bufnr('%')
         silent exec "read " . fnameescape(temp_file)
         1d_
@@ -54,15 +54,10 @@ function! s:Save(name,bang)
             let write = "w!"
         endif
         silent exec write . " " . fnameescape(a:name)
-        edit
-        exec bufwinnr(buf_nr)."wincmd w"
-        quit
-        exec bufwinnr(new_buf_nr)."wincmd w"
-        silent exec "resize " . win_height
     finally
         let &lazyredraw = lazyr
         call delete(temp_file)
     endtry
 endfunction
 
-command! -nargs=1 -bang -complete=file Save call s:Save(<f-args>,<bang>0)
+command! -nargs=1 -bang -complete=file SaveAs call s:SaveAs(<f-args>,<bang>0)
