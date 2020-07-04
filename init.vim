@@ -467,9 +467,11 @@ command! -nargs=0 NumberToggle call s:NumberToggle()
 
 function! s:Source(line_start,line_end)
     let offset = 0
+    let code = ""
     for linenr in range(a:line_start,a:line_end)
-        exe getline(linenr)
+        let code = code . getline(linenr) . "\n"
     endfor
+    exe code
     echom "Sourced visual selection."
 endfunction
 
