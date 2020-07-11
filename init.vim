@@ -784,16 +784,25 @@ let g:fzf_history_dir = $HOME . '/.cache/fzf_cache'
 command! -bar -bang -nargs=? -complete=buffer Buffers
             \ call fzf#vim#buffers(<q-args>, <bang>0) " eclim shadows this command
 
+function! s:FZF()
+    if !exists(":FZF")
+        echomsg "FZF is not defined. Please add the FZF Vim package to the runtimepath."
+        return 0
+    endif
+    FZF
+    return 1
+endfunction
+
 if has("unix") && !has("win32unix") && executable("fzf")
     nnoremap <F5> :Buffers<cr>
-    nnoremap <F7> :FZF<cr>
+    nnoremap <F7> :call <SID>FZF()<cr>
     " else the F7 mapping is going to be overridden
     unlet g:ctrlp_map
 
     function! s:dfzf_clear_cache()
         let fzf_command=$FZF_DEFAULT_COMMAND
         let $FZF_DEFAULT_COMMAND="dfzf -C"
-        FZF
+        call s:FZF()
         let $FZF_DEFAULT_COMMAND=fzf_command
     endfunction
 
