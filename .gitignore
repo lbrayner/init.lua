@@ -10,5 +10,6 @@
 /pack/local
 /plugin/eclim.vim
 /plugin/init.vim
+/sessions
 /swap
 /undo
