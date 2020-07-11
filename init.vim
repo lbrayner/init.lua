@@ -795,7 +795,7 @@ endfunction
 
 if has("unix") && !has("win32unix") && executable("fzf")
     nnoremap <F5> :Buffers<cr>
-    nnoremap <F7> :call <SID>FZF()<cr>
+    nnoremap <silent> <F7> :call <SID>FZF()<cr>
     " else the F7 mapping is going to be overridden
     unlet g:ctrlp_map
 
