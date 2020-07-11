@@ -809,6 +809,9 @@ if has("unix") && !has("win32unix") && executable("fzf")
     if executable("dfzf")
         let $FZF_DEFAULT_COMMAND="dfzf"
         nnoremap <silent> <leader><f7> :call <SID>dfzf_clear_cache()<cr>
+        if executable("ddfzf")
+            let $DFZF_DEFAULT_COMMAND='ddfzf'
+        endif
     endif
 endif
 
