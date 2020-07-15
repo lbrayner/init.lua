@@ -45,7 +45,7 @@ set splitbelow
 set splitright
 set number
 set relativenumber
-set wildmode=longest,list,full
+set wildmode=longest,list
 set wildmenu
 if has("linebreak")
     set breakindent
@@ -77,6 +77,7 @@ set ignorecase
 set smartcase
 set noruler
 set lazyredraw
+set nomore
 
 "show existing tab with 4 spaces width
 set tabstop=4
@@ -149,44 +150,44 @@ endif
 
 " Subsection: highlight & match {{{
 
-function! WhiteSpaceErrorGroup()
-    highlight WhiteSpaceError ctermbg=red ctermfg=white guibg=#ff0000
+function! TrailingWhiteSpaceGroup()
+    highlight TrailingWhiteSpace ctermbg=red ctermfg=white guibg=#ff0000
 endfunction
 
-call WhiteSpaceErrorGroup()
+call TrailingWhiteSpaceGroup()
 
-function! HighlightWhiteSpaceError()
+function! HighlightTrailingWhiteSpace()
     if &syntax =~# '\v(help|netrw)'
-        call ClearWhiteSpaceError()
+        call ClearTrailingWhiteSpace()
         return
     endif
     if &syntax =~# '\v(mail|markdown)'
-        call ClearWhiteSpaceError()
-        let w:WhiteSpaceErrorID = matchadd("WhiteSpaceError",'^\s\+$')
+        call ClearTrailingWhiteSpace()
+        let w:TrailingWhiteSpaceID = matchadd("TrailingWhiteSpace",'^\s\+$')
         return
     endif
-    call ClearWhiteSpaceError()
-    let w:WhiteSpaceErrorID = matchadd("WhiteSpaceError",'\s\+$')
+    call ClearTrailingWhiteSpace()
+    let w:TrailingWhiteSpaceID = matchadd("TrailingWhiteSpace",'\s\+$')
 endfunction
 
-function! ClearWhiteSpaceError()
-    if exists("w:WhiteSpaceErrorID")
-        silent! call matchdelete(w:WhiteSpaceErrorID)
-        unlet w:WhiteSpaceErrorID
+function! ClearTrailingWhiteSpace()
+    if exists("w:TrailingWhiteSpaceID")
+        silent! call matchdelete(w:TrailingWhiteSpaceID)
+        unlet w:TrailingWhiteSpaceID
     endif
 endfunction
 
 augroup HighlightAndMatch
     autocmd!
-    autocmd ColorScheme * call WhiteSpaceErrorGroup()
-    autocmd BufWinLeave * call ClearWhiteSpaceError()
+    autocmd ColorScheme * call TrailingWhiteSpaceGroup()
+    autocmd BufWinLeave * call ClearTrailingWhiteSpace()
     " BufWinEnter covers all windows on startup (think of sessions)
-    autocmd BufWinEnter * call HighlightWhiteSpaceError()
+    autocmd BufWinEnter * call HighlightTrailingWhiteSpace()
     " But it becomes insufficient and redundant after that
     autocmd VimEnter * autocmd! HighlightAndMatch BufWinEnter
     autocmd VimEnter * autocmd HighlightAndMatch
-                \ WinEnter,Syntax * call HighlightWhiteSpaceError()
-    autocmd VimEnter * call HighlightWhiteSpaceError()
+                \ WinEnter,Syntax * call HighlightTrailingWhiteSpace()
+    autocmd VimEnter * call HighlightTrailingWhiteSpace()
 augroup END
 
 " }}}
@@ -446,8 +447,10 @@ endif
 
 command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
 
-command! -bar -range=% FixWhiteSpaceErrors
+command! -bar -range=% DeleteTrailingWhiteSpace
             \ call util#PreserveViewPort("keeppatterns ".<line1>.",".<line2>.'s/\s\+$//e')
+
+cnoreabbrev D DeleteTrailingWhiteSpace
 
 command! -nargs=1 FileSearch call quickfix#ilist_search(0,<f-args>,1,1)
 
