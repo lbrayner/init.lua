@@ -1,6 +1,6 @@
 " flattened-solarized
 
-function! s:DefaultColorscheme()
+function! s:Solarized()
     set cursorline
     colorscheme flattened_dark
     if exists("g:vim_did_enter")
@@ -11,23 +11,23 @@ function! s:DefaultColorscheme()
                 \. " guibg=" . statusline#themes#getColor("x236_Grey19","gui")
 endfunction
 
-command! DefaultColorscheme call s:DefaultColorscheme()
+command! Solarized call s:Solarized()
 
-let s:enable_default_colorscheme = 1
+let s:enable_solarized = 1
 
 if !has("nvim") && !has("gui_running")
             \ && exists("g:ssh_client") && g:ssh_client
-    let s:enable_default_colorscheme = 0
+    let s:enable_solarized = 0
 endif
 
 if has("win32unix")
-    let s:enable_default_colorscheme = 0
+    let s:enable_solarized = 0
 endif
 
-if exists("g:disable_default_colorscheme")
-    let s:enable_default_colorscheme = !g:disable_default_colorscheme
+if exists("g:disable_solarized")
+    let s:enable_solarized = !g:disable_solarized
 endif
 
-if s:enable_default_colorscheme
-    call s:DefaultColorscheme()
+if s:enable_solarized
+    call s:Solarized()
 endif
