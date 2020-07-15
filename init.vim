@@ -150,44 +150,44 @@ endif
 
 " Subsection: highlight & match {{{
 
-function! TrailingWhiteSpaceGroup()
-    highlight TrailingWhiteSpace ctermbg=red ctermfg=white guibg=#ff0000
+function! TrailingWhitespaceGroup()
+    highlight TrailingWhitespace ctermbg=red ctermfg=white guibg=#ff0000
 endfunction
 
-call TrailingWhiteSpaceGroup()
+call TrailingWhitespaceGroup()
 
-function! HighlightTrailingWhiteSpace()
+function! HighlightTrailingWhitespace()
     if &syntax =~# '\v(help|netrw)'
-        call ClearTrailingWhiteSpace()
+        call ClearTrailingWhitespace()
         return
     endif
     if &syntax =~# '\v(mail|markdown)'
-        call ClearTrailingWhiteSpace()
-        let w:TrailingWhiteSpaceID = matchadd("TrailingWhiteSpace",'^\s\+$')
+        call ClearTrailingWhitespace()
+        let w:TrailingWhitespaceID = matchadd("TrailingWhitespace",'^\s\+$')
         return
     endif
-    call ClearTrailingWhiteSpace()
-    let w:TrailingWhiteSpaceID = matchadd("TrailingWhiteSpace",'\s\+$')
+    call ClearTrailingWhitespace()
+    let w:TrailingWhitespaceID = matchadd("TrailingWhitespace",'\s\+$')
 endfunction
 
-function! ClearTrailingWhiteSpace()
-    if exists("w:TrailingWhiteSpaceID")
-        silent! call matchdelete(w:TrailingWhiteSpaceID)
-        unlet w:TrailingWhiteSpaceID
+function! ClearTrailingWhitespace()
+    if exists("w:TrailingWhitespaceID")
+        silent! call matchdelete(w:TrailingWhitespaceID)
+        unlet w:TrailingWhitespaceID
     endif
 endfunction
 
 augroup HighlightAndMatch
     autocmd!
-    autocmd ColorScheme * call TrailingWhiteSpaceGroup()
-    autocmd BufWinLeave * call ClearTrailingWhiteSpace()
+    autocmd ColorScheme * call TrailingWhitespaceGroup()
+    autocmd BufWinLeave * call ClearTrailingWhitespace()
     " BufWinEnter covers all windows on startup (think of sessions)
-    autocmd BufWinEnter * call HighlightTrailingWhiteSpace()
+    autocmd BufWinEnter * call HighlightTrailingWhitespace()
     " But it becomes insufficient and redundant after that
     autocmd VimEnter * autocmd! HighlightAndMatch BufWinEnter
     autocmd VimEnter * autocmd HighlightAndMatch
-                \ WinEnter,Syntax * call HighlightTrailingWhiteSpace()
-    autocmd VimEnter * call HighlightTrailingWhiteSpace()
+                \ WinEnter,Syntax * call HighlightTrailingWhitespace()
+    autocmd VimEnter * call HighlightTrailingWhitespace()
 augroup END
 
 " }}}
@@ -447,10 +447,10 @@ endif
 
 command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
 
-command! -bar -range=% DeleteTrailingWhiteSpace
+command! -bar -range=% DeleteTrailingWhitespace
             \ call util#PreserveViewPort("keeppatterns ".<line1>.",".<line2>.'s/\s\+$//e')
 
-cnoreabbrev D DeleteTrailingWhiteSpace
+cnoreabbrev D DeleteTrailingWhitespace
 
 command! -nargs=1 FileSearch call quickfix#ilist_search(0,<f-args>,1,1)
 
