@@ -1,4 +1,4 @@
-if ! has("gui_running")
+if !has("gui_running")
     if &t_Co < 256
         finish
     endif

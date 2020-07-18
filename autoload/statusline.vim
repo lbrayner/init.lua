@@ -200,7 +200,7 @@ endfunction
 function! statusline#getTerm()
     let term='cterm'
 
-    if has('gui_running')
+    if has('gui_running') || &termguicolors
         let term='gui'
     endif
 
