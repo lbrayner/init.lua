@@ -15,6 +15,9 @@ endfunction
 function! s:ResultBufferSyntax(dbext_opts)
     if a:dbext_opts['dbext_type'] ==# "PGSQL"
         if a:dbext_opts['dbext_extra'] =~# "QUIET=off"
+            if !search('^SET$')
+                return
+            endif
             syn region ResultFold start="\%2l" end="^SET$"
                         \ keepend transparent fold
             syn sync fromstart
