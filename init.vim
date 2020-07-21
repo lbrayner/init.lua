@@ -697,7 +697,7 @@ if !has("win32unix")
     let g:EclimLogLevel = "info"
 
     let g:EclimHighlightError = "Error"
-    let g:EclimHighlightWarning = "Todo"
+    let g:EclimHighlightWarning = "Comment"
 
     let g:EclimXmlValidate=0
     let g:EclimXsdValidate=0
