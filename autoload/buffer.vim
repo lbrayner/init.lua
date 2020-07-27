@@ -27,19 +27,7 @@ function! s:LoopBuffers(predicate,command)
     return buffer_count
 endfunction
 
-function! buffer#BufWipeTab()
-    let tab_list = tabpagebuflist()
-    let s:tab_dic = {}
-    for i in tab_list
-        exec 'let s:tab_dic.' . i . ' = ' . i
-    endfor
-    call s:WipeBuffers('buflisted(n) && has_key(s:tab_dic,n)')
-endfunction
-
-let s:wipe_pattern = ''
-let s:filetype = ''
-
-function! buffer#BufWipeFileType(...)
+function! buffer#BWipeFileType(...)
     if a:0 > 0
         let s:filetype = a:1
     else
@@ -48,57 +36,28 @@ function! buffer#BufWipeFileType(...)
     call s:WipeBuffers('getbufvar(n,"&ft") == s:filetype')
 endfunction
 
-function! buffer#BufWipe(...)
-    if a:0 > 0
-        let s:wipe_pattern = a:1
-    else
-        let s:wipe_pattern = expand('%:t')
-    endif
+function! buffer#BWipe(pattern)
+    let s:wipe_pattern = a:pattern
     call s:WipeBuffers('buflisted(n) && bufname(n) =~# s:wipe_pattern')
 endfunction
 
-function! buffer#BufWipeHidden(...)
-    if a:0 > 0
-        let s:wipe_pattern = a:1
-    else
-        let s:wipe_pattern = expand('%:t')
-    endif
+function! buffer#BWipeHidden(pattern)
+    let s:wipe_pattern = a:pattern
     call s:WipeBuffers('bufname(n) =~# s:wipe_pattern')
 endfunction
 
-function! buffer#BufWipeNotLoaded()
+function! buffer#BWipeNotLoaded()
     call s:WipeBuffers('buflisted(n) && !bufloaded(n)')
 endfunction
 
-let s:tab_dic = {}
-
-function! buffer#BufWipeTabOnly()
-    let tab_list = tabpagebuflist()
-    let s:tab_dic = {}
-    for i in tab_list
-        exec 'let s:tab_dic.' . i . ' = ' . i
-    endfor
-    call s:WipeBuffers('buflisted(n) && !has_key(s:tab_dic,n)')
+function! buffer#BWipeForce(pattern)
+    let s:wipe_pattern = a:pattern
+    s:WipeBuffers('buflisted(n) && bufname(n) =~#'
+                \ . ' s:wipe_pattern','bwipe!')
 endfunction
 
-function! buffer#BufWipeForce(...)
-    if a:0 > 0
-        let s:wipe_pattern = a:1
-    else
-        let s:wipe_pattern = expand('%:t')
-    endif
-    let buffer_count = s:LoopBuffers('buflisted(n) && bufname(n) =~#'
-                                    \ . ' s:wipe_pattern','bwipe!')
-    call s:MessageBuffers(buffer_count)
-endfunction
-
-function! buffer#BufWipeForceUnlisted(...)
-    if a:0 > 0
-        let s:wipe_pattern = a:1
-    else
-        let s:wipe_pattern = expand('%:t')
-    endif
-    let buffer_count =  s:LoopBuffers('!buflisted(n) && bufname(n) =~#'
-                                    \ . ' s:wipe_pattern','bwipe!')
-    call s:MessageBuffers(buffer_count)
+function! buffer#BWipeForceUnlisted(pattern)
+    let s:wipe_pattern = a:pattern
+    call s:WipeBuffers('!buflisted(n) && bufname(n) =~#'
+                \ . ' s:wipe_pattern','bwipe!')
 endfunction

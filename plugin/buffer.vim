@@ -1,11 +1,9 @@
-command! BufWipeNotLoaded call buffer#BufWipeNotLoaded()
-command! BufWipeTab call buffer#BufWipeTab()
-command! -nargs=1 BufWipe call buffer#BufWipe(<f-args>)
-command! -nargs=1 BufWipeForce call buffer#BufWipeForce(<f-args>)
-command! -nargs=1 BufWipeForceUnlisted call buffer#BufWipeForceUnlisted(<f-args>)
-command! -nargs=1 BufWipeHidden call buffer#BufWipeHidden(<f-args>)
-command! BufWipeTabOnly call buffer#BufWipeTabOnly()
-command! -nargs=1 BufWipeFileType call buffer#BufWipeFileType(<f-args>)
+command! -nargs=0 BWipeNotLoaded call buffer#BWipeNotLoaded()
+command! -nargs=1 BWipe call buffer#BWipe(<f-args>)
+command! -nargs=1 BWipeForce call buffer#BWipeForce(<f-args>)
+command! -nargs=1 BWipeForceUnlisted call buffer#BWipeForceUnlisted(<f-args>)
+command! -nargs=1 BWipeHidden call buffer#BWipeHidden(<f-args>)
+command! -nargs=1 BWipeFileType call buffer#BWipeFileType(<f-args>)
 
 " Swap | File changes outside
 " https://github.com/neovim/neovim/issues/2127
