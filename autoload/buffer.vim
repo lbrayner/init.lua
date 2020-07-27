@@ -27,6 +27,11 @@ function! s:LoopBuffers(predicate,command)
     return buffer_count
 endfunction
 
+function! buffer#BWipe(pattern)
+    let s:wipe_pattern = a:pattern
+    call s:WipeBuffers('buflisted(n) && bufname(n) =~# s:wipe_pattern')
+endfunction
+
 function! buffer#BWipeFileType(...)
     if a:0 > 0
         let s:filetype = a:1
@@ -34,11 +39,6 @@ function! buffer#BWipeFileType(...)
         let s:filetype = &ft
     endif
     call s:WipeBuffers('getbufvar(n,"&ft") == s:filetype')
-endfunction
-
-function! buffer#BWipe(pattern)
-    let s:wipe_pattern = a:pattern
-    call s:WipeBuffers('buflisted(n) && bufname(n) =~# s:wipe_pattern')
 endfunction
 
 function! buffer#BWipeHidden(pattern)
@@ -60,4 +60,8 @@ function! buffer#BWipeForceUnlisted(pattern)
     let s:wipe_pattern = a:pattern
     call s:WipeBuffers('!buflisted(n) && bufname(n) =~#'
                 \ . ' s:wipe_pattern','bwipe!')
+endfunction
+
+function! buffer#BWipeNotReadable()
+    call s:WipeBuffers('buflisted(n) && !filereadable(bufname(n))')
 endfunction
