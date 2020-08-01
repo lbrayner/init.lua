@@ -124,3 +124,6 @@
 [submodule "pack/bundle/start/vim-eunuch"]
 	path = pack/bundle/start/vim-eunuch
 	url = https://github.com/tpope/vim-eunuch
+[submodule "pack/bundle/start/vim-css-color"]
+	path = pack/bundle/start/vim-css-color
+	url = https://github.com/ap/vim-css-color
