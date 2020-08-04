@@ -85,6 +85,7 @@ set smartcase
 set noruler
 set lazyredraw
 set nomore
+set title
 
 "show existing tab with 4 spaces width
 set tabstop=4
