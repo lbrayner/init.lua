@@ -455,10 +455,14 @@ endif
 
 command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
 
-command! -bar -range=% DeleteTrailingWhitespace
+command! -nargs=0 -bar -range=% DeleteTrailingWhitespace
             \ call util#PreserveViewPort("keeppatterns ".<line1>.",".<line2>.'s/\s\+$//e')
 
 cnoreabbrev D DeleteTrailingWhitespace
+
+command! -nargs=0 -bar -range=% Capitalize
+            \ call util#PreserveViewPort(
+            \     "keeppatterns ".<line1>.",".<line2>.'s/\<./\u&/ge')
 
 command! -nargs=1 FileSearch call quickfix#ilist_search(0,<f-args>,1,1)
 
