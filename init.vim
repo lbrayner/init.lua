@@ -86,6 +86,7 @@ set noruler
 set lazyredraw
 set nomore
 set title
+set noshowmode
 
 "show existing tab with 4 spaces width
 set tabstop=4
