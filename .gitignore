@@ -4,11 +4,9 @@
 /bundle
 /ctrlp_cache
 /doc/tags
-/eclim
 /ginit.local.vim
 /init.local.vim
 /pack/local
-/plugin/eclim.vim
 /plugin/init.vim
 /sessions
 /swap
