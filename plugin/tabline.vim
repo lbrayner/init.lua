@@ -20,7 +20,7 @@ function! RedefineTabline()
         return
     endif
     " At least one column separating left and right and a 1 column margin
-    let relative_dir=util#truncateFilename(fnamemodify(expand("%:h"),":~"),
+    let relative_dir=util#truncateFilename(substitute(expand("%:h"),cwd,"",""),
                 \float2nr(0.5*&columns)-2)
     let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '
         \ .'%#NonText#'.cwd.'%=%#Directory# '.relative_dir.' '
