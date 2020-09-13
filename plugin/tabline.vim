@@ -22,8 +22,8 @@ function! RedefineTabline()
     " At least one column separating left and right and a 1 column margin
     let relative_dir=util#truncateFilename(substitute(expand("%:h"),cwd,"",""),
                 \float2nr(0.5*&columns)-2)
-    " For some reason, sometimes '%' expands to the full path (don't know if
-    " it's a neovim or vim thing)
+    " For some reason, sometimes '%' expands to the full path even if it's in
+    " the cwd (don't know if it's a neovim or vim thing)
     if relative_dir == ""
         let relative_dir="."
     endif
