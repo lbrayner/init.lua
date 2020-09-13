@@ -34,10 +34,9 @@ function! VisualModeEnter()
     return util#trivialHorizontalMotion()
 endfunction
 
-function! VisualModeLeave()
+function! NormalMode()
     set updatetime=4000
     call statusline#HighlightMode('normal')
-    return util#trivialHorizontalMotion()
 endfunction
 
 vnoremap <silent> <expr> <SID>VisualModeEnter VisualModeEnter()
@@ -52,7 +51,10 @@ augroup Statusline
     autocmd!
     autocmd InsertEnter * call statusline#HighlightMode('insert')
     autocmd InsertLeave * call statusline#HighlightMode('normal')
-    autocmd CursorHold * call VisualModeLeave()
+    autocmd CmdlineEnter * call statusline#HighlightMode('command') | redrawstatus
+    autocmd CmdlineLeave * call statusline#HighlightMode('normal')
+    autocmd CmdwinEnter * call statusline#HighlightMode('normal')
+    autocmd CursorHold * call NormalMode()
     autocmd User CustomStatusline call statusline#RedefineStatusLine()
     autocmd VimEnter * autocmd Statusline
                 \ BufWritePost,BufWinEnter,WinEnter * call statusline#RedefineStatusLine()

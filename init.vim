@@ -216,12 +216,12 @@ nnoremap qç q:
 vnoremap qç q:
 vnoremap ¬ ^
 
-nnoremap <silent> <Esc><Esc> <Esc>:only<CR>
+nnoremap <silent> <Esc><Esc> <Esc><Cmd>only<CR>
 
 " clear search highlights
 
-nnoremap <silent> <f2> :set invhlsearch hlsearch?<cr>
-inoremap <silent> <f2> <esc>:set invhlsearch hlsearch?<cr>a
+nnoremap <silent> <f2> <Cmd>set invhlsearch hlsearch?<cr>
+inoremap <silent> <f2> <esc><Cmd>set invhlsearch hlsearch?<cr>a
 
 " easier window switching
 nnoremap <C-H> <C-W>h
@@ -238,25 +238,25 @@ vnoremap <C-L> <esc><C-W>l
 nnoremap <leader>v <C-w>v
 nnoremap <leader>h <C-w>s
 
-nnoremap <leader>i :set invpaste paste?<CR>
+nnoremap <leader>i <Cmd>set invpaste paste?<CR>
 
-nnoremap <leader><F5> :ls<CR>:buffer<Space>
-nnoremap <F6> :w<CR>
-nnoremap <leader><F6> :w!<CR>
-nnoremap <silent> <F12>  :setlocal list!<CR>
+nnoremap <leader><F5> <Cmd>ls<CR>:buffer<Space>
+nnoremap <F6> <Cmd>w<CR>
+nnoremap <leader><F6> <Cmd>w!<CR>
+nnoremap <silent> <F12>  <Cmd>setlocal list!<CR>
 vnoremap . :normal .
 
-inoremap <F6> <esc>:w<CR>
+inoremap <F6> <esc><Cmd>w<CR>
 
-nnoremap <silent> <F9> :q<cr>
-nnoremap <silent> <leader><F9> :tabc<cr>
+nnoremap <silent> <F9> <Cmd>q<cr>
+nnoremap <silent> <leader><F9> <Cmd>tabc<cr>
 
 " quickfix and locallist
 
-nnoremap <silent> <leader>l :botright lopen<CR>
-nnoremap <silent> <leader>q :botright copen<CR>
+nnoremap <silent> <leader>l <Cmd>botright lopen<CR>
+nnoremap <silent> <leader>q <Cmd>botright copen<CR>
 
-nnoremap <silent> <space>b :b#<CR>
+nnoremap <silent> <space>b <Cmd>b#<CR>
 
 " force case sensitivity for *-search
 nnoremap <Plug>CaseSensitiveStar /\C\V\<<c-r>=expand("<cword>")<cr>\><cr>
@@ -284,8 +284,8 @@ augroup NoIncSearchCursorHoldAutoGroup
     autocmd CursorHold * call s:NoIncSearchEnd()
 augroup END
 
-nnoremap <kDivide> :call <SID>NoIncSearchStart()<cr>/
-nnoremap <leader>/ :call <SID>NoIncSearchStart()<cr>/
+nnoremap <kDivide> <Cmd>call <SID>NoIncSearchStart()<cr>/
+nnoremap <leader>/ <Cmd>call <SID>NoIncSearchStart()<cr>/
 
 " neovim terminal
 if has("nvim")
@@ -356,8 +356,8 @@ function! s:ToggleIWhite()
     echo "+iwhite"
 endfunction
 
-nnoremap <leader>do :diffoff!<cr>
-nnoremap <leader>di :call <SID>ToggleIWhite()<cr>
+nnoremap <leader>do <Cmd>diffoff!<cr>
+nnoremap <leader>di <Cmd>call <SID>ToggleIWhite()<cr>
 
 " Close the Preview, Quickfix and Local List windows
 
@@ -369,7 +369,7 @@ endfunction
 
 command! LCloseAllWindows call s:LCloseAllWindows()
 
-nnoremap <F1> :pclose <bar> cclose <bar> LCloseAllWindows<cr>
+nnoremap <F1> <Cmd>pclose <bar> cclose <bar> LCloseAllWindows<cr>
 
 function! s:NavigateXmlNthParent(n)
     let n_command = "v" . (a:n+1) . "at"
@@ -388,8 +388,8 @@ function! s:NavigateXmlDepthBackward(depth)
     call matchit#Match_wrapper('',1,'n')
 endfunction
 
-nnoremap <silent> [< :call <SID>NavigateXmlDepthBackward(-v:count1)<cr>
-nnoremap <silent> ]> :call <SID>NavigateXmlDepth(-v:count1)<cr>
+nnoremap <silent> [< <Cmd>call <SID>NavigateXmlDepthBackward(-v:count1)<cr>
+nnoremap <silent> ]> <Cmd>call <SID>NavigateXmlDepth(-v:count1)<cr>
 
 " }}}
 
@@ -442,8 +442,8 @@ if has("clipboard")
     " Copies arg to the system's clipboard
     command! -nargs=? Clip call s:Clip(<f-args>)
 
-    nnoremap <leader>c :Clip<cr>
-    vnoremap <leader>c y:Clip<cr>
+    nnoremap <leader>c <Cmd>Clip<cr>
+    vnoremap <leader>c y<Cmd>Clip<cr>
 
     command! Path call s:Clip(Path())
     command! FullPath call s:Clip(FullPath())
@@ -784,7 +784,7 @@ let g:ctrlp_switch_buffer = "t"
 let g:ctrlp_map = "<f7>"
 let g:ctrlp_tabpage_position = "bc"
 let g:ctrlp_clear_cache_on_exit = 0
-nnoremap <F5> :CtrlPBuffer<cr>
+nnoremap <F5> <Cmd>CtrlPBuffer<cr>
 
 let g:ctrlp_prompt_mappings = {
     \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
@@ -810,8 +810,8 @@ function! s:FZF()
 endfunction
 
 if has("unix") && !has("win32unix") && executable("fzf")
-    nnoremap <F5> :Buffers<cr>
-    nnoremap <silent> <F7> :call <SID>FZF()<cr>
+    nnoremap <F5> <Cmd>Buffers<cr>
+    nnoremap <silent> <F7> <Cmd>call <SID>FZF()<cr>
     " else the F7 mapping is going to be overridden
     unlet g:ctrlp_map
 
@@ -824,7 +824,7 @@ if has("unix") && !has("win32unix") && executable("fzf")
 
     if executable("dfzf")
         let $FZF_DEFAULT_COMMAND="dfzf"
-        nnoremap <silent> <leader><f7> :call <SID>dfzf_clear_cache()<cr>
+        nnoremap <silent> <leader><f7> <Cmd>call <SID>dfzf_clear_cache()<cr>
         if executable("ddfzf")
             let $DFZF_DEFAULT_COMMAND='ddfzf'
         endif
@@ -915,7 +915,7 @@ function! s:choosewin()
     endif
 endfunction
 
-nnoremap <silent> <F10> :call <SID>choosewin()<cr>
+nnoremap <silent> <F10> <Cmd>call <SID>choosewin()<cr>
 
 " vim-fugitive
 
