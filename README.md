@@ -38,12 +38,17 @@ Packages (`:h packages`) are submodules in `pack/bundle/start`.
 
 ## Normal mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/70392788-55ad6c00-19c2-11ea-9627-7e01922d4bbd.png)
-
-## Insert mode
-
-![Screenshot](https://user-images.githubusercontent.com/5733531/70392787-5514d580-19c2-11ea-9d5e-f440cb868623.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/93029066-e0c12f80-f5ee-11ea-91ec-d99f8f84d161.png)
 
 ## Visual mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/70392785-5514d580-19c2-11ea-8d17-da39fff08de8.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/93029065-df900280-f5ee-11ea-9c93-a26c0042f9f7.png)
+
+## Command-Line Mode
+
+![Screenshot](https://user-images.githubusercontent.com/5733531/93029063-de5ed580-f5ee-11ea-89e6-e0540ddfc9fc.png)
+
+## Insert mode
+
+![Screenshot](https://user-images.githubusercontent.com/5733531/93029060-dbfc7b80-f5ee-11ea-938f-7c025cfc4c06.png)
+
