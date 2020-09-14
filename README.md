@@ -44,10 +44,6 @@ Packages (`:h packages`) are submodules in `pack/bundle/start`.
 
 ![Screenshot](https://user-images.githubusercontent.com/5733531/93029065-df900280-f5ee-11ea-9c93-a26c0042f9f7.png)
 
-## Command-Line Mode
-
-![Screenshot](https://user-images.githubusercontent.com/5733531/93029063-de5ed580-f5ee-11ea-89e6-e0540ddfc9fc.png)
-
 ## Insert mode
 
 ![Screenshot](https://user-images.githubusercontent.com/5733531/93029060-dbfc7b80-f5ee-11ea-938f-7c025cfc4c06.png)
