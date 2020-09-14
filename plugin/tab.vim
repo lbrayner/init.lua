@@ -50,4 +50,4 @@ augroup TabActionsOnVimEnter
     autocmd VimEnter * call s:DoTabEqualizeWindows()
 augroup END
 
-map <Plug>GoToTab <Cmd>noautocmd call tab#GoToTab()<cr>
+map <Plug>GoToTab :noautocmd call tab#GoToTab()<cr>
