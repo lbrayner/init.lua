@@ -391,6 +391,16 @@ endfunction
 nnoremap <silent> [< <Cmd>call <SID>NavigateXmlDepthBackward(-v:count1)<cr>
 nnoremap <silent> ]> <Cmd>call <SID>NavigateXmlDepth(-v:count1)<cr>
 
+" tabs
+
+if exists("*gettabinfo")
+    nmap <F8> <Plug>GoToTab
+else
+    nmap <F8> <Cmd>tabs<cr>
+endif
+
+nnoremap <silent> <Leader><f8> <Cmd>call tab#GoToLastTab()<cr>
+
 " }}}
 
 " Subsection: functions & commands

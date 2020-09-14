@@ -50,11 +50,4 @@ augroup TabActionsOnVimEnter
     autocmd VimEnter * call s:DoTabEqualizeWindows()
 augroup END
 
-if exists("*gettabinfo")
-    map <Plug>GoToTab :call tab#GoToTab()<cr>
-    nmap <silent> <F8> <Plug>GoToTab
-else
-    nmap <silent> <F8> :tabs<cr>
-endif
-
-nnoremap <silent> <Leader><f8> :call tab#GoToLastTab()<cr>
+map <Plug>GoToTab <Cmd>noautocmd call tab#GoToTab()<cr>
