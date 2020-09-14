@@ -34,7 +34,7 @@ function! VisualModeEnter()
     return util#trivialHorizontalMotion()
 endfunction
 
-function! NormalMode()
+function! VisualModeLeave()
     set updatetime=4000
     call statusline#HighlightMode('normal')
 endfunction
@@ -45,16 +45,32 @@ nnoremap <silent> <script> gv gv<SID>VisualModeEnter
 nnoremap <silent> <script> V V<SID>VisualModeEnter
 nnoremap <silent> <script> <C-v> <C-v><SID>VisualModeEnter
 
+" function PreviousMode()
+"     let mode = mode()
+"     if mode == "n"
+"         call statusline#HighlightMode('normal')
+"         return
+"     endif
+"     if mode =~? "v"
+"         call VisualModeEnter()
+"         return
+"     endif
+"     if mode =~? "i"
+"         call statusline#HighlightMode('insert')
+"         return
+"     endif
+" endfunction
+
 " Autocommands
 
 augroup Statusline
     autocmd!
     autocmd InsertEnter * call statusline#HighlightMode('insert')
     autocmd InsertLeave * call statusline#HighlightMode('normal')
-    autocmd CmdlineEnter * call statusline#HighlightMode('command') | redrawstatus
-    autocmd CmdlineLeave * call statusline#HighlightMode('normal')
+    " autocmd CmdlineEnter * call statusline#HighlightMode('command') | redrawstatus
+    " autocmd CmdlineLeave * call PreviousMode()
     autocmd CmdwinEnter * call statusline#HighlightMode('normal')
-    autocmd CursorHold * call NormalMode()
+    autocmd CursorHold * call VisualModeLeave()
     autocmd User CustomStatusline call statusline#RedefineStatusLine()
     autocmd VimEnter * autocmd Statusline
                 \ BufWritePost,BufWinEnter,WinEnter * call statusline#RedefineStatusLine()
