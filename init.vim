@@ -207,8 +207,13 @@ augroup END
 nmap Q <nop>
 
 " cedilla is right where : is on an en-US keyboard
-nmap ç :
-vmap ç :
+
+" nmap ç :
+" vmap ç :
+
+nmap ç <Plug>Cmd
+vmap ç <Plug>Cmd
+
 nmap Ç :<up><cr>
 vmap Ç :<up><cr>
 nnoremap ¬ ^
@@ -260,7 +265,7 @@ nnoremap <silent> <space>b :b#<CR>
 
 " force case sensitivity for *-search
 nnoremap <Plug>CaseSensitiveStar /\C\V\<<c-r>=expand("<cword>")<cr>\><cr>
-nmap <kmultiply> <Plug>CaseSensitiveStar
+nmap <kMultiply> <Plug>CaseSensitiveStar
 nmap * <Plug>CaseSensitiveStar
 
 " sometimes you want to search with no noincsearch set
