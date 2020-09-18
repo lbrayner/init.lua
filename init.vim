@@ -207,13 +207,9 @@ augroup END
 nmap Q <nop>
 
 " cedilla is right where : is on an en-US keyboard
-
-" nmap ç :
-" vmap ç :
-
-nmap ç <Plug>Cmd
-vmap ç <Plug>Cmd
-
+nnoremap <Plug>(Cmd) :
+nmap ç <Plug>(Cmd)
+vmap ç <Plug>(Cmd)
 nmap Ç :<up><cr>
 vmap Ç :<up><cr>
 nnoremap ¬ ^
