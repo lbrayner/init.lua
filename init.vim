@@ -472,6 +472,10 @@ command! -nargs=0 -bar -range=% DeleteTrailingWhitespace
 
 cnoreabbrev D DeleteTrailingWhitespace
 
+command! Lcd lcd %
+
+cnoreabbrev L Lcd
+
 command! -nargs=0 -bar -range=% Capitalize
             \ call util#PreserveViewPort(
             \     "keeppatterns ".<line1>.",".<line2>.'s/\<./\u&/ge')
