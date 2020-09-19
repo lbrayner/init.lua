@@ -208,6 +208,7 @@ nmap Q <nop>
 
 " cedilla is right where : is on an en-US keyboard
 nnoremap <Plug>(Cmd) :
+vnoremap <Plug>(Cmd) :
 nmap ç <Plug>(Cmd)
 vmap ç <Plug>(Cmd)
 nmap Ç :<up><cr>
