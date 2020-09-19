@@ -149,7 +149,7 @@ endfunction
 function! statusline#HighlightMode(mode)
     exe "call statusline#Highlight({"
         \ . "'StatusLine': {'bg': s:".a:mode."_bg, 'fg': s:".a:mode."_fg},"
-        \ . "'User1': {'bg': s:user1_".a:mode."_bg},"
+        \ . "'User1': {'bg': s:user1_".a:mode."_bg, 'fg': s:user1_".a:mode."_fg},"
         \ . "'User2': {'bg': s:user2_".a:mode."_bg, 'fg': s:user2_".a:mode."_fg},"
         \ . "'User3': {'bg': s:user3_".a:mode."_bg, 'fg': s:user3_".a:mode."_fg},"
         \ . "'User4': {'bg': s:user4_".a:mode."_bg, 'fg': s:user4_".a:mode."_fg},"
@@ -173,11 +173,6 @@ function! statusline#RedefineStatusLine()
     else
         call statusline#DefineStatusLine()
     endif
-endfunction
-
-function! statusline#HighlightModifiedStatusLineGroup()
-    call statusline#Highlight({
-        \ 'User1': {'fg': s:user1_modified_fg}})
 endfunction
 
 function! statusline#loadColorTheme(colorTheme)
@@ -223,7 +218,6 @@ function! statusline#LoadTheme(colorTheme)
     call statusline#loadTermAttrList(termAttrList)
     call statusline#HighlightMode('normal')
     call statusline#HighlightStatusLineNC()
-    call statusline#HighlightModifiedStatusLineGroup()
 endfunction
 
 function! statusline#initialize()
