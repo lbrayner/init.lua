@@ -864,11 +864,13 @@ map <Space>F <Plug>Sneak_S
 
 let g:FerretMap = 0
 
-nmap <Leader>a <Plug>(FerretAck)
+nmap <Leader>a <Plug>(Cmd)Ack<space>
 
 " scalpel
 
-nmap <Leader>x <Plug>(Scalpel)
+execute 'nmap <Leader>x <Plug>(Cmd)' .
+      \ 'Scalpel' .
+      \ "/\\v<<C-R>=expand('<cword>')<CR>>//<Left>"
 
 " ragtag
 
