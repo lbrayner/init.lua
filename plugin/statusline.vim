@@ -46,6 +46,9 @@ nnoremap <silent> <script> V V<SID>VisualModeEnter
 nnoremap <silent> <script> <C-v> <C-v><SID>VisualModeEnter
 
 function CmdlineModeLeave()
+    if exists("s:lazyredraw")
+        let &lazyredraw = s:lazyredraw
+    endif
     call statusline#HighlightMode('normal')
     autocmd! CmdlineModeHighlight CmdlineLeave
 endfunction
@@ -56,10 +59,12 @@ function CmdlineModeEnter()
     augroup CmdlineModeHighlight
         autocmd CmdlineLeave * call CmdlineModeLeave()
     augroup END
+    let s:lazyredraw = &lazyredraw
+    set nolazyredraw
 endfunction
 
 nnoremap <Plug>(Cmd) :call CmdlineModeEnter()<cr>:
-vnoremap <Plug>(Cmd) :call CmdlineModeEnter()<cr>:'<,'>
+vnoremap <Plug>(Cmd) :<c-u>call CmdlineModeEnter() <bar> normal! gv<cr>:
 
 " Autocommands
 
