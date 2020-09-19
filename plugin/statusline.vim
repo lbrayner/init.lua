@@ -67,7 +67,7 @@ augroup Statusline
     autocmd!
     autocmd InsertEnter * call statusline#HighlightMode('insert')
     autocmd InsertLeave * call statusline#HighlightMode('normal')
-    autocmd CmdlineEnter /,\? call statusline#HighlightMode('command') | redrawstatus
+    autocmd CmdlineEnter /,\? call statusline#HighlightMode('search') | redrawstatus
     autocmd CmdlineLeave /,\? call statusline#HighlightMode('normal')
     autocmd CursorHold * call VisualModeLeave()
     autocmd User CustomStatusline call statusline#RedefineStatusLine()
