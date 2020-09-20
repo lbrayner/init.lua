@@ -45,15 +45,15 @@ nnoremap <silent> <script> gv gv<SID>VisualModeEnter
 nnoremap <silent> <script> V V<SID>VisualModeEnter
 nnoremap <silent> <script> <C-v> <C-v><SID>VisualModeEnter
 
-function CmdlineModeLeave()
+function! CmdlineModeLeave()
     if exists("s:lazyredraw")
         let &lazyredraw = s:lazyredraw
     endif
-    call statusline#HighlightMode('normal')
+    call statusline#HighlightPreviousMode()
     autocmd! CmdlineModeHighlight CmdlineLeave
 endfunction
 
-function CmdlineModeEnter()
+function! CmdlineModeEnter()
     call statusline#HighlightMode('command')
     redrawstatus
     augroup CmdlineModeHighlight
@@ -73,7 +73,7 @@ augroup Statusline
     autocmd InsertEnter * call statusline#HighlightMode('insert')
     autocmd InsertLeave * call statusline#HighlightMode('normal')
     autocmd CmdlineEnter /,\? call statusline#HighlightMode('search') | redrawstatus
-    autocmd CmdlineLeave /,\? call statusline#HighlightMode('normal')
+    autocmd CmdlineLeave /,\? call statusline#HighlightPreviousMode()
     autocmd CursorHold * call VisualModeLeave()
     autocmd User CustomStatusline call statusline#RedefineStatusLine()
     autocmd VimEnter * autocmd Statusline

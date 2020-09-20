@@ -146,7 +146,17 @@ function! statusline#Highlight(dict)
     endfor
 endfunction
 
+function! statusline#HighlightPreviousMode()
+    if exists("g:statusline#previousMode")
+        call statusline#HighlightMode(g:statusline#previousMode)
+    endif
+endfunction
+
 function! statusline#HighlightMode(mode)
+    if exists("g:statusline#mode")
+        let g:statusline#previousMode = g:statusline#mode
+    endif
+    let g:statusline#mode = a:mode
     exe "call statusline#Highlight({"
         \ . "'StatusLine': {'bg': s:".a:mode."_bg, 'fg': s:".a:mode."_fg},"
         \ . "'User1': {'bg': s:user1_".a:mode."_bg, 'fg': s:user1_".a:mode."_fg},"
