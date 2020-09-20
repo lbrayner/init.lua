@@ -48,10 +48,10 @@ Packages (`:h packages`) are submodules in `pack/bundle/start`.
 
 ![Screenshot](https://user-images.githubusercontent.com/5733531/93657020-2887f280-fa05-11ea-9ba7-d2c315189a0a.png)
 
-## Command-line Mode
+## Command-line mode
 
 ![Screenshot](https://user-images.githubusercontent.com/5733531/93722648-d9f66780-fb6e-11ea-8195-807190df753c.png)
 
-## Search Mode
+## Command-line mode (search)
 
 ![Screenshot](https://user-images.githubusercontent.com/5733531/93722644-d82ca400-fb6e-11ea-8aae-cbea95af5730.png)
