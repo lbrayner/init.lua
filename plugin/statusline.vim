@@ -55,7 +55,6 @@ endfunction
 
 function! CmdlineModeEnter()
     call statusline#HighlightMode('command')
-    redrawstatus
     augroup CmdlineModeHighlight
         autocmd CmdlineLeave * call CmdlineModeLeave()
     augroup END
@@ -63,8 +62,8 @@ function! CmdlineModeEnter()
     set nolazyredraw
 endfunction
 
-nnoremap <Plug>(Cmd) :call CmdlineModeEnter()<cr>:
-vnoremap <Plug>(Cmd) :<c-u>call CmdlineModeEnter() <bar> normal! gv<cr>:
+nnoremap <silent> <Plug>(Cmd) :call CmdlineModeEnter()<cr>:
+vnoremap <silent> <Plug>(Cmd) :<c-u>call CmdlineModeEnter() <bar> normal! gv<cr>:
 
 " Autocommands
 
