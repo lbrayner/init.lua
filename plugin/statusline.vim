@@ -62,8 +62,16 @@ function! CmdlineModeEnter()
     set nolazyredraw
 endfunction
 
-nnoremap <silent> <Plug>(Cmd) :call CmdlineModeEnter()<cr>:
-vnoremap <silent> <Plug>(Cmd) :<c-u>call CmdlineModeEnter() <bar> normal! gv<cr>:
+if has("nvim")
+    nmap <silent> <Plug>(Cmd) <Plug>(NCmd)
+    vmap <silent> <Plug>(Cmd) <Plug>(VCmd)
+else
+    nmap <Plug>(Cmd) <Plug>(NCmd)
+    vmap <Plug>(Cmd) <Plug>(VCmd)
+endif
+
+nnoremap <Plug>(NCmd) :call CmdlineModeEnter()<cr>:
+vnoremap <Plug>(VCmd) :<c-u>call CmdlineModeEnter() <bar> normal! gv<cr>:
 
 " Autocommands
 
