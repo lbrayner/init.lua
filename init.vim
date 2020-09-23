@@ -101,10 +101,6 @@ if g:ssh_client
     set mouse=
 endif
 
-if has("path_extra")
-    set fileignorecase
-endif
-
 " setting dir
 
 if !has("nvim")
