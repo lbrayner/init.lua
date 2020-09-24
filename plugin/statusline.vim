@@ -81,6 +81,7 @@ augroup Statusline
     autocmd InsertLeave * call statusline#HighlightMode('normal')
     autocmd CmdlineEnter /,\? call statusline#HighlightMode('search') | redrawstatus
     autocmd CmdlineLeave /,\? call statusline#HighlightPreviousMode()
+    autocmd CmdwinEnter,CmdwinLeave * call statusline#HighlightMode('normal')
     autocmd CursorHold * call VisualModeLeave()
     autocmd User CustomStatusline call statusline#RedefineStatusLine()
     autocmd VimEnter * autocmd Statusline
