@@ -77,7 +77,7 @@ function! statusline#themes#default#getColorMapping()
         \ 'user7_insert_bg': 'x233_Grey7',
         \ 'user7_insert_fg': 'x233_Grey7',
         \ 'user7_command_bg': 'x069_CornflowerBlue',
-        \ 'user7_command_fg': 'x248_Grey66',
+        \ 'user7_command_fg': 'x240_Grey35',
         \ 'user7_search_bg': 'x166_DarkOrange3',
         \ 'user7_search_fg': 'x233_Grey7',
         \ 'not_current_bg': 'x234_Grey11',
