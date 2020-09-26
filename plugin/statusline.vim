@@ -93,4 +93,8 @@ augroup Statusline
     autocmd ColorScheme * call statusline#initialize()
 augroup END
 
+" Setting a default not current statusline
+" margins of 1 column (on both sides)
+let &statusline=' %f '
+
 " vim: fdm=marker
