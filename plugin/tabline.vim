@@ -20,7 +20,8 @@ function! RedefineTabline()
         return
     endif
     " At least one column separating left and right and a 1 column margin
-    let relative_dir=util#truncateFilename(substitute(expand("%:h"),'\V'.cwd,"",""),
+    let relative_dir=util#truncateFilename(substitute(
+                \fnamemodify(expand("%:h"),":~"),'\V'.cwd,"",""),
                 \float2nr(0.5*&columns)-2)
     " For some reason, sometimes '%' expands to the full path even if it's in
     " the cwd (don't know if it's a neovim or vim thing)
