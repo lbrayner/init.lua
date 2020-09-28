@@ -10,7 +10,8 @@ function! RedefineTabline()
     " Is it outside of cwd? Recent versions of getcwd() return paths with backward
     " slashes on win32
     " Similar to Java's String.startsWith
-    let isabsolute=stridx(expand("%:p"),fnamemodify(getcwd(),":p:gs?\\?/?")) != 0
+    let isabsolute=len(expand("%")) <= 0 ? 0
+                \: stridx(expand("%:p"),fnamemodify(getcwd(),":p:gs?\\?/?")) != 0
     if isabsolute
         " At least one column separating left and right and a 1 column margin
         let absolute_path=util#truncateFilename(fnamemodify(expand("%"),
