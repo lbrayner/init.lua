@@ -1,3 +1,16 @@
+function! util#setupMatchit()
+    if exists("g:loaded_matchit")
+        let b:match_ignorecase=0
+        let b:match_words =
+                    \  '<:>,' .
+                    \  '<\@<=!\[CDATA\[:]]>,'.
+                    \  '<\@<=!--:-->,'.
+                    \  '<\@<=?\k\+:?>,'.
+                    \  '<\@<=\([^ \t>/]\+\)\%(\s\+[^>]*\%([^/]>\|$\)\|>\|$\):<\@<=/\1>,'.
+                    \  '<\@<=\%([^ \t>/]\+\)\%(\s\+[^/>]*\|$\):/>'
+    endif
+endfunction
+
 function! util#GetComparableNodeName(filename)
     let node = resolve(substitute(fnamemodify(a:filename,":p"),'\','/','g'))
     let node = substitute(node,"/$","","")
