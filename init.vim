@@ -24,13 +24,6 @@ if !exists("g:vim_dir") || g:vim_dir == ""
     endif
 endif
 
-" are we using ssh?
-let g:ssh_client = 0
-
-if $SSH_CLIENT != ""
-    let g:ssh_client = 1
-endif
-
 " Subsection: settings {{{
 
 set enc=utf-8
@@ -95,6 +88,13 @@ set shiftwidth=4
 set expandtab
 
 set mouse=a
+
+" are we using ssh?
+let g:ssh_client = 0
+
+if $SSH_CLIENT != ""
+    let g:ssh_client = 1
+endif
 
 " mouse selection yanks to the system clipboard when using ssh
 if g:ssh_client
@@ -219,7 +219,6 @@ nnoremap <silent> <Esc><Esc> <Esc>:only<CR>
 " clear search highlights
 
 nnoremap <silent> <f2> :set invhlsearch hlsearch?<cr>
-inoremap <silent> <f2> <esc>:set invhlsearch hlsearch?<cr>a
 
 " easier window switching
 nnoremap <C-H> <C-W>h
@@ -240,21 +239,21 @@ nnoremap <leader>i :set invpaste paste?<CR>
 
 nnoremap <leader><F5> :ls<CR>:buffer<Space>
 nnoremap <F6> :w<CR>
+inoremap <F6> <esc>:w<CR>
 nnoremap <leader><F6> :w!<CR>
 nnoremap <silent> <F12>  :setlocal list!<CR>
 vnoremap . :normal .
 
-inoremap <F6> <esc>:w<CR>
-
 nnoremap <silent> <F9> :q<cr>
 nnoremap <silent> <leader><F9> :tabc<cr>
+
+" previous buffer
+nnoremap <silent> <space>b :b#<CR>
 
 " quickfix and locallist
 
 nnoremap <silent> <leader>l :botright lopen<CR>
 nnoremap <silent> <leader>q :botright copen<CR>
-
-nnoremap <silent> <space>b :b#<CR>
 
 " force case sensitivity for *-search
 nnoremap <Plug>CaseSensitiveStar /\C\V\<<c-r>=expand("<cword>")<cr>\><cr>
@@ -739,7 +738,7 @@ endif
 
 " Finish here if we haven't initialized the submodules
 
-if !filereadable(g:vim_dir.'/pack/bundle/start/vim-surround/plugin/surround.vim')
+if !isdirectory(g:vim_dir."/pack/bundle/start")
     finish
 endif
 
