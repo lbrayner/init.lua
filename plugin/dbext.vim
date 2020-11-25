@@ -101,3 +101,4 @@ function! s:CloneResultBuffer()
 endfunction
 
 nnoremap <silent> <leader><return> :call <SID>SQL_SelectParagraph()<cr>
+nnoremap <silent> <leader><kEnter> :call <SID>SQL_SelectParagraph()<cr>
