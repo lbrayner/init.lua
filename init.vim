@@ -738,7 +738,7 @@ endif
 
 " Finish here if we haven't initialized the submodules
 
-if !isdirectory(g:vim_dir."/pack/bundle/start")
+if glob(g:vim_dir.'/pack/bundle/start/*/plugin') == ""
     finish
 endif
 
