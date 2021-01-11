@@ -55,7 +55,7 @@ endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineModifiedStatusLine()
-    let filename=expand("%:t")
+    let filename=substitute(expand("%:t"),"'","''","g")
     if exists("b:Statusline_custom_mod_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_mod_leftline."%='"
     elseif &previewwindow
@@ -79,7 +79,7 @@ endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineStatusLineNoFocus()
-    let filename=expand('%')
+    let filename=substitute(expand("%"),"'","''","g")
     let isnumbersonly=filename =~# '^[0-9]\+$'
     if isnumbersonly
         let &l:statusline=' '.filename.' '
@@ -101,7 +101,7 @@ endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineStatusLine()
-    let filename=expand("%:t")
+    let filename=substitute(expand("%:t"),"'","''","g")
     if exists("b:Statusline_custom_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_leftline."%='"
     elseif &previewwindow
