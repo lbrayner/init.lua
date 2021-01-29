@@ -20,7 +20,7 @@ function! s:ResultBufferSyntax(dbext_opts)
             endif
             syn region ResultFold start="\%2l" end="^SET$"
                         \ keepend transparent fold
-            syn sync fromstart
+            syn sync maxlines=20
             setlocal foldmethod=syntax
             normal! 2j
         endif
@@ -30,7 +30,7 @@ function! s:ResultBufferSyntax(dbext_opts)
         if a:dbext_opts['dbext_extra'] =~# "vvv"
             syn region ResultFold start="^--------------$" end="^--------------$"
                         \ keepend transparent fold
-            syn sync fromstart
+            syn sync maxlines=20
             setlocal foldmethod=syntax
             normal! 2j
         endif
@@ -92,7 +92,6 @@ function! s:CloneResultBuffer()
     setlocal nonumber
     setlocal buftype=nofile
     setlocal bufhidden=wipe
-    setlocal noswapfile
     setlocal complete-=wbuU
     setlocal nowritebackup
     setlocal undolevels=-1
