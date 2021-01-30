@@ -240,6 +240,7 @@ nnoremap <leader>i :set invpaste paste?<CR>
 nnoremap <leader><F5> :ls<CR>:buffer<Space>
 nnoremap <F6> :w<CR>
 inoremap <F6> <esc>:w<CR>
+vnoremap <F6> <esc>:w<CR>
 nnoremap <leader><F6> :w!<CR>
 nnoremap <silent> <F12>  :setlocal list!<CR>
 vnoremap . :normal .
