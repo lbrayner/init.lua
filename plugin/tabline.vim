@@ -5,8 +5,13 @@ endif
 set showtabline=2
 
 function! RedefineTabline()
+    " Is this a session?
+    let session_name=v:this_session == "" ? "" :
+                \ "(".fnamemodify(v:this_session,":t:r").")"
+    let session=session_name == "" ? "" :
+                \ " %#Question#" . session_name . "%#Normal#"
     " To be displayed on the left side
-    let cwd=fnamemodify(getcwd(),":~")
+    let cwd=substitute(fnamemodify(getcwd(),":~"),'/$',"","")
     " Is it outside of cwd? Recent versions of getcwd() return paths with backward
     " slashes on win32
     " Similar to Java's String.startsWith
@@ -17,12 +22,12 @@ function! RedefineTabline()
         let absolute_path=util#truncateFilename(fnamemodify(expand("%"),
                     \":p:~"),float2nr(0.5*&columns)-2)
         let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '
-            \ .'%#NonText#'.cwd.'%=%#WarningMsg# '.absolute_path.' '
+            \ .'%#NonText#'.cwd.session.'%=%#WarningMsg# '.absolute_path.' '
         return
     endif
     " At least one column separating left and right and a 1 column margin
     let relative_dir=util#truncateFilename(substitute(
-                \fnamemodify(expand("%:h"),":~"),'\V'.cwd.'/\?',"",""),
+                \fnamemodify(expand("%:h"),":~"),'\V'.cwd.'/',"",""),
                 \float2nr(0.5*&columns)-2)
     " For some reason, sometimes '%' expands to the full path even if it's in
     " the cwd (don't know if it's a neovim or vim thing)
@@ -30,7 +35,7 @@ function! RedefineTabline()
         let relative_dir="."
     endif
     let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '
-        \ .'%#NonText#'.substitute(cwd,'/$',"","").'%=%#Directory# '.relative_dir.' '
+        \ .'%#NonText#'.cwd.session.'%=%#Directory# '.relative_dir.' '
 endfunction
 
 augroup Tabline
