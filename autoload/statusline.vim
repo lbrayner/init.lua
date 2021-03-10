@@ -34,13 +34,13 @@ let s:status_line_tail = ' %2*%{&filetype}%*'
 let s:status_line_tail_column = s:status_line_tail
                      \ . ' %4*%{&fileencoding}%*'
                      \ . ' %4.(%4*%{&fileformat}%*%)'
-                     \ . ' :%-2.c %4*%3.P%* %L '
+                     \ . ' :%-3.c %4*%3.P%* %L '
 
 function! s:StatusLineTailLineColumn()
     return s:status_line_tail
                      \ . ' %4*%{&fileencoding}%*'
                      \ . ' %4.(%4*%{&fileformat}%*%)'
-                     \ . ' ' . s:GetLineFormat() . ':%-2.c %4*%3.P%* %L '
+                     \ . ' ' . s:GetLineFormat() . ':%-3.c %4*%3.P%* %L '
 endfunction
 
 function! statusline#GetStatusLineTail()
