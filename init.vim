@@ -298,8 +298,8 @@ if has("nvim")
     nnoremap <A-l> <C-w>l
 endif
 
+" Emacs-style editing in command-line mode and insert mode
 if has("gui_running") || has("nvim")
-    " For Emacs-style editing on the command-line >
     " start of line
     cnoremap <C-A> <Home>
     " back one character
@@ -311,45 +311,37 @@ if has("gui_running") || has("nvim")
     " forward one character
     cnoremap <C-F> <Right>
     " recall newer command-line
-    cnoremap <C-N> <Down>
+    cnoremap <M-n> <Down>
     " recall previous (older) command-line
-    cnoremap <C-P> <Up>
+    cnoremap <M-p> <Up>
     " cancel
     cnoremap <C-G> <C-C>
-endif
-
-" emacs kill line
-inoremap <c-k> <c-o>D
-
-cmap <c-k> <c-f>D<c-c><c-c>:redraw<cr><Plug>(Cmd)<up>
-
-" more emacsy bindings
-if has("nvim")
-    " back one word
-    cnoremap <M-b> <S-Left>
-    " forward one word
+    " forward word
     cnoremap <M-f> <S-Right>
-    " delete word ahead of cursor
+    " backward a word
+    cnoremap <M-b> <S-Left>
+    " kill word
     cnoremap <M-d> <C-F>ea<C-W><C-C><C-C>:redraw<CR>:<Up>
-    " one word forward
-    inoremap <M-f> <C-Right>
-    " one word backward
-    inoremap <M-b> <C-Left>
-    " delete word ahead of cursor
-    inoremap <M-d> <C-O>e<C-O>a<C-W>
     " open the command line buffer
     cnoremap <C-X> <C-F>
     " kill line
-    cmap <C-K> <C-X>D<C-C><C-C>:redraw<CR><Plug>(Cmd)<Up>
+    cmap <C-K> <C-F>D<C-C><C-C>:redraw<CR><Plug>(Cmd)<Up>
+    " forward a word
+    inoremap <M-f> <C-Right>
+    " backward a word
+    inoremap <M-b> <C-Left>
+    " kill word
+    inoremap <M-d> <C-O>e<C-O>a<C-W>
+    " kill line
+    inoremap <C-K> <C-O>D
+    " remapping digraph
+    inoremap <c-b> <c-k>
 endif
 
 " inserting the current line
 cnoremap <c-r><c-l> <c-r>=getline(".")<cr>
 " inserting the current line number
 cnoremap <c-r><c-n> <c-r>=line(".")<cr>
-
-" remapping digraph
-inoremap <c-b> <c-k>
 
 " diff & patch
 
