@@ -46,20 +46,20 @@ nnoremap <silent> <script> V V<SID>VisualModeEnter
 nnoremap <silent> <script> <C-v> <C-v><SID>VisualModeEnter
 
 function! CmdlineModeLeave()
+    call statusline#HighlightPreviousMode()
+    autocmd! CmdlineModeHighlight CmdlineLeave
     if exists("s:lazyredraw")
         let &lazyredraw = s:lazyredraw
     endif
-    call statusline#HighlightPreviousMode()
-    autocmd! CmdlineModeHighlight CmdlineLeave
 endfunction
 
 function! CmdlineModeEnter()
+    let s:lazyredraw = &lazyredraw
+    set nolazyredraw
     call statusline#HighlightMode('command')
     augroup CmdlineModeHighlight
         autocmd CmdlineLeave * call CmdlineModeLeave()
     augroup END
-    let s:lazyredraw = &lazyredraw
-    set nolazyredraw
 endfunction
 
 if has("nvim")
