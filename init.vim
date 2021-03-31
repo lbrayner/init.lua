@@ -325,7 +325,7 @@ if has("gui_running") || has("nvim")
     " open the command line buffer
     cnoremap <C-X> <C-F>
     " kill line
-    cmap <C-K> <C-F>D<C-C><C-C>:redraw<CR><Plug>(Cmd)<Up>
+    cmap <C-K> <C-X>D<C-C><C-C>:redraw<CR><Plug>(Cmd)<Up>
     " forward a word
     inoremap <M-f> <C-Right>
     " backward a word
