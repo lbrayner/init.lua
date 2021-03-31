@@ -316,19 +316,31 @@ if has("gui_running") || has("nvim")
     cnoremap <C-P> <Up>
     " cancel
     cnoremap <C-G> <C-C>
-    " open the command line buffer
-    cnoremap <C-X> <C-F>
 endif
 
+" emacs kill line
+inoremap <c-k> <c-o>D
+
+cmap <c-k> <c-f>D<c-c><c-c>:redraw<cr><Plug>(Cmd)<up>
+
+" more emacsy bindings
 if has("nvim")
     " back one word
     cnoremap <M-b> <S-Left>
     " forward one word
     cnoremap <M-f> <S-Right>
+    " delete word ahead of cursor
+    cnoremap <M-d> <C-F>ea<C-W><C-C><C-C>:redraw<CR>:<Up>
     " one word forward
     inoremap <M-f> <C-Right>
     " one word backward
     inoremap <M-b> <C-Left>
+    " delete word ahead of cursor
+    inoremap <M-d> <C-O>e<C-O>a<C-W>
+    " open the command line buffer
+    cnoremap <C-X> <C-F>
+    " kill line
+    cmap <C-K> <C-X>D<C-C><C-C>:redraw<CR><Plug>(Cmd)<Up>
 endif
 
 " inserting the current line
@@ -336,9 +348,6 @@ cnoremap <c-r><c-l> <c-r>=getline(".")<cr>
 " inserting the current line number
 cnoremap <c-r><c-n> <c-r>=line(".")<cr>
 
-" emacs c-k behaviour
-inoremap <c-k> <c-o>D
-cnoremap <c-k> <c-f>D<c-c><c-c>:<up>
 " remapping digraph
 inoremap <c-b> <c-k>
 
