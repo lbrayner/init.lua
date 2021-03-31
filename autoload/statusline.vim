@@ -28,19 +28,16 @@ function! s:GetLineFormat()
     return '%' . len(line("$")) . 'l'
 endfunction
 
-let s:status_line_tail = ' %2*%{&filetype}%*'
-                     \ . ' %3*%1.(%{statusline#DefaultReadOnlyFlag()}%)%*'
-
-let s:status_line_tail_column = s:status_line_tail
+let s:status_line_tail_column = ' :%-3.c %3.P %L'
                      \ . ' %4*%{&fileencoding}%*'
                      \ . ' %4.(%4*%{&fileformat}%*%)'
-                     \ . ' :%-3.c %4*%3.P%* %L '
+                     \ . ' %2*%{&filetype}%* '
 
 function! s:StatusLineTailLineColumn()
-    return s:status_line_tail
-                     \ . ' %4*%{&fileencoding}%*'
-                     \ . ' %4.(%4*%{&fileformat}%*%)'
-                     \ . ' ' . s:GetLineFormat() . ':%-3.c %4*%3.P%* %L '
+    return ' ' . s:GetLineFormat() . ':%-3.c %3.P %L'
+                \ . ' %4*%{&fileencoding}%*'
+                \ . ' %4.(%4*%{&fileformat}%*%)'
+                \ . ' %2*%{&filetype}%* '
 endfunction
 
 function! statusline#GetStatusLineTail()
@@ -57,24 +54,27 @@ endfunction
 function! statusline#DefineModifiedStatusLine()
     let filename=substitute(expand("%:t"),"'","''","g")
     if exists("b:Statusline_custom_mod_leftline")
-        exec "let &l:statusline=' ".b:Statusline_custom_mod_leftline."%='"
+        exec "let &l:statusline=' ".b:Statusline_custom_mod_leftline."'"
     elseif &previewwindow
         let &l:statusline=' %<%1*'
                     \ . '['.filename
-                    \ . '%{statusline#DefaultModifiedFlag()}]%*%='
+                    \ . '%{statusline#DefaultModifiedFlag()}]%*'
     else
         let &l:statusline=' %<%1*'
                     \ . filename
-                    \ . '%{statusline#DefaultModifiedFlag()}%*%='
+                    \ . '%{statusline#DefaultModifiedFlag()}%*'
     endif
     if exists("b:Statusline_custom_mod_rightline")
         exec "let &l:statusline='".&l:statusline
-                    \.b:Statusline_custom_mod_rightline." '"
+                    \ . '%='
+                    \ . b:Statusline_custom_mod_rightline." '"
         return
     endif
+    let &l:statusline.=' %3*%1.(%{statusline#DefaultReadOnlyFlag()}%)%*'
     exec "let &l:statusline='".&l:statusline
-                \.statusline#GetStatusLineTail()
-                \."'"
+                \ . '%='
+                \ . statusline#GetStatusLineTail()
+                \ . "'"
 endfunction
 
 " margins of 1 column (on both sides)
@@ -103,33 +103,38 @@ endfunction
 function! statusline#DefineStatusLine()
     let filename=substitute(expand("%:t"),"'","''","g")
     if exists("b:Statusline_custom_leftline")
-        exec "let &l:statusline=' ".b:Statusline_custom_leftline."%='"
+        exec "let &l:statusline=' ".b:Statusline_custom_leftline."'"
     elseif &previewwindow
         if expand("%") == ""
             let &l:statusline=' %<'
-                \ . '[Preview]%='
+                \ . '[Preview]'
         else
             let &l:statusline=' %<'
                 \ . '['.filename
-                \ . '%{statusline#DefaultModifiedFlag()}]%='
+                \ . '%{statusline#DefaultModifiedFlag()}]'
         endif
     elseif &buftype == "nofile"
         let &l:statusline=' %<%7*'
             \ . filename
-            \ . '%{statusline#DefaultModifiedFlag()}%*%='
+            \ . '%{statusline#DefaultModifiedFlag()}%*'
     else
         let &l:statusline=' %<'
             \ . filename
-            \ . '%{statusline#DefaultModifiedFlag()}%='
+            \ . '%{statusline#DefaultModifiedFlag()}'
     endif
     if exists("b:Statusline_custom_rightline")
         exec "let &l:statusline='".&l:statusline
-                    \.b:Statusline_custom_rightline." '"
+                    \ . '%='
+                    \ . b:Statusline_custom_rightline." '"
         return
     endif
+    " An extra space where the modified flag would be
+    let &l:statusline.=' '
+    let &l:statusline.=' %3*%1.(%{statusline#DefaultReadOnlyFlag()}%)%*'
     exec "let &l:statusline='".&l:statusline
-                \.statusline#GetStatusLineTail()
-                \."'"
+                \ . '%='
+                \ . statusline#GetStatusLineTail()
+                \ . "'"
 endfunction
 
 function! statusline#Highlight(dict)

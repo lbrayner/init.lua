@@ -6,15 +6,17 @@ let b:Statusline_did_ftplugin = 1
 function! s:StatusLine()
     let b:Statusline_custom_leftline = '%<%{expand("%:t:r")}'
                 \ . '%{statusline#DefaultModifiedFlag()}'
+                \ . '  %3*%1.(%{statusline#DefaultReadOnlyFlag()}%)%*'
     let b:Statusline_custom_rightline =
                 \   ' %5*%.20{statusline#extensions#eclim#CurrentProjectName()}%*'
-                \ . ' %3*%{statusline#extensions#eclim#WarningFlag()}'
+                \ . ' %3*%{statusline#extensions#eclim#WarningFlag()}%*'
                 \ . statusline#GetStatusLineTail()
     let b:Statusline_custom_mod_leftline = '%<%1*%{expand("%:t:r")}'
                 \ . '%{statusline#DefaultModifiedFlag()}%*'
+                \ . ' %3*%1.(%{statusline#DefaultReadOnlyFlag()}%)%*'
     let b:Statusline_custom_mod_rightline =
                 \   ' %5*%.20{statusline#extensions#eclim#CurrentProjectName()}%*'
-                \ . ' %3*%{statusline#extensions#eclim#WarningFlag()}'
+                \ . ' %3*%{statusline#extensions#eclim#WarningFlag()}%*'
                 \ . statusline#GetStatusLineTail()
 endfunction
 
