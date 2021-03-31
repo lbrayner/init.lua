@@ -335,7 +335,7 @@ if has("gui_running") || has("nvim")
     " kill line
     inoremap <C-K> <C-O>D
     " remapping digraph
-    inoremap <c-b> <c-k>
+    inoremap <C-B> <C-K>
 endif
 
 " inserting the current line
