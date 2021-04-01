@@ -1,14 +1,4 @@
-function! statusline#DefaultReadOnlyFlag()
-    if !&modifiable
-        return '-'
-    endif
-    if &readonly
-        return 'R'
-    endif
-    return ''
-endfunction
-
-function! statusline#DefaultModifiedFlag()
+function! statusline#StatusFlag()
     if ! exists("w:Statusline_modified")
         let w:Statusline_modified = 0
     endif
@@ -19,7 +9,13 @@ function! statusline#DefaultModifiedFlag()
         let w:Statusline_modified = &modified
     endif
     if &modified
-        return '*'
+        return '+'
+    endif
+    if !&modifiable
+        return '-'
+    endif
+    if &readonly
+        return 'R'
     endif
     return ''
 endfunction
@@ -28,23 +24,11 @@ function! s:GetLineFormat()
     return '%' . len(line("$")) . 'l'
 endfunction
 
-let s:status_line_tail_column = ' :%-3.c %3.P %L'
-                     \ . ' %4*%{&fileencoding}%*'
-                     \ . ' %4.(%4*%{&fileformat}%*%)'
-                     \ . ' %2*%{&filetype}%* '
-
-function! s:StatusLineTailLineColumn()
-    return ' ' . s:GetLineFormat() . ':%-3.c %3.P %L'
+function! statusline#GetStatusLineTail()
+    return ' ' . s:GetLineFormat() . ',%-3.c %3.P %L'
                 \ . ' %4*%{&fileencoding}%*'
                 \ . ' %4.(%4*%{&fileformat}%*%)'
                 \ . ' %2*%{&filetype}%* '
-endfunction
-
-function! statusline#GetStatusLineTail()
-    if &number
-        return s:status_line_tail_column
-    endif
-    return s:StatusLineTailLineColumn()
 endfunction
 
 " b:Statusline_custom_mod_leftline and b:Statusline_custom_mod_rightline are
@@ -57,12 +41,12 @@ function! statusline#DefineModifiedStatusLine()
         exec "let &l:statusline=' ".b:Statusline_custom_mod_leftline."'"
     elseif &previewwindow
         let &l:statusline=' %<%1*'
-                    \ . '['.filename
-                    \ . '%{statusline#DefaultModifiedFlag()}]%*'
+                    \ . '['.filename.']'
+                    \ . ' %{statusline#StatusFlag()}%*'
     else
         let &l:statusline=' %<%1*'
                     \ . filename
-                    \ . '%{statusline#DefaultModifiedFlag()}%*'
+                    \ . ' %{statusline#StatusFlag()}%*'
     endif
     if exists("b:Statusline_custom_mod_rightline")
         exec "let &l:statusline='".&l:statusline
@@ -70,7 +54,6 @@ function! statusline#DefineModifiedStatusLine()
                     \ . b:Statusline_custom_mod_rightline." '"
         return
     endif
-    let &l:statusline.=' %3*%1.(%{statusline#DefaultReadOnlyFlag()}%)%*'
     exec "let &l:statusline='".&l:statusline
                 \ . '%='
                 \ . statusline#GetStatusLineTail()
@@ -108,19 +91,20 @@ function! statusline#DefineStatusLine()
         if expand("%") == ""
             let &l:statusline=' %<'
                 \ . '[Preview]'
+                \ . ' %1*%{statusline#StatusFlag()}%*'
         else
             let &l:statusline=' %<'
-                \ . '['.filename
-                \ . '%{statusline#DefaultModifiedFlag()}]'
+                \ . '['.filename.']'
+                \ . ' %1*%{statusline#StatusFlag()}%*'
         endif
     elseif &buftype == "nofile"
         let &l:statusline=' %<%7*'
             \ . filename
-            \ . '%{statusline#DefaultModifiedFlag()}%*'
+            \ . ' %1*%{statusline#StatusFlag()}%*'
     else
         let &l:statusline=' %<'
             \ . filename
-            \ . '%{statusline#DefaultModifiedFlag()}'
+            \ . ' %1*%{statusline#StatusFlag()}%*'
     endif
     if exists("b:Statusline_custom_rightline")
         exec "let &l:statusline='".&l:statusline
@@ -129,8 +113,6 @@ function! statusline#DefineStatusLine()
         return
     endif
     " An extra space where the modified flag would be
-    let &l:statusline.=' '
-    let &l:statusline.=' %3*%1.(%{statusline#DefaultReadOnlyFlag()}%)%*'
     exec "let &l:statusline='".&l:statusline
                 \ . '%='
                 \ . statusline#GetStatusLineTail()
