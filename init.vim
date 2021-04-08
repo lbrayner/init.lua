@@ -624,6 +624,11 @@ augroup SvnFtGroup
     autocmd BufEnter *.svn set ft=svn
 augroup END
 
+augroup XmlFtGroup
+    autocmd!
+    autocmd BufEnter *.wsdl set ft=xml " Web Services Description Language
+augroup END
+
 " infercase
 
 augroup InferCaseGroup
