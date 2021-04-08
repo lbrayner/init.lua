@@ -20,12 +20,22 @@ function! statusline#StatusFlag()
     return ''
 endfunction
 
+function! VersionControl()
+    if exists("*FugitiveHead")
+        if FugitiveHead() != ""
+            return " " . FugitiveHead()
+        endif
+    endif
+    return ""
+endfunction
+
 function! s:GetLineFormat()
     return '%' . len(line("$")) . 'l'
 endfunction
 
 function! statusline#GetStatusLineTail()
     return ' ' . s:GetLineFormat() . ',%-3.c %3.P %L'
+                \ . '%6*%{VersionControl()}%*'
                 \ . ' %4*%{&fileencoding}%*'
                 \ . ' %4.(%4*%{&fileformat}%*%)'
                 \ . ' %2*%{&filetype}%* '
@@ -98,7 +108,7 @@ function! statusline#DefineStatusLine()
                 \ . ' %1*%{statusline#StatusFlag()}%*'
         endif
     elseif &buftype == "nofile"
-        let &l:statusline=' %<%7*'
+        let &l:statusline=' %<%5*'
             \ . filename
             \ . ' %1*%{statusline#StatusFlag()}%*'
     else
