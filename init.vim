@@ -454,6 +454,9 @@ if has("clipboard")
     nnoremap <leader>c :Clip<cr>
     vnoremap <leader>c y:Clip<cr>
 
+    nnoremap <leader>p "+p
+    vnoremap <leader>p "+p
+
     command! Path call s:Clip(Path())
     command! FullPath call s:Clip(FullPath())
     command! Name call s:Clip(Name())
