@@ -20,7 +20,7 @@ function! statusline#StatusFlag()
     return ''
 endfunction
 
-function! VersionControl()
+function! statusline#VersionControl()
     if &buftype != ""
         return ""
     endif
@@ -38,7 +38,7 @@ endfunction
 
 function! statusline#GetStatusLineTail()
     return ' ' . s:GetLineFormat() . ',%-3.c %3.P %L'
-                \ . '%6*%{VersionControl()}%*'
+                \ . '%6*%{statusline#VersionControl()}%*'
                 \ . ' %4*%{&fileencoding}%*'
                 \ . ' %4.(%4*%{&fileformat}%*%)'
                 \ . ' %2*%{&filetype}%* '
