@@ -133,3 +133,28 @@ endfunction
 function! util#EclimLoaded()
     return exists(':ProjectCreate')
 endfunction
+
+function! util#Options(...)
+    if a:0 == 1
+        if exists(a:1)
+            exec "let value = ".a:1
+            return value
+        endif
+        return a:1
+    endif
+    if a:0 > 1
+        for index in range(0,a:0-2)
+            if exists(a:000[index])
+                exec "let value = ".a:000[index]
+                if value != ""
+                    return value
+                endif
+            endif
+        endfor
+        if exists(a:000[a:0-1])
+            exec "let value = ".a:000[a:0-1]
+            return value
+        endif
+        return a:000[a:0-1]
+    endif
+endfunction
