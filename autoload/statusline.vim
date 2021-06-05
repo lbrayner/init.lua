@@ -37,7 +37,11 @@ function! s:GetLineFormat()
 endfunction
 
 function! statusline#GetStatusLineTail()
-    return ' ' . s:GetLineFormat() . ',%-3.c %3.P %L'
+    let bufferPosition = ' ' . s:GetLineFormat() . ',%-3.c %3.P %L'
+    if &buftype == "nofile"
+        return bufferPosition . ' %2*%{&filetype}%* '
+    endif
+    return bufferPosition
                 \ . '%6*%{statusline#VersionControl()}%*'
                 \ . ' %4*%{&fileencoding}%*'
                 \ . ' %4.(%4*%{&fileformat}%*%)'
