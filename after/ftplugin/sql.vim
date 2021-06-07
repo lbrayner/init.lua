@@ -6,6 +6,11 @@ function! s:define_local_statusline()
                     \.'%{util#Options("b:dbext_host","b:dbext_srvname","localhost")}'
                     \.'%{statusline#extensions#dbext#dbext_var("b:dbext_port")}%*'
                     \ . statusline#GetStatusLineTail()
+        let b:Statusline_custom_mod_rightline = ' %7*%{b:dbext_type}:%{b:dbext_user}'
+                    \.'%{statusline#extensions#dbext#dbext_var("b:dbext_dbname")}@'
+                    \.'%{util#Options("b:dbext_host","b:dbext_srvname","localhost")}'
+                    \.'%{statusline#extensions#dbext#dbext_var("b:dbext_port")}%*'
+                    \ . statusline#GetStatusLineTail()
     endif
 endfunction
 
