@@ -68,7 +68,7 @@ function! statusline#DefineModifiedStatusLine()
     if exists("b:Statusline_custom_mod_rightline")
         exec "let &l:statusline='".&l:statusline
                     \ . '%='
-                    \ . b:Statusline_custom_mod_rightline." '"
+                    \ . b:Statusline_custom_mod_rightline."'"
         return
     endif
     exec "let &l:statusline='".&l:statusline
@@ -126,7 +126,7 @@ function! statusline#DefineStatusLine()
     if exists("b:Statusline_custom_rightline")
         exec "let &l:statusline='".&l:statusline
                     \ . '%='
-                    \ . b:Statusline_custom_rightline." '"
+                    \ . b:Statusline_custom_rightline."'"
         return
     endif
     " An extra space where the modified flag would be
