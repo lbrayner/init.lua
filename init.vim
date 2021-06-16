@@ -656,6 +656,10 @@ augroup END
 
 " text format options
 
+augroup DefaultFileType
+    autocmd BufEnter * if &filetype == "" | setlocal ft=text | endif
+augroup END
+
 augroup TextFormatAutoGroup
     autocmd!
     autocmd FileType text,svn setlocal textwidth=80
