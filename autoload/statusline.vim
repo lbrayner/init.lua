@@ -43,7 +43,7 @@ function! statusline#GetStatusLineTail()
     endif
     return bufferPosition
                 \ . '%6*%{statusline#VersionControl()}%*'
-                \ . ' %4*%{&fileencoding}%*'
+                \ . ' %4*%{util#Options("&fileencoding","&encoding")}%*'
                 \ . ' %4.(%4*%{&fileformat}%*%)'
                 \ . ' %2*%{&filetype}%* '
 endfunction
