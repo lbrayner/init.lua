@@ -48,21 +48,32 @@ function! statusline#GetStatusLineTail()
                 \ . ' %2*%{&filetype}%* '
 endfunction
 
+function! statusline#Filename(...)
+    if a:0 > 0 && a:1 " nofocus
+        let filename=substitute(expand("%"),"'","''","g")
+    else
+        let filename = substitute(expand("%:t"),"'","''","g")
+    endif
+    if filename == ""
+        return '#'.bufnr()
+    endif
+    return filename
+endfunction
+
 " b:Statusline_custom_mod_leftline and b:Statusline_custom_mod_rightline are
 " joined with %=
 
 " margins of 1 column (on both sides)
 function! statusline#DefineModifiedStatusLine()
-    let filename=substitute(expand("%:t"),"'","''","g")
     if exists("b:Statusline_custom_mod_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_mod_leftline."'"
     elseif &previewwindow
         let &l:statusline=' %<%1*'
-                    \ . '['.filename.']'
+                    \ . '[%{statusline#Filename()}]'
                     \ . ' %{statusline#StatusFlag()}%*'
     else
         let &l:statusline=' %<%1*'
-                    \ . filename
+                    \ . '%{statusline#Filename()}'
                     \ . ' %{statusline#StatusFlag()}%*'
     endif
     if exists("b:Statusline_custom_mod_rightline")
@@ -79,7 +90,7 @@ endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineStatusLineNoFocus()
-    let filename=substitute(expand("%"),"'","''","g")
+    let filename=statusline#Filename(1)
     let isnumbersonly=filename =~# '^[0-9]\+$'
     if isnumbersonly
         let &l:statusline=' '.filename.' '
@@ -90,9 +101,9 @@ function! statusline#DefineStatusLineNoFocus()
             let &l:statusline=' [Preview] '
             return
         endif
-        let &l:statusline=' [%{util#truncateFilename(expand("%"),winwidth("%")-4)}] '
+        let &l:statusline=' [%{util#truncateFilename(statusline#Filename(1),winwidth("%")-4)}] '
     else
-        let &l:statusline=' %{util#truncateFilename(expand("%"),winwidth("%")-2)} '
+        let &l:statusline=' %{util#truncateFilename(statusline#Filename(1),winwidth("%")-2)} '
     endif
 endfunction
 
@@ -101,7 +112,6 @@ endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineStatusLine()
-    let filename=substitute(expand("%:t"),"'","''","g")
     if exists("b:Statusline_custom_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_leftline."'"
     elseif &previewwindow
@@ -111,16 +121,16 @@ function! statusline#DefineStatusLine()
                 \ . ' %1*%{statusline#StatusFlag()}%*'
         else
             let &l:statusline=' %<'
-                \ . '['.filename.']'
+                \ . '[%{statusline#Filename()}]'
                 \ . ' %1*%{statusline#StatusFlag()}%*'
         endif
     elseif &buftype == "nofile"
         let &l:statusline=' %<%5*'
-            \ . filename
+            \ . '%{statusline#Filename()}'
             \ . ' %1*%{statusline#StatusFlag()}%*'
     else
         let &l:statusline=' %<'
-            \ . filename
+            \ . '%{statusline#Filename()}'
             \ . ' %1*%{statusline#StatusFlag()}%*'
     endif
     if exists("b:Statusline_custom_rightline")
