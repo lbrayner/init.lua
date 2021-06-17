@@ -657,7 +657,12 @@ augroup END
 " text format options
 
 augroup DefaultFileType
-    autocmd BufEnter * if &filetype == "" | setlocal ft=text | endif
+    autocmd BufEnter * if &filetype == "" | setlocal ft=text | let b:default_filetype = 1 | endif
+augroup END
+
+augroup UnsetDefaultFileType
+    autocmd BufWritePre * if exists("b:default_filetype") | filetype detect |
+                \ unlet b:default_filetype | endif
 augroup END
 
 augroup TextFormatAutoGroup
