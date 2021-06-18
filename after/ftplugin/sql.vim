@@ -14,4 +14,5 @@ function! s:define_local_statusline()
     endif
 endfunction
 
-autocmd BufWinEnter <buffer> call s:define_local_statusline()
+autocmd BufWinEnter <buffer> call s:define_local_statusline() |
+            \ call statusline#RedefineStatusLine()
