@@ -1,2 +1,2 @@
-let b:Statusline_custom_leftline = ' %<'
+let b:Statusline_custom_leftline = '%<'
             \ . '%{expand("%:h:t")}'
