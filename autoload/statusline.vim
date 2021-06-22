@@ -55,7 +55,7 @@ function! statusline#Filename(...)
         let filename = substitute(expand("%:t"),"'","''","g")
     endif
     if filename == ""
-        return '#'.bufnr()
+        return "#".bufnr("%")
     endif
     return filename
 endfunction
