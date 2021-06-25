@@ -937,9 +937,10 @@ nnoremap <silent> <F10> :call <SID>choosewin()<cr>
 
 " vim-fugitive
 
-augroup FugitiveAutoGroup
+augroup FugitiveCustomAutocommands
     autocmd!
     autocmd FileType fugitive Glcd
+    autocmd BufEnter fugitive://*//* setlocal nomodifiable
 augroup END
 
 command! -nargs=* Gdi call fugitive#Diffsplit(1, 1, "<mods>", "", [<f-args>])
