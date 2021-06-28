@@ -636,6 +636,16 @@ augroup XmlFtGroup
     autocmd BufEnter *.wsdl set ft=xml " Web Services Description Language
 augroup END
 
+" vidir
+
+augroup VidirGroup
+    autocmd!
+    autocmd BufEnter /tmp/dir*
+                \ if argc() == 1 && argv(0) =~# '^/tmp/dir' |
+                \     set ft=vidir |
+                \ endif
+augroup END
+
 " infercase
 
 augroup InferCaseGroup
