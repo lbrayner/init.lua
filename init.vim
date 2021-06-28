@@ -670,7 +670,7 @@ augroup END
 augroup DetectFileType
     autocmd BufWritePre *
                 \ if exists("b:default_filetype") |
-                \     setlocal infercase< setlocal textwidth< | filetype detect |
+                \     setlocal infercase< | setlocal textwidth< | filetype detect |
                 \     unlet b:default_filetype |
                 \ endif
 augroup END
