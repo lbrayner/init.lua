@@ -26,7 +26,7 @@ endif
 
 " Subsection: settings {{{
 
-set enc=utf-8
+set encoding=utf-8
 filetype plugin indent on
 set nocompatible
 syntax on
@@ -120,6 +120,10 @@ if !s:has_bkp_dir
     call mkdir(s:bkp_dir)
 endif
 let &backupdir=s:bkp_dir."/"
+
+" See backup in editing.txt
+" So that watchprocesses work as expected
+set backupcopy=yes
 
 " setting undodir
 
