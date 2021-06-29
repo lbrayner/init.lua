@@ -1,6 +1,10 @@
 " what: ftplugin/vidir.vim
 "  who: by Raimondi
 " when: 2018-12-30
+" Last changed: 2021-6-29
+" Last changed by: lbrayner
+
+" TODO Revert functions to their old script local names
 
 " Only do this when not done yet for this buffer
 if exists("b:did_ftplugin")
@@ -18,8 +22,8 @@ set cpo&vim
 let b:undo_ftplugin = "setl ofu< | augroup vidir_ls | exec 'au! CursorMoved,CursorMovedI <buffer>'|augroup END"
 
 " do not allow the cursor to move back into the line numbers
-function! s:on_cursor_moved()
-  let fname_pos = match(getline('.'), '^ *\d\+ \zs\S') + 1
+function! VidirOnCursorMoved()
+  let fname_pos = match(getline('.'), '^ *\d\+	\zs\S') + 1
   let cur_pos = col('.')
   if fname_pos < 1 || cur_pos >= fname_pos
     " nothing to do
@@ -30,9 +34,11 @@ function! s:on_cursor_moved()
 endfunction
 
 " do not allow non-numeric changes to the file index column
-function! s:on_text_changed()
+function! VidirOnTextChanged()
+  let s:updatetime = &updatetime
+  set updatetime=1
   let broken_lines = []
-  silent vglobal/^ *\d\+ / call add(broken_lines, line('.'))
+  silent vglobal/^ *\d\+	/ call add(broken_lines, line('.'))
   if empty(broken_lines)
     " nothing to do
     return
@@ -96,10 +102,17 @@ function! s:on_text_changed()
   call setline(1, lines[1:])
 endfunction
 
+function! VidirRestoreUpdatetime()
+  if exists("s:updatetime")
+    let &updatetime=s:updatetime
+  endif
+endfunction
+
 augroup vidir_ls
   autocmd!
-  autocmd CursorMoved,CursorMovedI <buffer> call s:on_cursor_moved()
-  autocmd TextChanged,TextChangedI <buffer> call s:on_text_changed()
+  autocmd CursorMoved,CursorMovedI <buffer> call VidirOnCursorMoved()
+  autocmd TextChanged,TextChangedI <buffer> call VidirOnTextChanged()
+  autocmd CursorHold * call VidirRestoreUpdatetime()
 augroup END
 
 "reset &cpo back to users setting
