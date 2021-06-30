@@ -35,7 +35,6 @@ function! VisualModeEnter()
 endfunction
 
 function! VisualModeLeave()
-    set updatetime=4000
     call statusline#HighlightMode('normal')
 endfunction
 

@@ -277,7 +277,6 @@ function! s:NoIncSearchEnd()
     if !exists("s:incsearch")
         return
     endif
-    set updatetime=4000
     let &incsearch = s:incsearch
 endfunction
 
@@ -570,6 +569,12 @@ if executable('svn')
 endif
 
 " Subsection: autocommands {{{
+
+" Restores 'updatetime' to the default value
+augroup Updatetime
+    autocmd!
+    autocmd CursorHold * set updatetime=4000
+augroup END
 
 " Command-line Window
 
