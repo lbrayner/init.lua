@@ -35,7 +35,7 @@ endfunction
 
 " do not allow non-numeric changes to the file index column
 function! VidirOnTextChanged()
-  let s:updatetime = &updatetime
+  " plugin/statusline.vim takes care of 'updatetime'
   set updatetime=1
   let broken_lines = []
   silent vglobal/^ *\d\+	/ call add(broken_lines, line('.'))
@@ -102,17 +102,10 @@ function! VidirOnTextChanged()
   call setline(1, lines[1:])
 endfunction
 
-function! VidirRestoreUpdatetime()
-  if exists("s:updatetime")
-    let &updatetime=s:updatetime
-  endif
-endfunction
-
 augroup vidir_ls
   autocmd!
   autocmd CursorMoved,CursorMovedI <buffer> call VidirOnCursorMoved()
   autocmd TextChanged,TextChangedI <buffer> call VidirOnTextChanged()
-  autocmd CursorHold * call VidirRestoreUpdatetime()
 augroup END
 
 "reset &cpo back to users setting
