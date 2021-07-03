@@ -669,11 +669,12 @@ augroup END
 
 " norelativenumber in non focused windows
 augroup RelativeNumberAutoGroup
-    autocmd VimEnter * autocmd NoRelativeNumberAutoGroup
+    autocmd!
+    autocmd VimEnter * autocmd RelativeNumberAutoGroup
                 \ BufLeave * if &number |
                 \     set norelativenumber |
                 \ endif
-    autocmd VimEnter * autocmd NoRelativeNumberAutoGroup
+    autocmd VimEnter * autocmd RelativeNumberAutoGroup
                 \ WinEnter * set relativenumber
 augroup END
 
