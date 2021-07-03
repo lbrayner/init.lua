@@ -667,10 +667,14 @@ augroup LargeXmlAutoGroup
                 \| setlocal syntax=unknown | endif | endif
 augroup END
 
-" norelativenumber in insert mode
+" norelativenumber in non focused windows
 augroup RelativeNumberAutoGroup
-    autocmd InsertEnter * if &number | :set norelativenumber | endif
-    autocmd InsertLeave * if &number | :set relativenumber | endif
+    autocmd VimEnter * autocmd NoRelativeNumberAutoGroup
+                \ BufLeave * if &number |
+                \     set norelativenumber |
+                \ endif
+    autocmd VimEnter * autocmd NoRelativeNumberAutoGroup
+                \ WinEnter * set relativenumber
 augroup END
 
 " text format options
