@@ -675,7 +675,7 @@ augroup RelativeNumberAutoGroup
                 \     set norelativenumber |
                 \ endif
     autocmd VimEnter * autocmd RelativeNumberAutoGroup
-                \ WinEnter * set relativenumber
+                \ BufWinEnter,WinEnter * set relativenumber
 augroup END
 
 " text format options
