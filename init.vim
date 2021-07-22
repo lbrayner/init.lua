@@ -435,7 +435,7 @@ function! Name()
 endfunction
 
 if has("clipboard")
-    function! s:Clip(...)
+    function! Clip(...)
         if a:0 > 0
             let text = a:1
             if type(a:1) != type("")
@@ -452,7 +452,7 @@ if has("clipboard")
     endfunction
 
     " Copies arg to the system's clipboard
-    command! -nargs=? Clip call s:Clip(<f-args>)
+    command! -nargs=? Clip call Clip(<f-args>)
 
     nnoremap <leader>c :Clip<cr>
     vnoremap <leader>c y:Clip<cr>
@@ -460,9 +460,9 @@ if has("clipboard")
     nnoremap <leader>p "+p
     vnoremap <leader>p "+p
 
-    command! Path call s:Clip(Path())
-    command! FullPath call s:Clip(FullPath())
-    command! Name call s:Clip(Name())
+    command! Path call Clip(Path())
+    command! FullPath call Clip(FullPath())
+    command! Name call Clip(Name())
 else
     command! Path :let @"=Path()
     command! FullPath :let @"=FullPath()
