@@ -35,7 +35,7 @@ endfunction
 
 " do not allow non-numeric changes to the file index column
 function! VidirOnTextChanged()
-  " #Updatetime is reponsible for restoring 'updatetime'
+  " Autocommand group Updatetime is reponsible for restoring 'updatetime'
   set updatetime=1
   let broken_lines = []
   silent vglobal/^ *\d\+	/ call add(broken_lines, line('.'))
