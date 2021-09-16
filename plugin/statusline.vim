@@ -61,13 +61,8 @@ function! CmdlineModeEnter()
     augroup END
 endfunction
 
-if has("nvim")
-    nmap <silent> <Plug>(Cmd) <Plug>(NCmd)
-    vmap <silent> <Plug>(Cmd) <Plug>(VCmd)
-else
-    nmap <Plug>(Cmd) <Plug>(NCmd)
-    vmap <Plug>(Cmd) <Plug>(VCmd)
-endif
+nmap <Plug>(Cmd) <Plug>(NCmd)
+vmap <Plug>(Cmd) <Plug>(VCmd)
 
 nnoremap <Plug>(NCmd) :call CmdlineModeEnter()<cr>:
 vnoremap <Plug>(VCmd) :<c-u>call CmdlineModeEnter() <bar> normal! gv<cr>:
