@@ -45,16 +45,13 @@ nnoremap <silent> <script> V V<SID>VisualModeEnter
 nnoremap <silent> <script> <C-v> <C-v><SID>VisualModeEnter
 
 function! CmdlineModeLeave()
-    call statusline#HighlightPreviousMode()
     autocmd! CmdlineModeHighlight CmdlineLeave
-    if exists("s:lazyredraw")
-        let &lazyredraw = s:lazyredraw
+    if g:statusline#previousMode != 'visual'
+        call statusline#HighlightPreviousMode()
     endif
 endfunction
 
 function! CmdlineModeEnter()
-    let s:lazyredraw = &lazyredraw
-    set nolazyredraw
     call statusline#HighlightMode('command')
     augroup CmdlineModeHighlight
         autocmd CmdlineLeave * call CmdlineModeLeave()
@@ -64,8 +61,8 @@ endfunction
 nmap <Plug>(Cmd) <Plug>(NCmd)
 vmap <Plug>(Cmd) <Plug>(VCmd)
 
-nnoremap <Plug>(NCmd) :call CmdlineModeEnter()<cr>:
-vnoremap <Plug>(VCmd) :<c-u>call CmdlineModeEnter() <bar> normal! gv<cr>:
+nnoremap <Plug>(NCmd) <Cmd>call CmdlineModeEnter() <bar> redrawstatus<CR>:
+vnoremap <Plug>(VCmd) <Cmd>call CmdlineModeEnter() <bar> redrawstatus <bar> normal! gv<CR>:
 
 " Autocommands
 
