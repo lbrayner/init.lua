@@ -555,7 +555,6 @@ command! -nargs=0 OverlengthToggle call s:OverlengthToggle()
 function! s:SearchLastVisualSelectionNoMagic()
     normal! gvy
     let pattern = escape(@",'\/')
-    exe "normal! /\\V" . pattern
     let @/="\\V" . pattern
 endfunction
 
