@@ -58,12 +58,7 @@ function! CmdlineModeEnter()
     augroup END
 endfunction
 
-nmap <Plug>(Cmd) <Plug>(NCmd)
-vmap <Plug>(Cmd) <Plug>(VCmd)
-
-nnoremap <Plug>(NCmd) <Cmd>call CmdlineModeEnter() <bar> redrawstatus<CR>:
-" The colon (before normal!) is necessary so that the last visual selection is not lost
-vnoremap <Plug>(VCmd) <Cmd>call CmdlineModeEnter() <bar> redrawstatus<CR>:normal! gv<CR>:
+noremap <Plug>(Cmd) <Cmd>call CmdlineModeEnter() <bar> redrawstatus<CR>:
 
 " Autocommands
 
