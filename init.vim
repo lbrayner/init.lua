@@ -669,11 +669,11 @@ augroup END
 augroup RelativeNumberAutoGroup
     autocmd!
     autocmd VimEnter * autocmd RelativeNumberAutoGroup
-                \ BufLeave * if &number |
+                \ WinLeave * if &number |
                 \     set norelativenumber |
                 \ endif
     autocmd VimEnter * autocmd RelativeNumberAutoGroup
-                \ BufWinEnter,WinEnter * set relativenumber
+                \ WinEnter * set relativenumber
 augroup END
 
 " text format options
