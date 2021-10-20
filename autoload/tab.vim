@@ -57,6 +57,7 @@ function! tab#GoToTab()
     sign unplace *
     noautocmd call tab#TabDo("call s:PrintTabs(s:a_tab_nr)")
     let tab = input("Go to tab (" . tabpagenr() . "): ")
+    let tab = substitute(tab,"[^0-9]","","g")
     if tab == ""
         return
     endif
