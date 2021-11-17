@@ -70,9 +70,6 @@
 [submodule "pack/bundle/start/vissort"]
 	path = pack/bundle/start/vissort
 	url = https://github.com/yaroot/vissort.git
-[submodule "pack/bundle/start/ferret"]
-	path = pack/bundle/start/ferret
-	url = https://github.com/wincent/ferret
 [submodule "pack/bundle/start/scalpel"]
 	path = pack/bundle/start/scalpel
 	url = https://github.com/wincent/scalpel
