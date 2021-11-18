@@ -719,6 +719,12 @@ augroup VimEnterAutoGroup
     autocmd VimEnter * let g:vim_did_enter = 1
 augroup END
 
+augroup SessionLoadPostAutoGroup
+    autocmd!
+    " Wiping empty buffers created by restoring sessions
+    autocmd SessionLoadPost * silent BWipeNotReadable
+augroup END
+
 " }}}
 
 " sourcing init.local.vim if it exists
