@@ -893,12 +893,6 @@ map T <Plug>Sneak_T
 map <Space>f <Plug>Sneak_s
 map <Space>F <Plug>Sneak_S
 
-" ferret
-
-let g:FerretMap = 0
-
-nmap <Leader>a <Plug>(Cmd)Ack<space>
-
 " scalpel
 
 execute 'nmap <Leader>x <Plug>(Cmd)' .
