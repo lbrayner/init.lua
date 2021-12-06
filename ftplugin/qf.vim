@@ -1,8 +1,7 @@
-if &ft == 'qf'
-    let b:Statusline_custom_leftline = '%<'
-            \ . '%f'
-    setlocal nospell
-endif
+let b:Statusline_custom_leftline = '%<'
+        \ . '%f'
+setlocal nospell
+setlocal nowrap
 
 if util#isLocationList()
     nnoremap <buffer> <silent> <F3> <c-w>p:lprevious<cr>zz:lopen<cr>
