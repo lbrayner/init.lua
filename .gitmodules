@@ -127,6 +127,3 @@
 [submodule "pack/bundle/start/vim-ripgrep"]
 	path = pack/bundle/start/vim-ripgrep
 	url = https://github.com/jremmen/vim-ripgrep
-[submodule "pack/bundle/start/undoquit.vim"]
-	path = pack/bundle/start/undoquit.vim
-	url = https://github.com/AndrewRadev/undoquit.vim
