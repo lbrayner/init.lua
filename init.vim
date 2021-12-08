@@ -248,9 +248,6 @@ nnoremap <leader><F6> :w!<CR>
 nnoremap <silent> <F12>  :setlocal list!<CR>
 vnoremap . :normal .
 
-nnoremap <silent> <F9> :q<cr>
-nnoremap <silent> <leader><F9> :tabc<cr>
-
 " previous buffer
 nnoremap <silent> <space>b :b#<CR>
 
@@ -370,7 +367,7 @@ endfunction
 
 command! LCloseAllWindows call s:LCloseAllWindows()
 
-nnoremap <F1> :pclose <bar> cclose <bar> LCloseAllWindows<cr>
+nnoremap <F9> :pclose <bar> cclose <bar> LCloseAllWindows<cr>
 
 function! s:NavigateXmlNthParent(n)
     let n_command = "v" . (a:n+1) . "at"
