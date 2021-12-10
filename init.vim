@@ -357,7 +357,7 @@ endfunction
 nnoremap <leader>do :diffoff!<cr>
 nnoremap <leader>di :call <SID>ToggleIWhite()<cr>
 
-" Close the Preview, Quickfix and Local List windows
+" Close all local list windows
 
 function! s:LCloseAllWindows()
     let current_window=winnr()
@@ -367,7 +367,28 @@ endfunction
 
 command! LCloseAllWindows call s:LCloseAllWindows()
 
-nnoremap <F9> :pclose <bar> cclose <bar> LCloseAllWindows<cr>
+" Unclutter, i.e. close certain special windows
+
+function! s:Unclutter()
+    " Quit if there's only one buffer and this is the last window
+    if len(filter(range(1,bufnr('$')),'buflisted(v:val)')) == 1 && winnr('$') == 1
+        quit
+    endif
+    pclose " Close preview window
+    cclose " Close quickfix window
+    LCloseAllWindows
+    BWipe Result-
+    BWipeFileType help " TODO isn't a wipe too forceful?
+endfunction
+
+command! Unclutter silent call s:Unclutter()
+
+nnoremap <F9> :Unclutter<cr>
+
+augroup CmdwinClose
+    autocmd!
+    autocmd CmdwinEnter * nnoremap <buffer> <F9> :q<cr>
+augroup END
 
 function! s:NavigateXmlNthParent(n)
     let n_command = "v" . (a:n+1) . "at"
