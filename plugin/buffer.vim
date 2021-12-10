@@ -74,8 +74,8 @@ command! LCloseAllWindows call s:LCloseAllWindows()
 " Unclutter, i.e. close certain special windows
 
 function! s:Unclutter()
-    " Quit if there's only one tab and this is the last window
-    if tabpagenr('$') == 1 && winnr('$') == 1
+    " Quit if there's at most one file and this is the last window
+    if len(filter(range(1,bufnr('$')),'buflisted(v:val)')) <= 1 && winnr('$') == 1
         quit
     endif
     pclose " Close preview window
