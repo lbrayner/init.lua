@@ -60,3 +60,32 @@ function! s:SaveAs(name,bang)
 endfunction
 
 command! -nargs=1 -bang -complete=file SaveAs call s:SaveAs(<f-args>,<bang>0)
+
+" Close all local list windows
+
+function! s:LCloseAllWindows()
+    let current_window=winnr()
+    noautocmd windo lclose
+    exe current_window . "wincmd w"
+endfunction
+
+command! LCloseAllWindows call s:LCloseAllWindows()
+
+" Unclutter, i.e. close certain special windows
+
+function! s:Unclutter()
+    " Quit if there's only one tab and this is the last window
+    if tabpagenr('$') == 1 && winnr('$') == 1
+        quit
+    endif
+    pclose " Close preview window
+    cclose " Close quickfix window
+    LCloseAllWindows
+    " TODO Should be confined to the tab
+    BWipe Result-
+    " TODO Should be confined to the tab
+    " TODO isn't a wipe too forceful?
+    BWipeFileType help
+endfunction
+
+command! Unclutter silent call s:Unclutter()

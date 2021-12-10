@@ -357,32 +357,7 @@ endfunction
 nnoremap <leader>do :diffoff!<cr>
 nnoremap <leader>di :call <SID>ToggleIWhite()<cr>
 
-" Close all local list windows
-
-function! s:LCloseAllWindows()
-    let current_window=winnr()
-    noautocmd windo lclose
-    exe current_window . "wincmd w"
-endfunction
-
-command! LCloseAllWindows call s:LCloseAllWindows()
-
 " Unclutter, i.e. close certain special windows
-
-function! s:Unclutter()
-    " Quit if there's only one tab and this is the last window
-    if tabpagenr('$') == 1 && winnr('$') == 1
-        quit
-    endif
-    pclose " Close preview window
-    cclose " Close quickfix window
-    LCloseAllWindows
-    BWipe Result-
-    " TODO isn't a wipe too forceful?
-    BWipeFileType help
-endfunction
-
-command! Unclutter silent call s:Unclutter()
 
 nnoremap <F9> :Unclutter<cr>
 
@@ -390,6 +365,8 @@ augroup CmdwinClose
     autocmd!
     autocmd CmdwinEnter * nnoremap <buffer> <F9> :q<cr>
 augroup END
+
+" XML
 
 function! s:NavigateXmlNthParent(n)
     let n_command = "v" . (a:n+1) . "at"
