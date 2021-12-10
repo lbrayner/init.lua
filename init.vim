@@ -378,7 +378,8 @@ function! s:Unclutter()
     cclose " Close quickfix window
     LCloseAllWindows
     BWipe Result-
-    BWipeFileType help " TODO isn't a wipe too forceful?
+    " TODO isn't a wipe too forceful?
+    BWipeFileType help
 endfunction
 
 command! Unclutter silent call s:Unclutter()
