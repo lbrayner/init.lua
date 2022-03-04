@@ -64,6 +64,11 @@ command! -nargs=1 -bang -complete=file SaveAs call s:SaveAs(<f-args>,<bang>0)
 " Close all local list windows
 
 function! s:LCloseAllWindows()
+    if util#isLocationList()
+        " Autocommands are triggered normally
+        windo lclose
+        return
+    endif
     let current_window=winnr()
     noautocmd windo lclose
     exe current_window . "wincmd w"
@@ -75,6 +80,7 @@ command! LCloseAllWindows call s:LCloseAllWindows()
 
 function! s:Unclutter()
     " Quit if there's at most one file and this is the last window
+    " TODO this is not lazy, quite expensive and O(n)
     if len(filter(range(1,bufnr('$')),'buflisted(v:val)')) <= 1 && winnr('$') == 1
         quit
     endif
