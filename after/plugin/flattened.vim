@@ -1,4 +1,4 @@
-function! s:Flattened()
+function! s:SetupFlattened()
     set cursorline
     if exists("g:vim_did_enter")
         call statusline#initialize()
@@ -8,15 +8,11 @@ function! s:Flattened()
                 \. " guibg=" . statusline#themes#getColor("x236_Grey19","gui")
 endfunction
 
-function! s:FlattenedColorScheme(colorscheme)
-    if a:colorscheme =~# '^flattened_'
-        call s:Flattened()
-    endif
-endfunction
+command! -nargs=0 SetupFlattened call s:SetupFlattened()
 
 augroup FlattenedColorScheme
     autocmd!
-    autocmd ColorScheme * call s:FlattenedColorScheme(expand("<amatch>"))
+    autocmd ColorScheme flattened_* call s:SetupFlattened()
 augroup END
 
 let s:enable = 1
