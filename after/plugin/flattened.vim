@@ -1,8 +1,5 @@
 function! s:SetupFlattened()
     set cursorline
-    if exists("g:vim_did_enter")
-        call statusline#initialize()
-    endif
     execute "highlight ColorColumn ctermbg="
                 \. statusline#themes#getColor("x236_Grey19","cterm")
                 \. " guibg=" . statusline#themes#getColor("x236_Grey19","gui")
