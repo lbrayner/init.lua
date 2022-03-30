@@ -835,6 +835,11 @@ let g:ctrlp_prompt_mappings = {
 
 " fzf.vim
 
+" Linux
+if isdirectory("/usr/share/doc/fzf/examples")
+    set rtp+=/usr/share/doc/fzf/examples
+endif
+
 let g:fzf_buffers_jump = 1
 let g:fzf_history_dir = $HOME . '/.cache/fzf_cache'
 command! -bar -bang -nargs=? -complete=buffer Buffers
