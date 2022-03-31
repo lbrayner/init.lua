@@ -836,7 +836,9 @@ let g:ctrlp_prompt_mappings = {
 " fzf.vim
 
 " Linux
-if isdirectory("/usr/share/doc/fzf/examples")
+if isdirectory($HOME . "/.fzf")
+    set rtp+=~/.fzf
+elseif isdirectory("/usr/share/doc/fzf/examples")
     set rtp+=/usr/share/doc/fzf/examples
 endif
 
