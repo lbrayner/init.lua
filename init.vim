@@ -853,7 +853,7 @@ if has("unix") && !has("win32unix") && executable("fzf")
 
     function! s:fzf_error_message()
         echomsg "FZF is not defined. " .
-                    \ "Please add the fzf.vim package to the runtimepath."
+                    \ "Please add the fzf package to the runtimepath (fzf ≠ fzf.vim)."
     endfunction
 
     function! s:Buffers()
