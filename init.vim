@@ -847,12 +847,18 @@ if has("unix") && !has("win32unix") && executable("fzf")
 
     let g:fzf_buffers_jump = 1
 
+    " eclim might shadow this command
     command! -bar -bang -nargs=? -complete=buffer Buffers call fzf#vim#buffers(<q-args>,
-                \ fzf#vim#with_preview({ "placeholder": "{1}" }), <bang>0) " eclim shadows this command
+                \ fzf#vim#with_preview({ "placeholder": "{1}" }), <bang>0)
+
+    function! s:fzf_error_message()
+        echomsg "FZF is not defined. " .
+                    \ "Please add the fzf.vim package to the runtimepath."
+    endfunction
 
     function! s:Buffers()
         if !exists(":FZF")
-            echomsg "FZF is not defined. Please add the FZF Vim package to the runtimepath."
+            call s:fzf_error_message()
             return
         endif
         Buffers
@@ -862,7 +868,7 @@ if has("unix") && !has("win32unix") && executable("fzf")
 
     function! s:FZF()
         if !exists(":FZF")
-            echomsg "FZF is not defined. Please add the FZF Vim package to the runtimepath."
+            call s:fzf_error_message()
             return
         endif
         FZF
@@ -870,8 +876,7 @@ if has("unix") && !has("win32unix") && executable("fzf")
 
     nnoremap <silent> <F7> :call <SID>FZF()<cr>
 
-    " else the F7 mapping is going to be overridden
-    unlet g:ctrlp_map
+    unlet g:ctrlp_map " else the F7 mapping is going to be overridden by Ctrlp
 
     if executable("dfzf")
         function! s:dfzf_clear_cache()
