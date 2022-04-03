@@ -902,10 +902,6 @@ execute 'nmap <Leader>x <Plug>(Cmd)' .
       \ 'Scalpel' .
       \ "/\\v<<C-R>=expand('<cword>')<CR>>//<Left>"
 
-" ragtag
-
-let g:ragtag_global_maps = 1
-
 " supertab
 
 let g:SuperTabCtrlXCtrlPCtrlNSearchPlaces = 1
