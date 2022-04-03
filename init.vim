@@ -787,7 +787,10 @@ endif
 
 " Finish here if we haven't initialized the submodules
 
+let g:initialized_packages = 1
+
 if glob(g:vim_dir.'/pack/bundle/start/*/plugin') == ""
+    let g:initialized_packages = 0
     finish
 endif
 

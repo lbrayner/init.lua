@@ -1,3 +1,7 @@
+if !exists("g:initialized_packages") || !g:initialized_packages
+    finish
+endif
+
 function! s:SetupFlattened()
     set cursorline
     execute "highlight ColorColumn ctermbg="
