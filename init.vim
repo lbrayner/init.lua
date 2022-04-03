@@ -838,41 +838,49 @@ let g:ctrlp_prompt_mappings = {
 
 " fzf.vim
 
-" Linux
-if isdirectory($HOME . "/.fzf")
-    set rtp+=~/.fzf
-elseif isdirectory("/usr/share/doc/fzf/examples")
-    set rtp+=/usr/share/doc/fzf/examples
-endif
-
-let g:fzf_buffers_jump = 1
-let g:fzf_history_dir = $HOME . '/.cache/fzf_cache'
-command! -bar -bang -nargs=? -complete=buffer Buffers
-            \ call fzf#vim#buffers(<q-args>, <bang>0) " eclim shadows this command
-
-function! s:FZF()
-    if !exists(":FZF")
-        echomsg "FZF is not defined. Please add the FZF Vim package to the runtimepath."
-        return 0
-    endif
-    FZF
-    return 1
-endfunction
-
 if has("unix") && !has("win32unix") && executable("fzf")
-    nnoremap <F5> :Buffers<cr>
+    if isdirectory($HOME . "/.fzf")
+        set rtp+=~/.fzf
+    elseif isdirectory("/usr/share/doc/fzf/examples") " Linux
+        set rtp+=/usr/share/doc/fzf/examples
+    endif
+
+    let g:fzf_buffers_jump = 1
+
+    command! -bar -bang -nargs=? -complete=buffer Buffers call fzf#vim#buffers(<q-args>,
+                \ fzf#vim#with_preview({ "placeholder": "{1}" }), <bang>0) " eclim shadows this command
+
+    function! s:Buffers()
+        if !exists(":FZF")
+            echomsg "FZF is not defined. Please add the FZF Vim package to the runtimepath."
+            return
+        endif
+        Buffers
+    endfunction
+
+    nnoremap <silent> <F5> :call <SID>Buffers()<cr>
+
+    function! s:FZF()
+        if !exists(":FZF")
+            echomsg "FZF is not defined. Please add the FZF Vim package to the runtimepath."
+            return
+        endif
+        FZF
+    endfunction
+
     nnoremap <silent> <F7> :call <SID>FZF()<cr>
+
     " else the F7 mapping is going to be overridden
     unlet g:ctrlp_map
 
-    function! s:dfzf_clear_cache()
-        let fzf_command=$FZF_DEFAULT_COMMAND
-        let $FZF_DEFAULT_COMMAND="dfzf -C"
-        call s:FZF()
-        let $FZF_DEFAULT_COMMAND=fzf_command
-    endfunction
-
     if executable("dfzf")
+        function! s:dfzf_clear_cache()
+            let fzf_command=$FZF_DEFAULT_COMMAND
+            let $FZF_DEFAULT_COMMAND="dfzf -C"
+            call s:FZF()
+            let $FZF_DEFAULT_COMMAND=fzf_command
+        endfunction
+
         let $FZF_DEFAULT_COMMAND="dfzf"
         nnoremap <silent> <leader><f7> :call <SID>dfzf_clear_cache()<cr>
         if executable("ddfzf")
