@@ -429,6 +429,10 @@ function! Name()
     return expand("%:t")
 endfunction
 
+function! Cwd()
+    return fnamemodify(getcwd(),":~")
+endfunction
+
 if has("clipboard")
     function! Clip(...)
         if a:0 > 0
@@ -458,10 +462,12 @@ if has("clipboard")
     command! Path call Clip(Path())
     command! FullPath call Clip(FullPath())
     command! Name call Clip(Name())
+    command! Cwd call Clip(Cwd())
 else
     command! Path :let @"=Path()
     command! FullPath :let @"=FullPath()
     command! Name :let @"=Name()
+    command! Cwd :let @"=Cwd()
 endif
 
 command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
@@ -980,7 +986,8 @@ augroup FugitiveCustomAutocommands
     autocmd BufEnter fugitive://*//* setlocal nomodifiable
 augroup END
 
-command! -nargs=* Gdi call fugitive#Diffsplit(1, 1, "<mods>", "", [<f-args>])
+command! -bar -bang -nargs=* -complete=customlist,fugitive#EditComplete Gdiffsplit
+            \ exe fugitive#Diffsplit(1, <bang>0, "<mods>", <q-args>, [<f-args>])
 
 " Tagbar
 
