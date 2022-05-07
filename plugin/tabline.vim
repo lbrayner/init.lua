@@ -37,5 +37,9 @@ augroup Tabline
     autocmd!
     autocmd VimEnter * autocmd Tabline
                 \ BufWritePost,BufEnter,WinEnter,DirChanged * call RedefineTabline()
+    if has("nvim")
+        autocmd VimEnter * autocmd Tabline
+                    \ TermOpen * call RedefineTabline()
+    endif
     autocmd VimEnter * call RedefineTabline()
 augroup END

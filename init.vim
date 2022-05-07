@@ -727,6 +727,15 @@ augroup SessionLoadPostAutoGroup
     autocmd SessionLoadPost * silent BWipeNotReadable
 augroup END
 
+if has("nvim")
+    augroup TermOpenAutoGroup
+        autocmd!
+        " To enter Terminal-mode automatically:
+        autocmd VimEnter * autocmd TermOpenAutoGroup
+                    \ TermOpen * startinsert
+    augroup END
+endif
+
 " }}}
 
 " sourcing init.local.vim if it exists

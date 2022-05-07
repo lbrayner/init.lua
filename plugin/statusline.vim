@@ -68,6 +68,12 @@ augroup Statusline
     autocmd InsertLeave * call statusline#HighlightMode('normal')
     autocmd CmdlineEnter /,\? call statusline#HighlightMode('search') | redrawstatus
     autocmd CmdlineLeave /,\? call statusline#HighlightPreviousMode()
+    if has("nvim")
+        autocmd TermEnter * call statusline#HighlightMode('terminal')
+        autocmd TermEnter * call statusline#DefineTerminalStatusLine()
+        autocmd TermLeave * call statusline#HighlightMode('normal')
+        autocmd TermLeave * call statusline#RedefineStatusLine()
+    endif
     autocmd CmdwinEnter,CmdwinLeave * call statusline#HighlightMode('normal')
     autocmd CursorHold * call VisualModeLeave()
     autocmd User CustomStatusline call statusline#RedefineStatusLine()

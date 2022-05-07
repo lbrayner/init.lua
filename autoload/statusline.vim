@@ -107,6 +107,11 @@ function! statusline#DefineStatusLineNoFocus()
     endif
 endfunction
 
+function! statusline#DefineTerminalStatusLine()
+    let &l:statusline=' %= '
+    setlocal fillchars=stl:-
+endfunction
+
 " b:Statusline_custom_leftline and b:Statusline_custom_rightline are
 " joined with %=
 
@@ -192,6 +197,7 @@ function! statusline#HighlightMode(mode)
 endfunction
 
 function! statusline#RedefineStatusLine()
+    set fillchars<
     if &modified
         call statusline#DefineModifiedStatusLine()
     else
