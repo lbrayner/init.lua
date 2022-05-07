@@ -9,7 +9,9 @@ function! s:MessageBuffers(buffer_count)
 endfunction
 
 function! s:WipeBuffers(predicate)
-    let buffer_count = s:LoopBuffers(a:predicate,'bwipe')
+    let buffer_count = s:LoopBuffers(a:predicate.
+                \" && getbufvar(n,'&buftype') !=# 'terminal'",
+                \'bwipe')
     call s:MessageBuffers(buffer_count)
 endfunction
 
