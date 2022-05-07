@@ -73,6 +73,7 @@ augroup Statusline
         autocmd TermEnter * call statusline#DefineTerminalStatusLine()
         autocmd TermLeave * call statusline#HighlightMode('normal')
         autocmd TermLeave * call statusline#RedefineStatusLine()
+        autocmd TermLeave * set fillchars<
     endif
     autocmd CmdwinEnter,CmdwinLeave * call statusline#HighlightMode('normal')
     autocmd CursorHold * call VisualModeLeave()

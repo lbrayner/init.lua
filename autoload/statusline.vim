@@ -197,7 +197,6 @@ function! statusline#HighlightMode(mode)
 endfunction
 
 function! statusline#RedefineStatusLine()
-    set fillchars<
     if &modified
         call statusline#DefineModifiedStatusLine()
     else
