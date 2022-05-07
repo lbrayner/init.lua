@@ -19,27 +19,26 @@ function! RedefineTabline()
     " Similar to Java's String.startsWith
     let isabsolute=len(expand("%")) <= 0 ? 0
                 \: stridx(expand("%:p"),fnamemodify(getcwd(),":p:gs?\\?/?")) != 0
+    let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '.session
+                \ .'%#NonText#'.cwd
+    if &buftype ==# 'terminal'
+        return
+    endif
     if isabsolute
         let absolute_path=util#truncateFilename(fnamemodify(expand("%"),":p:~"),max_length)
-        let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '.session
-            \ .'%#NonText#'.cwd.'%=%#WarningMsg# '.absolute_path.' '
+        let &tabline=&tabline.'%=%#WarningMsg# '.absolute_path.' '
         return
     endif
     " At least one column separating left and right and a 1 column margin
     let relative_dir=util#truncateFilename(substitute(
                 \fnamemodify(expand("%:h"),":~"),'\V'.cwd.'/\?',"",""),max_length)
     let relative_dir = relative_dir == "." ? "" : relative_dir
-    let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '.session
-        \ .'%#NonText#'.cwd.'%#Directory# '.relative_dir.' '
+    let &tabline=&tabline.'%#Directory# '.relative_dir.' '
 endfunction
 
 augroup Tabline
     autocmd!
     autocmd VimEnter * autocmd Tabline
                 \ BufWritePost,BufEnter,WinEnter,DirChanged * call RedefineTabline()
-    if has("nvim")
-        autocmd VimEnter * autocmd Tabline
-                    \ TermOpen * call RedefineTabline()
-    endif
     autocmd VimEnter * call RedefineTabline()
 augroup END
