@@ -489,14 +489,14 @@ command! -nargs=1 FileSearch call quickfix#ilist_search(0,<f-args>,1,1)
 
 function! s:NumberToggle()
     if !&number
-        setlocal relativenumber number
+        set relativenumber number
         return
     endif
     if !&relativenumber
-        setlocal norelativenumber nonumber
+        set norelativenumber nonumber
         return
     endif
-    setlocal norelativenumber number
+    set norelativenumber number
 endfunction
 
 command! -nargs=0 NumberToggle call s:NumberToggle()
@@ -618,7 +618,7 @@ augroup END
 
 augroup HelpAutoGroup
     autocmd!
-    autocmd FileType help,eclimhelp autocmd BufEnter <buffer> setlocal relativenumber
+    autocmd FileType help,eclimhelp autocmd BufEnter <buffer> set relativenumber
 augroup END
 
 " comment string
@@ -733,6 +733,8 @@ if has("nvim")
         " To enter Terminal-mode automatically:
         autocmd VimEnter * autocmd TermOpenAutoGroup
                     \ TermOpen * startinsert
+        autocmd TermEnter * set nonumber norelativenumber foldcolumn=4
+        autocmd TermLeave * set nonumber relativenumber foldcolumn=0
     augroup END
 endif
 
