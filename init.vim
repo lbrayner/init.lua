@@ -728,10 +728,10 @@ augroup SessionLoadPostAutoGroup
 augroup END
 
 if has("nvim")
-    augroup TermOpenAutoGroup
+    augroup TermAutoGroup
         autocmd!
         " To enter Terminal-mode automatically:
-        autocmd VimEnter * autocmd TermOpenAutoGroup
+        autocmd VimEnter * autocmd TermAutoGroup
                     \ TermOpen * startinsert
         autocmd TermEnter * set nonumber norelativenumber foldcolumn=4
         autocmd TermLeave * set nonumber relativenumber foldcolumn=0
@@ -905,8 +905,8 @@ if has("unix") && !has("win32unix") && executable("fzf")
 
         let $FZF_DEFAULT_COMMAND="dfzf"
         nnoremap <silent> <leader><f7> :call <SID>dfzf_clear_cache()<cr>
-        if executable("ddfzf")
-            let $DFZF_DEFAULT_COMMAND='ddfzf'
+        if !executable("ag") && executable("ddfzf")
+            let $DFZF_DEFAULT_COMMAND="ddfzf"
         endif
     endif
 endif
