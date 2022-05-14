@@ -733,8 +733,7 @@ if has("nvim")
         " To enter Terminal-mode automatically:
         autocmd VimEnter * autocmd TermAutoGroup
                     \ TermOpen * startinsert
-        autocmd TermEnter * set nonumber norelativenumber foldcolumn=4
-        autocmd TermLeave * set nonumber relativenumber foldcolumn=0
+        autocmd TermEnter * set nonumber
     augroup END
 endif
 
