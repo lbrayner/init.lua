@@ -13,8 +13,8 @@ function! quickfix#ilist_search(start_at_cursor,search_pattern,loclist,open)
         return
     endif
 
-    " we retrieve the filename
-    let [filename, line_info] = [lines[0], lines[1:-1]]
+    let filename = expand("%")
+    let line_info = lines[1:-1]
 
     " we turn the :ilist output into a quickfix dictionary
     let qf_entries = map(line_info, "{
