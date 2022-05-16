@@ -38,7 +38,6 @@ if $TERM == "st-256color"
     set termguicolors
 endif
 
-set ttimeoutlen=0
 set laststatus=2
 set listchars=eol:¬,tab:»\ ,trail:·
 set splitbelow
