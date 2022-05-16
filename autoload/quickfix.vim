@@ -1,9 +1,16 @@
 " Adapted from
 " https://www.reddit.com/r/vim/comments/1rzvsm/do_any_of_you_redirect_results_of_i_to_the/
 function! quickfix#ilist_search(start_at_cursor,search_pattern,loclist,open)
+    let include = &l:include
+    setlocal include=
     redir => output
         silent! execute (a:start_at_cursor ? '+,$' : '') . 'ilist! /' . a:search_pattern
     redir END
+    if include == ""
+        set include<
+    else
+        let &l:include = include
+    endif
 
     let lines = split(output, '\n')
 
