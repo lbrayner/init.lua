@@ -44,7 +44,7 @@ set splitbelow
 set splitright
 set number
 set relativenumber
-set wildmode=longest,list
+set wildmode=longest:full
 set wildmenu
 if has("linebreak")
     set breakindent
@@ -76,7 +76,6 @@ set ignorecase
 set smartcase
 set noruler
 set lazyredraw
-set nomore
 set title
 set noshowmode
 
@@ -730,8 +729,7 @@ if has("nvim")
     augroup TermAutoGroup
         autocmd!
         " To enter Terminal-mode automatically:
-        autocmd VimEnter * autocmd TermAutoGroup
-                    \ TermOpen * startinsert
+        autocmd VimEnter * autocmd TermAutoGroup TermOpen * startinsert
         autocmd TermEnter * set nonumber
     augroup END
 endif
