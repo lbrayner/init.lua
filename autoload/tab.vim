@@ -53,7 +53,7 @@ function! tab#GoToTab()
     let s:a_tab_nr=tabpagenr()
     echo "Current tabs:"
     " https://github.com/chrisbra/SaveSigns.vim
-    " consider saving and restoring the signs
+    " TODO consider saving and restoring the signs
     sign unplace *
     noautocmd call tab#TabDo("call s:PrintTabs(s:a_tab_nr)")
     let tab = input("Go to tab (" . tabpagenr() . "): ")
