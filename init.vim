@@ -970,19 +970,6 @@ xmap <Space>w <Plug>(quickhl-manual-this-whole-word)
 nmap <Space>c <Plug>(quickhl-manual-clear)
 vmap <Space>c <Plug>(quickhl-manual-clear)
 
-" vim-choosewin
-
-" vim-choosewin uses noautocmd, therefore the tabline isn't redefined (i.e.
-" WinEnter autocmds are not executed)
-function! s:choosewin()
-    call choosewin#start(range(1, winnr('$')))
-    if exists("*RedefineTabline")
-        call RedefineTabline()
-    endif
-endfunction
-
-nnoremap <silent> <F10> :call <SID>choosewin()<cr>
-
 " vim-fugitive
 
 augroup FugitiveCustomAutocommands
