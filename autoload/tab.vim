@@ -64,18 +64,6 @@ function! tab#GoToTab()
     exe "tabn " . tab
 endfunction
 
-function! tab#GoToLastTab()
-    if !exists("g:tab#lastTab")
-        let g:tab#lastTab = tabpagenr()
-        let g:tab#beforeLastTab = tabpagenr()
-    endif
-    if len(gettabinfo(g:tab#lastTab)) > 0
-        exe "tabn " . g:tab#lastTab
-    else
-        echom "Tab " . g:tab#lastTab . " doesn't exist."
-    endif
-endfunction
-
 " https://superuser.com/a/555047
 function! tab#TabCloseRight(bang)
     let currrentTab = tabpagenr()

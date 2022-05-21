@@ -394,8 +394,6 @@ else
     nmap <F8> :tabs<cr>
 endif
 
-nnoremap <silent> <Leader><f8> :call tab#GoToLastTab()<cr>
-
 " }}}
 
 " Subsection: functions & commands
