@@ -33,6 +33,9 @@ function! statusline#VersionControl()
 endfunction
 
 function! s:GetLineFormat()
+    if &buftype ==# 'terminal'
+        return '%' . len(&scrollback) . 'l'
+    endif
     return '%' . len(line("$")) . 'l'
 endfunction
 
