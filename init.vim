@@ -497,14 +497,17 @@ endfunction
 
 command! -nargs=0 NumberToggle call s:NumberToggle()
 
+" https://vi.stackexchange.com/a/36414
 function! s:Source(line_start,line_end)
-    let offset = 0
-    let code = ""
-    for linenr in range(a:line_start,a:line_end)
-        let code = code . getline(linenr) . "\n"
-    endfor
-    exe code
-    echom "Sourced visual selection."
+    let tempfile = tempname()
+    sil exe a:line_start.",".a:line_end."write ".fnameescape(tempfile)
+    exe "source ".fnameescape(tempfile)
+    call delete(tempfile)
+    if a:line_start == a:line_end
+        echom "Sourced line ".a:line_start."."
+        return
+    endif
+    echom "Sourced lines ".a:line_start." to ".a:line_end."."
 endfunction
 
 command! -nargs=0 -range Source call s:Source(<line1>,<line2>)
@@ -987,11 +990,8 @@ command! Tbar TagbarToggle
 
 " dirvish
 
-" How to override the netrw :Explore, :Sexplore, :Vexplore commands?
 let g:loaded_netrwPlugin = 1
 command! -nargs=? -complete=dir Explore Dirvish <args>
-command! -nargs=? -complete=dir Sexplore belowright split | silent Dirvish <args>
-command! -nargs=? -complete=dir Vexplore leftabove vsplit | silent Dirvish <args>
 
 " }}}
 
