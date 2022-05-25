@@ -39,8 +39,15 @@ function! s:GetLineFormat()
     return '%' . len(line("$")) . 'l'
 endfunction
 
+function! s:GetNumberOfLines()
+    if &buftype ==# 'terminal'
+        return '%' . len(&scrollback) . 'L'
+    endif
+    return '%L'
+endfunction
+
 function! statusline#GetStatusLineTail()
-    let bufferPosition = ' ' . s:GetLineFormat() . ',%-3.v %3.P %L'
+    let bufferPosition = ' ' . s:GetLineFormat() . ',%-3.v %3.P ' . s:GetNumberOfLines()
     if &buftype == "nofile"
         return bufferPosition . ' %2*%{&filetype}%* '
     endif
