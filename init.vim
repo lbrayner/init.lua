@@ -984,6 +984,8 @@ augroup END
 command! -bar -bang -nargs=* -complete=customlist,fugitive#EditComplete Gdiffsplit
             \ exe fugitive#Diffsplit(1, <bang>0, "<mods>", <q-args>, [<f-args>])
 
+cnoreabbrev Gd Git difftool -y
+
 " Tagbar
 
 command! Tbar TagbarToggle
