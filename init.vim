@@ -523,6 +523,13 @@ if executable('svn')
     command! Sdiff call subversion#SVNDiffContextual()
 endif
 
+function! s:Synstack()
+    echo map(synstack(line("."), col(".")),"synIDattr(v:val, 'name')")
+endfunction
+
+" Human-readable stack of syntax items
+command! -nargs=0 -range Synstack call s:Synstack()
+
 " Subsection: autocommands {{{
 
 " Restores 'updatetime' to the default value
