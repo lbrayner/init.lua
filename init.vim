@@ -948,6 +948,8 @@ command! -bar -bang -nargs=* -complete=customlist,fugitive#EditComplete Gdiffspl
             \ exe fugitive#Diffsplit(1, <bang>0, "<mods>", <q-args>, [<f-args>])
 
 cnoreabbrev Gd Git difftool -y
+cnoreabbrev Gl Git log
+cnoreabbrev Glns Git log --name-status
 
 " Tagbar
 
