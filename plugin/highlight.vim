@@ -16,7 +16,8 @@ function! HighlightTrailingWhitespace()
     endif
     if &syntax ==# "git"
         call ClearTrailingWhitespace()
-        let w:TrailingWhitespaceID = matchadd("TrailingWhitespace",'\%>4c\s\+$')
+        let w:TrailingWhitespaceID = matchadd("TrailingWhitespace",
+                    \'^\%( \{4}\zs\s\+\|[| ]\+| \{5}\zs\s\+\)$')
         return
     endif
     call ClearTrailingWhitespace()
