@@ -628,7 +628,7 @@ augroup END
 augroup DefaultFileType
     autocmd BufEnter *
                 \ if &filetype == "" |
-                \     setlocal ft=text | let b:default_filetype = 1 |
+                \     set ft=text | let b:default_filetype = 1 |
                 \ endif
 augroup END
 
