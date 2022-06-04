@@ -200,6 +200,7 @@ inoremap <F6> <esc>:w<CR>
 vnoremap <F6> <esc>:w<CR>
 nnoremap <leader><F6> :w!<CR>
 nnoremap <silent> <F12>  :setlocal list!<CR>
+inoremap <silent> <F12>  <C-O>:setlocal list!<CR>
 vnoremap . :normal .
 
 " previous buffer
@@ -319,6 +320,10 @@ augroup CmdwinClose
     autocmd!
     autocmd CmdwinEnter * nnoremap <buffer> <F9> :q<cr>
 augroup END
+
+" Insert timestamps
+
+imap <F3> <C-R>=strftime("%Y-%m-%d %a %0H:%M")<CR>
 
 " tabs
 
