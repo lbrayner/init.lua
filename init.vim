@@ -494,7 +494,12 @@ command! -nargs=0 OverlengthToggle call s:OverlengthToggle()
 function! s:SearchLastVisualSelectionNoMagic()
     normal! gvy
     let pattern = escape(@",'\/')
-    let @/="\\V" . pattern
+    let @/="\\V".pattern
+    exe "/\\V".pattern
+    let lazyr = &lazyredraw
+    set lazyredraw
+    normal! Nn
+    let &lazyredraw = lazyr
 endfunction
 
 command! -nargs=0 -range SearchVisualSelectionNoMagic
