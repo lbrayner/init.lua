@@ -496,10 +496,7 @@ function! s:SearchLastVisualSelectionNoMagic()
     let pattern = escape(@",'\/')
     let @/="\\V".pattern
     exe "/\\V".pattern
-    let lazyr = &lazyredraw
-    set lazyredraw
     normal! Nn
-    let &lazyredraw = lazyr
 endfunction
 
 command! -nargs=0 -range SearchVisualSelectionNoMagic
