@@ -5,6 +5,7 @@ endif
 
 function! s:SetupFlattened()
     set cursorline
+    " vim-diminactive
     execute "highlight ColorColumn ctermbg=".
                 \ statusline#themes#getColor("x236_Grey19","cterm").
                 \ " guibg=" . statusline#themes#getColor("x236_Grey19","gui")
