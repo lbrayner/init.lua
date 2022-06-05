@@ -103,9 +103,6 @@
 [submodule "pack/bundle/start/vim-characterize"]
 	path = pack/bundle/start/vim-characterize
 	url = https://github.com/tpope/vim-characterize
-[submodule "pack/bundle/start/vim-diminactive"]
-	path = pack/bundle/start/vim-diminactive
-	url = https://github.com/blueyed/vim-diminactive
 [submodule "pack/bundle/start/tagbar"]
 	path = pack/bundle/start/tagbar
 	url = https://github.com/majutsushi/tagbar

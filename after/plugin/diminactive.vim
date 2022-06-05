@@ -1,6 +1,3 @@
-" TODO delete
-DimInactiveOff
-
 " https://gist.github.com/ctaylo21/c3620a945cee6fc3eb3cb0d7f57faf00
 " Background colors for inactive windows
 execute "highlight NormalNC ctermbg=".
