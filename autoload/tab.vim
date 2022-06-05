@@ -1,8 +1,11 @@
 " http://vim.wikia.com/wiki/Run_a_command_in_multiple_buffers
 function! tab#TabDo(command)
   let currentTab=tabpagenr()
-  execute 'tabdo ' . a:command
-  execute 'tabn ' . currentTab
+  try
+      execute 'tabdo ' . a:command
+  finally
+      execute 'tabn ' . currentTab
+  endtry
 endfunction
 
 function! s:PrintTabs(currentTab)
@@ -56,7 +59,7 @@ function! tab#GoToTab()
     " TODO consider saving and restoring the signs
     sign unplace *
     noautocmd call tab#TabDo("call s:PrintTabs(s:a_tab_nr)")
-    let tab = input("Go to tab (" . tabpagenr() . "): ")
+    let tab = input("Go to tab (".s:a_tab_nr."): ")
     let tab = substitute(tab,"[^0-9]","","g")
     if tab == ""
         return
