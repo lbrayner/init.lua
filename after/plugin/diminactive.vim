@@ -1,3 +1,7 @@
+if !has("nvim")
+    finish
+endif
+
 function! s:DimInactiveBuftypeExceptions()
     if exists("b:dim_inactive") && b:dim_inactive
         return

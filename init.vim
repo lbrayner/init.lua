@@ -945,6 +945,12 @@ command! Tbar TagbarToggle
 let g:loaded_netrwPlugin = 1
 command! -nargs=? -complete=dir Explore Dirvish <args>
 
+" vim-diminactive
+
+if !has("nvim")
+    packadd vim-diminactive
+endif
+
 " }}}
 
 " vim: fdm=marker

@@ -121,3 +121,6 @@
 [submodule "pack/bundle/start/vim-ripgrep"]
 	path = pack/bundle/start/vim-ripgrep
 	url = https://github.com/jremmen/vim-ripgrep
+[submodule "pack/bundle/opt/vim-diminactive"]
+	path = pack/bundle/opt/vim-diminactive
+	url = https://github.com/blueyed/vim-diminactive
