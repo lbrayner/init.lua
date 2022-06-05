@@ -118,7 +118,7 @@ function! statusline#DefineStatusLineNoFocus()
 endfunction
 
 function! statusline#DefineTerminalStatusLine()
-    let &l:statusline='%='
+    let &l:statusline='%7*%=%*'
     setlocal fillchars=stl:-
 endfunction
 
