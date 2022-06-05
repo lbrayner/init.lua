@@ -1,9 +1,3 @@
-" https://gist.github.com/ctaylo21/c3620a945cee6fc3eb3cb0d7f57faf00
-" Background colors for inactive windows
-execute "highlight NormalNC ctermbg=".
-            \statusline#themes#getColor("x236_Grey19","cterm").
-            \" guibg=" . statusline#themes#getColor("x236_Grey19","gui")
-
 function! s:DimInactiveBuftypeExceptions()
     if exists("b:dim_inactive") && b:dim_inactive
         return
@@ -25,10 +19,23 @@ function! s:DimInactiveWindowExceptions()
     set winhighlight=
 endfunction
 
+" https://gist.github.com/ctaylo21/c3620a945cee6fc3eb3cb0d7f57faf00
+" Background colors for inactive windows
+function! s:HighlightNormalNC()
+    execute "highlight NormalNC ctermbg=".
+                \statusline#themes#getColor("x236_Grey19","cterm").
+                \" guibg=" . statusline#themes#getColor("x236_Grey19","gui")
+endfunction
+
 augroup DimInactiveExceptions
   autocmd!
   autocmd VimEnter * autocmd DimInactiveExceptions
               \ BufWinEnter * call s:DimInactiveBuftypeExceptions()
   autocmd VimEnter * autocmd DimInactiveExceptions
               \ WinLeave * call s:DimInactiveWindowExceptions()
+    autocmd ColorScheme * call s:HighlightNormalNC()
 augroup END
+
+call s:HighlightNormalNC()
+
+command! -nargs=0 HighlightNormalNC call s:HighlightNormalNC()
