@@ -2,7 +2,7 @@
 let g:dbext_default_use_sep_result_buffer = 1
 
 " Don't prompt for parameters
-let g:dbext_default_prompt_for_parameters=0
+let g:dbext_default_prompt_for_parameters = 0
 
 function! DBextPostResult(...)
     " clearing buffer local mappings
