@@ -6,7 +6,7 @@ function! s:DimInactiveBuftypeExceptions()
     if exists("b:dim_inactive") && b:dim_inactive
         return
     endif
-    if &buftype =~# '\v%(nofile|nowrite|acwrite|quickfix|help)'
+    if &buftype =~# '\v%(nofile|nowrite|acwrite|quickfix|help|terminal)'
         set winhighlight=NormalNC:NONE
         let b:dim_inactive = 1
     endif
@@ -28,13 +28,12 @@ endfunction
 function! s:HighlightNormalNC()
     execute "highlight NormalNC ctermbg=".
                 \statusline#themes#getColor("x236_Grey19","cterm").
-                \" guibg=" . statusline#themes#getColor("x236_Grey19","gui")
+                \" guibg=".statusline#themes#getColor("x236_Grey19","gui")
 endfunction
 
 augroup DimInactiveExceptions
   autocmd!
-  autocmd VimEnter * autocmd DimInactiveExceptions
-              \ BufWinEnter * call s:DimInactiveBuftypeExceptions()
+  autocmd BufWinEnter * call s:DimInactiveBuftypeExceptions()
   autocmd VimEnter * autocmd DimInactiveExceptions
               \ WinLeave * call s:DimInactiveWindowExceptions()
     autocmd ColorScheme * call s:HighlightNormalNC()
