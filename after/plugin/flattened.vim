@@ -7,8 +7,8 @@ function! s:SetupFlattened()
     set cursorline
     " vim-diminactive
     execute "highlight ColorColumn ctermbg=".
-                \ statusline#themes#getColor("x236_Grey19","cterm").
-                \ " guibg=" . statusline#themes#getColor("x236_Grey19","gui")
+                \statusline#themes#getColor("x236_Grey19","cterm").
+                \" guibg=".statusline#themes#getColor("x236_Grey19","gui")
 endfunction
 
 command! -nargs=0 SetupFlattened call s:SetupFlattened()
