@@ -37,6 +37,7 @@ augroup DimInactiveExceptions
   autocmd VimEnter * autocmd DimInactiveExceptions
               \ WinLeave * call s:DimInactiveWindowExceptions()
     autocmd ColorScheme * call s:HighlightNormalNC()
+    autocmd User DimInactiveExceptions call s:DimInactiveBuftypeExceptions()
 augroup END
 
 call s:HighlightNormalNC()

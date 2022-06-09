@@ -13,6 +13,7 @@ function! DBextPostResult(...)
     setlocal nomodifiable
     setlocal nomodified
     call s:ResultBufferSyntax(b:)
+    doautocmd <nomodeline> User DimInactiveExceptions
 endfunction
 
 function! s:ResultBufferSyntax(dbext_opts)
