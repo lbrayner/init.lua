@@ -119,7 +119,6 @@ endfunction
 
 function! statusline#DefineTerminalStatusLine()
     let &l:statusline='%7*%=%*'
-    setlocal fillchars=stl:-
 endfunction
 
 " b:Statusline_custom_leftline and b:Statusline_custom_rightline are
