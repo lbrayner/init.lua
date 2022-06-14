@@ -99,6 +99,7 @@ function! s:CloneResultBuffer()
     setlocal complete-=wbuU
     setlocal nowritebackup
     setlocal undolevels=-1
+    doautocmd <nomodeline> User DimInactiveExceptions
     call s:ResultBufferSyntax(dbext_opts)
     exec bufwinnr(buf_nr)."wincmd w"
 endfunction
