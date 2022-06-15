@@ -935,6 +935,9 @@ command! -bar -bang -nargs=* -complete=customlist,fugitive#EditComplete Gdiffspl
 cnoreabbrev Gd Git difftool -y
 cnoreabbrev Gl Git log
 cnoreabbrev Glns Git log --name-status
+" List remote branches
+" To list branches of a specific remote: Git! ls-remote --heads upstream
+cnoreabbrev Gh Git! ls-remote --heads
 
 " Tagbar
 
