@@ -13,7 +13,7 @@ function! DBextPostResult(...)
     setlocal nomodifiable
     setlocal nomodified
     call s:ResultBufferSyntax(b:)
-    doautocmd <nomodeline> User DimInactiveExceptions
+    doautocmd <nomodeline> User DimInactive
 endfunction
 
 function! s:ResultBufferSyntax(dbext_opts)
@@ -99,7 +99,7 @@ function! s:CloneResultBuffer()
     setlocal complete-=wbuU
     setlocal nowritebackup
     setlocal undolevels=-1
-    doautocmd <nomodeline> User DimInactiveExceptions
+    doautocmd <nomodeline> User DimInactive
     call s:ResultBufferSyntax(dbext_opts)
     exec bufwinnr(buf_nr)."wincmd w"
 endfunction

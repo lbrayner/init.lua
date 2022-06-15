@@ -31,15 +31,27 @@ function! s:HighlightNormalNC()
                 \" guibg=".statusline#themes#getColor("x236_Grey19","gui")
 endfunction
 
-augroup DimInactiveExceptions
-  autocmd!
-  autocmd BufWinEnter * call s:DimInactiveBuftypeExceptions()
-  autocmd VimEnter * autocmd DimInactiveExceptions
-              \ WinLeave * call s:DimInactiveWindowExceptions()
-    autocmd ColorScheme * call s:HighlightNormalNC()
-    autocmd User DimInactiveExceptions call s:DimInactiveBuftypeExceptions()
-augroup END
+function! s:DimInactiveEnable()
+    augroup DimInactive
+      autocmd!
+      autocmd BufWinEnter * call s:DimInactiveBuftypeExceptions()
+      autocmd VimEnter * autocmd DimInactive
+                  \ WinLeave * call s:DimInactiveWindowExceptions()
+        autocmd ColorScheme * call s:HighlightNormalNC()
+        autocmd User DimInactive call s:DimInactiveBuftypeExceptions()
+    augroup END
+    call s:HighlightNormalNC()
+endfunction
 
-call s:HighlightNormalNC()
+function! s:DimInactiveDisable()
+    augroup DimInactive
+      autocmd!
+    augroup END
+    highlight clear NormalNC
+endfunction
+
+call s:DimInactiveEnable()
 
 command! -nargs=0 HighlightNormalNC call s:HighlightNormalNC()
+command! -nargs=0 DimInactiveEnable call s:DimInactiveEnable()
+command! -nargs=0 DimInactiveDisable call s:DimInactiveDisable()
