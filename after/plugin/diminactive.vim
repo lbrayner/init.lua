@@ -34,7 +34,7 @@ endfunction
 function! s:DimInactiveEnable()
     augroup DimInactive
       autocmd!
-      autocmd BufWinEnter * call s:DimInactiveBuftypeExceptions()
+      autocmd BufWinEnter,TermOpen * call s:DimInactiveBuftypeExceptions()
       autocmd VimEnter * autocmd DimInactive
                   \ WinLeave * call s:DimInactiveWindowExceptions()
         autocmd ColorScheme * call s:HighlightNormalNC()
