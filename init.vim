@@ -813,30 +813,21 @@ if has("unix") && !has("win32unix") && executable("fzf")
     command! -bar -bang -nargs=? -complete=buffer Buffers call fzf#vim#buffers(<q-args>,
                 \ fzf#vim#with_preview({ "placeholder": "{1}" }), <bang>0)
 
-    function! s:fzf_error_message()
-        echomsg "FZF is not defined. " .
-                    \ "Please add the fzf package to the runtimepath (fzf ≠ fzf.vim)."
-    endfunction
-
-    function! s:Buffers()
+    function! s:FZF_Command(command)
         if !exists(":FZF")
-            call s:fzf_error_message()
+            echomsg "FZF is not defined. " .
+                        \ "Please add the fzf package to the runtimepath (fzf ≠ fzf.vim)."
             return
         endif
-        Buffers
+        " In case the file is opened in a new tab with Ctrl-T, the new window
+        " will inherit &cursorline from the FZF popup, which is always false
+        let cul = &cursorline
+        exe a:command
+        let &cursorline = cul
     endfunction
 
-    nnoremap <silent> <F5> :call <SID>Buffers()<cr>
-
-    function! s:FZF()
-        if !exists(":FZF")
-            call s:fzf_error_message()
-            return
-        endif
-        FZF
-    endfunction
-
-    nnoremap <silent> <F7> :call <SID>FZF()<cr>
+    nnoremap <silent> <F5> :call <SID>FZF_Command("Buffers")<cr>
+    nnoremap <silent> <F7> :call <SID>FZF_Command("FZF")<cr>
 
     unlet g:ctrlp_map " else the F7 mapping is going to be overridden by Ctrlp
 
@@ -844,7 +835,7 @@ if has("unix") && !has("win32unix") && executable("fzf")
         function! s:dfzf_clear_cache()
             let fzf_command=$FZF_DEFAULT_COMMAND
             let $FZF_DEFAULT_COMMAND="dfzf -C"
-            call s:FZF()
+            call s:FZF_Command("FZF")
             let $FZF_DEFAULT_COMMAND=fzf_command
         endfunction
 
@@ -935,7 +926,6 @@ command! -bar -bang -nargs=* -complete=customlist,fugitive#EditComplete Gdiffspl
 cnoreabbrev Gd Git difftool -y
 cnoreabbrev Gl Git log
 cnoreabbrev Glns Git log --name-status
-" List remote branches
 " To list branches of a specific remote: Git! ls-remote --heads upstream
 cnoreabbrev Gh Git! ls-remote --heads
 
