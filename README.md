@@ -55,3 +55,7 @@ Packages (`:h packages`) are submodules in `pack/bundle/start`.
 ## Command-line mode (search)
 
 ![Screenshot](https://user-images.githubusercontent.com/5733531/122801263-45a26800-d29a-11eb-8db9-be617eea7361.png)
+
+## Terminal-mode (Neovim)
+
+![Screenshot](https://user-images.githubusercontent.com/5733531/174203958-b8139cce-4893-424b-9c8f-75ad7eff6f4e.png)
