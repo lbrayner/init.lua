@@ -124,3 +124,6 @@
 [submodule "pack/bundle/opt/vim-diminactive"]
 	path = pack/bundle/opt/vim-diminactive
 	url = https://github.com/blueyed/vim-diminactive
+[submodule "pack/bundle/start/nvim-lspconfig"]
+	path = pack/bundle/start/nvim-lspconfig
+	url = https://github.com/neovim/nvim-lspconfig
