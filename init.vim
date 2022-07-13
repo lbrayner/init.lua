@@ -944,6 +944,12 @@ if !has("nvim")
     packadd vim-diminactive
 endif
 
+" nvim-lspconfig
+
+if has("nvim")
+    packadd nvim-lspconfig
+endif
+
 " }}}
 
 " vim: fdm=marker
