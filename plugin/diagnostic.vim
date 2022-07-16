@@ -16,7 +16,7 @@ endfunction
 
 command! -nargs=0 DiagnosticDefaults call s:DiagnosticDefaults()
 
-function s:CustomDiagnostics()
+function s:CustomDiagnostic()
     highlight! def link DiagnosticInfo Ignore
     highlight! def link DiagnosticHint Comment
 
@@ -26,6 +26,6 @@ function s:CustomDiagnostics()
     sign define DiagnosticSignHint  text=ƕ texthl=DiagnosticSignHint  linehl= numhl=
 endfunction
 
-command! -nargs=0 CustomDiagnostics call s:CustomDiagnostics()
+command! -nargs=0 CustomDiagnostic call s:CustomDiagnostic()
 
-call s:CustomDiagnostics()
+call s:CustomDiagnostic()
