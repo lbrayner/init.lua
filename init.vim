@@ -245,7 +245,6 @@ if has("nvim")
     tnoremap <A-j> <C-\><C-n><C-w>j
     tnoremap <A-k> <C-\><C-n><C-w>k
     tnoremap <A-l> <C-\><C-n><C-w>l
-    tnoremap <leader><Esc> <C-\><C-n>
     nnoremap <A-h> <C-w>h
     nnoremap <A-j> <C-w>j
     nnoremap <A-k> <C-w>k
