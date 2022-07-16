@@ -14,7 +14,7 @@ function s:DiagnosticDefaults()
 	sign define DiagnosticSignHint  text=H texthl=DiagnosticSignHint  linehl= numhl=
 endfunction
 
-command! -nargs=0 DiagnosticDefaults call s:DiagnosticDefaults()
+command! -nargs=0 DefaultDiagnostic call s:DiagnosticDefaults()
 
 function s:CustomDiagnostic()
     highlight! def link DiagnosticInfo Ignore
