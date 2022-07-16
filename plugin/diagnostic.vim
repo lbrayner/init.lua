@@ -12,6 +12,8 @@ function s:DiagnosticDefaults()
 	sign define DiagnosticSignWarn  text=W texthl=DiagnosticSignWarn  linehl= numhl=
 	sign define DiagnosticSignInfo  text=I texthl=DiagnosticSignInfo  linehl= numhl=
 	sign define DiagnosticSignHint  text=H texthl=DiagnosticSignHint  linehl= numhl=
+
+    lua vim.diagnostic.config({ virtual_text = true })
 endfunction
 
 command! -nargs=0 DefaultDiagnostic call s:DiagnosticDefaults()
@@ -24,6 +26,8 @@ function s:CustomDiagnostic()
     sign define DiagnosticSignWarn  text=Ɯ texthl=DiagnosticSignWarn  linehl= numhl=
     sign define DiagnosticSignInfo  text=Ɩ texthl=DiagnosticSignInfo  linehl= numhl=
     sign define DiagnosticSignHint  text=ƕ texthl=DiagnosticSignHint  linehl= numhl=
+
+    lua vim.diagnostic.config({ virtual_text = false })
 endfunction
 
 command! -nargs=0 CustomDiagnostic call s:CustomDiagnostic()
