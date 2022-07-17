@@ -95,3 +95,5 @@ function! s:Unclutter()
 endfunction
 
 command! Unclutter silent call s:Unclutter()
+
+nnoremap <F9> :Unclutter<cr>

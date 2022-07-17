@@ -311,10 +311,6 @@ endfunction
 nnoremap <leader>do :diffoff!<cr>
 nnoremap <leader>di :call <SID>ToggleIWhite()<cr>
 
-" Unclutter, i.e. close certain special windows
-
-nnoremap <F9> :Unclutter<cr>
-
 augroup CmdwinClose
     autocmd!
     autocmd CmdwinEnter * nnoremap <buffer> <F9> :q<cr>
