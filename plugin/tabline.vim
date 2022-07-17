@@ -36,9 +36,20 @@ function! RedefineTabline()
     let &tabline=&tabline.'%#Directory# '.relative_dir.' '
 endfunction
 
+function! s:TablineBufEnter()
+    if !exists("*nvim_win_get_config")
+        call RedefineTabline()
+        return
+    endif
+    if nvim_win_get_config(0).relative == ""
+        call RedefineTabline()
+    endif
+endfunction
+
 augroup Tabline
     autocmd!
     autocmd VimEnter * autocmd Tabline
-                \ BufWritePost,BufEnter,WinEnter,DirChanged * call RedefineTabline()
+                \ BufWritePost,WinEnter,DirChanged * call RedefineTabline()
+    autocmd VimEnter * autocmd Tabline BufEnter * call s:TablineBufEnter()
     autocmd VimEnter * call RedefineTabline()
 augroup END
