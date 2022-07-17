@@ -19,6 +19,7 @@ local function open_float()
     end
     -- Move the cursor to the first diagnostic on the line
     api.nvim_win_set_cursor(0, { line_col[1], next_pos[2] })
+    local current_buf = api.nvim_get_current_buf()
     local _, win_id = vim.diagnostic.open_float({ close_events={} })
     -- The following snippet is adapted from $VIMRUNTIME/lua/vim/lsp/util.lua
     local augroup_name = "preview_window_" .. win_id
@@ -27,7 +28,7 @@ local function open_float()
     })
     local create_autocmd = function()
         api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "InsertCharPre" }, {
-            buffer = api.nvim_get_current_buf(),
+            buffer = current_buf,
             group = augroup,
             callback = function()
                 api.nvim_del_augroup_by_name(augroup_name)
