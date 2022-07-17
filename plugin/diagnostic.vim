@@ -2,7 +2,7 @@ if !has("nvim")
     finish
 endif
 
-function s:DiagnosticDefaults()
+function s:DefaultDiagnostic()
     highlight DiagnosticError ctermfg=1 guifg=Red
     highlight DiagnosticWarn  ctermfg=3 guifg=Orange
     highlight DiagnosticInfo  ctermfg=4 guifg=LightBlue
@@ -16,16 +16,13 @@ function s:DiagnosticDefaults()
     lua vim.diagnostic.config({ virtual_text = true })
 endfunction
 
-command! -nargs=0 DefaultDiagnostic call s:DiagnosticDefaults()
+command! -nargs=0 DefaultDiagnostic call s:DefaultDiagnostic()
 
 function s:CustomDiagnostic()
-    highlight! def link DiagnosticInfo Ignore
-    highlight! def link DiagnosticHint Comment
-
     sign define DiagnosticSignError text=Ɛ texthl=DiagnosticSignError linehl= numhl=
     sign define DiagnosticSignWarn  text=Ɯ texthl=DiagnosticSignWarn  linehl= numhl=
-    sign define DiagnosticSignInfo  text=Ɩ texthl=DiagnosticSignInfo  linehl= numhl=
-    sign define DiagnosticSignHint  text=ƕ texthl=DiagnosticSignHint  linehl= numhl=
+    sign define DiagnosticSignInfo  text=Ɩ texthl=Ignore              linehl= numhl=
+    sign define DiagnosticSignHint  text=ƕ texthl=Comment             linehl= numhl=
 
     lua vim.diagnostic.config({ virtual_text = false })
 endfunction
