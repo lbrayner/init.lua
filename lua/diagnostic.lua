@@ -31,7 +31,7 @@ local function open_float()
             group = augroup,
             callback = function()
                 api.nvim_del_augroup_by_name(augroup_name)
-                api.nvim_win_close(win_id, true)
+                return api.nvim_win_is_valid(win_id) and api.nvim_win_close(win_id, true)
             end,
         })
     end
