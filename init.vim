@@ -311,11 +311,6 @@ endfunction
 nnoremap <leader>do :diffoff!<cr>
 nnoremap <leader>di :call <SID>ToggleIWhite()<cr>
 
-augroup CmdwinClose
-    autocmd!
-    autocmd CmdwinEnter * nnoremap <buffer> <F9> :q<cr>
-augroup END
-
 " Insert timestamps
 
 imap <F3> <C-R>=strftime("%Y-%m-%d %a %0H:%M")<CR>

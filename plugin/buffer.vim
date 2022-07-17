@@ -92,8 +92,17 @@ function! s:Unclutter()
     " TODO Should be confined to the tab
     " TODO isn't a wipe too forceful?
     BWipeFileType help
+    " Close floating window
+    if exists("*nvim_win_get_config") && nvim_win_get_config(0).relative != ""
+        quit
+    endif
 endfunction
 
 command! Unclutter silent call s:Unclutter()
 
 nnoremap <F9> :Unclutter<cr>
+
+augroup CmdwinClose
+    autocmd!
+    autocmd CmdwinEnter * nnoremap <buffer> <F9> :q<cr>
+augroup END
