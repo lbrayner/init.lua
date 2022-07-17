@@ -1,5 +1,10 @@
 local api = vim.api
 
+-- Requires Neovim 0.7.0+
+if not api["nvim_create_autocmd"] then
+    return
+end
+
 local function open_float()
     -- Save the current cursor position
     local line_col = api.nvim_win_get_cursor(0)
@@ -41,6 +46,5 @@ vim.keymap.set("n", "<space>e",  open_float, opts)
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 
--- Requires Neovim 0.7.0+
 api.nvim_create_user_command("DiagnosticSetLocationList",
     vim.diagnostic.setloclist, { nargs = 0 })
