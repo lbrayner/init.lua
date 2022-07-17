@@ -2,11 +2,13 @@ local api = vim.api
 
 local function open_float()
     local line_col = api.nvim_win_get_cursor(0)
-    local next_pos = vim.diagnostic.get_next_pos()
     api.nvim_win_set_cursor(0,{ line_col[1], 0 })
+    local next_pos = vim.diagnostic.get_next_pos()
     if not next_pos or next_pos[1]+1 ~= line_col[1] then
-        api.nvim_win_set_cursor(0, line_col)
-        return vim.diagnostic.open_float()
+        if not vim.diagnostic.open_float() then
+            api.nvim_win_set_cursor(0, line_col)
+        end
+        return
     end
     api.nvim_win_set_cursor(0, { line_col[1], next_pos[2] })
     local _, win_id = vim.diagnostic.open_float({ close_events={} })
@@ -27,7 +29,7 @@ local function open_float()
     end
     -- Deferring the creation of the autocommand because nvim_win_set_cursor
     -- triggers CursorMoved
-    vim.defer_fn(create_autocmd, 500)
+    vim.defer_fn(create_autocmd, 150)
 end
 
 local opts = { noremap=true, silent=true }
