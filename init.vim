@@ -943,7 +943,6 @@ endif
 
 if has("nvim")
     packadd nvim-lspconfig
-    lua require("diagnostic")
 endif
 
 " }}}

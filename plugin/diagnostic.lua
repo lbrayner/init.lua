@@ -48,3 +48,37 @@ vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 
 api.nvim_create_user_command("DiagnosticSetLocationList",
     vim.diagnostic.setloclist, { nargs = 0 })
+
+local err = "DiagnosticSignError"
+local war = "DiagnosticSignWarn"
+local inf = "DiagnosticSignInfo"
+local hin = "DiagnosticSignHint"
+
+local function DefaultDiagnostic()
+    vim.api.nvim_command("highlight DiagnosticError ctermfg=1 guifg=Red")
+    vim.api.nvim_command("highlight DiagnosticWarn  ctermfg=3 guifg=Orange")
+    vim.api.nvim_command("highlight DiagnosticInfo  ctermfg=4 guifg=LightBlue")
+    vim.api.nvim_command("highlight DiagnosticHint  ctermfg=7 guifg=LightGrey")
+
+    vim.fn.sign_define(err, { text="E", texthl=err, linehl="", numhl="" })
+    vim.fn.sign_define(war, { text="W", texthl=war, linehl="", numhl="" })
+    vim.fn.sign_define(inf, { text="I", texthl=inf, linehl="", numhl="" })
+    vim.fn.sign_define(hin, { text="H", texthl=hin, linehl="", numhl="" })
+
+    vim.diagnostic.config({ virtual_text=true })
+end
+
+api.nvim_create_user_command("DefaultDiagnostic", DefaultDiagnostic, { nargs = 0 })
+
+local function CustomDiagnostic()
+    vim.fn.sign_define(err, { text="Ɛ", texthl=err,       linehl="", numhl="" })
+    vim.fn.sign_define(war, { text="Ɯ", texthl=war,       linehl="", numhl="" })
+    vim.fn.sign_define(inf, { text="Ɩ", texthl="Ignore",  linehl="", numhl="" })
+    vim.fn.sign_define(hin, { text="ƕ", texthl="Comment", linehl="", numhl="" })
+
+    vim.diagnostic.config({ virtual_text=false })
+end
+
+api.nvim_create_user_command("CustomDiagnostic", CustomDiagnostic, { nargs = 0 })
+
+CustomDiagnostic()
