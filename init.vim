@@ -943,9 +943,7 @@ endif
 
 if has("nvim")
     packadd nvim-lspconfig
-    for module in ["diagnostic","lsp"]
-        exe "lua require('".module."')"
-    endfor
+    lua require("diagnostic")
 endif
 
 " }}}
