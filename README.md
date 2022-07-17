@@ -1,3 +1,5 @@
+**Requires Neovim 0.5.0+ and Vim [8.2.0,9.0.0), i.e. Vim 8.2 or greater and no Vim 9.**
+
 `init.vim` is my *vimrc*. That's the default *neovim* initialization file.
 
 ```
