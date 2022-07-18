@@ -127,3 +127,6 @@
 [submodule "pack/bundle/start/nvim-lspconfig"]
 	path = pack/bundle/opt/nvim-lspconfig
 	url = https://github.com/neovim/nvim-lspconfig
+[submodule "pack/bundle/start/reply.vim"]
+	path = pack/bundle/start/reply.vim
+	url = https://github.com/rhysd/reply.vim
