@@ -940,6 +940,10 @@ if has("nvim")
     packadd nvim-lspconfig
 endif
 
+" reply.vim
+
+command! -nargs=0 ReplFile %ReplSend
+
 " }}}
 
 " vim: fdm=marker
