@@ -5,6 +5,10 @@ endfunction
 call TrailingWhitespaceGroup()
 
 function! HighlightTrailingWhitespace()
+    if &buftype == "terminal"
+        call ClearTrailingWhitespace()
+        return
+    endif
     if &syntax =~# '\v(help|netrw)'
         call ClearTrailingWhitespace()
         return
