@@ -76,9 +76,23 @@ endfunction
 
 command! LCloseAllWindows call s:LCloseAllWindows()
 
+function! s:CloseAllHelp(current_window_id, last_accessed_winnr)
+    noautocmd windo if &ft == "help" | q | endif
+    try
+        exe getwininfo(a:current_window_id)[0].winnr . "wincmd w"
+    catch
+        silent! exe a:last_accessed_winnr . "wincmd w"
+    endtry
+endfunction
+
 " Unclutter, i.e. close certain special windows
 
-function! s:Unclutter()
+function! s:Unclutter(current_window_id,last_accessed_winnr)
+    " Close floating window
+    if exists("*nvim_win_get_config") && nvim_win_get_config(0).relative != ""
+        quit
+        return
+    endif
     " Quit if there's at most one file and this is the last window
     " TODO this is not lazy, quite expensive and O(n)
     if len(filter(range(1,bufnr('$')),'buflisted(v:val)')) <= 1 && winnr('$') == 1
@@ -91,14 +105,10 @@ function! s:Unclutter()
     BWipe Result-
     " TODO Should be confined to the tab
     " TODO isn't a wipe too forceful?
-    BWipeFileType help
-    " Close floating window
-    if exists("*nvim_win_get_config") && nvim_win_get_config(0).relative != ""
-        quit
-    endif
+    call s:CloseAllHelp(a:current_window_id, a:last_accessed_winnr)
 endfunction
 
-command! Unclutter silent call s:Unclutter()
+command! Unclutter silent call s:Unclutter(win_getid(),winnr("#"))
 
 nnoremap <F9> :Unclutter<cr>
 
