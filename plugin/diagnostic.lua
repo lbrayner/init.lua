@@ -41,9 +41,14 @@ local function open_float()
     vim.defer_fn(create_autocmd, 150)
 end
 
+local function open_float_buffer_scoped()
+    vim.diagnostic.open_float { scope="buffer" }
+end
+
 local opts = { noremap=true, silent=true }
 
 vim.keymap.set("n", "<space>e",  open_float, opts)
+vim.keymap.set("n", "<space>E",  open_float_buffer_scoped, opts)
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 
