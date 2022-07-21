@@ -5,22 +5,12 @@ if not api["nvim_create_autocmd"] then
     return
 end
 
-local function open_float()
-    -- Save the current cursor position
-    local line_col = api.nvim_win_get_cursor(0)
-    -- Move the cursor to the beginning of the line
-    api.nvim_win_set_cursor(0,{ line_col[1], 0 })
-    local next_pos = vim.diagnostic.get_next_pos()
-    -- If there's no next diagnostic on the current line, there might be one on
-    -- column 1
-    if not next_pos or next_pos[1]+1 ~= line_col[1] then
-        -- If there isn't, restore the cursor
-        return vim.diagnostic.open_float() or api.nvim_win_set_cursor(0, line_col)
-    end
-    -- Move the cursor to the first diagnostic on the line
-    api.nvim_win_set_cursor(0, { line_col[1], next_pos[2] })
+local function open_float_defer_create_autocmd()
     local current_buf = api.nvim_get_current_buf()
-    local _, win_id = vim.diagnostic.open_float({ close_events={} })
+    local sucess, win_id = vim.diagnostic.open_float({ close_events={} })
+    if not success then
+        return
+    end
     -- The following snippet is adapted from $VIMRUNTIME/lua/vim/lsp/util.lua
     local augroup_name = "preview_window_" .. win_id
     local augroup = api.nvim_create_augroup(augroup_name, {
@@ -39,6 +29,32 @@ local function open_float()
     -- Deferring the creation of the autocommand because nvim_win_set_cursor
     -- triggers CursorMoved
     vim.defer_fn(create_autocmd, 150)
+end
+
+local function open_float()
+    -- Save the current cursor position
+    local line_col = api.nvim_win_get_cursor(0)
+    -- Move the cursor to the second column
+    api.nvim_win_set_cursor(0,{ line_col[1], 1 })
+    local prev_pos = vim.diagnostic.get_prev_pos()
+    -- If there's an anterior diagnostic in the current line, it's in column 1
+    if prev_pos and prev_pos[1]+1 == line_col[1] then
+        -- Go to column 1 and open the floating window
+        api.nvim_win_set_cursor(0,{ line_col[1], 0 })
+        return open_float_defer_create_autocmd()
+    end
+    -- Move the cursor to the beginning of the line
+    api.nvim_win_set_cursor(0,{ line_col[1], 0 })
+    local next_pos = vim.diagnostic.get_next_pos()
+    -- If there's no next diagnostic on the current line, there might be one in
+    -- column 1
+    if not next_pos or next_pos[1]+1 ~= line_col[1] then
+        -- If there isn't, restore the cursor
+        return vim.diagnostic.open_float() or api.nvim_win_set_cursor(0, line_col)
+    end
+    -- Move the cursor to the first diagnostic on the line
+    api.nvim_win_set_cursor(0, { line_col[1], next_pos[2] })
+    open_float_defer_create_autocmd()
 end
 
 local function open_float_buffer_scoped()
