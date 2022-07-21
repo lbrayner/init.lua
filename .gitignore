@@ -1,4 +1,3 @@
-/after/plugin/lsp.lua
 .netrwhist
 /after/plugin/init.vim
 /backup
@@ -6,6 +5,7 @@
 /doc/tags
 /ginit.local.vim
 /init.local.vim
+/lua/local
 /pack/local
 /plugin/init.vim
 /sessions
