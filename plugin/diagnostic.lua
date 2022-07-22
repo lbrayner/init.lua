@@ -7,7 +7,7 @@ end
 
 local function open_float_defer_create_autocmd()
     local current_buf = api.nvim_get_current_buf()
-    local sucess, win_id = vim.diagnostic.open_float({ close_events={} })
+    local success, win_id = vim.diagnostic.open_float({ close_events={} })
     if not success then
         return
     end
@@ -38,7 +38,7 @@ local function open_float()
     api.nvim_win_set_cursor(0,{ line_col[1], 1 })
     local prev_pos = vim.diagnostic.get_prev_pos()
     -- If there's an anterior diagnostic in the current line, it's in column 1
-    if prev_pos and prev_pos[1]+1 == line_col[1] then
+    if prev_pos and prev_pos[1]+1 == line_col[1] and prev_pos[2] < line_col[2] then
         -- Go to column 1 and open the floating window
         api.nvim_win_set_cursor(0,{ line_col[1], 0 })
         return open_float_defer_create_autocmd()
@@ -46,13 +46,13 @@ local function open_float()
     -- Move the cursor to the beginning of the line
     api.nvim_win_set_cursor(0,{ line_col[1], 0 })
     local next_pos = vim.diagnostic.get_next_pos()
-    -- If there's no next diagnostic on the current line, there might be one in
+    -- If there's no next diagnostic in the current line, there might be one in
     -- column 1
     if not next_pos or next_pos[1]+1 ~= line_col[1] then
         -- If there isn't, restore the cursor
         return vim.diagnostic.open_float() or api.nvim_win_set_cursor(0, line_col)
     end
-    -- Move the cursor to the first diagnostic on the line
+    -- Move the cursor to the first diagnostic in the line
     api.nvim_win_set_cursor(0, { line_col[1], next_pos[2] })
     open_float_defer_create_autocmd()
 end
