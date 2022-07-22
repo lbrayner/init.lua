@@ -45,5 +45,9 @@ augroup HighlightAndMatch
     autocmd VimEnter * autocmd! HighlightAndMatch BufWinEnter
     autocmd VimEnter * autocmd HighlightAndMatch
                 \ WinEnter,Syntax * call HighlightTrailingWhitespace()
+    if has("nvim")
+        autocmd VimEnter * autocmd HighlightAndMatch
+                    \ TermOpen * call HighlightTrailingWhitespace()
+    endif
     autocmd VimEnter * call HighlightTrailingWhitespace()
 augroup END
