@@ -31,14 +31,18 @@ local function open_float_defer_create_autocmd()
     vim.defer_fn(create_autocmd, 150)
 end
 
+local function get_cursor()
+    return api.nvim_win_get_cursor(0)
+end
+
 local function open_float()
     -- Save the current cursor position
-    local line_col = api.nvim_win_get_cursor(0)
+    local line_col = get_cursor()
     -- Move the cursor to the second column
     api.nvim_win_set_cursor(0,{ line_col[1], 1 })
     local prev_pos = vim.diagnostic.get_prev_pos()
     -- If there's an anterior diagnostic in the current line, it's in column 1
-    if prev_pos and prev_pos[1]+1 == line_col[1] and prev_pos[2] < line_col[2] then
+    if prev_pos and prev_pos[1]+1 == line_col[1] and prev_pos[2] < get_cursor()[2] then
         -- Go to column 1 and open the floating window
         api.nvim_win_set_cursor(0,{ line_col[1], 0 })
         return open_float_defer_create_autocmd()
