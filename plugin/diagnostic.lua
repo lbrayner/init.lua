@@ -70,6 +70,8 @@ vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 
 api.nvim_create_user_command("DiagnosticSetLocationList",
     vim.diagnostic.setloclist, { nargs = 0 })
+api.nvim_create_user_command("QuickFixAllDiagnostics",
+    vim.diagnostic.setqflist, { nargs = 0 })
 
 local err = "DiagnosticSignError"
 local war = "DiagnosticSignWarn"
