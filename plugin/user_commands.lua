@@ -1,5 +1,5 @@
-local function module_reload(t)
-    local module = t.args
+local function module_reload(command)
+    local module = command.args
     package.loaded[module] = nil
     require(module)
 end

@@ -1,5 +1,5 @@
-local function rename(t)
-    local name = t.args
+local function rename(command)
+    local name = command.args
     if name and name ~= "" then
         return vim.lsp.buf.rename(name)
     end
