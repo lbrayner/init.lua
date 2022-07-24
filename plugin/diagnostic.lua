@@ -102,10 +102,13 @@ end
 api.nvim_create_user_command("DefaultDiagnostic", DefaultDiagnostic, { nargs = 0 })
 
 local function CustomDiagnostic()
-    vim.fn.sign_define(err, { text="Ɛ", texthl=err,       linehl="", numhl="" })
-    vim.fn.sign_define(war, { text="Ɯ", texthl=war,       linehl="", numhl="" })
-    vim.fn.sign_define(inf, { text="Ɩ", texthl="Ignore",  linehl="", numhl="" })
-    vim.fn.sign_define(hin, { text="ƕ", texthl="Comment", linehl="", numhl="" })
+    api.nvim_command("highlight! link DiagnosticInfo NonText")
+    api.nvim_command("highlight! link DiagnosticHint Comment")
+
+    vim.fn.sign_define(err, { text="Ɛ", texthl=err, linehl="", numhl="" })
+    vim.fn.sign_define(war, { text="Ɯ", texthl=war, linehl="", numhl="" })
+    vim.fn.sign_define(inf, { text="Ɩ", texthl=inf, linehl="", numhl="" })
+    vim.fn.sign_define(hin, { text="ƕ", texthl=hin, linehl="", numhl="" })
 
     vim.diagnostic.config({ virtual_text=false })
 end
