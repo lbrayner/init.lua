@@ -1,3 +1,6 @@
+local keymap = require("keymap")
+local nnoremap = keymap.nnoremap
+
 local function rename(command)
     local name = command.args
     if name and name ~= "" then
@@ -24,14 +27,14 @@ local on_attach = function(client, bufnr)
 
     -- Mappings
     local bufopts = { noremap=true, silent=true, buffer=bufnr }
-    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
-    -- TODO vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
-    vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, bufopts)
-    vim.keymap.set("n", "<F11>", vim.lsp.buf.code_action, bufopts)
-    vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
+    nnoremap("gD", vim.lsp.buf.declaration, bufopts)
+    nnoremap("gd", vim.lsp.buf.definition, bufopts)
+    nnoremap("K", vim.lsp.buf.hover, bufopts)
+    nnoremap("gi", vim.lsp.buf.implementation, bufopts)
+    -- TODO nnoremap("<C-k>", vim.lsp.buf.signature_help, bufopts)
+    nnoremap("<space>D", vim.lsp.buf.type_definition, bufopts)
+    nnoremap("<F11>", vim.lsp.buf.code_action, bufopts)
+    nnoremap("gr", vim.lsp.buf.references, bufopts)
 end
 
 return {

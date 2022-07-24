@@ -5,6 +5,9 @@ if not api["nvim_create_autocmd"] then
     return
 end
 
+local keymap = require("keymap")
+local nnoremap = keymap.nnoremap
+
 local function open_float_defer_create_autocmd()
     local current_buf = api.nvim_get_current_buf()
     local success, win_id = vim.diagnostic.open_float({ close_events={} })
@@ -67,10 +70,10 @@ end
 
 local opts = { noremap=true, silent=true }
 
-vim.keymap.set("n", "<space>e",  open_float, opts)
-vim.keymap.set("n", "<space>E",  open_float_buffer_scoped, opts)
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+nnoremap("<space>e",  open_float, opts)
+nnoremap("<space>E",  open_float_buffer_scoped, opts)
+nnoremap("[d", vim.diagnostic.goto_prev, opts)
+nnoremap("]d", vim.diagnostic.goto_next, opts)
 
 api.nvim_create_user_command("DiagnosticSetLocationList",
     vim.diagnostic.setloclist, { nargs = 0 })
@@ -83,10 +86,10 @@ local inf = "DiagnosticSignInfo"
 local hin = "DiagnosticSignHint"
 
 local function DefaultDiagnostic()
-    vim.api.nvim_command("highlight DiagnosticError ctermfg=1 guifg=Red")
-    vim.api.nvim_command("highlight DiagnosticWarn  ctermfg=3 guifg=Orange")
-    vim.api.nvim_command("highlight DiagnosticInfo  ctermfg=4 guifg=LightBlue")
-    vim.api.nvim_command("highlight DiagnosticHint  ctermfg=7 guifg=LightGrey")
+    api.nvim_command("highlight DiagnosticError ctermfg=1 guifg=Red")
+    api.nvim_command("highlight DiagnosticWarn  ctermfg=3 guifg=Orange")
+    api.nvim_command("highlight DiagnosticInfo  ctermfg=4 guifg=LightBlue")
+    api.nvim_command("highlight DiagnosticHint  ctermfg=7 guifg=LightGrey")
 
     vim.fn.sign_define(err, { text="E", texthl=err, linehl="", numhl="" })
     vim.fn.sign_define(war, { text="W", texthl=war, linehl="", numhl="" })
