@@ -7,9 +7,6 @@
 [submodule "pack/bundle/start/dbext.vim"]
 	path = pack/bundle/start/dbext.vim
 	url = https://github.com/lbrayner/dbext.vim.git
-[submodule "pack/bundle/start/L9"]
-	path = pack/bundle/start/L9
-	url = https://github.com/vim-scripts/L9.git
 [submodule "pack/bundle/start/linediff.vim"]
 	path = pack/bundle/start/linediff.vim
 	url = https://github.com/AndrewRadev/linediff.vim.git
@@ -31,9 +28,6 @@
 [submodule "pack/bundle/start/vim-commentary"]
 	path = pack/bundle/start/vim-commentary
 	url = https://github.com/tpope/vim-commentary.git
-[submodule "pack/bundle/start/vim-fireplace"]
-	path = pack/bundle/start/vim-fireplace
-	url = https://github.com/tpope/vim-fireplace.git
 [submodule "pack/bundle/start/vim-fugitive"]
 	path = pack/bundle/start/vim-fugitive
 	url = https://github.com/tpope/vim-fugitive.git
@@ -88,24 +82,15 @@
 [submodule "pack/bundle/start/fzf.vim"]
 	path = pack/bundle/start/fzf.vim
 	url = https://github.com/junegunn/fzf.vim
-[submodule "pack/bundle/start/birl.vim"]
-	path = pack/bundle/start/birl.vim
-	url = https://github.com/lbrayner/birl.vim
 [submodule "pack/bundle/start/flattened"]
 	path = pack/bundle/start/flattened
 	url = https://github.com/romainl/flattened
-[submodule "pack/bundle/start/vim-DetectSpellLang"]
-	path = pack/bundle/start/vim-DetectSpellLang
-	url = https://github.com/lbrayner/vim-DetectSpellLang
 [submodule "pack/bundle/start/vim-quickhl"]
 	path = pack/bundle/start/vim-quickhl
 	url = https://github.com/t9md/vim-quickhl
 [submodule "pack/bundle/start/vim-characterize"]
 	path = pack/bundle/start/vim-characterize
 	url = https://github.com/tpope/vim-characterize
-[submodule "pack/bundle/start/tagbar"]
-	path = pack/bundle/start/tagbar
-	url = https://github.com/majutsushi/tagbar
 [submodule "pack/bundle/start/vim-dirvish"]
 	path = pack/bundle/start/vim-dirvish
 	url = https://github.com/justinmk/vim-dirvish

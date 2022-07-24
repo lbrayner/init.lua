@@ -919,10 +919,6 @@ cnoreabbrev Glns Git log --name-status
 " To list branches of a specific remote: Git! ls-remote --heads upstream
 cnoreabbrev Gh Git! ls-remote --heads
 
-" Tagbar
-
-command! Tbar TagbarToggle
-
 " dirvish
 
 let g:loaded_netrwPlugin = 1
