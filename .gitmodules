@@ -49,9 +49,6 @@
 [submodule "pack/bundle/start/vim-rzip"]
 	path = pack/bundle/start/vim-rzip
 	url = https://github.com/lbrayner/vim-rzip.git
-[submodule "pack/bundle/start/vim-salve"]
-	path = pack/bundle/start/vim-salve
-	url = https://github.com/tpope/vim-salve.git
 [submodule "pack/bundle/start/vim-sneak"]
 	path = pack/bundle/start/vim-sneak
 	url = https://github.com/justinmk/vim-sneak.git
