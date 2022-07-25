@@ -101,6 +101,9 @@ end
 
 api.nvim_create_user_command("DefaultDiagnostic", DefaultDiagnostic, { nargs = 0 })
 
+local spacing = 2 -- Even if you set spacing to 0, there are 2 extra spaces
+local prefix = "•"
+
 local function CustomDiagnostic()
     api.nvim_command("highlight! link DiagnosticInfo NonText")
     api.nvim_command("highlight! link DiagnosticHint Comment")
@@ -110,7 +113,27 @@ local function CustomDiagnostic()
     vim.fn.sign_define(inf, { text="Ɩ", texthl=inf, linehl="", numhl="" })
     vim.fn.sign_define(hin, { text="ƕ", texthl=hin, linehl="", numhl="" })
 
-    vim.diagnostic.config({ virtual_text=false })
+    vim.diagnostic.config({ virtual_text={
+        format=function(diagnostic)
+            local lnum = diagnostic.lnum
+            local line = api.nvim_buf_get_lines(0, lnum, lnum+1, true)[1]
+            local line_len = string.len(line)
+            local padding = string.len(spacing) + string.len(prefix) + 2 -- prefix sandwich
+            local winwidth = api.nvim_win_get_width(0) - 2 - 3 -- sing & column number
+            if line_len + padding + 3 > winwidth then -- three dots
+                return ""
+            end
+            local message = diagnostic.message
+            local mess_len = string.len(message)
+            if line_len + padding + mess_len > winwidth then
+                local trunc_mess = string.sub(message,1,winwidth-padding-line_len-3)
+                return string.format(" %s %s...",prefix,trunc_mess)
+            end
+            return string.format(" %s %s",prefix,message)
+        end,
+        prefix="",
+        spacing=0,
+    } })
 end
 
 api.nvim_create_user_command("CustomDiagnostic", CustomDiagnostic, { nargs = 0 })
