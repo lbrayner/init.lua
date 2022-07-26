@@ -114,12 +114,12 @@ function! statusline#DefineStatusLineNoFocus()
     if &previewwindow
         if expand("%") == ""
             let &l:statusline=' [Preview] '
-            return
+        else
+            let &l:statusline=' [%{util#truncateFilename(statusline#Filename(1),winwidth("%")-4)}] '
         endif
-        let &l:statusline=' [%{util#truncateFilename(statusline#Filename(1),winwidth("%")-4)}] '
-    else
-        let &l:statusline=' %{util#truncateFilename(statusline#Filename(1),winwidth("%")-2)} '
+        return
     endif
+    let &l:statusline=' %{util#truncateFilename(statusline#Filename(1),winwidth("%")-2)} '
 endfunction
 
 function! statusline#DefineTerminalStatusLine()
