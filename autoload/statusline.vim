@@ -24,12 +24,17 @@ function! statusline#VersionControl()
     if &buftype != ""
         return ""
     endif
-    if exists("*FugitiveHead")
-        if FugitiveHead() != ""
-            return " " . FugitiveHead()
-        endif
+    if !exists("*FugitiveHead")
+        return ""
     endif
-    return ""
+    let branch = FugitiveHead()
+    if branch == ""
+        return ""
+    endif
+    if len(branch) > 20
+        return " " . FugitiveHead()[0:17]."..."
+    endif
+    return " " . FugitiveHead()
 endfunction
 
 function! s:GetLineFormat()
