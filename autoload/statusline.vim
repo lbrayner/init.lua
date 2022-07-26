@@ -21,9 +21,6 @@ function! statusline#StatusFlag()
 endfunction
 
 function! statusline#VersionControl()
-    if &buftype != ""
-        return ""
-    endif
     if !exists("*FugitiveHead")
         return ""
     endif
