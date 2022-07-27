@@ -88,16 +88,22 @@ local function CustomDiagnostics()
 
     vim.diagnostic.config({ virtual_text={
         format=function(diagnostic)
-            local lnum = diagnostic.lnum
-            local line = api.nvim_buf_get_lines(0, lnum, lnum+1, true)[1]
-            local line_len = string.len(line)
-            local winwidth = api.nvim_win_get_width(0) - 2 - 3 -- sign & column number
             local message = diagnostic.message
+            local default = string.format(" %s %s", prefix, message)
+            local bufnr = diagnostic.bufnr
+            local winid = vim.fn.bufwinid(bufnr)
+            if winid < 0 then
+                return default
+            end
+            local lnum = diagnostic.lnum
+            local line = api.nvim_buf_get_lines(bufnr, lnum, lnum+1, true)[1]
+            local line_len = string.len(line)
+            local winwidth = api.nvim_win_get_width(winid) - 2 - 3 -- sign & column number
             local mess_len = string.len(message)
             if line_len + padding + mess_len > winwidth then
                 return ""
             end
-            return string.format(" %s %s", prefix, message)
+            return default
         end,
         prefix="",
         spacing=0,
