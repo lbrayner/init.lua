@@ -42,7 +42,7 @@ end
 
 local opts = { noremap=true, silent=true }
 
-nnoremap("<space>e",  open_float, opts)
+nnoremap("<space>e", open_float, opts)
 nnoremap("<space>E", function()
     vim.diagnostic.open_float { scope="buffer" }
 end, opts)
