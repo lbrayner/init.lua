@@ -64,14 +64,12 @@ local function open_float()
     open_float_defer_create_autocmd()
 end
 
-local function open_float_buffer_scoped()
-    vim.diagnostic.open_float { scope="buffer" }
-end
-
 local opts = { noremap=true, silent=true }
 
 nnoremap("<space>e",  open_float, opts)
-nnoremap("<space>E",  open_float_buffer_scoped, opts)
+nnoremap("<space>E", function()
+    vim.diagnostic.open_float { scope="buffer" }
+end, opts)
 nnoremap("[d", vim.diagnostic.goto_prev, opts)
 nnoremap("]d", vim.diagnostic.goto_next, opts)
 
