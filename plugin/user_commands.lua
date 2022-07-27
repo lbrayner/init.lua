@@ -4,4 +4,4 @@ local function module_reload(command)
     require(module)
 end
 
-vim.api.nvim_create_user_command("LuaModuleReload", module_reload, { bar=true, nargs = 1 })
+vim.api.nvim_create_user_command("LuaModuleReload", module_reload, { bar=true, nargs=1 })
