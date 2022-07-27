@@ -112,7 +112,5 @@ api.nvim_create_user_command("CustomDiagnostics", CustomDiagnostics, { nargs=0 }
 local augroup = api.nvim_create_augroup("custom_diagnostics", { clear=true })
 api.nvim_create_autocmd({ "VimEnter" }, {
     group = augroup,
-    callback = function()
-        CustomDiagnostics()
-    end,
+    callback = CustomDiagnostics,
 })
