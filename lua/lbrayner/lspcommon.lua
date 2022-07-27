@@ -26,7 +26,7 @@ local on_attach = function(client, bufnr)
     end, { nargs=0 })
 
     -- Mappings
-    local bufopts = { noremap=true, silent=true, buffer=bufnr }
+    local bufopts = { silent=true, buffer=bufnr }
     nnoremap("gD", vim.lsp.buf.declaration, bufopts)
     nnoremap("gd", vim.lsp.buf.definition, bufopts)
     nnoremap("K", vim.lsp.buf.hover, bufopts)

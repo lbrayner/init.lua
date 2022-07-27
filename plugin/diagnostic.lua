@@ -40,7 +40,7 @@ local function open_float()
     return vim.schedule(vim.diagnostic.open_float)
 end
 
-local opts = { noremap=true, silent=true }
+local opts = { silent=true }
 
 nnoremap("<space>e", open_float, opts)
 nnoremap("<space>E", function()
