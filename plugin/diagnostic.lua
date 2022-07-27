@@ -81,9 +81,6 @@ local prefix = "•"
 local padding = spacing + string.len(prefix) + 2 -- prefix sandwich
 
 local function CustomDiagnostics()
-    api.nvim_command("highlight! link DiagnosticInfo NonText")
-    api.nvim_command("highlight! link DiagnosticHint Comment")
-
     vim.fn.sign_define(err, { text="Ɛ", texthl=err, linehl="", numhl="" })
     vim.fn.sign_define(war, { text="Ɯ", texthl=war, linehl="", numhl="" })
     vim.fn.sign_define(inf, { text="Ɩ", texthl=inf, linehl="", numhl="" })
