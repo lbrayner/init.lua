@@ -50,9 +50,9 @@ nnoremap("[d", vim.diagnostic.goto_prev, opts)
 nnoremap("]d", vim.diagnostic.goto_next, opts)
 
 api.nvim_create_user_command("DiagnosticSetLocationList",
-    vim.diagnostic.setloclist, { nargs = 0 })
+    vim.diagnostic.setloclist, { nargs=0 })
 api.nvim_create_user_command("QuickFixAllDiagnostics",
-    vim.diagnostic.setqflist, { nargs = 0 })
+    vim.diagnostic.setqflist, { nargs=0 })
 
 local err = "DiagnosticSignError"
 local war = "DiagnosticSignWarn"
@@ -100,7 +100,7 @@ local function CustomDiagnostics()
             if line_len + padding + mess_len > winwidth then
                 return ""
             end
-            return string.format(" %s %s",prefix,message)
+            return string.format(" %s %s", prefix, message)
         end,
         prefix="",
         spacing=0,
