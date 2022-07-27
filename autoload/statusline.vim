@@ -102,6 +102,9 @@ endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineStatusLineNoFocus()
+    if util#isQuickfixList()
+        return
+    endif
     let filename=statusline#Filename(1)
     let isnumbersonly=filename =~# '^[0-9]\+$'
     if isnumbersonly
@@ -140,6 +143,8 @@ function! statusline#DefineStatusLine()
                 \ . '[%{statusline#Filename()}]'
                 \ . ' %1*%{statusline#StatusFlag()}%*'
         endif
+    elseif util#isQuickfixList()
+        let &l:statusline=' %<%f'
     elseif &buftype == "nofile"
         let &l:statusline=' %<%5*'
             \ . '%{statusline#Filename()}'

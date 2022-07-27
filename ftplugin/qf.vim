@@ -1,5 +1,3 @@
-let b:Statusline_custom_leftline = '%<'
-        \ . '%f'
 setlocal nospell
 setlocal nowrap
 
