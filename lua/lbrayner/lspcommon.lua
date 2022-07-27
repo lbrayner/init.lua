@@ -1,4 +1,5 @@
-local keymap = require("keymap")
+local CustomDiagnostics = require("lbrayner.diagnostic").CustomDiagnostics
+local keymap = require("lbrayner.keymap")
 local nnoremap = keymap.nnoremap
 
 local function rename(command)
@@ -35,6 +36,9 @@ local on_attach = function(client, bufnr)
     nnoremap("<space>D", vim.lsp.buf.type_definition, bufopts)
     nnoremap("<F11>", vim.lsp.buf.code_action, bufopts)
     nnoremap("gr", vim.lsp.buf.references, bufopts)
+
+    -- Diagnostic
+    CustomDiagnostics()
 end
 
 return {

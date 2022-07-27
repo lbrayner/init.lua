@@ -5,7 +5,7 @@ if not api["nvim_create_autocmd"] then
     return
 end
 
-local keymap = require("keymap")
+local keymap = require("lbrayner.keymap")
 local nnoremap = keymap.nnoremap
 
 local function get_cursor()
@@ -59,7 +59,7 @@ local war = "DiagnosticSignWarn"
 local inf = "DiagnosticSignInfo"
 local hin = "DiagnosticSignHint"
 
-local function DefaultDiagnostic()
+local function DefaultDiagnostics()
     api.nvim_command("highlight DiagnosticError ctermfg=1 guifg=Red")
     api.nvim_command("highlight DiagnosticWarn  ctermfg=3 guifg=Orange")
     api.nvim_command("highlight DiagnosticInfo  ctermfg=4 guifg=LightBlue")
@@ -73,14 +73,14 @@ local function DefaultDiagnostic()
     vim.diagnostic.config({ virtual_text=true })
 end
 
-api.nvim_create_user_command("DefaultDiagnostic", DefaultDiagnostic, { nargs = 0 })
+api.nvim_create_user_command("DefaultDiagnostics", DefaultDiagnostics, { nargs=0 })
 
 -- For virtual text
 local spacing = 2 -- Even if you set spacing to 0, there are 2 extra spaces
 local prefix = "•"
 local padding = spacing + string.len(prefix) + 2 -- prefix sandwich
 
-local function CustomDiagnostic()
+local function CustomDiagnostics()
     api.nvim_command("highlight! link DiagnosticInfo NonText")
     api.nvim_command("highlight! link DiagnosticHint Comment")
 
@@ -107,6 +107,9 @@ local function CustomDiagnostic()
     } })
 end
 
-api.nvim_create_user_command("CustomDiagnostic", CustomDiagnostic, { nargs = 0 })
+api.nvim_create_user_command("CustomDiagnostics", CustomDiagnostics, { nargs=0 })
 
-CustomDiagnostic()
+return {
+    CustomDiagnostics = CustomDiagnostics,
+    DefaultDiagnostics = DefaultDiagnostics,
+}

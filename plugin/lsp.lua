@@ -1,4 +1,4 @@
-local lspcommon = require "lspcommon"
+local lspcommon = require "lbrayner.lspcommon"
 
 require "lspconfig".tsserver.setup {
     autostart = false,
