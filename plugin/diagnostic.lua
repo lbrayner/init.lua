@@ -94,7 +94,7 @@ local function CustomDiagnostics()
             local lnum = diagnostic.lnum
             local line = api.nvim_buf_get_lines(0, lnum, lnum+1, true)[1]
             local line_len = string.len(line)
-            local winwidth = api.nvim_win_get_width(0) - 2 - 3 -- sing & column number
+            local winwidth = api.nvim_win_get_width(0) - 2 - 3 -- sign & column number
             local message = diagnostic.message
             local mess_len = string.len(message)
             if line_len + padding + mess_len > winwidth then
