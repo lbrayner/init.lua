@@ -8,32 +8,6 @@ end
 local keymap = require("keymap")
 local nnoremap = keymap.nnoremap
 
-local function open_float_defer_create_autocmd()
-    local current_buf = api.nvim_get_current_buf()
-    local success, win_id = vim.diagnostic.open_float({ close_events={} })
-    if not success then
-        return
-    end
-    -- The following snippet is adapted from $VIMRUNTIME/lua/vim/lsp/util.lua
-    local augroup_name = "preview_window_" .. win_id
-    local augroup = api.nvim_create_augroup(augroup_name, {
-        clear = true,
-    })
-    local create_autocmd = function()
-        api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "InsertCharPre" }, {
-            buffer = current_buf,
-            group = augroup,
-            callback = function()
-                api.nvim_del_augroup_by_name(augroup_name)
-                return api.nvim_win_is_valid(win_id) and api.nvim_win_close(win_id, true)
-            end,
-        })
-    end
-    -- Deferring the creation of the autocommand because nvim_win_set_cursor
-    -- triggers CursorMoved
-    vim.defer_fn(create_autocmd, 150)
-end
-
 local function get_cursor()
     return api.nvim_win_get_cursor(0)
 end
@@ -48,7 +22,8 @@ local function open_float()
     if prev_pos and prev_pos[1]+1 == line_col[1] and prev_pos[2] < get_cursor()[2] then
         -- Go to column 1 and open the floating window
         api.nvim_win_set_cursor(0,{ line_col[1], 0 })
-        return open_float_defer_create_autocmd()
+        -- Scheduling lest CursorMoved is triggered
+        return vim.schedule(vim.diagnostic.open_float)
     end
     -- Move the cursor to the beginning of the line
     api.nvim_win_set_cursor(0,{ line_col[1], 0 })
@@ -61,7 +36,8 @@ local function open_float()
     end
     -- Move the cursor to the first diagnostic in the line
     api.nvim_win_set_cursor(0, { line_col[1], next_pos[2] })
-    open_float_defer_create_autocmd()
+    -- Scheduling lest CursorMoved is triggered
+    return vim.schedule(vim.diagnostic.open_float)
 end
 
 local opts = { noremap=true, silent=true }
