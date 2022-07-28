@@ -61,10 +61,14 @@ function! statusline#GetStatusLineTail()
 endfunction
 
 function! statusline#Filename(...)
+    let path = Path()
+    if exists("*FPath") && stridx(expand("%"),"fugitive://") == 0
+        let path = FPath()
+    endif
     if a:0 > 0 && a:1 " nofocus
-        let filename=substitute(expand("%"),"'","''","g")
+        let filename=substitute(path,"'","''","g")
     else
-        let filename = substitute(expand("%:t"),"'","''","g")
+        let filename = substitute(fnamemodify(path,":t"),"'","''","g")
     endif
     if filename == ""
         return "#".bufnr("%")
