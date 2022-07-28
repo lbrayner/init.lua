@@ -61,28 +61,31 @@ endfunction
 
 command! -nargs=1 -bang -complete=file SaveAs call s:SaveAs(<f-args>,<bang>0)
 
-" Close all local list windows
-
-function! s:LCloseAllWindows()
-    if util#isLocationList()
-        " Autocommands are triggered normally
-        windo lclose
-        return
-    endif
-    let current_window=winnr()
-    noautocmd windo lclose
-    exe current_window . "wincmd w"
-endfunction
-
-command! LCloseAllWindows call s:LCloseAllWindows()
-
-function! s:CloseAllHelp(current_window_id, last_accessed_winnr)
-    noautocmd windo if &ft == "help" | q | endif
+function! s:ReturnToOriginalWindow(current_window_id, last_accessed_winnr)
     try
         exe getwininfo(a:current_window_id)[0].winnr . "wincmd w"
     catch
         silent! exe a:last_accessed_winnr . "wincmd w"
     endtry
+endfunction
+
+" Close all local list windows
+
+function! s:LCloseAllWindows(current_window_id, last_accessed_winnr)
+    if util#isLocationList()
+        " Autocommands are triggered normally
+        windo lclose
+    else
+        noautocmd windo lclose
+    endif
+    call s:ReturnToOriginalWindow(a:current_window_id, a:last_accessed_winnr)
+endfunction
+
+command! LCloseAllWindows call s:LCloseAllWindows(win_getid(),winnr("#"))
+
+function! s:CloseAllHelp(current_window_id, last_accessed_winnr)
+    noautocmd windo if &ft == "help" | q | endif
+    call s:ReturnToOriginalWindow(a:current_window_id, a:last_accessed_winnr)
 endfunction
 
 " Unclutter, i.e. close certain special windows
@@ -100,7 +103,7 @@ function! s:Unclutter(current_window_id,last_accessed_winnr)
     endif
     pclose " Close preview window
     cclose " Close quickfix window
-    LCloseAllWindows
+    call s:LCloseAllWindows(a:current_window_id, a:last_accessed_winnr)
     " TODO Should be confined to the tab
     BWipe Result-
     " TODO Should be confined to the tab
