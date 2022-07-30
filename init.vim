@@ -171,7 +171,7 @@ nnoremap qç q:
 vnoremap qç q:
 vnoremap ¬ ^
 
-nnoremap <silent> <Esc><Esc> <Esc>:only<CR>
+nnoremap <Space>o :only<CR>
 
 " clear search highlights
 
