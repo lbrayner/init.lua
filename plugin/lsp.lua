@@ -19,6 +19,8 @@ local function truncate(bufnr, winid, message, lnum)
 end
 
 local function trunc_virt_text(args)
+    -- TODO debug
+    print("trunc_virt_text called")
     local bufnr = args.buf
     local winid = vim.fn.bufwinid(bufnr)
     if winid < 0 then
@@ -47,11 +49,28 @@ local function trunc_virt_text(args)
     end
 end
 
--- Autocmds
 local augroup = api.nvim_create_augroup("trunc_virt_text", { clear=true })
-api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
+local trunc_virt_text_events = { "BufWinEnter", "WinEnter" }
+
+api.nvim_create_autocmd({ "LspAttach" }, {
     group = augroup,
-    callback = trunc_virt_text,
+    callback = function(args)
+        api.nvim_create_autocmd(trunc_virt_text_events, {
+            buffer = args.buf,
+            group = augroup,
+            callback = trunc_virt_text,
+        })
+    end,
+})
+
+api.nvim_create_autocmd({ "LspDetach" }, {
+    group = augroup,
+    callback = function(args)
+        api.nvim_clear_autocmds({
+            event = trunc_virt_text_events,
+            group = augroup,
+        })
+    end,
 })
 
 require "lspconfig".tsserver.setup {
