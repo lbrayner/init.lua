@@ -9,11 +9,11 @@ function! HighlightTrailingWhitespace()
         call ClearTrailingWhitespace()
         return
     endif
-    if &syntax =~# '\v(help|netrw)'
+    if &syntax =~# '\v%(help|netrw)'
         call ClearTrailingWhitespace()
         return
     endif
-    if &syntax =~# '\v(mail|markdown)'
+    if &syntax =~# '\v%(mail|markdown)'
         call ClearTrailingWhitespace()
         let w:TrailingWhitespaceID = matchadd("TrailingWhitespace",'^\s\+$')
         return
@@ -22,6 +22,11 @@ function! HighlightTrailingWhitespace()
         call ClearTrailingWhitespace()
         let w:TrailingWhitespaceID = matchadd("TrailingWhitespace",
                     \'^\%( \{4}\zs\s\+\|[| ]\+| \{5}\zs\s\+\)$')
+        return
+    endif
+    " Neogit
+    if stridx(&syntax,"Neogit") == 0
+        call ClearTrailingWhitespace()
         return
     endif
     call ClearTrailingWhitespace()
