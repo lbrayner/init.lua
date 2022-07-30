@@ -8,6 +8,66 @@ end
 local keymap = require("lbrayner.keymap")
 local nnoremap = keymap.nnoremap
 
+local function is_long(bufnr, winid, messages, lnum)
+    local mess_len = 0
+    for _, message in ipairs(messages) do
+        mess_len = mess_len + string.len(message)
+    end
+    if mess_len == 0 then
+        return false
+    end
+    local line = api.nvim_buf_get_lines(bufnr, lnum, lnum+1, true)[1]
+    local line_len = string.len(line)
+    local winwidth = api.nvim_win_get_width(winid) - 2 - 3 -- sign & column number
+    local long = line_len + 1 + mess_len > winwidth
+    -- TODO debug
+    print(string.format("bufnr %s lnum %s line_len %s mess_len %s winwidth %s long %s",
+        bufnr, lnum, line_len, mess_len, winwidth, long))
+    return long
+end
+
+local virtual_text_handler = vim.diagnostic.handlers.virtual_text
+
+vim.diagnostic.handlers.virtual_text = {
+    show = function(namespace, bufnr, diagnostics, opts)
+        virtual_text_handler.show(namespace, bufnr, diagnostics, opts)
+        local winid = vim.fn.bufwinid(bufnr)
+        if winid < 0 then
+            return
+        end
+        local metadata = vim.diagnostic.get_namespace(namespace)
+        local virt_text_ns = metadata.user_data.virt_text_ns
+        local extmarks = api.nvim_buf_get_extmarks(bufnr, virt_text_ns, 0, -1, {
+            details=true })
+        for _, extmark in ipairs(extmarks) do
+            local id = extmark[1]
+            local lnum = extmark[2]
+            local col = extmark[3]
+            local details = extmark[4]
+            if not details.virt_text then
+                return
+            end
+            local messages = vim.tbl_map(function(i)
+                return i[1]
+            end, details.virt_text)
+            -- TODO debug
+            -- print(string.format("virt_text %s messages %s",
+            --     vim.inspect(details.virt_text), vim.inspect(messages)))
+            local long = is_long(bufnr, winid, messages, lnum)
+            -- TODO debug
+            -- print(string.format("long %s", long))
+            if long then
+                api.nvim_buf_del_extmark(bufnr, virt_text_ns, id)
+            end
+            -- print(string.format("bufnr %s virt_text_ns %s id %s",
+            --     bufnr, virt_text_ns, details.id))
+        end
+    end,
+    hide = function(namespace, bufnr)
+        virtual_text_handler.hide(namespace, bufnr)
+    end,
+}
+
 local function get_cursor()
     return api.nvim_win_get_cursor(0)
 end
