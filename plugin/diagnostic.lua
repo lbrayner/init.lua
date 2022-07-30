@@ -8,10 +8,11 @@ end
 local keymap = require("lbrayner.keymap")
 local nnoremap = keymap.nnoremap
 
-local function is_long(bufnr, winid, messages, lnum)
+local function is_long(bufnr, winid, virt_texts, lnum)
+    -- TODO reduce?
     local mess_len = 0
-    for _, message in ipairs(messages) do
-        mess_len = mess_len + string.len(message)
+    for _, virt_text in ipairs(virt_texts) do
+        mess_len = mess_len + string.len(virt_text[1])
     end
     if mess_len == 0 then
         return false
@@ -26,6 +27,32 @@ local function is_long(bufnr, winid, messages, lnum)
     return long
 end
 
+local function handle_long_extmarks(namespace, bufnr, winid)
+    local metadata = vim.diagnostic.get_namespace(namespace)
+    if not metadata then
+        return
+    end
+    local virt_text_ns = metadata.user_data.virt_text_ns
+    if not virt_text_ns then
+        return
+    end
+    local extmarks = api.nvim_buf_get_extmarks(bufnr, virt_text_ns, 0, -1, {
+        details=true })
+    for _, extmark in ipairs(extmarks) do
+        local id = extmark[1]
+        local lnum = extmark[2]
+        local col = extmark[3]
+        local details = extmark[4]
+        if not details.virt_text then
+            return
+        end
+        local long = is_long(bufnr, winid, details.virt_text, lnum)
+        if long then
+            api.nvim_buf_del_extmark(bufnr, virt_text_ns, id)
+        end
+    end
+end
+
 local virtual_text_handler = vim.diagnostic.handlers.virtual_text
 
 vim.diagnostic.handlers.virtual_text = {
@@ -35,38 +62,33 @@ vim.diagnostic.handlers.virtual_text = {
         if winid < 0 then
             return
         end
-        local metadata = vim.diagnostic.get_namespace(namespace)
-        local virt_text_ns = metadata.user_data.virt_text_ns
-        local extmarks = api.nvim_buf_get_extmarks(bufnr, virt_text_ns, 0, -1, {
-            details=true })
-        for _, extmark in ipairs(extmarks) do
-            local id = extmark[1]
-            local lnum = extmark[2]
-            local col = extmark[3]
-            local details = extmark[4]
-            if not details.virt_text then
-                return
-            end
-            local messages = vim.tbl_map(function(i)
-                return i[1]
-            end, details.virt_text)
-            -- TODO debug
-            -- print(string.format("virt_text %s messages %s",
-            --     vim.inspect(details.virt_text), vim.inspect(messages)))
-            local long = is_long(bufnr, winid, messages, lnum)
-            -- TODO debug
-            -- print(string.format("long %s", long))
-            if long then
-                api.nvim_buf_del_extmark(bufnr, virt_text_ns, id)
-            end
-            -- print(string.format("bufnr %s virt_text_ns %s id %s",
-            --     bufnr, virt_text_ns, details.id))
-        end
+        handle_long_extmarks(namespace, bufnr, winid)
     end,
     hide = function(namespace, bufnr)
         virtual_text_handler.hide(namespace, bufnr)
     end,
 }
+
+local augroup = api.nvim_create_augroup("trunc_virt_text", { clear=true })
+
+api.nvim_create_autocmd({ "VimEnter" }, {
+    group = augroup,
+    callback = function(args)
+        api.nvim_create_autocmd({ "WinEnter" }, {
+            group = augroup,
+            callback = function(args)
+                local bufnr = args.buf
+                local winid = vim.fn.bufwinid(bufnr)
+                if winid < 0 then
+                    return
+                end
+                for _, namespace in ipairs(vim.tbl_values(api.nvim_get_namespaces())) do
+                    handle_long_extmarks(namespace, bufnr, winid)
+                end
+            end,
+        })
+    end,
+})
 
 local function get_cursor()
     return api.nvim_win_get_cursor(0)
