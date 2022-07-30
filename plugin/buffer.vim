@@ -62,10 +62,18 @@ endfunction
 command! -nargs=1 -bang -complete=file SaveAs call s:SaveAs(<f-args>,<bang>0)
 
 function! s:ReturnToOriginalWindow(current_window_id, last_accessed_winnr)
+    let lastwinnr = winnr("$")
+    let returnto_winnr = 0
     try
-        exe getwininfo(a:current_window_id)[0].winnr . "wincmd w"
+        let returnto_winnr = getwininfo(a:current_window_id)[0].winnr
+        exe returnto_winnr . "wincmd w"
     catch
-        silent! exe a:last_accessed_winnr . "wincmd w"
+        let returnto_winnr = a:last_accessed_winnr
+        silent! exe returnto_winnr . "wincmd w"
+    finally
+        if returnto_winnr >= lastwinnr
+            doautocmd WinEnter
+        endif
     endtry
 endfunction
 
