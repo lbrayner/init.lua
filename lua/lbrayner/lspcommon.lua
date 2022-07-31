@@ -7,10 +7,12 @@ local api = vim.api
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
     -- Enable completion triggered by <c-x><c-o>
-    vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+    -- Some filetype plugins define omnifunc and $VIMRUNTIME/lua/vim/lsp.lua
+    -- respects that, so we override it.
+    api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 
     -- Commands
-    vim.api.nvim_buf_create_user_command(bufnr, "LspRename", function(command)
+    api.nvim_buf_create_user_command(bufnr, "LspRename", function(command)
         local name = command.args
         if name and name ~= "" then
             return vim.lsp.buf.rename(name)
@@ -18,10 +20,10 @@ local on_attach = function(client, bufnr)
         vim.lsp.buf.rename()
     end, { nargs="?" })
 
-    vim.api.nvim_buf_create_user_command(bufnr, "LspFormat", function()
+    api.nvim_buf_create_user_command(bufnr, "LspFormat", function()
         vim.lsp.buf.format { async=true }
     end, { nargs=0 })
-    vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceFolders", function()
+    api.nvim_buf_create_user_command(bufnr, "LspWorkspaceFolders", function()
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end, { nargs=0 })
 
