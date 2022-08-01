@@ -1,36 +1,24 @@
 " Command Declarations
-command! -buffer JavaBreakString
-            \ :call append(line("."),java#format#break_string(getline("."))) | delete
-command! -buffer -range JavaStringify
+command! -buffer -nargs=0 JavaBreakString
+            \ call append(line("."),java#format#break_string(getline("."))) | delete
+command! -buffer -nargs=0 -range JavaStringify
             \ <line1>,<line2>call java#format#stringify()
 
 if util#EclimLoaded()
     if extensions#eclim#EclimAvailable()
-        let projectName = eclim#project#util#GetCurrentProjectName()
-        if projectName != ""
-            let s:eclim = 1
-            nnoremap <buffer> <leader>P
-                       \ :let @"=eclim#java#util#GetPackage()<cr>
-                        \:let @+=@"<cr>
-                        \:let @*=@"<cr>
-                        \:echo @"<cr>
-            nnoremap <buffer> <silent> <leader>C
-                        \ :call extensions#eclim#EclimGoToClassDeclarationLine()<cr>
-            nnoremap <buffer> <leader>F
-                       \ :let @"=eclim#java#util#GetPackage().".".expand("%:t:r")<cr>
-                        \:let @+=@"<cr>:let @*=@"<cr>:echo @"<cr>
-            nnoremap <buffer> <leader>js :JavaSearch<space>
-            nnoremap <buffer> <leader>jr :JavaRename<space>
-            nnoremap <buffer> <leader>ji :JavaImport<cr>
-            nnoremap <buffer> <leader>jn :JavaNew<space>
-            nnoremap <buffer> <leader>jg :JavaGet
-            vnoremap <buffer> <leader>jg :JavaGet
-            nnoremap <buffer> <leader>jc :JavaConstructor<cr>
-            vnoremap <buffer> <leader>jc :JavaConstructor<cr>
-            nnoremap <buffer> <leader>jo :JavaImportOrganize<cr>
-            nnoremap <buffer> <leader>jm :JavaMove<space>
+        if eclim#project#util#GetCurrentProjectName() != ""
+            command! -buffer -nargs=0 JavaPackage
+                        \ let @"=eclim#java#util#GetPackage() |
+                        \ let @+=@" | let @*=@" | echo @"
+            command! -buffer -nargs=0 JavaGoToClassDeclaration
+                        \ call extensions#eclim#EclimGoToClassDeclarationLine()
+            command! -buffer -nargs=0 JavaQualifiedName
+                       \ let @"=eclim#java#util#GetPackage().".".expand("%:t:r") |
+                       \ let @+=@" | let @*=@" | echo @"
             nnoremap <buffer> <F11> :JavaCorrect<CR>
-            nnoremap <buffer> <leader><F11> :JavaSearchContext<CR>
+            nnoremap <buffer> gd :JavaSearch -x declarations<CR>
+            nnoremap <buffer> gi :JavaSearch -x implementors<CR>
+            nnoremap <buffer> gr :JavaSearch -x references<CR>
             if executable("ctags")
                 augroup CtagsJava
                     autocmd!
