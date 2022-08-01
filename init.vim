@@ -204,7 +204,7 @@ inoremap <silent> <F12>  <C-O>:setlocal list!<CR>
 vnoremap . :normal .
 
 " previous buffer
-nnoremap <silent> <space>b :b#<CR>
+nnoremap <Space>b :b#<CR>
 
 " quickfix and locallist
 
