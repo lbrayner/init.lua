@@ -16,6 +16,7 @@ if util#EclimLoaded()
                        \ let @"=eclim#java#util#GetPackage().".".expand("%:t:r") |
                        \ let @+=@" | let @*=@" | echo @"
             nnoremap <buffer> <F11> :JavaCorrect<CR>
+            nnoremap <buffer> gD :JavaGoToClassDeclaration<CR>
             nnoremap <buffer> gd :JavaSearch -x declarations<CR>
             nnoremap <buffer> gi :JavaSearch -x implementors<CR>
             nnoremap <buffer> gr :JavaSearch -x references<CR>
