@@ -608,6 +608,9 @@ function! s:RelativeNumberException()
     if exists("*nvim_win_get_config") && nvim_win_get_config(0).relative != ""
         return 1
     endif
+    if &filetype ==# "fugitiveblame"
+        return 1
+    endif
     if !stridx(&syntax,"Neogit")
         return 1
     endif
