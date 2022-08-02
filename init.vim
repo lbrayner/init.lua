@@ -810,6 +810,8 @@ let g:ctrlp_prompt_mappings = {
 
 " fzf.vim
 
+let g:fzf_preview_window = []
+
 if has("unix") && !has("win32unix") && executable("fzf")
     if isdirectory($HOME . "/.fzf")
         set rtp+=~/.fzf
