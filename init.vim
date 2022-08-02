@@ -685,6 +685,14 @@ if has("nvim")
     augroup END
 endif
 
+augroup TabClosedAutoGroup
+    autocmd!
+    " Returning to previous tab instead of the next
+    autocmd TabClosed * if expand("<afile>") > 1 |
+                \     exe "normal! gT" | " Lest the rest of the command is eaten up by normal!
+                \ endif
+augroup END
+
 " }}}
 
 " sourcing init.local.vim if it exists
