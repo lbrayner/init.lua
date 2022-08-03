@@ -129,7 +129,7 @@ function! statusline#DefineStatusLineNoFocus()
 endfunction
 
 function! statusline#DefineTerminalStatusLine()
-    let &l:statusline='%7*%=%*'
+    let &l:statusline='%3*%=%*'
 endfunction
 
 " b:Statusline_custom_leftline and b:Statusline_custom_rightline are
