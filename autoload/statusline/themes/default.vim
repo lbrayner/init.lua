@@ -64,7 +64,7 @@ function! statusline#themes#default#getColorMapping()
         \ 'user5_normal_fg': 'x248_Grey66',
         \ 'user5_visual_bg': 'x123_DarkSlateGray1',
         \ 'user5_visual_fg': 'x233_Grey7',
-        \ 'user5_insert_bg': 'x233_Grey7',
+        \ 'user5_insert_bg': 'x048_SpringGreen1',
         \ 'user5_insert_fg': 'x233_Grey7',
         \ 'user5_command_bg': 'x069_CornflowerBlue',
         \ 'user5_command_fg': 'x240_Grey35',

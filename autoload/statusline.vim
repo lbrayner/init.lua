@@ -81,16 +81,14 @@ endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineModifiedStatusLine()
+    let filename = statusline#Filename()
     if exists("b:Statusline_custom_mod_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_mod_leftline."'"
     elseif &previewwindow
-        let &l:statusline=' %<%1*'
-                    \ . '[%{statusline#Filename()}]'
-                    \ . ' %{statusline#StatusFlag()}%*'
+        let &l:statusline = " %5*Previewing:%* "
+        let &l:statusline.='%<%1*'.filename.' %{statusline#StatusFlag()}%*'
     else
-        let &l:statusline=' %<%1*'
-                    \ . '%{statusline#Filename()}'
-                    \ . ' %{statusline#StatusFlag()}%*'
+        let &l:statusline=' %<%1*'.filename.' %{statusline#StatusFlag()}%*'
     endif
     if exists("b:Statusline_custom_mod_rightline")
         exec "let &l:statusline='".&l:statusline
@@ -117,13 +115,17 @@ function! statusline#DefineStatusLineNoFocus()
     endif
     if &previewwindow
         if expand("%") == ""
-            let &l:statusline=' [Preview] '
+            let &l:statusline=" [Preview] "
         else
-            let &l:statusline=' [%{util#truncateFilename(statusline#Filename(1),winwidth("%")-4)}] '
+            let &l:statusline = " Previewing: "
+            let filename = util#truncateFilename(
+                        \statusline#Filename(1),winwidth("%")-len(&statusline)-1)
+            let &l:statusline.=filename." "
         endif
         return
     endif
-    let &l:statusline=' %{util#truncateFilename(statusline#Filename(1),winwidth("%")-2)} '
+    let filename = util#truncateFilename(statusline#Filename(1),winwidth("%")-2)
+    let &l:statusline=" ".filename." "
 endfunction
 
 function! statusline#DefineTerminalStatusLine()
@@ -135,28 +137,22 @@ endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineStatusLine()
+    let filename = statusline#Filename()
     if exists("b:Statusline_custom_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_leftline."'"
     elseif &previewwindow
         if expand("%") == ""
-            let &l:statusline=' %<'
-                \ . '[Preview]'
-                \ . ' %1*%{statusline#StatusFlag()}%*'
+            let &l:statusline=' %<[Preview] %1*%{statusline#StatusFlag()}%*'
         else
-            let &l:statusline=' %<'
-                \ . '[%{statusline#Filename()}]'
-                \ . ' %1*%{statusline#StatusFlag()}%*'
+            let &l:statusline=" %5*Previewing:%* %<".filename.
+                        \" %1*%{statusline#StatusFlag()}%*"
         endif
     elseif util#isQuickfixList()
         let &l:statusline=' %<%f'
     elseif &buftype == "nofile"
-        let &l:statusline=' %<%5*'
-            \ . '%{statusline#Filename()}'
-            \ . ' %1*%{statusline#StatusFlag()}%*'
+        let &l:statusline=' %<%5*'.filename.' %1*%{statusline#StatusFlag()}%*'
     else
-        let &l:statusline=' %<'
-            \ . '%{statusline#Filename()}'
-            \ . ' %1*%{statusline#StatusFlag()}%*'
+        let &l:statusline=' %<'.filename.' %1*%{statusline#StatusFlag()}%*'
     endif
     if exists("b:Statusline_custom_rightline")
         exec "let &l:statusline='".&l:statusline
