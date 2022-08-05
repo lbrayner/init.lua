@@ -1,11 +1,15 @@
 " http://vim.wikia.com/wiki/Run_a_command_in_multiple_buffers
+" Tweaked by me to preserve last accessed tab
 function! tab#TabDo(command)
-  let currentTab=tabpagenr()
-  try
-      execute 'tabdo ' . a:command
-  finally
-      execute 'tabn ' . currentTab
-  endtry
+    let currentTab=tabpagenr()
+    exe "normal! g\<Tab>"
+    let previousTab=tabpagenr()
+    try
+        execute "tabdo " . a:command
+    finally
+        execute "tabn " . previousTab
+        execute "tabn " . currentTab
+    endtry
 endfunction
 
 function! s:PrintTabs(currentTab)
