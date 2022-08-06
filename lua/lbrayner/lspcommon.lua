@@ -1,6 +1,6 @@
+local api = vim.api
 local keymap = require("lbrayner.keymap")
 local nnoremap = keymap.nnoremap
-local api = vim.api
 
 -- From nvim-lspconfig
 -- Use an on_attach function to only map the following keys
