@@ -24,12 +24,12 @@ function! RedefineTabline()
     let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '.session
                 \ .'%#NonText#'.cwd
     if exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
+        let &tabline=&tabline."%="
         let fcwd = fnamemodify(FugitiveResult(bufnr()).cwd,":p:~")
         if stridx(fcwd,fnamemodify(getcwd(),":p:gs?\\?/?:~")) != 0
-            " let &tabline=&tabline."%=%#Normal#".expand("%")." %#WarningMsg#".substitute(fcwd,'/$',"","").' '
-            let &tabline=&tabline."%=%#WarningMsg#".substitute(fcwd,'/$',"","")." "
-            let &tabline=&tabline."%#Normal#".expand("%")." "
+            let &tabline=&tabline."%#WarningMsg#".substitute(fcwd,'/$',"","")." "
         endif
+        let &tabline=&tabline."%#Normal#".expand("%")." "
         return
     endif
     if &buftype ==# 'terminal'
