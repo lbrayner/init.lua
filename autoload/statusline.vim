@@ -88,12 +88,16 @@ function! statusline#DefineModifiedStatusLine()
     let filename = statusline#Filename()
     if exists("b:Statusline_custom_mod_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_mod_leftline."'"
+    elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
+        let filename = s:FugitiveFilename()
+        let &l:statusline=" %5*"
+        if &previewwindow
+            let &l:statusline.="Previewing "
+        endif
+        let &l:statusline.="Fugitive:%* %<%1".filename." %{statusline#StatusFlag()}%*"
     elseif &previewwindow
         let &l:statusline = " %5*Previewing:%* "
         let &l:statusline.='%<%1*'.filename.' %{statusline#StatusFlag()}%*'
-    elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
-        let filename = s:FugitiveFilename()
-        let &l:statusline=" %5*Fugitive:%* %<%1".filename." %{statusline#StatusFlag()}%*"
     else
         let &l:statusline=' %<%1*'.filename.' %{statusline#StatusFlag()}%*'
     endif
@@ -120,6 +124,16 @@ function! statusline#DefineStatusLineNoFocus()
         let &l:statusline=' '.filename.' '
         return
     endif
+    if exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
+        let cwd = fnamemodify(FugitiveResult(bufnr()).cwd,":p:~")
+        let cwd = substitute(cwd,'/$',"","")
+        let &l:statusline=""
+        if &previewwindow
+            let &l:statusline.=" Previewing"
+        endif
+        let &l:statusline.=" Fugitive: ".s:FugitiveFilename()." @ ".cwd." "
+        return
+    endif
     if &previewwindow
         if expand("%") == ""
             let &l:statusline=" [Preview] "
@@ -129,12 +143,6 @@ function! statusline#DefineStatusLineNoFocus()
                         \statusline#Filename(1),winwidth("%")-len(&statusline)-1)
             let &l:statusline.=filename." "
         endif
-        return
-    endif
-    if exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
-        let cwd = fnamemodify(FugitiveResult(bufnr()).cwd,":p:~")
-        let cwd = substitute(cwd,'/$',"","")
-        let &l:statusline=" Fugitive: ".s:FugitiveFilename()." @ ".cwd." "
         return
     endif
     let filename = util#truncateFilename(statusline#Filename(1),winwidth("%")-2)
@@ -153,6 +161,13 @@ function! statusline#DefineStatusLine()
     let filename = statusline#Filename()
     if exists("b:Statusline_custom_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_leftline."'"
+    elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
+        let filename = s:FugitiveFilename()
+        let &l:statusline=" %5*"
+        if &previewwindow
+            let &l:statusline.="Previewing "
+        endif
+        let &l:statusline.="Fugitive:%* %<".filename." %1*%{statusline#StatusFlag()}%*"
     elseif &previewwindow
         if expand("%") == ""
             let &l:statusline=' %<[Preview] %1*%{statusline#StatusFlag()}%*'
@@ -162,9 +177,6 @@ function! statusline#DefineStatusLine()
         endif
     elseif util#isQuickfixList()
         let &l:statusline=' %<%f'
-    elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
-        let filename = s:FugitiveFilename()
-        let &l:statusline=" %5*Fugitive:%* %<".filename." %1*%{statusline#StatusFlag()}%*"
     elseif &buftype == "nofile"
         let &l:statusline=' %<%5*'.filename.' %1*%{statusline#StatusFlag()}%*'
     else
