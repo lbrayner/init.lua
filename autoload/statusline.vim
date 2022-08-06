@@ -76,6 +76,10 @@ function! statusline#Filename(...)
     return filename
 endfunction
 
+function! s:FugitiveFilename()
+    return "Git ".join(FugitiveResult(bufnr()).args," ")
+endfunction
+
 " b:Statusline_custom_mod_leftline and b:Statusline_custom_mod_rightline are
 " joined with %=
 
@@ -87,6 +91,9 @@ function! statusline#DefineModifiedStatusLine()
     elseif &previewwindow
         let &l:statusline = " %5*Previewing:%* "
         let &l:statusline.='%<%1*'.filename.' %{statusline#StatusFlag()}%*'
+    elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
+        let filename = s:FugitiveFilename()
+        let &l:statusline=" %5*Fugitive:%* %<%1".filename." %{statusline#StatusFlag()}%*"
     else
         let &l:statusline=' %<%1*'.filename.' %{statusline#StatusFlag()}%*'
     endif
@@ -124,6 +131,12 @@ function! statusline#DefineStatusLineNoFocus()
         endif
         return
     endif
+    if exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
+        let cwd = fnamemodify(FugitiveResult(bufnr()).cwd,":p:~")
+        let cwd = substitute(cwd,'/$',"","")
+        let &l:statusline=" Fugitive: ".s:FugitiveFilename()." @ ".cwd." "
+        return
+    endif
     let filename = util#truncateFilename(statusline#Filename(1),winwidth("%")-2)
     let &l:statusline=" ".filename." "
 endfunction
@@ -149,6 +162,9 @@ function! statusline#DefineStatusLine()
         endif
     elseif util#isQuickfixList()
         let &l:statusline=' %<%f'
+    elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
+        let filename = s:FugitiveFilename()
+        let &l:statusline=" %5*Fugitive:%* %<".filename." %1*%{statusline#StatusFlag()}%*"
     elseif &buftype == "nofile"
         let &l:statusline=' %<%5*'.filename.' %1*%{statusline#StatusFlag()}%*'
     else
