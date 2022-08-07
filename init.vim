@@ -780,48 +780,45 @@ map <silent> <leader>ge <Plug>CamelCaseMotion_ge
 
 " ctrlp
 
-let s:ctrlp_cache_dir = g:vim_dir."/ctrlp_cache"
-exe "let s:has_ctrlp_cache_dir = isdirectory('".s:ctrlp_cache_dir."')"
-if !s:has_ctrlp_cache_dir
-    call mkdir(s:ctrlp_cache_dir)
+if !has("unix") || has("win32unix") || !executable("fzf")
+    let s:ctrlp_cache_dir = g:vim_dir."/ctrlp_cache"
+    exe "let s:has_ctrlp_cache_dir = isdirectory('".s:ctrlp_cache_dir."')"
+    if !s:has_ctrlp_cache_dir
+        call mkdir(s:ctrlp_cache_dir)
+    endif
+    let g:ctrlp_cache_dir = s:ctrlp_cache_dir
+    let g:ctrlp_working_path_mode = ""
+    let g:ctrlp_reuse_window = 'netrw\|help'
+    let g:extensions#ctrlp#ctrlp_custom_ignore = {
+                \ "file": '\v\.o$|\.exe$|\.lnk$|\.bak$|\.sw[a-z]$|\.class$|\.jasper$'
+                \               . '|\.r[0-9]+$|\.mine$',
+                \ "dir": '\C\V' . escape(expand('~'),' \') . '\$' . '\|ctrlp_cache\$'
+                \ }
+
+    let g:ctrlp_custom_ignore = {
+                \ "func": "extensions#ctrlp#ignore"
+                \ }
+
+    let g:ctrlp_switch_buffer = "t"
+    let g:ctrlp_map = "<f7>"
+    let g:ctrlp_tabpage_position = "bc"
+    let g:ctrlp_clear_cache_on_exit = 0
+    nnoremap <F5> :CtrlPBuffer<cr>
+
+    let g:ctrlp_prompt_mappings = {
+                \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
+                \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
+                \ 'PrtHistory(-1)':       ['<c-j>'],
+                \ 'PrtHistory(1)':        ['<c-k>'],
+                \ }
+    packadd ctrlp.vim
 endif
-let g:ctrlp_cache_dir = s:ctrlp_cache_dir
-let g:ctrlp_working_path_mode = ""
-let g:ctrlp_reuse_window = 'netrw\|help'
-let g:extensions#ctrlp#ctrlp_custom_ignore = {
-            \ "file": '\v\.o$|\.exe$|\.lnk$|\.bak$|\.sw[a-z]$|\.class$|\.jasper$'
-            \               . '|\.r[0-9]+$|\.mine$',
-            \ "dir": '\C\V' . escape(expand('~'),' \') . '\$' . '\|ctrlp_cache\$'
-            \ }
-
-let g:ctrlp_custom_ignore = {
-            \ "func": "extensions#ctrlp#ignore"
-            \ }
-
-let g:ctrlp_switch_buffer = "t"
-let g:ctrlp_map = "<f7>"
-let g:ctrlp_tabpage_position = "bc"
-let g:ctrlp_clear_cache_on_exit = 0
-nnoremap <F5> :CtrlPBuffer<cr>
-
-let g:ctrlp_prompt_mappings = {
-    \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
-    \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
-    \ 'PrtHistory(-1)':       ['<c-j>'],
-    \ 'PrtHistory(1)':        ['<c-k>'],
-    \ }
 
 " fzf.vim
 
 let g:fzf_preview_window = []
 
 if has("unix") && !has("win32unix") && executable("fzf")
-    if isdirectory($HOME . "/.fzf")
-        set rtp+=~/.fzf
-    elseif isdirectory("/usr/share/doc/fzf/examples") " Linux
-        set rtp+=/usr/share/doc/fzf/examples
-    endif
-
     let g:fzf_buffers_jump = 1
 
     " eclim might shadow this command
@@ -844,8 +841,6 @@ if has("unix") && !has("win32unix") && executable("fzf")
     nnoremap <silent> <F5> :call <SID>FZF_Command("Buffers")<cr>
     nnoremap <silent> <F7> :call <SID>FZF_Command("FZF")<cr>
 
-    unlet g:ctrlp_map " else the F7 mapping is going to be overridden by Ctrlp
-
     if executable("dfzf")
         function! s:dfzf_clear_cache()
             let fzf_command=$FZF_DEFAULT_COMMAND
@@ -860,6 +855,13 @@ if has("unix") && !has("win32unix") && executable("fzf")
             let $DFZF_DEFAULT_COMMAND="ddfzf"
         endif
     endif
+
+    if isdirectory($HOME . "/.fzf")
+        set rtp+=~/.fzf
+    elseif isdirectory("/usr/share/doc/fzf/examples") " Linux
+        set rtp+=/usr/share/doc/fzf/examples
+    endif
+    packadd fzf.vim
 endif
 
 " vim-rzip

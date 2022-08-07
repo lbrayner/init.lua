@@ -2,7 +2,7 @@
 	path = pack/bundle/start/CamelCaseMotion
 	url = https://github.com/bkad/CamelCaseMotion.git
 [submodule "pack/bundle/start/ctrlp.vim"]
-	path = pack/bundle/start/ctrlp.vim
+	path = pack/bundle/opt/ctrlp.vim
 	url = https://github.com/ctrlpvim/ctrlp.vim.git
 [submodule "pack/bundle/start/dbext.vim"]
 	path = pack/bundle/start/dbext.vim
@@ -74,7 +74,7 @@
 	path = pack/bundle/start/vim-matchit
 	url = https://github.com/lbrayner/vim-matchit
 [submodule "pack/bundle/start/fzf.vim"]
-	path = pack/bundle/start/fzf.vim
+	path = pack/bundle/opt/fzf.vim
 	url = https://github.com/junegunn/fzf.vim
 [submodule "pack/bundle/start/flattened"]
 	path = pack/bundle/start/flattened
