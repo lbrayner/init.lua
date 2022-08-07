@@ -63,6 +63,7 @@ function! s:PrintWindows(current_tab, number_of_tabs)
         " Fugitive objects
         elseif exists("*FugitiveParse") && stridx(buf_name,"fugitive://") == 0
             let [rev, dir] = FugitiveParse(buf_name)
+            let dir = substitute(dir,'/\.git$',"","")
             if util#IsInDirectory(getcwd(), dir)
                 echo prefix rev
             else

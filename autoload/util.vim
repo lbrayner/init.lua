@@ -169,7 +169,12 @@ function util#NPath(path)
     return fnamemodify(a:path,":p:gs?\\?/?:s?/$??:~")
 endfunction
 
+" stridx is more efficient than substitute
 function! util#IsInDirectory(directory, node)
     " Think Java's String.startsWith
     return stridx(util#NPath(a:node), util#NPath(a:directory)) == 0
+endfunction
+
+function! util#RelativeNode(directory, node)
+    return substitute(util#NPath(a:node),'\V'.util#NPath(a:directory).'/\?',"","")
 endfunction

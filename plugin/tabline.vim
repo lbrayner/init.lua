@@ -32,13 +32,17 @@ function! RedefineTabline()
     " Fugitive objects
     if exists("*FugitiveParse") && stridx(expand("%"),"fugitive://") == 0
         let [rev, dir] = FugitiveParse(expand("%"))
+        let dir = substitute(dir,'/\.git$',"","")
+        if rev ==# ":"
+            let rev = util#RelativeNode(dir, FugitiveReal(expand("%")))
+        endif
         let &tabline.=" %="
         if !util#IsInDirectory(getcwd(), dir)
             let max_length -= len(rev)
             let &tabline.="%#WarningMsg#".util#truncateFilename(
                         \util#NPath(dir),max_length)." "
         endif
-        let &tabline.="%<%#Normal# ".rev." "
+        let &tabline.="%<%#Normal#".rev." "
         return
     endif
     if &buftype ==# 'terminal'
@@ -51,8 +55,8 @@ function! RedefineTabline()
         return
     endif
     " At least one column separating left and right and a 1 column margin
-    let relative_dir=util#truncateFilename(substitute(
-                \fnamemodify(expand("%:h"),":~"),'\V'.cwd.'/\?',"",""),max_length)
+    let relative_dir=util#truncateFilename(util#RelativeNode(getcwd(),
+                \fnamemodify(expand("%:h"),":~")),max_length)
     let relative_dir = relative_dir == "." ? "" : relative_dir
     let &tabline=&tabline.' %#Directory#'.relative_dir.' '
 endfunction
