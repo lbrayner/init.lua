@@ -208,8 +208,8 @@ nnoremap <Space>b :b#<CR>
 
 " quickfix and locallist
 
-nnoremap <silent> <leader>l :botright lopen<CR>
-nnoremap <silent> <leader>q :botright copen<CR>
+nnoremap <silent> <Space>l :botright lopen<CR>
+nnoremap <silent> <Space>q :botright copen<CR>
 
 " force case sensitivity for *-search
 nnoremap <Plug>CaseSensitiveStar /\C\V\<<c-r>=expand("<cword>")<cr>\><cr>
