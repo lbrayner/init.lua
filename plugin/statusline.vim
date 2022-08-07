@@ -74,6 +74,9 @@ augroup Statusline
         autocmd TermLeave * call statusline#HighlightMode('normal')
         autocmd TermLeave * call statusline#RedefineStatusLine()
         autocmd TermLeave * set fillchars<
+    elseif !has("win32unix")
+        " Vim 8.2
+        autocmd TerminalWinOpen * call statusline#DefineTerminalStatusLine()
     endif
     autocmd CmdwinEnter,CmdwinLeave * call statusline#HighlightMode('normal')
     autocmd CursorHold * call VisualModeLeave()

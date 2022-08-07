@@ -35,14 +35,14 @@ function! statusline#VersionControl()
 endfunction
 
 function! s:GetLineFormat()
-    if &buftype ==# 'terminal'
+    if has("nvim") && &buftype ==# 'terminal'
         return '%' . len(&scrollback) . 'l'
     endif
     return '%' . len(line("$")) . 'l'
 endfunction
 
 function! s:GetNumberOfLines()
-    if &buftype ==# 'terminal'
+    if has("nvim") && &buftype ==# 'terminal'
         return '%' . len(&scrollback) . 'L'
     endif
     return '%L'
@@ -150,6 +150,9 @@ function! statusline#DefineStatusLineNoFocus()
 endfunction
 
 function! statusline#DefineTerminalStatusLine()
+    if !has("nvim")
+        let &l:statusline=""
+    endif
     let &l:statusline='%3*%=%*'
 endfunction
 
