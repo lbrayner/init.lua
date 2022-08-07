@@ -76,7 +76,7 @@ function! statusline#Filename(...)
     return filename
 endfunction
 
-function! s:FugitiveFilename()
+function! s:FugitiveTemporaryBuffer()
     return "Git ".join(FugitiveResult(bufnr()).args," ")
 endfunction
 
@@ -88,8 +88,14 @@ function! statusline#DefineModifiedStatusLine()
     let filename = statusline#Filename()
     if exists("b:Statusline_custom_mod_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_mod_leftline."'"
+    elseif getbufvar(bufnr(),"fugitive_type") ==# "index"
+        let &l:statusline=" %5*"
+        if &previewwindow
+            let &l:statusline.="Previewing "
+        endif
+        let &l:statusline.="Fugitive summary%* %<%1 %{statusline#StatusFlag()}%*"
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
-        let filename = s:FugitiveFilename()
+        let filename = s:FugitiveTemporaryBuffer()
         let &l:statusline=" %5*"
         if &previewwindow
             let &l:statusline.="Previewing "
@@ -124,6 +130,15 @@ function! statusline#DefineStatusLineNoFocus()
         let &l:statusline=' '.filename.' '
         return
     endif
+    if getbufvar(bufnr(),"fugitive_type") ==# "index"
+        let &l:statusline=""
+        if &previewwindow
+            let &l:statusline.=" Previewing:"
+        endif
+        let dir = substitute(util#NPath(FugitiveGitDir()),'/\.git$',"","")
+        let &l:statusline.=" Fugitive summary @ ".dir
+        return
+    endif
     if exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let cwd = fnamemodify(FugitiveResult(bufnr()).cwd,":p:~")
         let cwd = substitute(cwd,'/$',"","")
@@ -131,7 +146,7 @@ function! statusline#DefineStatusLineNoFocus()
         if &previewwindow
             let &l:statusline.=" Previewing"
         endif
-        let &l:statusline.=" Fugitive: ".s:FugitiveFilename()." @ ".cwd." "
+        let &l:statusline.=" Fugitive: ".s:FugitiveTemporaryBuffer()." @ ".cwd." "
         return
     endif
     if &previewwindow
@@ -164,8 +179,14 @@ function! statusline#DefineStatusLine()
     let filename = statusline#Filename()
     if exists("b:Statusline_custom_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_leftline."'"
+    elseif getbufvar(bufnr(),"fugitive_type") ==# "index"
+        let &l:statusline=" "
+        if &previewwindow
+            let &l:statusline.="%5*Previewing:%* "
+        endif
+        let &l:statusline.="%<Fugitive summary %1*%{statusline#StatusFlag()}%*"
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
-        let filename = s:FugitiveFilename()
+        let filename = s:FugitiveTemporaryBuffer()
         let &l:statusline=" %5*"
         if &previewwindow
             let &l:statusline.="Previewing "

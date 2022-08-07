@@ -24,7 +24,8 @@ function! s:PrintWindows(current_tab, number_of_tabs)
     echohl None
     let currentWindow=winnr()
     for window in gettabinfo(l:current_tab)[0]["windows"]
-        if win_id2win(window) == currentWindow
+        let winnr = win_id2win(window)
+        if winnr == currentWindow
             let spacing = ">"
         else
             let spacing = " "
@@ -36,9 +37,12 @@ function! s:PrintWindows(current_tab, number_of_tabs)
         let is_help = getbufvar(buf_nr,"&buftype") == "help"
         let loclist = wininfo[0]["loclist"]
         let quickfix = wininfo[0]["quickfix"]
-        let is_tagbar = getbufvar(buf_nr,"&filetype") == "tagbar"
         let is_dirvish = getbufvar(buf_nr,"&filetype") == "dirvish"
         let prefix = "\t" . spacing
+        let preview = ""
+        if getwinvar(winnr,"&previewwindow")
+            let preview = "Previewing: "
+        endif
         if loclist
             echo prefix "[Location List]"
         elseif quickfix
@@ -47,18 +51,27 @@ function! s:PrintWindows(current_tab, number_of_tabs)
             echo prefix "[help]" fnamemodify(buf_name,":t")
         elseif noname
             echo prefix "[No Name]"
-        elseif is_tagbar
-            echo prefix "[Tagbar]"
         elseif is_dirvish
             echo prefix "[Dirvish]"
+        " Fugitive summary
+        elseif getbufvar(buf_nr,"fugitive_type") ==# "index"
+            if util#IsInDirectory(getcwd(), FugitiveGitDir())
+                echo prefix preview."Fugitive summary"
+            else
+                let dir = substitute(util#NPath(FugitiveGitDir()),'/\.git$',"","")
+                echo prefix preview."Fugitive summary" "@" dir
+            endif
         " Fugitive temporary buffers
         elseif exists("*FugitiveResult") && len(FugitiveResult(buf_nr))
             let fcwd = FugitiveResult(buf_nr).cwd
             let command = "Git ".join(FugitiveResult(buf_nr).args," ")
+            if getwinvar(winnr,"&previewwindow")
+                let preview = "Previewing "
+            endif
             if util#IsInDirectory(getcwd(), fcwd)
-                echo prefix "Fugitive:" command
+                echo prefix preview."Fugitive:" command
             else
-                echo prefix "Fugitive:" command "@" util#NPath(fcwd)
+                echo prefix preview."Fugitive:" command "@" util#NPath(fcwd)
             endif
         " Fugitive objects
         elseif exists("*FugitiveParse") && stridx(buf_name,"fugitive://") == 0
@@ -70,7 +83,7 @@ function! s:PrintWindows(current_tab, number_of_tabs)
                 echo prefix util#NPath(dir) rev
             endif
         else
-            echo prefix fnamemodify(buf_name,":~:.")
+            echo prefix preview.fnamemodify(buf_name,":~:.")
         endif
     endfor
 endfunction
