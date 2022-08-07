@@ -32,6 +32,15 @@ function! RedefineTabline()
         let &tabline=&tabline."%#Normal#".expand("%")." "
         return
     endif
+    if exists("*FugitiveParse") && stridx(expand("%"),"fugitive://") == 0
+        let [rev, dir] = FugitiveParse(expand("%"))
+        let &tabline.="%="
+        if stridx(fnamemodify(dir,":p"),fnamemodify(getcwd(),":p:gs?\\?/?")) < 0
+            let &tabline.="%#WarningMsg#".substitute(fnamemodify(dir,":~"),'/$',"","")." "
+        endif
+        let &tabline.="%#Normal# ".rev." "
+        return
+    endif
     if &buftype ==# 'terminal'
         return
     endif
