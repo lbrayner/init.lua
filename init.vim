@@ -939,12 +939,17 @@ augroup END
 
 command! -bar -bang -nargs=* -complete=customlist,fugitive#EditComplete Gdiffsplit
             \ exe fugitive#Diffsplit(1, <bang>0, "<mods>", <q-args>, [<f-args>])
+function! FObject()
+    return FugitiveParse(expand("%"))[0]
+endfunction
 function! FPath()
     return fnamemodify(FugitiveReal(expand("%")),":~:.")
 endfunction
 if exists("*Clip")
+    command! -nargs=0 FObject call Clip(FObject())
     command! -nargs=0 FPath call Clip(FPath())
 else
+    command! -nargs=0 FObject :let @"=FObject()
     command! -nargs=0 FPath :let @"=FPath()
 endif
 
