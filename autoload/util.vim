@@ -162,3 +162,14 @@ function! util#Options(...)
         return a:000[a:0-1]
     endif
 endfunction
+
+" Normalized path
+" Recent versions of getcwd() return paths with backward slashes on win32
+function util#NPath(path)
+    return fnamemodify(a:path,":p:gs?\\?/?:s?/$??:~")
+endfunction
+
+function! util#IsInDirectory(directory, node)
+    " Think Java's String.startsWith
+    return stridx(util#NPath(a:node), util#NPath(a:directory)) == 0
+endfunction

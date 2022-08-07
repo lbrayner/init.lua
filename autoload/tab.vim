@@ -1,33 +1,33 @@
 " http://vim.wikia.com/wiki/Run_a_command_in_multiple_buffers
 " Tweaked by me to preserve last accessed tab
 function! tab#TabDo(command)
-    let currentTab=tabpagenr()
+    let current_tab=tabpagenr()
     exe "normal! g\<Tab>"
-    let previousTab=tabpagenr()
+    let previous_tab=tabpagenr()
     try
         execute "tabdo " . a:command
     finally
-        execute "tabn " . previousTab
-        execute "tabn " . currentTab
+        execute "tabn " . previous_tab
+        execute "tabn " . current_tab
     endtry
 endfunction
 
-function! s:PrintTabs(currentTab)
-    let l:currentTab=tabpagenr()
-    if l:currentTab == a:currentTab
+function! s:PrintWindows(current_tab, number_of_tabs)
+    let l:current_tab=tabpagenr()
+    if l:current_tab == a:current_tab
         echohl WarningMsg
     else
         echohl Directory
     endif
-    let spacing = "  "
-    echo spacing . l:currentTab " " . fnamemodify(getcwd(),":~")
+    echo printf(printf("%%%dd", len(a:number_of_tabs)), l:current_tab)
+                \ fnamemodify(getcwd(),":~")
     echohl None
     let currentWindow=winnr()
-    for window in gettabinfo(l:currentTab)[0]["windows"]
+    for window in gettabinfo(l:current_tab)[0]["windows"]
         if win_id2win(window) == currentWindow
-            let spacing = "> "
+            let spacing = ">"
         else
-            let spacing = "  "
+            let spacing = " "
         endif
         let buf_nr = getwininfo(window)[0]["bufnr"]
         let buf_name = bufname(buf_nr)
@@ -39,19 +39,26 @@ function! s:PrintTabs(currentTab)
         let is_dirvish = getbufvar(buf_nr,"&filetype") == "dirvish"
         let prefix = "\t" . spacing
         if loclist
-            echo prefix . "[Location List]"
+            echo prefix "[Location List]"
         elseif quickfix
-            echo prefix . "[Quickfix List]"
+            echo prefix "[Quickfix List]"
         elseif is_help
-            echo prefix . "[help] " . fnamemodify(buf_name,":t")
+            echo prefix "[help] " fnamemodify(buf_name,":t")
         elseif noname
-            echo prefix . "[No Name]"
+            echo prefix "[No Name]"
         elseif is_tagbar
-            echo prefix . "[Tagbar]"
+            echo prefix "[Tagbar]"
         elseif is_dirvish
-            echo prefix . "[Dirvish]"
+            echo prefix "[Dirvish]"
+        elseif exists("*FugitiveParse") && stridx(expand("%"),"fugitive://") == 0
+            let [rev, dir] = FugitiveParse(expand("%"))
+            if util#IsInDirectory(getcwd(), dir)
+                echo prefix rev
+            else
+                echo prefix util#NPath(dir) rev
+            endif
         else
-            echo prefix . fnamemodify(buf_name,":~:.")
+            echo prefix fnamemodify(buf_name,":~:.")
         endif
     endfor
 endfunction
@@ -62,7 +69,8 @@ function! tab#GoToTab()
     " https://github.com/chrisbra/SaveSigns.vim
     " TODO consider saving and restoring the signs
     sign unplace *
-    noautocmd call tab#TabDo("call s:PrintTabs(s:a_tab_nr)")
+    let s:number_of_tabs = len(gettabinfo())
+    noautocmd call tab#TabDo("call s:PrintWindows(s:a_tab_nr, s:number_of_tabs)")
     let tab = input("Go to tab (".s:a_tab_nr."): ")
     let tab = substitute(tab,"[^0-9]","","g")
     if tab == ""

@@ -4,17 +4,6 @@ endif
 
 set showtabline=2
 
-" Normalized path
-" Recent versions of getcwd() return paths with backward slashes on win32
-function s:NPath(path)
-    return fnamemodify(a:path,":p:gs?\\?/?:s?/$??:~")
-endfunction
-
-function! s:IsInDirectory(directory, node)
-    " Think Java's String.startsWith
-    return stridx(s:NPath(a:node), s:NPath(a:directory)) == 0
-endfunction
-
 function! RedefineTabline()
     " vim-obsession
     let this_session=substitute(v:this_session,'\.\d\+\.obsession\~',"","")
@@ -24,7 +13,7 @@ function! RedefineTabline()
     let session=session_name == "" ? "" :
                 \ "%#Question#" . session_name . "%#Normal# "
     " To be displayed on the left side
-    let cwd=s:NPath(getcwd())
+    let cwd=util#NPath(getcwd())
     " At least one column separating left and right and a 1 column margin
     let max_length = &columns - 3 - 1 - 1 - len(session_name) - 1 - len(cwd) - 1 - 1
     let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '.session
@@ -32,8 +21,8 @@ function! RedefineTabline()
     if exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let &tabline.="%="
         let fcwd = FugitiveResult(bufnr()).cwd
-        if !s:IsInDirectory(getcwd(), fcwd)
-            let &tabline.="%#WarningMsg#".s:NPath(fcwd)." "
+        if !util#IsInDirectory(getcwd(), fcwd)
+            let &tabline.="%#WarningMsg#".util#NPath(fcwd)." "
         endif
         let &tabline.="%#Normal#".expand("%")." "
         return
@@ -41,8 +30,8 @@ function! RedefineTabline()
     if exists("*FugitiveParse") && stridx(expand("%"),"fugitive://") == 0
         let [rev, dir] = FugitiveParse(expand("%"))
         let &tabline.="%="
-        if !s:IsInDirectory(getcwd(), dir)
-            let &tabline.="%#WarningMsg#".s:NPath(dir)." "
+        if !util#IsInDirectory(getcwd(), dir)
+            let &tabline.="%#WarningMsg#".util#NPath(dir)." "
         endif
         let &tabline.="%#Normal# ".rev." "
         return
@@ -50,7 +39,7 @@ function! RedefineTabline()
     if &buftype ==# 'terminal'
         return
     endif
-    let isabsolute=len(expand("%")) <= 0 ? 0 : !s:IsInDirectory(getcwd(), expand("%"))
+    let isabsolute=len(expand("%")) <= 0 ? 0 : !util#IsInDirectory(getcwd(), expand("%"))
     if isabsolute
         let absolute_path=util#truncateFilename(fnamemodify(expand("%"),":p:~"),max_length)
         let &tabline=&tabline.'%=%#WarningMsg# '.absolute_path.' '
