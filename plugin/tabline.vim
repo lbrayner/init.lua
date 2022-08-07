@@ -27,14 +27,13 @@ function! RedefineTabline()
     let cwd=s:NPath(getcwd())
     " At least one column separating left and right and a 1 column margin
     let max_length = &columns - 3 - 1 - 1 - len(session_name) - 1 - len(cwd) - 1 - 1
-    let isabsolute=len(expand("%")) <= 0 ? 0 : !s:IsInDirectory(getcwd(), expand("%"))
     let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '.session
                 \ .'%#NonText#'.cwd
     if exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let &tabline.="%="
-        let fcwd = s:NPath(FugitiveResult(bufnr()).cwd)
+        let fcwd = FugitiveResult(bufnr()).cwd
         if !s:IsInDirectory(getcwd(), fcwd)
-            let &tabline.="%#WarningMsg#".fcwd." "
+            let &tabline.="%#WarningMsg#".s:NPath(fcwd)." "
         endif
         let &tabline.="%#Normal#".expand("%")." "
         return
@@ -43,7 +42,7 @@ function! RedefineTabline()
         let [rev, dir] = FugitiveParse(expand("%"))
         let &tabline.="%="
         if !s:IsInDirectory(getcwd(), dir)
-            let &tabline.="%#WarningMsg#".substitute(fnamemodify(dir,":~"),'/$',"","")." "
+            let &tabline.="%#WarningMsg#".s:NPath(dir)." "
         endif
         let &tabline.="%#Normal# ".rev." "
         return
@@ -51,6 +50,7 @@ function! RedefineTabline()
     if &buftype ==# 'terminal'
         return
     endif
+    let isabsolute=len(expand("%")) <= 0 ? 0 : !s:IsInDirectory(getcwd(), expand("%"))
     if isabsolute
         let absolute_path=util#truncateFilename(fnamemodify(expand("%"),":p:~"),max_length)
         let &tabline=&tabline.'%=%#WarningMsg# '.absolute_path.' '
