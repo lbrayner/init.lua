@@ -14,26 +14,31 @@ function! RedefineTabline()
                 \ "%#Question#" . session_name . "%#Normal# "
     " To be displayed on the left side
     let cwd=util#NPath(getcwd())
+    let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '.session.'%#NonText#'.cwd
     " At least one column separating left and right and a 1 column margin
     let max_length = &columns - 3 - 1 - 1 - len(session_name) - 1 - len(cwd) - 1 - 1
-    let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '.session
-                \ .'%#NonText#'.cwd
+    " Fugitive temporary buffers
     if exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
-        let &tabline.="%="
+        let &tabline.=" %="
         let fcwd = FugitiveResult(bufnr()).cwd
         if !util#IsInDirectory(getcwd(), fcwd)
-            let &tabline.="%#WarningMsg#".util#NPath(fcwd)." "
+            let fcwd = util#NPath(fcwd)
+            let max_length -= len(fcwd)
+            let &tabline.="%<%#WarningMsg#".fcwd." "
         endif
-        let &tabline.="%#Normal#".expand("%")." "
+        let &tabline.="%#Normal#".util#truncateFilename(expand("%"),max_length)." "
         return
     endif
+    " Fugitive objects
     if exists("*FugitiveParse") && stridx(expand("%"),"fugitive://") == 0
         let [rev, dir] = FugitiveParse(expand("%"))
-        let &tabline.="%="
+        let &tabline.=" %="
         if !util#IsInDirectory(getcwd(), dir)
-            let &tabline.="%#WarningMsg#".util#NPath(dir)." "
+            let max_length -= len(rev)
+            let &tabline.="%#WarningMsg#".util#truncateFilename(
+                        \util#NPath(dir),max_length)." "
         endif
-        let &tabline.="%#Normal# ".rev." "
+        let &tabline.="%<%#Normal# ".rev." "
         return
     endif
     if &buftype ==# 'terminal'
@@ -41,15 +46,15 @@ function! RedefineTabline()
     endif
     let isabsolute=len(expand("%")) <= 0 ? 0 : !util#IsInDirectory(getcwd(), expand("%"))
     if isabsolute
-        let absolute_path=util#truncateFilename(fnamemodify(expand("%"),":p:~"),max_length)
-        let &tabline=&tabline.'%=%#WarningMsg# '.absolute_path.' '
+        let absolute_path=util#truncateFilename(util#NPath(expand("%")),max_length)
+        let &tabline=&tabline.' %=%#WarningMsg#'.absolute_path.' '
         return
     endif
     " At least one column separating left and right and a 1 column margin
     let relative_dir=util#truncateFilename(substitute(
                 \fnamemodify(expand("%:h"),":~"),'\V'.cwd.'/\?',"",""),max_length)
     let relative_dir = relative_dir == "." ? "" : relative_dir
-    let &tabline=&tabline.'%#Directory# '.relative_dir.' '
+    let &tabline=&tabline.' %#Directory#'.relative_dir.' '
 endfunction
 
 function! s:TablineBufEnter()
