@@ -46,7 +46,7 @@ function! s:PrintWindows(current_tab, number_of_tabs)
         if loclist
             echo prefix "[Location List]"
         elseif quickfix
-            echo prefix "[Quickfix List]"
+            echo prefix "[Quickfix List] ".getqflist({"title": 1}).title
         elseif is_help
             echo prefix "[help]" fnamemodify(buf_name,":t")
         elseif noname
