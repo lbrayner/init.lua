@@ -130,6 +130,17 @@ api.nvim_create_user_command("DiagnosticSetLocationList",
 api.nvim_create_user_command("QuickFixAllDiagnostics",
     vim.diagnostic.setqflist, { nargs=0 })
 
+local augroup = api.nvim_create_augroup("custom_diagnostics", { clear=true })
+
+api.nvim_create_autocmd({ "DiagnosticChanged" }, {
+    group = augroup,
+    callback = function()
+        if vim.fn.getqflist({ title=true }).title == "Diagnostics" then
+            vim.diagnostic.setqflist({ open=false })
+        end
+    end,
+})
+
 local err = "DiagnosticSignError"
 local war = "DiagnosticSignWarn"
 local inf = "DiagnosticSignInfo"
@@ -165,7 +176,6 @@ end
 
 api.nvim_create_user_command("CustomDiagnostics", CustomDiagnostics, { nargs=0 })
 
-local augroup = api.nvim_create_augroup("custom_diagnostics", { clear=true })
 api.nvim_create_autocmd({ "VimEnter" }, {
     group = augroup,
     callback = CustomDiagnostics,
