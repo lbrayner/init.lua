@@ -44,7 +44,7 @@ function! s:PrintWindows(current_tab, number_of_tabs)
         elseif quickfix
             echo prefix "[Quickfix List]"
         elseif is_help
-            echo prefix "[help] " fnamemodify(buf_name,":t")
+            echo prefix "[help]" fnamemodify(buf_name,":t")
         elseif noname
             echo prefix "[No Name]"
         elseif is_tagbar
