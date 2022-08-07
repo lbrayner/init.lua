@@ -5,12 +5,14 @@ endif
 set showtabline=2
 
 " Normalized path
+" Recent versions of getcwd() return paths with backward slashes on win32
 function s:NPath(path)
-    return fnamemodify(a:path,":p:gs?\\?/?:s?/$?:~")
+    return fnamemodify(a:path,":p:gs?\\?/?:s?/$??:~")
 endfunction
 
-function! s:IsSubdirectory(directory, subdirectory)
-    return stridx(s:NPath(a:subdirectory), s:NPath(a:directory)) == 0
+function! s:IsInDirectory(directory, node)
+    " Think Java's String.startsWith
+    return stridx(s:NPath(a:node), s:NPath(a:directory)) == 0
 endfunction
 
 function! RedefineTabline()
@@ -22,14 +24,10 @@ function! RedefineTabline()
     let session=session_name == "" ? "" :
                 \ "%#Question#" . session_name . "%#Normal# "
     " To be displayed on the left side
-    let cwd=substitute(fnamemodify(getcwd(),":~"),'/$',"","")
+    let cwd=s:NPath(getcwd())
     " At least one column separating left and right and a 1 column margin
     let max_length = &columns - 3 - 1 - 1 - len(session_name) - 1 - len(cwd) - 1 - 1
-    " Is it outside of cwd? Recent versions of getcwd() return paths with backward
-    " slashes on win32
-    " Similar to Java's String.startsWith
-    let isabsolute=len(expand("%")) <= 0 ? 0
-                \: stridx(expand("%:p"),fnamemodify(getcwd(),":p:gs?\\?/?")) != 0
+    let isabsolute=len(expand("%")) <= 0 ? 0 : !s:IsInDirectory(getcwd(), expand("%"))
     let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '.session
                 \ .'%#NonText#'.cwd
     if exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
@@ -44,7 +42,7 @@ function! RedefineTabline()
     if exists("*FugitiveParse") && stridx(expand("%"),"fugitive://") == 0
         let [rev, dir] = FugitiveParse(expand("%"))
         let &tabline.="%="
-        if !s:IsSubdirectory(getcwd(), dir)
+        if !s:IsInDirectory(getcwd(), dir)
             let &tabline.="%#WarningMsg#".substitute(fnamemodify(dir,":~"),'/$',"","")." "
         endif
         let &tabline.="%#Normal# ".rev." "
