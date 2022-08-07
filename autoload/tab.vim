@@ -19,8 +19,8 @@ function! s:PrintWindows(current_tab, number_of_tabs)
     else
         echohl Directory
     endif
-    echo printf(printf("%%%dd", len(a:number_of_tabs)), l:current_tab)
-                \ fnamemodify(getcwd(),":~")
+    echo " ".printf(printf("%%%dd", len(a:number_of_tabs)), l:current_tab)
+                \ " ".fnamemodify(getcwd(),":~")
     echohl None
     let currentWindow=winnr()
     for window in gettabinfo(l:current_tab)[0]["windows"]
@@ -29,12 +29,13 @@ function! s:PrintWindows(current_tab, number_of_tabs)
         else
             let spacing = " "
         endif
-        let buf_nr = getwininfo(window)[0]["bufnr"]
+        let wininfo = getwininfo(window)
+        let buf_nr = wininfo[0]["bufnr"]
         let buf_name = bufname(buf_nr)
         let noname = buf_name == ""
         let is_help = getbufvar(buf_nr,"&buftype") == "help"
-        let loclist = getwininfo(window)[0]["loclist"]
-        let quickfix = getwininfo(window)[0]["quickfix"]
+        let loclist = wininfo[0]["loclist"]
+        let quickfix = wininfo[0]["quickfix"]
         let is_tagbar = getbufvar(buf_nr,"&filetype") == "tagbar"
         let is_dirvish = getbufvar(buf_nr,"&filetype") == "dirvish"
         let prefix = "\t" . spacing
@@ -50,8 +51,18 @@ function! s:PrintWindows(current_tab, number_of_tabs)
             echo prefix "[Tagbar]"
         elseif is_dirvish
             echo prefix "[Dirvish]"
-        elseif exists("*FugitiveParse") && stridx(expand("%"),"fugitive://") == 0
-            let [rev, dir] = FugitiveParse(expand("%"))
+        " Fugitive temporary buffers
+        elseif exists("*FugitiveResult") && len(FugitiveResult(buf_nr))
+            let fcwd = FugitiveResult(buf_nr).cwd
+            let command = "Git ".join(FugitiveResult(buf_nr).args," ")
+            if util#IsInDirectory(getcwd(), fcwd)
+                echo prefix "Fugitive:" command
+            else
+                echo prefix "Fugitive:" command "@" util#NPath(fcwd)
+            endif
+        " Fugitive objects
+        elseif exists("*FugitiveParse") && stridx(buf_name,"fugitive://") == 0
+            let [rev, dir] = FugitiveParse(buf_name)
             if util#IsInDirectory(getcwd(), dir)
                 echo prefix rev
             else
