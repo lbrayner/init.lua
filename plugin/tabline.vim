@@ -4,6 +4,15 @@ endif
 
 set showtabline=2
 
+" Normalized path
+function s:NPath(path)
+    return fnamemodify(a:path,":p:gs?\\?/?:s?/$?:~")
+endfunction
+
+function! s:IsSubdirectory(directory, subdirectory)
+    return stridx(s:NPath(a:subdirectory), s:NPath(a:directory)) == 0
+endfunction
+
 function! RedefineTabline()
     " vim-obsession
     let this_session=substitute(v:this_session,'\.\d\+\.obsession\~',"","")
@@ -35,7 +44,7 @@ function! RedefineTabline()
     if exists("*FugitiveParse") && stridx(expand("%"),"fugitive://") == 0
         let [rev, dir] = FugitiveParse(expand("%"))
         let &tabline.="%="
-        if stridx(fnamemodify(dir,":p"),fnamemodify(getcwd(),":p:gs?\\?/?")) < 0
+        if !s:IsSubdirectory(getcwd(), dir)
             let &tabline.="%#WarningMsg#".substitute(fnamemodify(dir,":~"),'/$',"","")." "
         endif
         let &tabline.="%#Normal# ".rev." "
