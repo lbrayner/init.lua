@@ -118,6 +118,10 @@ function! util#isQuickfixList(...)
     return getwininfo(winid)[0]["quickfix"] && !util#isLocationList(winid)
 endfunction
 
+function! util#getQuickfixTitle()
+    return getqflist({"title": 1}).title
+endfunction
+
 function! util#IsVimBundle()
     return filereadable("init.vim")
 endfunction

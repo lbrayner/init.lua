@@ -200,7 +200,7 @@ function! statusline#DefineStatusLine()
                         \" %1*%{statusline#StatusFlag()}%*"
         endif
     elseif util#isQuickfixList()
-        let &l:statusline=" %<%f ".getqflist({"title": 1}).title
+        let &l:statusline=' %<%f %{util#getQuickfixTitle()}'
     elseif &buftype == "nofile"
         let &l:statusline=' %<%5*'.filename.' %1*%{statusline#StatusFlag()}%*'
     else
