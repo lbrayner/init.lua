@@ -163,10 +163,10 @@ end
 api.nvim_create_user_command("DefaultDiagnostics", DefaultDiagnostics, { nargs=0 })
 
 local function CustomDiagnostics()
-    vim.fn.sign_define(err, { text="Ɛ", texthl=err, linehl="", numhl="" })
-    vim.fn.sign_define(war, { text="Ɯ", texthl=war, linehl="", numhl="" })
-    vim.fn.sign_define(inf, { text="Ɩ", texthl=inf, linehl="", numhl="" })
-    vim.fn.sign_define(hin, { text="ƕ", texthl=hin, linehl="", numhl="" })
+    vim.fn.sign_define(err, { text="", texthl=err, linehl="", numhl=err })
+    vim.fn.sign_define(war, { text="", texthl=war, linehl="", numhl=war })
+    vim.fn.sign_define(inf, { text="", texthl=inf, linehl="", numhl=inf })
+    vim.fn.sign_define(hin, { text="", texthl=hin, linehl="", numhl=hin })
 
     vim.diagnostic.config({ virtual_text={
         prefix="•",
