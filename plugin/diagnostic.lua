@@ -47,29 +47,17 @@ local function handle_long_extmarks(namespace, bufnr, winid)
     end
 end
 
-local virtual_text_handler = vim.diagnostic.handlers.virtual_text
+if not _G.default_virtual_text_handler then
+    _G.default_virtual_text_handler = vim.diagnostic.handlers.virtual_text
+end
 
-vim.diagnostic.handlers.virtual_text = {
-    show = function(namespace, bufnr, diagnostics, opts)
-        virtual_text_handler.show(namespace, bufnr, diagnostics, opts)
-        local winid = vim.fn.bufwinid(bufnr)
-        if winid < 0 then
-            return
-        end
-        handle_long_extmarks(namespace, bufnr, winid)
-    end,
-    hide = function(namespace, bufnr)
-        virtual_text_handler.hide(namespace, bufnr)
-    end,
-}
-
-local augroup = api.nvim_create_augroup("trunc_virt_text", { clear=true })
+local trunc_virt_text = api.nvim_create_augroup("trunc_virt_text", { clear=true })
 
 api.nvim_create_autocmd({ "VimEnter" }, {
-    group = augroup,
+    group = trunc_virt_text,
     callback = function(args)
         api.nvim_create_autocmd({ "WinEnter" }, {
-            group = augroup,
+            group = trunc_virt_text,
             callback = function(args)
                 local bufnr = args.buf
                 local winid = vim.fn.bufwinid(bufnr)
@@ -83,6 +71,10 @@ api.nvim_create_autocmd({ "VimEnter" }, {
         })
     end,
 })
+
+if vim.v.vim_did_enter then
+    api.nvim_exec_autocmds("VimEnter", { group=trunc_virt_text })
+end
 
 local function get_cursor()
     return api.nvim_win_get_cursor(0)
@@ -136,10 +128,10 @@ api.nvim_create_user_command("DiagnosticSetLocationList",
 api.nvim_create_user_command("QuickFixAllDiagnostics",
     vim.diagnostic.setqflist, { nargs=0 })
 
-local augroup = api.nvim_create_augroup("custom_diagnostics", { clear=true })
+local custom_diagnostics = api.nvim_create_augroup("custom_diagnostics", { clear=true })
 
 api.nvim_create_autocmd({ "DiagnosticChanged" }, {
-    group = augroup,
+    group = custom_diagnostics,
     callback = function()
         if vim.fn.getqflist({ title=true }).title == "Diagnostics" then
             vim.diagnostic.setqflist({ open=false })
@@ -164,6 +156,8 @@ local function DefaultDiagnostics()
     vim.fn.sign_define(hin, { text="H", texthl=hin, linehl="", numhl="" })
 
     vim.diagnostic.config({ virtual_text=true })
+
+    vim.diagnostic.handlers.virtual_text = _G.default_virtual_text_handler
 end
 
 api.nvim_create_user_command("DefaultDiagnostics", DefaultDiagnostics, { nargs=0 })
@@ -178,11 +172,25 @@ local function CustomDiagnostics()
         prefix="•",
         spacing=0,
     } })
+
+    vim.diagnostic.handlers.virtual_text = {
+        show = function(namespace, bufnr, diagnostics, opts)
+            _G.default_virtual_text_handler.show(namespace, bufnr, diagnostics, opts)
+            local winid = vim.fn.bufwinid(bufnr)
+            if winid < 0 then
+                return
+            end
+            handle_long_extmarks(namespace, bufnr, winid)
+        end,
+        hide = function(namespace, bufnr)
+            _G.default_virtual_text_handler.hide(namespace, bufnr)
+        end,
+    }
 end
 
 api.nvim_create_user_command("CustomDiagnostics", CustomDiagnostics, { nargs=0 })
 
 api.nvim_create_autocmd({ "VimEnter" }, {
-    group = augroup,
+    group = custom_diagnostics,
     callback = CustomDiagnostics,
 })
