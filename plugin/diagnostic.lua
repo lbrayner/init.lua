@@ -47,10 +47,6 @@ local function handle_long_extmarks(namespace, bufnr, winid)
     end
 end
 
-if not _G.default_virtual_text_handler then
-    _G.default_virtual_text_handler = vim.diagnostic.handlers.virtual_text
-end
-
 local trunc_virt_text = api.nvim_create_augroup("trunc_virt_text", { clear=true })
 
 api.nvim_create_autocmd({ "VimEnter" }, {
@@ -143,6 +139,10 @@ local err = "DiagnosticSignError"
 local war = "DiagnosticSignWarn"
 local inf = "DiagnosticSignInfo"
 local hin = "DiagnosticSignHint"
+
+if not _G.default_virtual_text_handler then
+    _G.default_virtual_text_handler = vim.diagnostic.handlers.virtual_text
+end
 
 local function DefaultDiagnostics()
     api.nvim_command("highlight DiagnosticError ctermfg=1 guifg=Red")
