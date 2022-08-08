@@ -88,7 +88,13 @@ local function get_cursor()
     return api.nvim_win_get_cursor(0)
 end
 
+local close_events = { "CursorMoved", "CursorMovedI", "InsertCharPre", "WinScrolled" }
+
 local function open_float()
+    return vim.diagnostic.open_float({ close_events=close_events })
+end
+
+local function goto_first()
     -- Save the current cursor position
     local line_col = get_cursor()
     -- Move the cursor to the second column
@@ -99,7 +105,7 @@ local function open_float()
         -- Go to column 1 and open the floating window
         api.nvim_win_set_cursor(0,{ line_col[1], 0 })
         -- Scheduling lest CursorMoved is triggered
-        return vim.schedule(vim.diagnostic.open_float)
+        return vim.schedule(open_float)
     end
     -- Move the cursor to the beginning of the line
     api.nvim_win_set_cursor(0,{ line_col[1], 0 })
@@ -108,19 +114,19 @@ local function open_float()
     -- column 1
     if not next_pos or next_pos[1]+1 ~= line_col[1] then
         -- If there isn't, restore the cursor
-        return vim.diagnostic.open_float() or api.nvim_win_set_cursor(0, line_col)
+        return open_float() or api.nvim_win_set_cursor(0, line_col)
     end
     -- Move the cursor to the first diagnostic in the line
     api.nvim_win_set_cursor(0, { line_col[1], next_pos[2] })
     -- Scheduling lest CursorMoved is triggered
-    return vim.schedule(vim.diagnostic.open_float)
+    return vim.schedule(open_float)
 end
 
 local opts = { silent=true }
 
-nnoremap("<space>e", open_float, opts)
+nnoremap("<space>e", goto_first, opts)
 nnoremap("<space>E", function()
-    vim.diagnostic.open_float { scope="buffer" }
+    vim.diagnostic.open_float { close_events=close_events, scope="buffer" }
 end, opts)
 nnoremap("[d", vim.diagnostic.goto_prev, opts)
 nnoremap("]d", vim.diagnostic.goto_next, opts)
