@@ -427,8 +427,11 @@ endfunction
 command! -nargs=0 NumberToggle call s:NumberToggle()
 
 " https://vi.stackexchange.com/a/36414
-function! s:Source(line_start,line_end)
+function! s:Source(line_start, line_end, ...)
     let tempfile = tempname()
+    if a:0 > 0 && a:1 " Lua code
+        let tempfile.=".lua"
+    endif
     sil exe a:line_start.",".a:line_end."write ".fnameescape(tempfile)
     exe "source ".fnameescape(tempfile)
     call delete(tempfile)
@@ -439,7 +442,10 @@ function! s:Source(line_start,line_end)
     echom "Sourced lines ".a:line_start." to ".a:line_end."."
 endfunction
 
-command! -nargs=0 -range Source call s:Source(<line1>,<line2>)
+command! -nargs=0 -range Source call s:Source(<line1>, <line2>)
+if has("nvim")
+    command! -nargs=0 -range LuaSource call s:Source(<line1>, <line2>, 1)
+endif
 
 function! s:Filter(line_start,line_end)
     let offset = 0
