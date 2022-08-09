@@ -548,13 +548,15 @@ function! s:Aesthetics()
     endif
     " setting nonumber if length of line count is greater than 3
     if len(line("$"))>3
-        setlocal nonumber
+        set nonumber
+        let b:aesthetics = 1
     endif
 endfun
 
 augroup AestheticsAutoGroup
     autocmd!
     autocmd BufRead * call s:Aesthetics()
+    autocmd VimEnter,WinEnter * if exists("b:aesthetics") | set nonumber | endif
 augroup END
 
 "help buffers
