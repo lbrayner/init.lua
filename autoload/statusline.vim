@@ -20,6 +20,17 @@ function! statusline#StatusFlag()
     return ''
 endfunction
 
+function! statusline#Diagnostics()
+    if !has("nvim")
+        return ""
+    endif
+    let buffer_severity = v:lua.require'lbrayner.diagnostic'.buffer_severity()
+    if buffer_severity == v:null
+        return "   "
+    endif
+    return " ".buffer_severity[0:0]." "
+endfunction
+
 function! statusline#VersionControl()
     if !exists("*FugitiveHead")
         return ""
@@ -50,10 +61,12 @@ endfunction
 
 function! statusline#GetStatusLineTail()
     let bufferPosition = ' ' . s:GetLineFormat() . ',%-3.v %3.P ' . s:GetNumberOfLines()
+    " TODO remove this?
     if &buftype == "nofile"
         return bufferPosition . ' %2*%{&filetype}%* '
     endif
     return bufferPosition
+                \ . '%1*%{statusline#Diagnostics()}%*'
                 \ . '%6*%{statusline#VersionControl()}%*'
                 \ . ' %4*%{util#Options("&fileencoding","&encoding")}%*'
                 \ . ' %4.(%4*%{&fileformat}%*%)'
@@ -201,6 +214,8 @@ function! statusline#DefineStatusLine()
         endif
     elseif util#isQuickfixList()
         let &l:statusline=' %<%5*%f%* %{util#getQuickfixTitle()}'
+    elseif util#isLocationList()
+        let &l:statusline=' %<%5*[Location List]%* %{util#getLocationListTitle(0)}'
     elseif &buftype == "nofile"
         let &l:statusline=' %<%5*'.filename.' %1*%{statusline#StatusFlag()}%*'
     else

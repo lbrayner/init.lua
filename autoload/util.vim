@@ -122,6 +122,10 @@ function! util#getQuickfixTitle()
     return getqflist({"title": 1}).title
 endfunction
 
+function! util#getLocationListTitle(nr)
+    return getloclist(a:nr, {"title": 1}).title
+endfunction
+
 function! util#IsVimBundle()
     return filereadable("init.vim")
 endfunction
