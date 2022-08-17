@@ -7,6 +7,7 @@ end
 
 local keymap = require("lbrayner.keymap")
 local nnoremap = keymap.nnoremap
+local prefix = require("lbrayner.diagnostic").prefix
 
 local function is_long(bufnr, winid, virt_texts, lnum)
     -- TODO reduce?
@@ -169,7 +170,7 @@ local function CustomDiagnostics()
     vim.fn.sign_define(hin, { text="", texthl=hin, linehl="", numhl=hin })
 
     vim.diagnostic.config({ virtual_text={
-        prefix="•",
+        prefix=prefix,
         spacing=0,
     } })
 

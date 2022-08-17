@@ -1,3 +1,5 @@
+local prefix = "•"
+
 local function buffer_severity()
     if not (vim.tbl_count(vim.diagnostic.get(0)) > 0) then
         return nil
@@ -10,6 +12,11 @@ local function buffer_severity()
     end
 end
 
+-- buffer_severity and get_prefix are meant for the Vimscript statusline
 return {
     buffer_severity = buffer_severity,
+    get_prefix = function()
+        return prefix
+    end,
+    prefix = prefix,
 }

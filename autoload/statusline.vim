@@ -28,10 +28,11 @@ function! statusline#Diagnostics()
     if buffer_severity == v:null
         return "  "
     endif
+    let prefix = v:lua.require'lbrayner.diagnostic'.get_prefix()
     if buffer_severity == "ERROR"
-        return " %1*".buffer_severity[0]."%*"
+        return " %1*".prefix."%*"
     endif
-    return " %5*".buffer_severity[0]."%*"
+    return " %5*".prefix."%*"
 endfunction
 
 function! statusline#VersionControl()
