@@ -26,9 +26,12 @@ function! statusline#Diagnostics()
     endif
     let buffer_severity = v:lua.require'lbrayner.diagnostic'.buffer_severity()
     if buffer_severity == v:null
-        return "   "
+        return "  "
     endif
-    return " ".buffer_severity[0:0]." "
+    if buffer_severity == "ERROR"
+        return " %1*".buffer_severity[0]."%*"
+    endif
+    return " %5*".buffer_severity[0]."%*"
 endfunction
 
 function! statusline#VersionControl()
@@ -66,7 +69,7 @@ function! statusline#GetStatusLineTail()
         return bufferPosition . ' %2*%{&filetype}%* '
     endif
     return bufferPosition
-                \ . '%1*%{statusline#Diagnostics()}%*'
+                \ . statusline#Diagnostics()
                 \ . '%6*%{statusline#VersionControl()}%*'
                 \ . ' %4*%{util#Options("&fileencoding","&encoding")}%*'
                 \ . ' %4.(%4*%{&fileformat}%*%)'

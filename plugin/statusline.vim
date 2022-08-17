@@ -88,6 +88,9 @@ augroup Statusline
     autocmd VimEnter * call statusline#initialize()
     autocmd VimEnter * call statusline#RedefineStatusLine()
     autocmd ColorScheme * call statusline#initialize()
+    if has("nvim")
+        autocmd DiagnosticChanged * call statusline#RedefineStatusLine()
+    endif
 augroup END
 
 " Setting a default not current statusline
