@@ -849,19 +849,16 @@ if has("unix") && !has("win32unix") && executable("fzf")
     nnoremap <silent> <F5> :call <SID>FZF_Command("Buffers")<cr>
     nnoremap <silent> <F7> :call <SID>FZF_Command("FZF")<cr>
 
-    if executable("dfzf")
-        function! s:dfzf_clear_cache()
+    if executable("find_file_cache")
+        function! s:find_file_cache_clear()
             let fzf_command=$FZF_DEFAULT_COMMAND
-            let $FZF_DEFAULT_COMMAND="dfzf -C"
+            let $FZF_DEFAULT_COMMAND="find_file_cache -C"
             call s:FZF_Command("FZF")
             let $FZF_DEFAULT_COMMAND=fzf_command
         endfunction
 
-        let $FZF_DEFAULT_COMMAND="dfzf"
-        nnoremap <silent> <leader><f7> :call <SID>dfzf_clear_cache()<cr>
-        if !executable("ag") && executable("ddfzf")
-            let $DFZF_DEFAULT_COMMAND="ddfzf"
-        endif
+        let $FZF_DEFAULT_COMMAND="find_file_cache"
+        nnoremap <silent> <leader><f7> :call <SID>find_file_cache_clear()<cr>
     endif
 
     if isdirectory($HOME . "/.fzf")
