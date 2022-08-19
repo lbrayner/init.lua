@@ -29,6 +29,11 @@ function! HighlightTrailingWhitespace()
         call ClearTrailingWhitespace()
         return
     endif
+    " Telescope
+    if &syntax =~# '\v%(TelescopePrompt|TelescopeResults)'
+        call ClearTrailingWhitespace()
+        return
+    endif
     call ClearTrailingWhitespace()
     let w:TrailingWhitespaceID = matchadd("TrailingWhitespace",'\s\+$')
 endfunction
