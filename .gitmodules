@@ -73,9 +73,6 @@
 [submodule "pack/bundle/start/vim-matchit"]
 	path = pack/bundle/start/vim-matchit
 	url = https://github.com/lbrayner/vim-matchit
-[submodule "pack/bundle/start/fzf.vim"]
-	path = pack/bundle/opt/fzf.vim
-	url = https://github.com/junegunn/fzf.vim
 [submodule "pack/bundle/start/flattened"]
 	path = pack/bundle/start/flattened
 	url = https://github.com/romainl/flattened
@@ -109,3 +106,6 @@
 [submodule "pack/bundle/start/reply.vim"]
 	path = pack/bundle/start/reply.vim
 	url = https://github.com/rhysd/reply.vim
+[submodule "pack/bundle/opt/fzf-lua"]
+	path = pack/bundle/opt/fzf-lua
+	url = https://github.com/ibhagwan/fzf-lua

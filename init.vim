@@ -788,7 +788,7 @@ map <silent> <leader>ge <Plug>CamelCaseMotion_ge
 
 " ctrlp
 
-if !has("unix") || has("win32unix") || !executable("fzf")
+if !has("nvim") || !executable("fzf")
     let s:ctrlp_cache_dir = g:vim_dir."/ctrlp_cache"
     exe "let s:has_ctrlp_cache_dir = isdirectory('".s:ctrlp_cache_dir."')"
     if !s:has_ctrlp_cache_dir
@@ -820,53 +820,6 @@ if !has("unix") || has("win32unix") || !executable("fzf")
                 \ 'PrtHistory(1)':        ['<c-k>'],
                 \ }
     packadd ctrlp.vim
-endif
-
-" fzf.vim
-
-let g:fzf_preview_window = []
-
-if has("unix") && !has("win32unix") && executable("fzf")
-    let g:fzf_buffers_jump = 1
-
-    " eclim might shadow this command
-    command! -bar -bang -nargs=? -complete=buffer Buffers call fzf#vim#buffers(<q-args>,
-                \ fzf#vim#with_preview({ "placeholder": "{1}" }), <bang>0)
-
-    function! s:FZF_Command(command)
-        if !exists(":FZF")
-            echomsg "FZF is not defined. " .
-                        \ "Please add the fzf package to the runtimepath (fzf ≠ fzf.vim)."
-            return
-        endif
-        " In case the file is opened in a new tab with Ctrl-T, the new window
-        " will inherit &cursorline from the FZF popup, which is always false
-        let cul = &cursorline
-        exe a:command
-        let &cursorline = cul
-    endfunction
-
-    nnoremap <silent> <F5> :call <SID>FZF_Command("Buffers")<cr>
-    nnoremap <silent> <F7> :call <SID>FZF_Command("FZF")<cr>
-
-    if executable("find_file_cache")
-        function! s:find_file_cache_clear()
-            let fzf_command=$FZF_DEFAULT_COMMAND
-            let $FZF_DEFAULT_COMMAND="find_file_cache -C"
-            call s:FZF_Command("FZF")
-            let $FZF_DEFAULT_COMMAND=fzf_command
-        endfunction
-
-        let $FZF_DEFAULT_COMMAND="find_file_cache"
-        nnoremap <silent> <leader><f7> :call <SID>find_file_cache_clear()<cr>
-    endif
-
-    if isdirectory($HOME . "/.fzf")
-        set rtp+=~/.fzf
-    elseif isdirectory("/usr/share/doc/fzf/examples") " Linux
-        set rtp+=/usr/share/doc/fzf/examples
-    endif
-    packadd fzf.vim
 endif
 
 " vim-rzip
