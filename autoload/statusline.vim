@@ -31,9 +31,9 @@ function! statusline#Diagnostics()
     let group = "Diagnostic".buffer_severity[0].tolower(buffer_severity[1:])
     let cterm = synIDattr(synIDtrans(hlID(group)), "fg", "cterm")
     let gui = synIDattr(synIDtrans(hlID(group)), "fg", "gui")
-    execute "highlight! SLDiagnostics ctermfg=".cterm." guifg=".gui
+    execute "highlight! User7 ctermfg=".cterm." guifg=".gui
     let prefix = v:lua.require'lbrayner.diagnostic'.get_prefix()
-    return " %#SLDiagnostics#".prefix."%#StatusLine#"
+    return " %7*".prefix."%*"
 endfunction
 
 function! statusline#VersionControl()
@@ -272,8 +272,8 @@ function! statusline#HighlightMode(mode)
         \ . "'User4': {'bg': s:user4_".a:mode."_bg, 'fg': s:user4_".a:mode."_fg},"
         \ . "'User5': {'bg': s:user5_".a:mode."_bg, 'fg': s:user5_".a:mode."_fg},"
         \ . "'User6': {'bg': s:user6_".a:mode."_bg, 'fg': s:user6_".a:mode."_fg},"
-        \ . "'User7': {'bg': s:user7_".a:mode."_bg, 'fg': s:user7_".a:mode."_fg},"
-        \ . "'SLDiagnostics': {'bg': s:diagn_".a:mode."_bg}})"
+        \ . "'User7': {'bg': s:diagn_".a:mode."_bg},"
+        \ . "'User9': {'bg': s:user9_".a:mode."_bg, 'fg': s:user9_".a:mode."_fg}})"
     exe "call statusline#Highlight({"
         \ . "'StatusLine': s:statusline_".a:mode.","
         \ . "'User1': s:statusline_".a:mode.","
@@ -283,7 +283,7 @@ function! statusline#HighlightMode(mode)
         \ . "'User5': s:statusline_".a:mode.","
         \ . "'User6': s:statusline_".a:mode.","
         \ . "'User7': s:statusline_".a:mode.","
-        \ . "'SLDiagnostics': s:statusline_".a:mode."})"
+        \ . "'User9': s:statusline_".a:mode."})"
 endfunction
 
 function! statusline#RedefineStatusLine()
