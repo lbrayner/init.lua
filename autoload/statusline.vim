@@ -287,6 +287,9 @@ function! statusline#HighlightMode(mode)
 endfunction
 
 function! statusline#RedefineStatusLine()
+    if &buftype == "terminal" && stridx(mode(), "t") == 0
+        return
+    endif
     if &modified
         call statusline#DefineModifiedStatusLine()
     else
