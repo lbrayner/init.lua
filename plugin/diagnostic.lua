@@ -156,7 +156,7 @@ local function DefaultDiagnostics()
     vim.fn.sign_define(inf, { text="I", texthl=inf, linehl="", numhl="" })
     vim.fn.sign_define(hin, { text="H", texthl=hin, linehl="", numhl="" })
 
-    vim.diagnostic.config({ virtual_text=true })
+    vim.diagnostic.config({ severity_sort=false, virtual_text=true })
 
     vim.diagnostic.handlers.virtual_text = _G.default_virtual_text_handler
 end
@@ -169,10 +169,12 @@ local function CustomDiagnostics()
     vim.fn.sign_define(inf, { text="", texthl=inf, linehl="", numhl=inf })
     vim.fn.sign_define(hin, { text="", texthl=hin, linehl="", numhl=hin })
 
-    vim.diagnostic.config({ virtual_text={
-        prefix=prefix,
-        spacing=0,
-    } })
+    vim.diagnostic.config({
+        severity_sort = true,
+        virtual_text = {
+            prefix=prefix,
+            spacing=0,
+        } })
 
     vim.diagnostic.handlers.virtual_text = {
         show = function(namespace, bufnr, diagnostics, opts)
