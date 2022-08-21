@@ -28,11 +28,12 @@ function! statusline#Diagnostics()
     if buffer_severity == v:null
         return "  "
     endif
+    let group = "Diagnostic".buffer_severity[0].tolower(buffer_severity[1:])
+    let cterm = synIDattr(synIDtrans(hlID(group)), "fg", "cterm")
+    let gui = synIDattr(synIDtrans(hlID(group)), "fg", "gui")
+    execute "highlight! SLDiagnostics ctermfg=".cterm." guifg=".gui
     let prefix = v:lua.require'lbrayner.diagnostic'.get_prefix()
-    if buffer_severity == "ERROR"
-        return " %1*".prefix."%*"
-    endif
-    return " %5*".prefix."%*"
+    return " %#SLDiagnostics#".prefix."%#StatusLine#"
 endfunction
 
 function! statusline#VersionControl()
@@ -271,7 +272,8 @@ function! statusline#HighlightMode(mode)
         \ . "'User4': {'bg': s:user4_".a:mode."_bg, 'fg': s:user4_".a:mode."_fg},"
         \ . "'User5': {'bg': s:user5_".a:mode."_bg, 'fg': s:user5_".a:mode."_fg},"
         \ . "'User6': {'bg': s:user6_".a:mode."_bg, 'fg': s:user6_".a:mode."_fg},"
-        \ . "'User7': {'bg': s:user7_".a:mode."_bg, 'fg': s:user7_".a:mode."_fg}})"
+        \ . "'User7': {'bg': s:user7_".a:mode."_bg, 'fg': s:user7_".a:mode."_fg},"
+        \ . "'SLDiagnostics': {'bg': s:diagn_".a:mode."_bg}})"
     exe "call statusline#Highlight({"
         \ . "'StatusLine': s:statusline_".a:mode.","
         \ . "'User1': s:statusline_".a:mode.","
@@ -280,7 +282,8 @@ function! statusline#HighlightMode(mode)
         \ . "'User4': s:statusline_".a:mode.","
         \ . "'User5': s:statusline_".a:mode.","
         \ . "'User6': s:statusline_".a:mode.","
-        \ . "'User7': s:statusline_".a:mode."})"
+        \ . "'User7': s:statusline_".a:mode.","
+        \ . "'SLDiagnostics': s:statusline_".a:mode."})"
 endfunction
 
 function! statusline#RedefineStatusLine()
@@ -291,10 +294,10 @@ function! statusline#RedefineStatusLine()
     endif
 endfunction
 
-function! statusline#loadColorTheme(colorTheme)
-    let colorMapping = a:colorTheme
-    if type(a:colorTheme) == type("")
-        exec "let colorMapping = statusline#themes#".a:colorTheme."#getColorMapping()"
+function! statusline#loadColorTheme(colorMapping)
+    let colorMapping = a:colorMapping
+    if type(a:colorMapping) == type("")
+        exec "let colorMapping = statusline#themes#".a:colorMapping."#getColorMapping()"
     endif
     for mapping in keys(colorMapping)
         let color = statusline#themes#getColor(colorMapping[mapping],s:term)

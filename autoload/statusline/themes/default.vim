@@ -96,6 +96,12 @@ function! statusline#themes#default#getColorMapping()
         \ 'user7_terminal_fg': 'x166_DarkOrange3',
         \ 'user7_search_bg': 'x166_DarkOrange3',
         \ 'user7_search_fg': 'x239_Grey30',
+        \ 'diagn_normal_bg': 'x233_Grey7',
+        \ 'diagn_visual_bg': 'x123_DarkSlateGray1',
+        \ 'diagn_insert_bg': 'x048_SpringGreen1',
+        \ 'diagn_command_bg': 'x069_CornflowerBlue',
+        \ 'diagn_terminal_bg': 'x233_Grey7',
+        \ 'diagn_search_bg': 'x166_DarkOrange3',
         \ 'not_current_bg': 'x234_Grey11',
         \ 'not_current_fg': 'x240_Grey35'}
     return colorMapping
