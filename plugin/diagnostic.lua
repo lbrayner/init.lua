@@ -117,8 +117,12 @@ nnoremap("<space>e", goto_first, opts)
 nnoremap("<space>E", function()
     vim.diagnostic.open_float { close_events=close_events, scope="buffer" }
 end, opts)
-nnoremap("[d", vim.diagnostic.goto_prev, opts)
-nnoremap("]d", vim.diagnostic.goto_next, opts)
+nnoremap("[d", function()
+    vim.diagnostic.goto_prev({ float={ close_events=close_events } })
+end, opts)
+nnoremap("]d", function()
+    vim.diagnostic.goto_next({ float={ close_events=close_events } })
+end, opts)
 
 local quickfix_diagnostics = {}
 
