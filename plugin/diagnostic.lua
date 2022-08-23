@@ -124,11 +124,11 @@ local quickfix_diagnostics = {}
 
 api.nvim_create_user_command("DiagnosticSetLocationList",
     vim.diagnostic.setloclist, { nargs=0 })
-api.nvim_create_user_command("QuickFixDiagnosticsAll", function()
+api.nvim_create_user_command("QuickFixDiagnosticAll", function()
     quickfix_diagnostics = {}
     vim.diagnostic.setqflist(quickfix_diagnostics)
 end, { nargs=0 })
-api.nvim_create_user_command("QuickFixDiagnosticsErrors", function()
+api.nvim_create_user_command("QuickFixDiagnosticErrors", function()
     quickfix_diagnostics = { severity=vim.diagnostic.severity.ERROR }
     vim.diagnostic.setqflist(quickfix_diagnostics)
 end, { nargs=0 })
