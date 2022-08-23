@@ -155,10 +155,10 @@ if not _G.default_virtual_text_handler then
 end
 
 local function DefaultDiagnostics()
-    api.nvim_command("highlight DiagnosticError ctermfg=1 guifg=Red")
-    api.nvim_command("highlight DiagnosticWarn  ctermfg=3 guifg=Orange")
-    api.nvim_command("highlight DiagnosticInfo  ctermfg=4 guifg=LightBlue")
-    api.nvim_command("highlight DiagnosticHint  ctermfg=7 guifg=LightGrey")
+    vim.cmd "highlight DiagnosticError ctermfg=1 guifg=Red"
+    vim.cmd "highlight DiagnosticWarn  ctermfg=3 guifg=Orange"
+    vim.cmd "highlight DiagnosticInfo  ctermfg=4 guifg=LightBlue"
+    vim.cmd "highlight DiagnosticHint  ctermfg=7 guifg=LightGrey"
 
     vim.fn.sign_define(err, { text="E", texthl=err, linehl="", numhl="" })
     vim.fn.sign_define(war, { text="W", texthl=war, linehl="", numhl="" })
