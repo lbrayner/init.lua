@@ -120,10 +120,18 @@ end, opts)
 nnoremap("[d", vim.diagnostic.goto_prev, opts)
 nnoremap("]d", vim.diagnostic.goto_next, opts)
 
+local quickfix_diagnostics = {}
+
 api.nvim_create_user_command("DiagnosticSetLocationList",
     vim.diagnostic.setloclist, { nargs=0 })
-api.nvim_create_user_command("QuickFixAllDiagnostics",
-    vim.diagnostic.setqflist, { nargs=0 })
+api.nvim_create_user_command("QuickFixDiagnosticsAll", function()
+    quickfix_diagnostics = {}
+    vim.diagnostic.setqflist(quickfix_diagnostics)
+end, { nargs=0 })
+api.nvim_create_user_command("QuickFixDiagnosticsErrors", function()
+    quickfix_diagnostics = { severity=vim.diagnostic.severity.ERROR }
+    vim.diagnostic.setqflist(quickfix_diagnostics)
+end, { nargs=0 })
 
 local custom_diagnostics = api.nvim_create_augroup("custom_diagnostics", { clear=true })
 
@@ -131,7 +139,8 @@ api.nvim_create_autocmd({ "DiagnosticChanged" }, {
     group = custom_diagnostics,
     callback = function()
         if vim.fn.getqflist({ title=true }).title == "Diagnostics" then
-            vim.diagnostic.setqflist({ open=false })
+            vim.diagnostic.setqflist(vim.tbl_extend("error", quickfix_diagnostics, {
+                open=false }))
         end
     end,
 })
