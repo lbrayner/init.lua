@@ -18,5 +18,4 @@ return {
     get_prefix = function()
         return prefix
     end,
-    prefix = prefix,
 }

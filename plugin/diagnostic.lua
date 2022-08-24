@@ -7,7 +7,7 @@ end
 
 local keymap = require("lbrayner.keymap")
 local nnoremap = keymap.nnoremap
-local prefix = require("lbrayner.diagnostic").prefix
+local prefix = require("lbrayner.diagnostic").get_prefix()
 
 local function is_long(bufnr, winid, virt_texts, lnum)
     -- TODO reduce?
