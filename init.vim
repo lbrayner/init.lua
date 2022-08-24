@@ -929,12 +929,6 @@ if !has("nvim")
     packadd vim-diminactive
 endif
 
-" nvim-lspconfig
-
-if has("nvim")
-    packadd nvim-lspconfig
-endif
-
 " reply.vim
 
 command! -nargs=0 ReplFile call reply#command#send(join(getline(1,line("$")),"\n"),0,0)
