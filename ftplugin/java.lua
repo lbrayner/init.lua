@@ -18,7 +18,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
     local is_descendant = require("lspconfig.util").path.is_descendant
 
     for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-        if vim.bo.ft == "java" then
+        if vim.bo[bufnr].ft == "java" then
             if is_descendant(config.root_dir, vim.api.nvim_buf_get_name(bufnr)) then
                 vim.api.nvim_create_autocmd({ "WinEnter" }, {
                     group = jdtls_start,
