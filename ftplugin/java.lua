@@ -32,5 +32,13 @@ vim.api.nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
         end
     end
 
+    vim.api.nvim_create_autocmd("LspAttach", {
+        group = jdtls_start,
+        pattern = config.root_dir .. "/*.java",
+        callback = function(_args)
+            vim.b.Statusline_custom_leftline = '%<%{expand("%:t:r")} %{statusline#StatusFlag()}'
+        end,
+    })
+
     require("jdtls").start_or_attach(config)
 end, { nargs=0 })
