@@ -109,3 +109,6 @@
 [submodule "pack/bundle/opt/fzf-lua"]
 	path = pack/bundle/opt/fzf-lua
 	url = https://github.com/ibhagwan/fzf-lua
+[submodule "pack/bundle/opt/nvim-jdtls"]
+	path = pack/bundle/opt/nvim-jdtls
+	url = https://github.com/mfussenegger/nvim-jdtls
