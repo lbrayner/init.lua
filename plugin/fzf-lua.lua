@@ -1,4 +1,4 @@
-if not vim.fn.executable("fzf") then
+if vim.fn.executable("fzf") == 0 then
     return
 end
 
@@ -30,14 +30,14 @@ fzf.setup {
 }
 
 local function files()
-    if vim.fn.executable("find_file_cache") then
+    if vim.fn.executable("find_file_cache") > 0 then
         return fzf.files({ cmd="find_file_cache" })
     end
     fzf.files()
 end
 
 local function files_clear_cache()
-    if vim.fn.executable("find_file_cache") then
+    if vim.fn.executable("find_file_cache") > 0 then
         return fzf.files({ cmd="find_file_cache -C" })
     end
     vim.cmd("echoerr 'find_file_cache not executable.'")
