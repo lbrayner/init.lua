@@ -51,4 +51,4 @@ local opts = { silent=true }
 nnoremap("<F5>", fzf.buffers, opts)
 nnoremap("<Leader><F7>", files_clear_cache, opts)
 nnoremap("<F7>", files, opts)
-nnoremap("<F8>", fzf.tabs, opts)
+nnoremap("<Leader><F8>", fzf.tabs, opts)
