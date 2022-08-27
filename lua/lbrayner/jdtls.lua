@@ -1,4 +1,4 @@
-vim.cmd "packadd nvim-jdtls"
+vim.cmd.packadd "nvim-jdtls"
 
 local lspcommon = require "lbrayner.lspcommon"
 local lspconfig = require "lspconfig.server_configurations.jdtls"

@@ -1,4 +1,4 @@
-vim.cmd "packadd nvim-lspconfig"
+vim.cmd.packadd "nvim-lspconfig"
 
 local api = vim.api
 local keymap = require("lbrayner.keymap")
