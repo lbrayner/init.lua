@@ -30,13 +30,13 @@ local on_attach = function(client, bufnr)
     end, { nargs=0 })
 
     -- Mappings
-    local bufopts = { silent=true, buffer=bufnr }
+    local bufopts = { buffer=bufnr }
     nnoremap("gD", vim.lsp.buf.declaration, bufopts)
     nnoremap("gd", vim.lsp.buf.definition, bufopts)
     nnoremap("K", vim.lsp.buf.hover, bufopts)
     nnoremap("gi", vim.lsp.buf.implementation, bufopts)
     nnoremap("gK", vim.lsp.buf.signature_help, bufopts)
-    nnoremap("<space>D", vim.lsp.buf.type_definition, bufopts)
+    nnoremap("<Space>D", vim.lsp.buf.type_definition, bufopts)
     nnoremap("<F11>", vim.lsp.buf.code_action, bufopts)
     nnoremap("gr", vim.lsp.buf.references, bufopts)
 end
