@@ -765,7 +765,7 @@ if !has("packages")
 endif
 
 if !has("nvim")
-    packadd matchit
+    packadd! matchit
 endif
 
 " Finish here if we haven't initialized the submodules
@@ -819,7 +819,7 @@ if !has("nvim") || !executable("fzf")
                 \ 'PrtHistory(-1)':       ['<c-j>'],
                 \ 'PrtHistory(1)':        ['<c-k>'],
                 \ }
-    packadd ctrlp.vim
+    packadd! ctrlp.vim
 endif
 
 " vim-rzip
@@ -926,7 +926,7 @@ command! -nargs=? -complete=dir Explore Dirvish <args>
 " vim-diminactive
 
 if !has("nvim")
-    packadd vim-diminactive
+    packadd! vim-diminactive
 endif
 
 " reply.vim
