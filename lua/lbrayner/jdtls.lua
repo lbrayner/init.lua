@@ -19,11 +19,9 @@ local function on_attach(client, bufnr)
 end
 
 local config = {
-    -- The command that starts the language server
-    -- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
     cmd = lspconfig.default_config.cmd,
     on_attach = on_attach,
-    root_dir = require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'}),
+    root_dir = require("jdtls.setup").find_root({".git", "mvnw", "gradlew"}),
 }
 
 return {
