@@ -37,6 +37,8 @@ vim.api.nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
         pattern = config.root_dir .. "/*.java",
         callback = function(_args)
             vim.b.Statusline_custom_leftline = '%<%{expand("%:t:r")} %{statusline#StatusFlag()}'
+            vim.b.Statusline_custom_mod_leftline = '%<%1*%{expand("%:t:r")}' ..
+                ' %{statusline#StatusFlag()}%*'
         end,
     })
 
