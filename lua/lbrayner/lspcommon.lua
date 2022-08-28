@@ -7,7 +7,7 @@ local nnoremap = keymap.nnoremap
 -- From nvim-lspconfig
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
+local function on_attach(_client, bufnr)
     -- Enable completion triggered by <c-x><c-o>
     -- Some filetype plugins define omnifunc and $VIMRUNTIME/lua/vim/lsp.lua
     -- respects that, so we override it.
