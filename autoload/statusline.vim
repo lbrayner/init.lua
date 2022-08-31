@@ -17,7 +17,7 @@ function! statusline#StatusFlag()
     if &readonly
         return 'R'
     endif
-    return ''
+    return ' '
 endfunction
 
 function! statusline#Diagnostics()
@@ -65,7 +65,7 @@ function! s:GetNumberOfLines()
 endfunction
 
 function! statusline#GetStatusLineTail()
-    let bufferPosition = ' ' . s:GetLineFormat() . ',%-3.v %3.P ' . s:GetNumberOfLines()
+    let bufferPosition = s:GetLineFormat() . ',%-3.v %3.P ' . s:GetNumberOfLines()
     " TODO remove this?
     if &buftype == "nofile"
         return bufferPosition . ' %2*%{&filetype}%* '
@@ -125,16 +125,11 @@ function! statusline#DefineModifiedStatusLine()
     else
         let &l:statusline=' %<%1*'.filename.' %{statusline#StatusFlag()}%*'
     endif
+    let &l:statusline.=' %='
     if exists("b:Statusline_custom_mod_rightline")
-        exec "let &l:statusline='".&l:statusline
-                    \ . '%='
-                    \ . b:Statusline_custom_mod_rightline."'"
-        return
+        let &l:statusline.=b:Statusline_custom_mod_rightline
     endif
-    exec "let &l:statusline='".&l:statusline
-                \ . '%='
-                \ . statusline#GetStatusLineTail()
-                \ . "'"
+    let &l:statusline.=statusline#GetStatusLineTail()
 endfunction
 
 " margins of 1 column (on both sides)
@@ -226,17 +221,11 @@ function! statusline#DefineStatusLine()
     else
         let &l:statusline=' %<'.filename.' %1*%{statusline#StatusFlag()}%*'
     endif
+    let &l:statusline.=' %='
     if exists("b:Statusline_custom_rightline")
-        exec "let &l:statusline='".&l:statusline
-                    \ . '%='
-                    \ . b:Statusline_custom_rightline."'"
-        return
+        let &l:statusline.=b:Statusline_custom_rightline
     endif
-    " An extra space where the modified flag would be
-    exec "let &l:statusline='".&l:statusline
-                \ . '%='
-                \ . statusline#GetStatusLineTail()
-                \ . "'"
+    let &l:statusline.=statusline#GetStatusLineTail()
 endfunction
 
 function! statusline#Highlight(dict)
