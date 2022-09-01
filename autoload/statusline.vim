@@ -69,7 +69,7 @@ function! s:GetNumberOfLines()
     if length < 5
         let length = 5
     endif
-    return '%'.length.'L'
+    return '%-'.length.'L'
 endfunction
 
 function! statusline#GetStatusLineTail()
