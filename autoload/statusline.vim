@@ -52,16 +52,24 @@ endfunction
 
 function! s:GetLineFormat()
     if has("nvim") && &buftype ==# 'terminal'
-        return '%' . len(&scrollback) . 'l'
+        return '%'.len(&scrollback).'l'
     endif
-    return '%' . len(line("$")) . 'l'
+    let length = len(line("$"))
+    if length < 5
+        let length = 5
+    endif
+    return '%'.length.'l'
 endfunction
 
 function! s:GetNumberOfLines()
     if has("nvim") && &buftype ==# 'terminal'
         return '%' . len(&scrollback) . 'L'
     endif
-    return '%L'
+    let length = len(line("$"))
+    if length < 5
+        let length = 5
+    endif
+    return '%'.length.'L'
 endfunction
 
 function! statusline#GetStatusLineTail()
