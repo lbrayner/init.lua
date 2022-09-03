@@ -96,6 +96,9 @@ function! statusline#Filename(...)
     else
         let filename = substitute(fnamemodify(path,":t"),"'","''","g")
     endif
+    if getcmdwintype() != ""
+        let filename = "[Command Line]"
+    endif
     if filename == ""
         return "#".bufnr("%")
     endif
