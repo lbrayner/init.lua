@@ -1,4 +1,27 @@
-vim.api.nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
+local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
+
+local function jdtls_commands(bufnr)
+    nvim_buf_create_user_command(bufnr, "JdtCompile", function(command)
+        require("jdtls").compile(command.fargs)
+    end, { complete="custom,v:lua.require'jdtls'._complete_compile", nargs="?" })
+    nvim_buf_create_user_command(bufnr, "JdtSetRuntime", function(command)
+        require("jdtls").set_runtime(command.fargs)
+    end, { complete="custom,v:lua.require'jdtls'._complete_set_runtime", nargs="?" })
+    nvim_buf_create_user_command(bufnr, "JdtUpdateConfig", function(_command)
+        require("jdtls").update_project_config()
+    end, { nargs=0 })
+    nvim_buf_create_user_command(bufnr, "JdtJol", function(_command)
+        require("jdtls").jol()
+    end, { nargs=0 })
+    nvim_buf_create_user_command(bufnr, "JdtBytecode", function(_command)
+        require("jdtls").javap()
+    end, { nargs=0 })
+    nvim_buf_create_user_command(bufnr, "JdtJshell", function(_command)
+        require("jdtls").jshell()
+    end, { nargs=0 })
+end
+
+nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
     local config = require("lbrayner.jdtls").get_config()
 
     if vim.lsp.get_active_clients({ name="jdt.ls" })[1] then
@@ -10,6 +33,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
     vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
         group = jdtls_start,
         pattern = config.root_dir .. "/*.java",
+        desc = "New Java buffers attach to jdt.ls",
         callback = function()
             require("jdtls").start_or_attach(config)
         end,
@@ -23,6 +47,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
                 vim.api.nvim_create_autocmd({ "WinEnter" }, {
                     group = jdtls_start,
                     buffer = bufnr,
+                    desc = "This Java buffer will attach to jdt.ls once focused",
                     callback = function()
                         require("jdtls").start_or_attach(config)
                         return true -- Delete the autocmd
@@ -35,14 +60,19 @@ vim.api.nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
     vim.api.nvim_create_autocmd("LspAttach", {
         group = jdtls_start,
         pattern = config.root_dir .. "/*.java",
-        callback = function(_args)
+        desc = "jdt.ls buffer setup",
+        callback = function(args)
+            -- Custom statusline
             vim.b.Statusline_custom_leftline = '%<%{expand("%:t:r")} %{statusline#StatusFlag()}'
             vim.b.Statusline_custom_mod_leftline = '%<%1*%{expand("%:t:r")}' ..
             ' %{statusline#StatusFlag()}%*'
             vim.b.Statusline_custom_rightline = '%9*jdt.ls%* '
             vim.b.Statusline_custom_mod_rightline = vim.b.Statusline_custom_rightline
+
+            -- Setup buffer local commands
+            jdtls_commands(args.buf)
         end,
     })
 
     require("jdtls").start_or_attach(config)
-end, { nargs=0 })
+end, { desc="Start jdt.ls and automatic attach, local buffer configuration", nargs=0 })
