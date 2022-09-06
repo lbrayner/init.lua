@@ -1,4 +1,15 @@
 local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
+local nvim_buf_del_user_command = vim.api.nvim_buf_del_user_command
+
+local function jdtls_remove_commands(bufnr)
+    nvim_buf_del_user_command(bufnr, "JdtCompile")
+    nvim_buf_del_user_command(bufnr, "JdtSetRuntime")
+    nvim_buf_del_user_command(bufnr, "JdtUpdateConfig")
+    nvim_buf_del_user_command(bufnr, "JdtJol")
+    nvim_buf_del_user_command(bufnr, "JdtBytecode")
+    nvim_buf_del_user_command(bufnr, "JdtJshell")
+    nvim_buf_del_user_command(bufnr, "JdtStop")
+end
 
 local function jdtls_commands(bufnr)
     nvim_buf_create_user_command(bufnr, "JdtCompile", function(command)
@@ -13,6 +24,10 @@ local function jdtls_commands(bufnr)
     nvim_buf_create_user_command(bufnr, "JdtJol", require("jdtls").jol, { nargs=0 })
     nvim_buf_create_user_command(bufnr, "JdtBytecode", require("jdtls").javap, { nargs=0 })
     nvim_buf_create_user_command(bufnr, "JdtJshell", require("jdtls").jshell, { nargs=0 })
+    nvim_buf_create_user_command(bufnr, "JdtStop", function(_command)
+        vim.lsp.stop_client(vim.lsp.get_active_clients({ name="jdt.ls" }))
+        jdtls_remove_commands(bufnr)
+    end, { nargs=0 })
 end
 
 nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
