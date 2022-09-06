@@ -8,10 +8,10 @@ lspconfig.tsserver.setup {
 }
 
 -- Python
-local pyright_lsp_attach = vim.api.nvim_create_augroup("pyright_lsp_attach", { clear=true })
+local pyright_attach = vim.api.nvim_create_augroup("pyright_attach", { clear=true })
 
 vim.api.nvim_create_autocmd("LspAttach", {
-    group = pyright_lsp_attach,
+    group = pyright_attach,
     pattern = { "*.py" },
     desc = "Custom statusline for pyright",
     callback = function(args)
@@ -26,3 +26,12 @@ lspconfig.pyright.setup {
     autostart = false,
     on_attach = lspcommon.on_attach,
 }
+
+vim.api.nvim_create_autocmd("LspDetach", {
+    group = pyright_attach,
+    desc = "Undo custom statusline",
+    callback = function(args)
+        vim.b[args.buf].Statusline_custom_rightline = nil
+        vim.b[args.buf].Statusline_custom_mod_rightline = nil
+    end,
+})
