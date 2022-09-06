@@ -1,7 +1,7 @@
 local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
 local nvim_buf_del_user_command = vim.api.nvim_buf_del_user_command
 
-local function jdtls_remove_commands(bufnr)
+local function jdtls_delete_commands(bufnr)
     nvim_buf_del_user_command(bufnr, "JdtCompile")
     nvim_buf_del_user_command(bufnr, "JdtSetRuntime")
     nvim_buf_del_user_command(bufnr, "JdtUpdateConfig")
@@ -11,7 +11,7 @@ local function jdtls_remove_commands(bufnr)
     nvim_buf_del_user_command(bufnr, "JdtStop")
 end
 
-local function jdtls_commands(bufnr)
+local function jdtls_create_commands(bufnr)
     nvim_buf_create_user_command(bufnr, "JdtCompile", function(command)
         require("jdtls").compile(command.fargs)
     end, { complete="custom,v:lua.require'jdtls'._complete_compile", nargs="?" })
@@ -26,7 +26,6 @@ local function jdtls_commands(bufnr)
     nvim_buf_create_user_command(bufnr, "JdtJshell", require("jdtls").jshell, { nargs=0 })
     nvim_buf_create_user_command(bufnr, "JdtStop", function(_command)
         vim.lsp.stop_client(vim.lsp.get_active_clients({ name="jdt.ls" }))
-        jdtls_remove_commands(bufnr)
     end, { nargs=0 })
 end
 
@@ -37,10 +36,10 @@ nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
         return require("jdtls").start_or_attach(config)
     end
 
-    local jdtls_start = vim.api.nvim_create_augroup("jdtls_start", { clear=true })
+    local jdtls_setup = vim.api.nvim_create_augroup("jdtls_setup", { clear=true })
 
     vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-        group = jdtls_start,
+        group = jdtls_setup,
         pattern = config.root_dir .. "/*.java",
         desc = "New Java buffers attach to jdt.ls",
         callback = function()
@@ -54,7 +53,7 @@ nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
         if vim.bo[bufnr].ft == "java" then
             if is_descendant(config.root_dir, vim.api.nvim_buf_get_name(bufnr)) then
                 vim.api.nvim_create_autocmd({ "WinEnter" }, {
-                    group = jdtls_start,
+                    group = jdtls_setup,
                     buffer = bufnr,
                     desc = "This Java buffer will attach to jdt.ls once focused",
                     callback = function()
@@ -67,7 +66,7 @@ nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
     end
 
     vim.api.nvim_create_autocmd("LspAttach", {
-        group = jdtls_start,
+        group = jdtls_setup,
         pattern = config.root_dir .. "/*.java",
         desc = "jdt.ls buffer setup",
         callback = function(args)
@@ -79,7 +78,23 @@ nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
             vim.b.Statusline_custom_mod_rightline = vim.b.Statusline_custom_rightline
 
             -- Setup buffer local commands
-            jdtls_commands(args.buf)
+            jdtls_create_commands(args.buf)
+        end,
+    })
+
+    vim.api.nvim_create_autocmd("LspDetach", {
+        group = jdtls_setup,
+        pattern = config.root_dir .. "/*.java",
+        desc = "Undo jdt.ls buffer setup",
+        callback = function(args)
+            -- Undo custom statusline
+            vim.b.Statusline_custom_leftline = nil
+            vim.b.Statusline_custom_mod_leftline = nil
+            vim.b.Statusline_custom_rightline = nil
+            vim.b.Statusline_custom_mod_rightline = nil
+
+            -- Delete buffer local commands
+            jdtls_delete_commands(args.buf)
         end,
     })
 
