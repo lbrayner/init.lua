@@ -7,7 +7,7 @@ local nnoremap = keymap.nnoremap
 -- From nvim-lspconfig
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-local function on_attach(_client, bufnr)
+local function on_attach(client, bufnr)
     -- Enable completion triggered by <c-x><c-o>
     -- Some filetype plugins define omnifunc and $VIMRUNTIME/lua/vim/lsp.lua
     -- respects that, so we override it.
@@ -39,6 +39,10 @@ local function on_attach(_client, bufnr)
     nnoremap("<Space>D", vim.lsp.buf.type_definition, bufopts)
     nnoremap("<F11>", vim.lsp.buf.code_action, bufopts)
     nnoremap("gr", vim.lsp.buf.references, bufopts)
+
+    -- Custom statusline
+    vim.b[bufnr].Statusline_custom_rightline = '%9*' .. client.name .. '%* '
+    vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. client.name .. '%* '
 end
 
 return {
