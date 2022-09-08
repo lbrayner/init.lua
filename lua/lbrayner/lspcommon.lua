@@ -4,6 +4,21 @@ local api = vim.api
 local keymap = require("lbrayner.keymap")
 local nnoremap = keymap.nnoremap
 
+local function make_on_exit(client_name)
+    return function(_code, _signal, _client_id)
+        return vim.schedule(function()
+            for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+                if vim.b[bufnr].Statusline_custom_rightline then
+                    if string.find(vim.b[bufnr].Statusline_custom_rightline, client_name) then
+                        vim.b[bufnr].Statusline_custom_rightline = nil
+                        vim.b[bufnr].Statusline_custom_mod_rightline = nil
+                    end
+                end
+            end
+        end)
+    end
+end
+
 -- From nvim-lspconfig
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -46,5 +61,6 @@ local function on_attach(client, bufnr)
 end
 
 return {
+    make_on_exit = make_on_exit,
     on_attach = on_attach,
 }
