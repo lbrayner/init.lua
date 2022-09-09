@@ -43,8 +43,8 @@ local function files_clear_cache()
     vim.cmd("echoerr 'find_file_cache not executable.'")
 end
 
-nvim_create_user_command("LFiles", files, { nargs=0 })
-nvim_create_user_command("LCFiles", files_clear_cache, { nargs=0 })
+nvim_create_user_command("Files", files, { nargs=0 })
+nvim_create_user_command("FilesClearCache", files_clear_cache, { nargs=0 })
 
 local opts = { silent=true }
 
