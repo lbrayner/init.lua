@@ -5,7 +5,7 @@ local lsp_setup = vim.api.nvim_create_augroup("lsp_setup", { clear=true })
 
 vim.api.nvim_create_autocmd("LspDetach", {
     group = lsp_setup,
-    desc = "Undo custom statusline",
+    desc = "Undo custom statusline (lbrayner.lspcommon.on_attach)",
     callback = function(args)
         -- TODO from the documentation: doesn't work, a bug
         -- local client = vim.lsp.get_client_by_id(args.data.client_id)
