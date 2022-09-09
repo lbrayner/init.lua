@@ -71,8 +71,9 @@ nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
         desc = "jdt.ls buffer setup",
         callback = function(args)
             -- Custom statusline
-            vim.b.Statusline_custom_leftline = '%<%{expand("%:t:r")} %{statusline#StatusFlag()}'
-            vim.b.Statusline_custom_mod_leftline = '%<%1*%{expand("%:t:r")}' ..
+            vim.b[args.buf].Statusline_custom_leftline = '%<%{expand("%:t:r")} ' ..
+            '%{statusline#StatusFlag()}'
+            vim.b[args.buf].Statusline_custom_mod_leftline = '%<%1*%{expand("%:t:r")}' ..
             ' %{statusline#StatusFlag()}%*'
 
             -- Setup buffer local commands
@@ -86,10 +87,8 @@ nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
         desc = "Undo jdt.ls buffer setup",
         callback = function(args)
             -- Undo custom statusline
-            vim.b.Statusline_custom_leftline = nil
-            vim.b.Statusline_custom_mod_leftline = nil
-            vim.b.Statusline_custom_rightline = nil
-            vim.b.Statusline_custom_mod_rightline = nil
+            vim.b[args.buf].Statusline_custom_leftline = nil
+            vim.b[args.buf].Statusline_custom_mod_leftline = nil
 
             -- Delete buffer local commands
             jdtls_delete_commands(args.buf)
