@@ -14,7 +14,6 @@ vim.cmd.packadd "fzf-lua"
 
 local nvim_create_user_command = vim.api.nvim_create_user_command
 local fzf = require("fzf-lua")
-local utils = require("fzf-lua.utils")
 local keymap = require("lbrayner.keymap")
 local nnoremap = keymap.nnoremap
 
@@ -23,9 +22,6 @@ fzf.setup {
         previewer = false,
     },
     files = {
-        previewer = false,
-    },
-    tabs = {
         previewer = false,
     },
 }
@@ -44,9 +40,19 @@ local function files_clear_cache()
     vim.cmd("echoerr 'find_file_cache not executable.'")
 end
 
+local function winid_from_tab_buf(tabnr, bufnr)
+    local tabhandle = vim.api.nvim_list_tabpages()[tabnr]
+    for _, w in ipairs(vim.api.nvim_tabpage_list_wins(tabhandle)) do
+        if bufnr == vim.api.nvim_win_get_buf(w) then
+            return w
+        end
+    end
+    return nil
+end
+
 local function focus_on_selected(selected, opts)
     local tabnr, bufnr = string.match(selected[1], "^%[%s*(%d+)%]%[%s*(%d+)%]")
-    local winid = utils.winid_from_tab_buf(tonumber(tabnr), tonumber(bufnr))
+    local winid = winid_from_tab_buf(tonumber(tabnr), tonumber(bufnr))
     if winid then vim.api.nvim_set_current_win(winid) end
 end
 
