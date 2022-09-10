@@ -37,7 +37,7 @@ local function files_clear_cache()
     if vim.fn.executable("find_file_cache") > 0 then
         return fzf.files({ cmd="find_file_cache -C" })
     end
-    vim.cmd("echoerr 'find_file_cache not executable.'")
+    vim.cmd.echoerr("'find_file_cache not executable.'")
 end
 
 local function winid_from_tab_buf(tabnr, bufnr)
