@@ -45,6 +45,12 @@ function! RedefineTabline()
         let &tabline.="%<%#Normal#".rev." "
         return
     endif
+    " jdt.ls
+    if stridx(expand("%"),"jdt://") == 0
+        let url = substitute(expand("%"), "?.*", "", "")
+        let &tabline.=" %=%<%#Normal#".url." "
+        return
+    endif
     if &buftype ==# 'terminal'
         return
     endif
