@@ -7,17 +7,11 @@ vim.api.nvim_create_autocmd("LspDetach", {
     group = lsp_setup,
     desc = "Undo custom statusline (lbrayner.lspcommon.on_attach)",
     callback = function(args)
-        -- TODO from the documentation: doesn't work, a bug
-        -- local client = vim.lsp.get_client_by_id(args.data.client_id)
-        -- if not string.find(vim.b[args.buf].Statusline_custom_rightline, client.name) then
-        --     return
-        -- end
-        if not vim.b[args.buf].LSP_Custom_Statusline then
+        if not vim.lsp.buf_is_attached(args.buf, args.data.client_id) then
             return
         end
         vim.b[args.buf].Statusline_custom_rightline = nil
         vim.b[args.buf].Statusline_custom_mod_rightline = nil
-        vim.b[args.buf].LSP_Custom_Statusline = nil
     end,
 })
 

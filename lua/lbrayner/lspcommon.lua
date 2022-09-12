@@ -43,7 +43,6 @@ local function on_attach(client, bufnr)
     -- Custom statusline
     vim.b[bufnr].Statusline_custom_rightline = '%9*' .. client.name .. '%* '
     vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. client.name .. '%* '
-    vim.b[bufnr].LSP_Custom_Statusline = true
 end
 
 return {
