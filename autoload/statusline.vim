@@ -52,7 +52,7 @@ endfunction
 
 function! s:GetLineFormat()
     if has("nvim") && &buftype ==# 'terminal'
-        return '%'.len(&scrollback).'l'
+        return '%'.(len(&scrollback)+1).'l'
     endif
     let length = len(line("$"))
     if length < 5
@@ -63,7 +63,7 @@ endfunction
 
 function! s:GetNumberOfLines()
     if has("nvim") && &buftype ==# 'terminal'
-        return '%' . len(&scrollback) . 'L'
+        return '%'.(len(&scrollback)+1).'L'
     endif
     let length = len(line("$"))
     if length < 5
