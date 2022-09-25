@@ -52,7 +52,7 @@ local trunc_virt_text = api.nvim_create_augroup("trunc_virt_text", { clear=true 
 
 api.nvim_create_autocmd({ "VimEnter" }, {
     group = trunc_virt_text,
-    callback = function(args)
+    callback = function(_args)
         api.nvim_create_autocmd({ "WinEnter" }, {
             group = trunc_virt_text,
             callback = function(args)
@@ -141,7 +141,7 @@ local custom_diagnostics = api.nvim_create_augroup("custom_diagnostics", { clear
 
 api.nvim_create_autocmd({ "DiagnosticChanged" }, {
     group = custom_diagnostics,
-    callback = function()
+    callback = function(_args)
         if vim.fn.getqflist({ title=true }).title == "Diagnostics" then
             vim.diagnostic.setqflist(vim.tbl_extend("error", quickfix_diagnostics, {
                 open=false }))
