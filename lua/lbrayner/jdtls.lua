@@ -11,7 +11,8 @@ local function on_attach(client, bufnr)
     -- Go to class declaration
     nnoremap("gD", function()
         vim.api.nvim_win_set_cursor(0, {1, 0})
-        if vim.fn.search("\\v^public\\s+%(class|enum|interface)\\s+\\zs" ..
+        if vim.fn.search(
+            "\\v^public\\s+%(abstract\\s+)?%(final\\s+)?%(class|enum|interface)\\s+\\zs" ..
             vim.fn.expand("%:t:r")) > 0 then
             vim.cmd "normal! zz"
         end
