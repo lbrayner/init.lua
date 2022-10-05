@@ -1,35 +1,35 @@
 local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
 local nvim_buf_del_user_command = vim.api.nvim_buf_del_user_command
 
-local function jdtls_delete_commands(bufnr)
-    nvim_buf_del_user_command(bufnr, "JdtCompile")
-    nvim_buf_del_user_command(bufnr, "JdtSetRuntime")
-    nvim_buf_del_user_command(bufnr, "JdtUpdateConfig")
-    nvim_buf_del_user_command(bufnr, "JdtJol")
-    nvim_buf_del_user_command(bufnr, "JdtBytecode")
-    nvim_buf_del_user_command(bufnr, "JdtJshell")
-    nvim_buf_del_user_command(bufnr, "JdtStop")
-end
-
 local function jdtls_create_commands(bufnr)
+    nvim_buf_create_user_command(bufnr, "JdtStop", function(_command)
+        vim.lsp.stop_client(vim.lsp.get_active_clients({ name="jdt.ls" }))
+    end, { nargs=0 })
+    -- The following are commands from the nvim-jdtls README
     nvim_buf_create_user_command(bufnr, "JdtCompile", function(command)
         require("jdtls").compile(command.fargs)
     end, { complete="custom,v:lua.require'jdtls'._complete_compile", nargs="?" })
     nvim_buf_create_user_command(bufnr, "JdtSetRuntime", function(command)
         require("jdtls").set_runtime(command.fargs)
     end, { complete="custom,v:lua.require'jdtls'._complete_set_runtime", nargs="?" })
-    nvim_buf_create_user_command(bufnr, "JdtUpdateConfig", function(_command)
-        require("jdtls").update_project_config()
-    end, { nargs=0 })
+    nvim_buf_create_user_command(bufnr, "JdtUpdateConfig", require("jdtls").update_project_config, {
+        nargs=0 })
     nvim_buf_create_user_command(bufnr, "JdtJol", require("jdtls").jol, { nargs=0 })
     nvim_buf_create_user_command(bufnr, "JdtBytecode", require("jdtls").javap, { nargs=0 })
     nvim_buf_create_user_command(bufnr, "JdtJshell", require("jdtls").jshell, { nargs=0 })
-    nvim_buf_create_user_command(bufnr, "JdtStop", function(_command)
-        vim.lsp.stop_client(vim.lsp.get_active_clients({ name="jdt.ls" }))
-    end, { nargs=0 })
 end
 
-nvim_buf_create_user_command(0, "JdtlsStart", function(_command)
+local function jdtls_delete_commands(bufnr)
+    nvim_buf_del_user_command(bufnr, "JdtStop")
+    nvim_buf_del_user_command(bufnr, "JdtCompile")
+    nvim_buf_del_user_command(bufnr, "JdtSetRuntime")
+    nvim_buf_del_user_command(bufnr, "JdtUpdateConfig")
+    nvim_buf_del_user_command(bufnr, "JdtJol")
+    nvim_buf_del_user_command(bufnr, "JdtBytecode")
+    nvim_buf_del_user_command(bufnr, "JdtJshell")
+end
+
+nvim_buf_create_user_command(0, "JdtStart", function(_command)
     local config = require("lbrayner.jdtls").get_config()
 
     if vim.lsp.get_active_clients({ name="jdt.ls" })[1] then
