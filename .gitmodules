@@ -109,3 +109,6 @@
 [submodule "pack/bundle/opt/nvim-jdtls"]
 	path = pack/bundle/opt/nvim-jdtls
 	url = https://github.com/mfussenegger/nvim-jdtls
+[submodule "pack/bundle/start/vim-dadbod"]
+	path = pack/bundle/start/vim-dadbod
+	url = https://github.com/tpope/vim-dadbod
