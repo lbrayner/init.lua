@@ -14,17 +14,30 @@ vim.cmd.packadd "fzf-lua"
 
 local nvim_create_user_command = vim.api.nvim_create_user_command
 local fzf = require("fzf-lua")
+local actions = require "fzf-lua.actions"
 local keymap = require("lbrayner.keymap")
 local nnoremap = keymap.nnoremap
 
 fzf.setup {
     buffers = {
+        actions = {
+            ["ctrl-v"] = false,
+            ["alt-s"]  = actions.buf_vsplit,
+        },
         previewer = false,
     },
     files = {
+        actions = {
+            ["ctrl-v"] = false,
+            ["alt-s"]  = actions.file_vsplit,
+        },
         previewer = false,
     },
     tabs = {
+        actions = {
+            ["ctrl-v"] = false,
+            ["alt-s"]  = actions.buf_vsplit,
+        },
         previewer = false,
     },
 }
