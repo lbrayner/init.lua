@@ -563,7 +563,7 @@ augroup END
 
 augroup HelpAutoGroup
     autocmd!
-    autocmd FileType help,eclimhelp autocmd BufEnter <buffer> set relativenumber
+    autocmd FileType help,eclimhelp autocmd! HelpAutoGroup BufEnter <buffer> set relativenumber
 augroup END
 
 " comment string
@@ -571,7 +571,7 @@ augroup END
 augroup PoundComment
     autocmd!
     autocmd FileType apache,crontab,debsources,desktop,fstab,samba
-                \ autocmd BufEnter <buffer> let &l:commentstring = "# %s"
+                \ autocmd! PoundComment BufEnter <buffer> ++once let &l:commentstring = "# %s"
 augroup END
 
 " svn commit files
