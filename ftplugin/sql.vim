@@ -14,8 +14,3 @@ let b:delimitMate_matchpairs = "(:),[:],{:}"
 " vim-surround
 
 let b:surround_indent = 0
-
-" database access
-
-nnoremap <buffer> <Leader><Return> :call database#select_paragraph()<cr>
-nnoremap <buffer> <Leader><kEnter> :call database#select_paragraph()<cr>
