@@ -1,9 +1,10 @@
-command! -nargs=1 BWipe call buffer#BWipe(<f-args>)
-command! -nargs=1 BWipeFileType call buffer#BWipeFileType(<f-args>)
-command! -nargs=1 BWipeHidden call buffer#BWipeHidden(<f-args>)
-command! -nargs=0 BWipeNotLoaded call buffer#BWipeNotLoaded()
-command! -nargs=1 BWipeForce call buffer#BWipeForce(<f-args>)
-command! -nargs=1 BWipeForceUnlisted call buffer#BWipeForceUnlisted(<f-args>)
+command! -nargs=1 -complete=file     BWipe              call buffer#BWipe(<f-args>)
+command! -nargs=1 -complete=filetype BWipeFileType      call buffer#BWipeFileType(<f-args>)
+command! -nargs=1 -complete=file     BWipeHidden        call buffer#BWipeHidden(<f-args>)
+command! -nargs=1 -complete=file     BWipeForce         call buffer#BWipeForce(<f-args>)
+command! -nargs=1 -complete=file     BWipeForceUnlisted call buffer#BWipeForceUnlisted(<f-args>)
+
+command! -nargs=0 BWipeNotLoaded   call buffer#BWipeNotLoaded()
 command! -nargs=0 BWipeNotReadable call buffer#BWipeNotReadable()
 
 " Swap | File changes outside
