@@ -704,6 +704,11 @@ augroup TabClosedAutoGroup
                 \ endif
 augroup END
 
+augroup NodeJS
+    autocmd!
+    autocmd BufReadPost,VimEnter **/node_modules/* setlocal nomodifiable
+augroup END
+
 " }}}
 
 " sourcing init.local.vim if it exists
