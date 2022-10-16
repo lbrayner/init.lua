@@ -50,18 +50,18 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
     local is_descendant = require("lspconfig.util").path.is_descendant
 
     for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-        if vim.bo[bufnr].ft == "java" then
-            if is_descendant(config.root_dir, vim.api.nvim_buf_get_name(bufnr)) then
-                vim.api.nvim_create_autocmd({ "BufEnter" }, {
-                    group = jdtls_setup,
-                    buffer = bufnr,
-                    desc = "This Java buffer will attach to jdt.ls once focused",
-                    callback = function(args)
-                        require("jdtls").start_or_attach(config)
-                        return true -- Delete the autocmd
-                    end,
-                })
-            end
+        if vim.bo[bufnr].ft == "java" and
+            vim.api.nvim_get_current_buf() ~= bufnr and
+            is_descendant(config.root_dir, vim.api.nvim_buf_get_name(bufnr)) then
+            vim.api.nvim_create_autocmd({ "BufEnter" }, {
+                group = jdtls_setup,
+                buffer = bufnr,
+                desc = "This Java buffer will attach to jdt.ls once focused",
+                once = true,
+                callback = function(_args)
+                    require("jdtls").start_or_attach(config)
+                end,
+            })
         end
     end
 
