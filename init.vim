@@ -699,8 +699,8 @@ endif
 augroup TabClosedAutoGroup
     autocmd!
     " Returning to previous tab instead of the next
-    autocmd TabClosed * if expand("<afile>") > 1 |
-                \     exe "normal! gT" | " Lest the rest of the command is eaten up by normal!
+    autocmd TabClosed * if expand("<afile>") > 1 && expand("<afile>") <= tabpagenr("$") |
+                \     tabprevious |
                 \ endif
 augroup END
 
