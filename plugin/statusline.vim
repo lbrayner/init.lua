@@ -84,7 +84,7 @@ augroup Statusline
     autocmd VimEnter * autocmd Statusline
                 \ BufWritePost,BufWinEnter,WinEnter * call statusline#RedefineStatusLine()
     autocmd VimEnter * autocmd Statusline
-                \ BufLeave * call statusline#DefineStatusLineNoFocus()
+                \ WinLeave * call statusline#DefineStatusLineNoFocus()
     autocmd VimEnter * call statusline#initialize()
     autocmd VimEnter * call statusline#RedefineStatusLine()
     autocmd ColorScheme * call statusline#initialize()
