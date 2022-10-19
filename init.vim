@@ -511,7 +511,7 @@ endfunction
 " Human-readable stack of syntax items
 command! -nargs=0 -range Synstack call s:Synstack()
 
-" Subsection: autocommands {{{
+" Subsection: autocmds {{{
 
 " Restores 'updatetime' to the default value
 augroup Updatetime
