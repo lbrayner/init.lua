@@ -581,11 +581,6 @@ augroup SvnFtGroup
     autocmd BufEnter *.svn set ft=svn
 augroup END
 
-augroup XmlFtGroup
-    autocmd!
-    autocmd BufEnter *.wsdl set ft=xml " Web Services Description Language
-augroup END
-
 " vidir
 
 augroup VidirGroup
@@ -610,6 +605,38 @@ augroup LargeXmlAutoGroup
     autocmd BufRead * if &filetype =~# '\v(xml|html)'
             \| if getfsize(expand("<afile>")) > s:LargeXmlFile
                 \| setlocal syntax=unknown | endif | endif
+augroup END
+
+augroup XmlFtGroup
+    autocmd!
+    autocmd BufEnter *.wsdl set ft=xml " Web Services Description Language
+augroup END
+
+function! s:XmlBufferSetup()
+    let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
+    let b:surround_indent = 0
+    " TODO remove Jasper related code
+    command! -buffer -range=% -nargs=+ JasperVerticalDisplacement
+                \ call jasper#JasperVerticalDisplacement(<line1>,<line2>,<f-args>)
+    command! -buffer -range=% -nargs=+ JasperHorizontalDisplacement
+                \ call jasper#JasperHorizontalDisplacement(<line1>,<line2>,<f-args>)
+    nnoremap <buffer> <silent> [< :call xml#NavigateDepthBackward(v:count1)<cr>
+    nnoremap <buffer> <silent> ]> :call xml#NavigateDepth(v:count1)<cr>
+endfunction
+
+augroup XmlBufferSetup
+    autocmd!
+    autocmd FileType html,xml call s:XmlBufferSetup()
+augroup END
+
+function! s:JSReactBufferSetup()
+    nnoremap <buffer> <silent> [< :call xml#NavigateDepthBackward(v:count1)<cr>
+    nnoremap <buffer> <silent> ]> :call xml#NavigateDepth(v:count1)<cr>
+endfunction
+
+augroup JSReactBufferSetup
+    autocmd!
+    autocmd FileType javascriptreact,typescriptreact call s:JSReactBufferSetup()
 augroup END
 
 function! s:RelativeNumberException()

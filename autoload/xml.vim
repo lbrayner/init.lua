@@ -3,6 +3,7 @@ function! s:NavigateNthParent(n)
     exec "silent normal! \<Esc>"
 endfunction
 
+" TODO make it a noop in javascriptreact outside elements
 function! xml#NavigateDepth(depth)
     if a:depth < 0
         call xml#NavigateDepthBackward(-a:depth)
