@@ -15,13 +15,19 @@ function! s:WipeBuffers(predicate)
     call s:MessageBuffers(buffer_count)
 endfunction
 
-function! s:LoopBuffers(predicate,command)
+function! s:LoopBuffers(predicate,command,...)
 	let last_buffer = bufnr('$')
 	let buffer_count = 0
 	let n = 1
 	while n <= last_buffer
         if eval(a:predicate)
-            silent exe a:command . ' ' . n
+            let command = a:command . " " . n
+            if a:0 > 0 && a:1
+                " Ignore errors
+                silent! exe command
+            else
+                silent exe command
+            endif
             let buffer_count = buffer_count+1
         endif
 		let n = n+1
@@ -54,16 +60,20 @@ endfunction
 
 function! buffer#BWipeForce(pattern)
     let s:wipe_pattern = a:pattern
-    s:WipeBuffers('buflisted(n) && bufname(n) =~#'
-                \ . ' s:wipe_pattern','bwipe!')
+    call s:LoopBuffers('buflisted(n) && bufname(n) =~#'
+                \ . ' s:wipe_pattern','bwipe!', 1)
 endfunction
 
 function! buffer#BWipeForceUnlisted(pattern)
     let s:wipe_pattern = a:pattern
-    call s:WipeBuffers('!buflisted(n) && bufname(n) =~#'
-                \ . ' s:wipe_pattern','bwipe!')
+    call s:LoopBuffers('!buflisted(n) && bufname(n) =~#'
+                \ . ' s:wipe_pattern','bwipe!', 1)
 endfunction
 
 function! buffer#BWipeNotReadable()
     call s:WipeBuffers('buflisted(n) && !filereadable(bufname(n))')
+endfunction
+
+function! buffer#BWipeNotReadableForce()
+    call s:LoopBuffers('buflisted(n) && !filereadable(bufname(n))', "bwipe!", 1)
 endfunction

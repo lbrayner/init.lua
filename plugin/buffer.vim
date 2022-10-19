@@ -1,11 +1,13 @@
+" TODO review these messy and confusing commands
 command! -nargs=1 -complete=file     BWipe              call buffer#BWipe(<f-args>)
 command! -nargs=1 -complete=filetype BWipeFileType      call buffer#BWipeFileType(<f-args>)
 command! -nargs=1 -complete=file     BWipeHidden        call buffer#BWipeHidden(<f-args>)
 command! -nargs=1 -complete=file     BWipeForce         call buffer#BWipeForce(<f-args>)
 command! -nargs=1 -complete=file     BWipeForceUnlisted call buffer#BWipeForceUnlisted(<f-args>)
 
-command! -nargs=0 BWipeNotLoaded   call buffer#BWipeNotLoaded()
-command! -nargs=0 BWipeNotReadable call buffer#BWipeNotReadable()
+command! -nargs=0 BWipeNotLoaded        call buffer#BWipeNotLoaded()
+command! -nargs=0 BWipeNotReadable      call buffer#BWipeNotReadable()
+command! -nargs=0 BWipeNotReadableForce call buffer#BWipeNotReadableForce()
 
 " Swap | File changes outside
 " https://github.com/neovim/neovim/issues/2127
