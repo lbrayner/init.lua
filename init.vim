@@ -711,7 +711,7 @@ augroup END
 augroup SessionLoadPostAutoGroup
     autocmd!
     " Wiping empty buffers created by restoring sessions
-    autocmd SessionLoadPost * silent BWipeNotReadable
+    autocmd SessionLoadPost * silent call buffer#BWipeNotReadableForce()
 augroup END
 
 if has("nvim")
