@@ -129,7 +129,12 @@ local quickfix_diagnostics = {}
 api.nvim_create_user_command("DiagnosticSetLocationList",
     vim.diagnostic.setloclist, { nargs=0 })
 api.nvim_create_user_command("QuickFixDiagnosticAll", function()
-    quickfix_diagnostics = {}
+    local active_clients = vim.lsp.get_active_clients({bufnr=api.nvim_get_current_buf()})
+    if #active_clients ~= 1 then
+        return
+    end
+    local active_client = active_clients[1]
+    quickfix_diagnostics = { namespace=vim.lsp.diagnostic.get_namespace(active_client.id) }
     vim.diagnostic.setqflist(quickfix_diagnostics)
 end, { nargs=0 })
 api.nvim_create_user_command("QuickFixDiagnosticErrors", function()
