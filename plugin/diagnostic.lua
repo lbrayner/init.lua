@@ -124,30 +124,7 @@ nnoremap("]d", function()
     vim.diagnostic.goto_next({ float={ close_events=close_events } })
 end, opts)
 
-local quickfix_diagnostics = {}
-
-api.nvim_create_user_command("DiagnosticSetLocationList",
-    vim.diagnostic.setloclist, { nargs=0 })
-api.nvim_create_user_command("QuickFixDiagnosticAll", function()
-    quickfix_diagnostics = {}
-    vim.diagnostic.setqflist(quickfix_diagnostics)
-end, { nargs=0 })
-api.nvim_create_user_command("QuickFixDiagnosticErrors", function()
-    quickfix_diagnostics = { severity=vim.diagnostic.severity.ERROR }
-    vim.diagnostic.setqflist(quickfix_diagnostics)
-end, { nargs=0 })
-
 local custom_diagnostics = api.nvim_create_augroup("custom_diagnostics", { clear=true })
-
-api.nvim_create_autocmd({ "DiagnosticChanged" }, {
-    group = custom_diagnostics,
-    callback = function(_args)
-        if vim.fn.getqflist({ title=true }).title == "Diagnostics" then
-            vim.diagnostic.setqflist(vim.tbl_extend("error", quickfix_diagnostics, {
-                open=false }))
-        end
-    end,
-})
 
 local err = "DiagnosticSignError"
 local war = "DiagnosticSignWarn"
