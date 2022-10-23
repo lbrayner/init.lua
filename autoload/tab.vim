@@ -137,3 +137,11 @@ function! tab#Tabclose(bang)
     exe "tabclose" . a:bang
     let &eventignore = ei
 endfunction
+
+" TODO doesn't work
+function! tab#TabCloseRange(bang) range
+    let currrentTab = tabpagenr()
+    while tabpagenr() >= a:firstline && tabpagenr() <= a:lastline
+        noautocmd exe 'tabclose' . a:bang
+    endwhile
+endfunction
