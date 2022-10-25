@@ -129,7 +129,7 @@ local quickfix_diagnostics = {}
 local function setqflist(opts)
     local active_clients = vim.lsp.get_active_clients({bufnr=api.nvim_get_current_buf()})
     if #active_clients ~= 1 then
-        return
+        return vim.diagnostic.setqflist(opts)
     end
     local active_client = active_clients[1]
     opts = vim.tbl_extend("error", opts, {
