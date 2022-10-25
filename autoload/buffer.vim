@@ -51,7 +51,7 @@ endfunction
 
 function! buffer#BWipeHidden(pattern)
     let s:wipe_pattern = a:pattern
-    call s:WipeBuffers('bufname(n) =~# s:wipe_pattern')
+    call s:WipeBuffers('bufname(n) =~# s:wipe_pattern && getbufinfo(n)[0].hidden')
 endfunction
 
 function! buffer#BWipeNotLoaded()
