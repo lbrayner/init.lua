@@ -1,7 +1,7 @@
 " TODO review these messy and confusing commands
 command! -nargs=1 -complete=file     BWipe              call buffer#BWipe(<f-args>)
 command! -nargs=1 -complete=filetype BWipeFileType      call buffer#BWipeFileType(<f-args>)
-command! -nargs=1 -complete=file     BWipeHidden        call buffer#BWipeHidden(<f-args>)
+command! -nargs=* -complete=file     BWipeHidden        call buffer#BWipeHidden(<q-args>)
 command! -nargs=1 -complete=file     BWipeForce         call buffer#BWipeForce(<f-args>)
 command! -nargs=1 -complete=file     BWipeForceUnlisted call buffer#BWipeForceUnlisted(<f-args>)
 

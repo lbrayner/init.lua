@@ -50,6 +50,10 @@ function! buffer#BWipeFileType(...)
 endfunction
 
 function! buffer#BWipeHidden(pattern)
+    if a:pattern == ""
+        call s:WipeBuffers('getbufinfo(n)[0].hidden')
+        return
+    endif
     let s:wipe_pattern = a:pattern
     call s:WipeBuffers('bufname(n) =~# s:wipe_pattern && getbufinfo(n)[0].hidden')
 endfunction
