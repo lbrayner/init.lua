@@ -139,6 +139,8 @@ end
 
 api.nvim_create_user_command("DiagnosticSetLocationList",
     vim.diagnostic.setloclist, { nargs=0 })
+-- TODO QuickFixDiagnosticAll could receive a namespace as argument
+-- TODO An equivalent command could be defined in lsp.lua
 api.nvim_create_user_command("QuickFixDiagnosticAll", function()
     quickfix_diagnostics = {}
     setqflist(quickfix_diagnostics)
