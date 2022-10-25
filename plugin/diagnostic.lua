@@ -126,27 +126,26 @@ end, opts)
 
 local quickfix_diagnostics = {}
 
-local function handle_lsp_clients()
+local function setqflist(opts)
     local active_clients = vim.lsp.get_active_clients({bufnr=api.nvim_get_current_buf()})
     if #active_clients ~= 1 then
         return
     end
     local active_client = active_clients[1]
-    quickfix_diagnostics = vim.tbl_extend("error", quickfix_diagnostics, {
+    opts = vim.tbl_extend("error", opts, {
         namespace=vim.lsp.diagnostic.get_namespace(active_client.id) })
+    vim.diagnostic.setqflist(opts)
 end
 
 api.nvim_create_user_command("DiagnosticSetLocationList",
     vim.diagnostic.setloclist, { nargs=0 })
 api.nvim_create_user_command("QuickFixDiagnosticAll", function()
     quickfix_diagnostics = {}
-    handle_lsp_clients()
-    vim.diagnostic.setqflist(quickfix_diagnostics)
+    setqflist(quickfix_diagnostics)
 end, { nargs=0 })
 api.nvim_create_user_command("QuickFixDiagnosticErrors", function()
     quickfix_diagnostics = { severity=vim.diagnostic.severity.ERROR }
-    handle_lsp_clients()
-    vim.diagnostic.setqflist(quickfix_diagnostics)
+    setqflist(quickfix_diagnostics)
 end, { nargs=0 })
 
 local custom_diagnostics = api.nvim_create_augroup("custom_diagnostics", { clear=true })
