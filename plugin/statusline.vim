@@ -66,7 +66,8 @@ augroup Statusline
     autocmd!
     autocmd InsertEnter * call statusline#HighlightMode('insert')
     autocmd InsertLeave * call statusline#HighlightMode('normal')
-    autocmd CmdlineEnter /,\? call statusline#HighlightMode('search') | redrawstatus
+    " TODO redrawstatus should work here, create an issue on github
+    autocmd CmdlineEnter /,\? call statusline#HighlightMode('search') | redraw
     autocmd CmdlineLeave /,\? call statusline#HighlightPreviousMode()
     if has("nvim")
         autocmd TermEnter * call statusline#HighlightMode('terminal')
