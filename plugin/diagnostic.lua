@@ -8,6 +8,8 @@ end
 local keymap = require("lbrayner.keymap")
 local nnoremap = keymap.nnoremap
 local prefix = require("lbrayner.diagnostic").get_prefix()
+local get_quickfix_diagnostics_opts = require("lbrayner.diagnostic").get_quickfix_diagnostics_opts
+local set_quickfix_diagnostics_opts = require("lbrayner.diagnostic").set_quickfix_diagnostics_opts
 
 local function is_long(bufnr, winid, virt_texts, lnum)
     -- TODO reduce?
@@ -124,17 +126,14 @@ nnoremap("]d", function()
     vim.diagnostic.goto_next({ float={ close_events=close_events } })
 end, opts)
 
-local quickfix_diagnostics = {}
-
 api.nvim_create_user_command("DiagnosticSetLocationList",
     vim.diagnostic.setloclist, { nargs=0 })
 api.nvim_create_user_command("QuickFixDiagnosticAll", function()
-    quickfix_diagnostics = {}
-    vim.diagnostic.setqflist(quickfix_diagnostics)
+    vim.diagnostic.setqflist(set_quickfix_diagnostics_opts({}))
 end, { nargs=0 })
 api.nvim_create_user_command("QuickFixDiagnosticErrors", function()
-    quickfix_diagnostics = { severity=vim.diagnostic.severity.ERROR }
-    vim.diagnostic.setqflist(quickfix_diagnostics)
+    vim.diagnostic.setqflist(set_quickfix_diagnostics_opts({
+        severity=vim.diagnostic.severity.ERROR }))
 end, { nargs=0 })
 
 local custom_diagnostics = api.nvim_create_augroup("custom_diagnostics", { clear=true })
@@ -143,7 +142,7 @@ api.nvim_create_autocmd({ "DiagnosticChanged" }, {
     group = custom_diagnostics,
     callback = function(_args)
         if vim.fn.getqflist({ title=true }).title == "Diagnostics" then
-            vim.diagnostic.setqflist(vim.tbl_extend("error", quickfix_diagnostics, {
+            vim.diagnostic.setqflist(vim.tbl_extend("error", get_quickfix_diagnostics_opts(), {
                 open=false }))
         end
     end,

@@ -1,3 +1,4 @@
+local quickfix_diagnostics_opts = {}
 local prefix = "•"
 
 local function buffer_severity()
@@ -17,5 +18,12 @@ return {
     buffer_severity = buffer_severity,
     get_prefix = function()
         return prefix
+    end,
+    get_quickfix_diagnostics_opts = function()
+        return quickfix_diagnostics_opts
+    end,
+    set_quickfix_diagnostics_opts = function(opts)
+        quickfix_diagnostics_opts = opts
+        return quickfix_diagnostics_opts
     end,
 }
