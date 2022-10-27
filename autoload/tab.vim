@@ -123,3 +123,10 @@ function! tab#TabCloseLeft(bang)
     endwhile
     let &eventignore = ei
 endfunction
+
+function! tab#TabOnly(bang)
+    let ei = &eventignore
+    set eventignore+=TabClosed
+    exe 'tabonly' . a:bang
+    let &eventignore = ei
+endfunction

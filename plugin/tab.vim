@@ -5,6 +5,7 @@ endfunction
 command! TabEqualizeWindows call s:DoTabEqualizeWindows()
 command! -bang TabCloseRight call tab#TabCloseRight('<bang>')
 command! -bang TabCloseLeft call tab#TabCloseLeft('<bang>')
+command! -bang TabOnly call tab#TabOnly('<bang>')
 command! Tabnew call util#PreserveViewPort("tabe ".fnameescape(expand("%")))
 command! Tabedit Tabnew
 
