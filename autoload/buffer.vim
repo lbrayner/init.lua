@@ -8,20 +8,23 @@ function! s:MessageBuffers(buffer_count)
 	endif
 endfunction
 
-function! s:WipeBuffers(predicate)
+function! s:WipeBuffers(predicate,...)
     let buffer_count = s:LoopBuffers(a:predicate.
                 \" && getbufvar(n,'&buftype') !=# 'terminal'",
-                \'bwipe')
+                \a:0 > 0 ? a:1 : 0,a:0 > 1 ? a:2 : 0)
     call s:MessageBuffers(buffer_count)
 endfunction
 
-function! s:LoopBuffers(predicate,command,...)
+function! s:LoopBuffers(predicate,bang,...)
 	let last_buffer = bufnr('$')
 	let buffer_count = 0
 	let n = 1
+    let bang = a:bang ? "!" : ""
+    let ei = &eventignore
+    set eventignore+=TabClosed
 	while n <= last_buffer
         if eval(a:predicate)
-            let command = a:command . " " . n
+            let command = "bwipe" . bang . " " . n
             if a:0 > 0 && a:1
                 " Ignore errors
                 silent! exe command
@@ -32,6 +35,7 @@ function! s:LoopBuffers(predicate,command,...)
         endif
 		let n = n+1
 	endwhile
+    let &eventignore = ei
     return buffer_count
 endfunction
 
@@ -64,14 +68,14 @@ endfunction
 
 function! buffer#BWipeForce(pattern)
     let s:wipe_pattern = a:pattern
-    call s:LoopBuffers('buflisted(n) && bufname(n) =~#'
-                \ . ' s:wipe_pattern','bwipe!', 1)
+    call s:WipeBuffers('buflisted(n) && bufname(n) =~#'
+                \ . ' s:wipe_pattern',1,1)
 endfunction
 
 function! buffer#BWipeForceUnlisted(pattern)
     let s:wipe_pattern = a:pattern
-    call s:LoopBuffers('!buflisted(n) && bufname(n) =~#'
-                \ . ' s:wipe_pattern','bwipe!', 1)
+    call s:WipeBuffers('!buflisted(n) && bufname(n) =~#'
+                \ . ' s:wipe_pattern',1,1)
 endfunction
 
 function! buffer#BWipeNotReadable()
@@ -79,5 +83,5 @@ function! buffer#BWipeNotReadable()
 endfunction
 
 function! buffer#BWipeNotReadableForce()
-    call s:LoopBuffers('buflisted(n) && !filereadable(bufname(n))', "bwipe!", 1)
+    call s:WipeBuffers('buflisted(n) && !filereadable(bufname(n))',1,1)
 endfunction
