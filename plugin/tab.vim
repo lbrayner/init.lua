@@ -2,12 +2,12 @@ function! s:DoTabEqualizeWindows()
     call tab#TabDo("normal! \<c-w>=")
 endfunction
 
-command! TabEqualizeWindows call s:DoTabEqualizeWindows()
-command! -bang TabCloseRight call tab#TabCloseRight('<bang>')
-command! -bang TabCloseLeft call tab#TabCloseLeft('<bang>')
-command! -bang TabOnly call tab#TabOnly('<bang>')
-command! Tabnew call util#PreserveViewPort("tabe ".fnameescape(expand("%")))
-command! Tabedit Tabnew
+command! -nargs=0 TabEqualizeWindows call s:DoTabEqualizeWindows()
+command! -nargs=0 -bang TabCloseRight call tab#TabCloseRight('<bang>')
+command! -nargs=0 -bang TabCloseLeft call tab#TabCloseLeft('<bang>')
+command! -nargs=0 -bang TabOnly call tab#TabOnly('<bang>')
+command! -nargs=0 Tabnew call util#PreserveViewPort("tabe ".fnameescape(expand("%")))
+command! -nargs=0 Tabedit Tabnew
 
 augroup TabActionsOnVimEnter
     autocmd!
