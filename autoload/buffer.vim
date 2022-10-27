@@ -15,8 +15,8 @@ function! s:WipeBuffers(predicate,...)
     call s:MessageBuffers(buffer_count)
 endfunction
 
-function! s:LoopBuffers(predicate,bang,...)
-	let last_buffer = bufnr('$')
+function! s:LoopBuffers(predicate,bang,silent)
+	let last_buffer = bufnr("$")
 	let buffer_count = 0
 	let n = 1
     let bang = a:bang ? "!" : ""
@@ -25,15 +25,15 @@ function! s:LoopBuffers(predicate,bang,...)
 	while n <= last_buffer
         if eval(a:predicate)
             let command = "bwipe" . bang . " " . n
-            if a:0 > 0 && a:1
+            if a:silent
                 " Ignore errors
                 silent! exe command
             else
                 silent exe command
             endif
-            let buffer_count = buffer_count+1
+            let buffer_count += 1
         endif
-		let n = n+1
+		let n += 1
 	endwhile
     let &eventignore = ei
     return buffer_count
