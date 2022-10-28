@@ -1,10 +1,10 @@
-" No convenient way of testing for the existence of a colorscheme
-if !exists("g:initialized_packages") || !g:initialized_packages
+if empty(globpath(&rtp, "colors/flattened_dark.vim"))
     finish
 endif
 
 function! s:SetupFlattened()
     set cursorline
+    hi QuickFixLine cterm=NONE ctermbg=8 ctermfg=13 guibg=#002b36 guifg=#6c71c4 gui=NONE
     " vim-diminactive
     execute "highlight ColorColumn ctermbg=".
                 \statusline#themes#getColor("x236_Grey19","cterm").
