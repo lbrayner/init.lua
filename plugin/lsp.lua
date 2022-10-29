@@ -42,6 +42,9 @@ vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
 local function lsp_setqflist(opts, bufnr)
     local active_clients = vim.lsp.get_active_clients({bufnr=bufnr})
     if #active_clients ~= 1 then
+        quickfix_diagnostics_opts = vim.tbl_extend("error", opts, {
+            title = "LSP Diagnostics"
+        })
         return vim.diagnostic.setqflist(quickfix_diagnostics_opts)
     end
     local active_client = active_clients[1]
