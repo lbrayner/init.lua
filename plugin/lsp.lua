@@ -45,19 +45,19 @@ local function lsp_setqflist(opts, bufnr)
         return vim.diagnostic.setqflist(quickfix_diagnostics_opts)
     end
     local active_client = active_clients[1]
-    opts = vim.tbl_extend("error", opts, {
+    quickfix_diagnostics_opts = vim.tbl_extend("error", opts, {
         namespace=vim.lsp.diagnostic.get_namespace(active_client.id) })
-    vim.diagnostic.setqflist(opts)
+    vim.diagnostic.setqflist(quickfix_diagnostics_opts)
 end
 
 vim.api.nvim_create_autocmd("LspAttach", {
     group = lsp_setup,
     desc = "Setup LSP user commands",
     callback = function(args)
-        vim.api.nvim_buf_create_user_command(args.buf, "LspQuickFixDiagnosticAll", function(_command)
+        vim.api.nvim_buf_create_user_command(args.buf, "LspDiagnosticQuickFixAll", function(_command)
             lsp_setqflist({}, args.buf)
         end, { nargs=0 })
-        vim.api.nvim_buf_create_user_command(args.buf, "LspQuickFixDiagnosticErrors", function(_command)
+        vim.api.nvim_buf_create_user_command(args.buf, "LspDiagnosticQuickFixErrors", function(_command)
             lsp_setqflist({ severity=vim.diagnostic.severity.ERROR }, args.buf)
         end, { nargs=0 })
     end,
@@ -67,7 +67,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
     group = lsp_setup,
     desc = "Undo LSP user commands",
     callback = function(args)
-        vim.api.nvim_buf_del_user_command(args.buf, "LspQuickFixDiagnosticAll")
-        vim.api.nvim_buf_del_user_command(args.buf, "LspQuickFixDiagnosticErrors")
+        vim.api.nvim_buf_del_user_command(args.buf, "LspDiagnosticQuickFixAll")
+        vim.api.nvim_buf_del_user_command(args.buf, "LspDiagnosticQuickFixErrors")
     end,
 })
