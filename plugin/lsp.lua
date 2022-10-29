@@ -27,17 +27,26 @@ vim.api.nvim_create_autocmd("LspDetach", {
     end,
 })
 
-local set_quickfix_diagnostics_opts = require("lbrayner.diagnostic").set_quickfix_diagnostics_opts
+local quickfix_diagnostics_opts = {}
+
+vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
+    group = lsp_setup,
+    callback = function(_args)
+        if vim.fn.getqflist({ title=true }).title == "Diagnostics" then
+            vim.diagnostic.setqflist(vim.tbl_extend("error", quickfix_diagnostics_opts, {
+                open=false }))
+        end
+    end,
+})
 
 local function lsp_setqflist(opts, bufnr)
     local active_clients = vim.lsp.get_active_clients({bufnr=bufnr})
     if #active_clients ~= 1 then
-        return vim.diagnostic.setqflist(set_quickfix_diagnostics_opts(opts))
+        return vim.diagnostic.setqflist(quickfix_diagnostics_opts)
     end
     local active_client = active_clients[1]
     opts = vim.tbl_extend("error", opts, {
         namespace=vim.lsp.diagnostic.get_namespace(active_client.id) })
-    set_quickfix_diagnostics_opts(opts)
     vim.diagnostic.setqflist(opts)
 end
 
@@ -49,7 +58,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
             lsp_setqflist({}, args.buf)
         end, { nargs=0 })
         vim.api.nvim_buf_create_user_command(args.buf, "LspQuickFixDiagnosticErrors", function(_command)
-            quickfix_diagnostics_opts = { severity=vim.diagnostic.severity.ERROR }
             lsp_setqflist({ severity=vim.diagnostic.severity.ERROR }, args.buf)
         end, { nargs=0 })
     end,
