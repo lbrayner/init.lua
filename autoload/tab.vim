@@ -105,28 +105,35 @@ function! tab#GoToTab()
 endfunction
 
 " https://superuser.com/a/555047
-function! tab#TabCloseRight(bang)
+function! tab#TabcloseRight(bang)
     let currrentTab = tabpagenr()
     let ei = &eventignore
     set eventignore+=TabClosed
-    while currrentTab < tabpagenr('$')
-        exe 'tabclose' . a:bang . ' ' . (currrentTab + 1)
+    while currrentTab < tabpagenr("$")
+        exe "tabclose" . a:bang . " " . (currrentTab + 1)
     endwhile
     let &eventignore = ei
 endfunction
 
-function! tab#TabCloseLeft(bang)
+function! tab#TabcloseLeft(bang)
     let ei = &eventignore
     set eventignore+=TabClosed
     while tabpagenr() > 1
-        exe 'tabclose' . a:bang . ' 1'
+        exe "tabclose" . a:bang . " 1"
     endwhile
     let &eventignore = ei
 endfunction
 
-function! tab#TabOnly(bang)
+function! tab#Tabonly(bang)
     let ei = &eventignore
     set eventignore+=TabClosed
-    exe 'tabonly' . a:bang
+    exe "tabonly" . a:bang
+    let &eventignore = ei
+endfunction
+
+function! tab#Tabclose(bang)
+    let ei = &eventignore
+    set eventignore+=TabClosed
+    exe "tabclose" . a:bang
     let &eventignore = ei
 endfunction
