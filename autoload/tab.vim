@@ -138,10 +138,7 @@ function! tab#Tabclose(bang)
     let &eventignore = ei
 endfunction
 
-" TODO doesn't work
-function! tab#TabCloseRange(bang) range
-    let currrentTab = tabpagenr()
-    while tabpagenr() >= a:firstline && tabpagenr() <= a:lastline
-        noautocmd exe 'tabclose' . a:bang
-    endwhile
+" TODO bang
+function! tab#TabcloseRange(bang) range
+    call v:lua.require'lbrayner.tab'.tab_close_range(a:firstline, a:lastline)
 endfunction
