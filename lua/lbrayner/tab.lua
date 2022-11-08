@@ -8,11 +8,10 @@ end
 
 local function tab_close_range(from, to)
     local tabs_to_close = {}
-    -- TODO optimize with while
-    for i, t in ipairs(vim.api.nvim_list_tabpages()) do
-        if i >= from and i <= to then
-            table.insert(tabs_to_close, t)
-        end
+    local tab = from
+    while tab <= to do
+        table.insert(tabs_to_close, vim.api.nvim_list_tabpages()[tab])
+        tab = tab + 1
     end
     -- TODO remove
     print(vim.inspect(tabs_to_close))
