@@ -358,6 +358,10 @@ function! Cwd()
     return fnamemodify(getcwd(),":~")
 endfunction
 
+function! Directory()
+    return fnamemodify(expand("%"),":~:h")
+endfunction
+
 if has("clipboard")
     function! Clip(...)
         if a:0 > 0
@@ -388,11 +392,13 @@ if has("clipboard")
     command! FullPath call Clip(FullPath())
     command! Name call Clip(Name())
     command! Cwd call Clip(Cwd())
+    command! Directory call Clip(Directory())
 else
     command! Path :let @"=Path()
     command! FullPath :let @"=FullPath()
     command! Name :let @"=Name()
     command! Cwd :let @"=Cwd()
+    command! Directory :let @"=Directory()
 endif
 
 command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
