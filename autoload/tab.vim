@@ -139,5 +139,9 @@ function! tab#Tabclose(bang)
 endfunction
 
 function! tab#TabcloseRange(bang, from, to)
+    if !has("nvim")
+        echoerr "Only available in Neovim."
+        return
+    endif
     call v:lua.require'lbrayner.tab'.tab_close_range(a:bang, str2nr(a:from), str2nr(a:to))
 endfunction
