@@ -138,11 +138,6 @@ function! tab#Tabclose(bang)
     let &eventignore = ei
 endfunction
 
-" TODO bang
 function! tab#TabcloseRange(bang, from, to)
-    " try
-        call v:lua.require'lbrayner.tab'.tab_close_range(str2nr(a:from), str2nr(a:to))
-    " catch /^Vim\%((\a\+)\)\=:E118:/
-    "     echoerr "2 arguments required"
-    " endtry
+    call v:lua.require'lbrayner.tab'.tab_close_range(a:bang, str2nr(a:from), str2nr(a:to))
 endfunction
