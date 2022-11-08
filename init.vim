@@ -372,9 +372,11 @@ if has("clipboard")
             let @"=text
         endif
         let @+=@" | let @*=@"
-        if stridx(getreg('"'),"\n") < 0 && len(getreg('"')) <= &columns*0.9
-            echo @"
-        elseif len(getreg('"',1,1)) > 2
+        if len(getreg('"',1,1)) == 1 && len(getreg('"',1,1)[0]) <= &columns*0.9
+            echo getreg('"',1,1)[0]
+        elseif len(getreg('"',1,1)) == 1
+            echo "1 line clipped"
+        else
             echo len(getreg('"',1,1)) . " lines clipped"
         endif
     endfunction
