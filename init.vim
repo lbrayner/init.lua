@@ -672,6 +672,9 @@ augroup RelativeNumberAutoGroup
                 \     set relativenumber |
                 \ endif
 augroup END
+if v:vim_did_enter
+    doautocmd RelativeNumberAutoGroup VimEnter
+endif
 
 " text format options
 
@@ -708,14 +711,6 @@ augroup GitCommit
     autocmd BufWinEnter COMMIT_EDITMSG startinsert
 augroup END
 
-" VimEnter
-
-augroup VimEnterAutoGroup
-    autocmd!
-    " v:vim_did_enter not available before 8.0
-    autocmd VimEnter * let g:vim_did_enter = 1
-augroup END
-
 augroup SessionLoadPostAutoGroup
     autocmd!
     " Wiping empty buffers created by restoring sessions
@@ -729,6 +724,9 @@ if has("nvim")
         autocmd VimEnter * autocmd TermAutoGroup TermOpen * startinsert
         autocmd TermEnter * set nonumber
     augroup END
+    if v:vim_did_enter
+        doautocmd TermAutoGroup VimEnter
+    endif
 endif
 
 augroup TabClosedAutoGroup
