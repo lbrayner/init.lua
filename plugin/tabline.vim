@@ -84,3 +84,6 @@ augroup Tabline
     autocmd VimEnter * autocmd Tabline BufEnter * call s:TablineBufEnter()
     autocmd VimEnter * call RedefineTabline()
 augroup END
+if v:vim_did_enter
+    doautocmd Tabline VimEnter
+endif

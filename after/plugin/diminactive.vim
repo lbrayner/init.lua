@@ -41,6 +41,9 @@ function! s:DimInactiveEnable()
         autocmd User DimInactive call s:DimInactiveBuftypeExceptions()
     augroup END
     call s:HighlightNormalNC()
+    if v:vim_did_enter
+        doautocmd DimInactive VimEnter
+    endif
 endfunction
 
 function! s:DimInactiveDisable()

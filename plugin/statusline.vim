@@ -93,6 +93,9 @@ augroup Statusline
         autocmd DiagnosticChanged * call statusline#RedefineStatusLine()
     endif
 augroup END
+if v:vim_did_enter
+    doautocmd Statusline VimEnter
+endif
 
 " Setting a default not current statusline
 " margins of 1 column (on both sides)

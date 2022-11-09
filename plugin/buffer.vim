@@ -37,6 +37,9 @@ augroup Checktime
                     \ sil! exe "checktime"
     endif
 augroup END
+if v:vim_did_enter
+    doautocmd Checktime VimEnter
+endif
 
 " Save any buffer
 

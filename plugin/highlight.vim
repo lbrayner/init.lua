@@ -61,3 +61,6 @@ augroup HighlightAndMatch
     endif
     autocmd VimEnter * call HighlightTrailingWhitespace()
 augroup END
+if v:vim_did_enter
+    doautocmd HighlightAndMatch VimEnter
+endif
