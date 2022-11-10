@@ -124,6 +124,20 @@ nnoremap("]d", function()
     vim.diagnostic.goto_next({ float={ close_events=close_events } })
 end, opts)
 
+local function get_error_warn()
+    if vim.diagnostic.get_next_pos({ severity=vim.diagnostic.severity.ERROR }) then
+        return vim.diagnostic.severity.ERROR
+    end
+    return vim.diagnostic.severity.WARN
+end
+
+nnoremap("[!", function()
+    vim.diagnostic.goto_prev({ float={ close_events=close_events }, severity=get_error_warn() })
+end, opts)
+nnoremap("]!", function()
+    vim.diagnostic.goto_next({ float={ close_events=close_events }, severity=get_error_warn() })
+end, opts)
+
 local custom_diagnostics = api.nvim_create_augroup("custom_diagnostics", { clear=true })
 
 local err = "DiagnosticSignError"
