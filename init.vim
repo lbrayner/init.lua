@@ -346,6 +346,12 @@ endfunction
 command! ClearQuickfixList call s:ClearQuickfixList()
 
 function! Path()
+    if len(expand("%")) <= 0
+        return ""
+    endif
+    if !util#IsInDirectory(getcwd(), expand("%"))
+        return FullPath()
+    endif
     return expand("%")
 endfunction
 
