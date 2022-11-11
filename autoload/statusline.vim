@@ -1,5 +1,5 @@
 function! statusline#StatusFlag()
-    if ! exists("w:Statusline_modified")
+    if !exists("w:Statusline_modified")
         let w:Statusline_modified = 0
     endif
     if w:Statusline_modified != &modified
