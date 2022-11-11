@@ -32,7 +32,7 @@ function! s:AddQuotes(quote,lines)
 endfunction
 
 function! s:AddCatSigns(cat,lines)
-    call map(a:lines,"a:cat.v:val")
+    call map(a:lines,"v:val.a:cat")
     return a:lines
 endfunction
 
@@ -43,10 +43,10 @@ endfunction
 
 function! s:AssembleLines(quote,cat,prefix,suffix,lines)
     call s:AddQuotes(a:quote,a:lines)
-    let lines = a:lines[0:0] + s:AddCatSigns(a:cat,a:lines[1:])
+    let lines = s:AddCatSigns(a:cat,a:lines[0:-2]) + a:lines[-1:-1]
     let lines = lines[0:0] + s:Indent(lines[1:]
             \,strlen(substitute(a:prefix,"\t"
-                \,s:ShiftSpaces(),"g"))-strlen(a:cat))
+                \,s:ShiftSpaces(),"g")))
     let lines[0] = a:prefix . lines[0]
     let lines[len(lines)-1] = lines[len(lines)-1] . a:suffix
     return lines
@@ -60,6 +60,8 @@ function! s:BreakString(code,blength)
     let break_idx = strridx(above," ")
     if break_idx <= 0
         let break_idx = a:blength
+    else
+        let break_idx += 1
     endif
     let above = strpart(above,0,break_idx)
     let below = strpart(a:code,break_idx)
