@@ -1,7 +1,7 @@
 " static snippets
 abclear <buffer>
-iabbrev <buffer> toStringm @Override<cr>public String
-            \ toString()<cr>{<cr>}<up><right><cr>
+iabbrev <buffer> toStringm @Override<CR>public String toString()
+            \ {<CR>}<C-o>Oreturn "";<Left><Left>
 inoreabbrev <buffer> tostr toStringm
 iabbrev <buffer> sysout System.out.println();<left><left>
 inoreabbrev <buffer> sysou sysout
