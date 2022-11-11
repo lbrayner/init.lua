@@ -62,6 +62,10 @@ noremap <Plug>(Cmd) <Cmd>call CmdlineModeEnter() <bar> redrawstatus<CR>:
 
 " Autocommands
 
+" Setting a default not current statusline
+" margins of 1 column (on both sides)
+let &statusline=" %f "
+
 augroup Statusline
     autocmd!
     autocmd InsertEnter * call statusline#HighlightMode('insert')
@@ -96,9 +100,5 @@ augroup END
 if v:vim_did_enter
     doautocmd Statusline VimEnter
 endif
-
-" Setting a default not current statusline
-" margins of 1 column (on both sides)
-let &statusline=' %f '
 
 " vim: fdm=marker
