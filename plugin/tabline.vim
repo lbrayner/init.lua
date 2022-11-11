@@ -31,18 +31,19 @@ function! RedefineTabline()
     endif
     " Fugitive objects
     if exists("*FugitiveParse") && stridx(expand("%"),"fugitive://") == 0
-        let [rev, dir] = FugitiveParse(expand("%"))
+        let [name, dir] = FugitiveParse(expand("%"))
         let dir = substitute(dir,'/\.git$',"","")
-        if rev ==# ":"
-            let rev = util#RelativeNode(dir, FugitiveReal(expand("%")))
+        " Fugitive summary
+        if name ==# ":"
+            let name = util#RelativeNode(dir, FugitiveReal(expand("%")))
         endif
         let &tabline.=" %="
         if !util#IsInDirectory(getcwd(), dir)
-            let max_length -= len(rev)
+            let max_length -= len(name)
             let &tabline.="%#WarningMsg#".util#truncateFilename(
                         \util#NPath(dir),max_length)." "
         endif
-        let &tabline.="%<%#Normal#".rev." "
+        let &tabline.="%<%#Normal#".name." "
         return
     endif
     " jdt.ls
