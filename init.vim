@@ -934,7 +934,7 @@ augroup FugitiveCustomAutocommands
 augroup END
 
 command! -bar -bang -nargs=* -complete=customlist,fugitive#EditComplete Gdi
-            \ exe fugitive#Diffsplit(0, <bang>0, "vertical leftabove <mods>", <q-args>)
+            \ exe fugitive#Diffsplit(1, <bang>0, "leftabove <mods>", <q-args>)
 function! FObject()
     return FugitiveParse(expand("%"))[0]
 endfunction
