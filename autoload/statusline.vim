@@ -167,6 +167,11 @@ function! statusline#DefineStatusLineNoFocus()
         let &l:statusline.=" Fugitive summary @ ".dir
         return
     endif
+    if exists("*FugitiveParse") && len(FObject())
+        let filename = util#truncateFilename(FObject(),winwidth("%")-2)
+        let &l:statusline=" ".filename." "
+        return
+    endif
     if exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let cwd = fnamemodify(FugitiveResult(bufnr()).cwd,":p:~")
         let cwd = substitute(cwd,'/$',"","")
