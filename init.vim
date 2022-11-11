@@ -330,13 +330,6 @@ endif
 
 " Subsection: functions & commands
 
-" Increments a numeric variable
-function! g:IncrementVariable(var)
-    exe "let ".a:var." = ".a:var." + 1"
-    exe "let to_return = ".a:var
-    return to_return
-endfunction
-
 " Clear the Quickfix List
 
 function s:ClearQuickfixList()
