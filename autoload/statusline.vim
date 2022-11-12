@@ -129,11 +129,11 @@ function! statusline#DefineModifiedStatusLine()
         let &l:statusline.="Fugitive summary%* %<%1 %{statusline#StatusFlag()}%*"
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let filename = s:FugitiveTemporaryBuffer()
-        let &l:statusline=" %5*"
+        let &l:statusline=" "
         if &previewwindow
-            let &l:statusline.="Previewing "
+            let &l:statusline.="%5*Previewing%* "
         endif
-        let &l:statusline.="Fugitive:%* %<%1".filename." %{statusline#StatusFlag()}%*"
+        let &l:statusline.="%9*Fugitive:%* %<%1".filename." %{statusline#StatusFlag()}%*"
     elseif &previewwindow
         let &l:statusline = " %5*Previewing:%* "
         let &l:statusline.='%<%1*'.filename.' %{statusline#StatusFlag()}%*'
@@ -220,11 +220,11 @@ function! statusline#DefineStatusLine()
         let &l:statusline.="%<Fugitive summary %1*%{statusline#StatusFlag()}%*"
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let filename = s:FugitiveTemporaryBuffer()
-        let &l:statusline=" %5*"
+        let &l:statusline=" "
         if &previewwindow
-            let &l:statusline.="Previewing "
+            let &l:statusline.="%5*Previewing%* "
         endif
-        let &l:statusline.="Fugitive:%* %<".filename." %1*%{statusline#StatusFlag()}%*"
+        let &l:statusline.="%9*Fugitive:%* %<".filename." %1*%{statusline#StatusFlag()}%*"
     elseif &previewwindow
         if expand("%") == ""
             let &l:statusline=' %<[Preview] %1*%{statusline#StatusFlag()}%*'
