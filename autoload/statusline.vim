@@ -160,12 +160,13 @@ function! statusline#DefineStatusLineNoFocus()
         return
     endif
     if getbufvar(bufnr(),"fugitive_type") ==# "index"
-        let &l:statusline=""
+        let &l:statusline=" "
         if &previewwindow
-            let &l:statusline.=" Previewing:"
+            let &l:statusline.="Previewing: "
         endif
         let dir = substitute(util#NPath(FugitiveGitDir()),'/\.git$',"","")
-        let &l:statusline.=" Fugitive summary @ ".dir
+        let &l:statusline.="Fugitive summary @ "
+        let &l:statusline.=util#truncateFilename(dir,winwidth("%")-len(&statusline)-1)
         return
     endif
     if exists("*FugitiveParse") && len(FObject())
@@ -176,11 +177,13 @@ function! statusline#DefineStatusLineNoFocus()
     if exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let cwd = fnamemodify(FugitiveResult(bufnr()).cwd,":p:~")
         let cwd = substitute(cwd,'/$',"","")
-        let &l:statusline=""
+        let &l:statusline=" "
         if &previewwindow
-            let &l:statusline.=" Previewing"
+            let &l:statusline.="Previewing "
         endif
-        let &l:statusline.=" Fugitive: ".s:FugitiveTemporaryBuffer()." @ ".cwd." "
+        let &l:statusline.="Fugitive: "
+        let &l:statusline.=util#truncateFilename(s:FugitiveTemporaryBuffer()." @ ".cwd,
+                    \winwidth("%")-len(&statusline)-1)
         return
     endif
     if &previewwindow
