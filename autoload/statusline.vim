@@ -117,6 +117,7 @@ endfunction
 " joined with %=
 
 " margins of 1 column (on both sides)
+" TODO is vim-fugitive information necessary here?
 function! statusline#DefineModifiedStatusLine()
     let filename = statusline#Filename()
     if exists("b:Statusline_custom_mod_leftline")
