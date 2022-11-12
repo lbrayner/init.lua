@@ -122,9 +122,9 @@ function! statusline#DefineModifiedStatusLine()
     if exists("b:Statusline_custom_mod_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_mod_leftline."'"
     elseif getbufvar(bufnr(),"fugitive_type") ==# "index"
-        let &l:statusline=" %5*"
+        let &l:statusline=" "
         if &previewwindow
-            let &l:statusline.="Previewing "
+            let &l:statusline.="%5*Previewing:%* "
         endif
         let &l:statusline.="Fugitive summary%* %<%1 %{statusline#StatusFlag()}%*"
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
@@ -217,7 +217,7 @@ function! statusline#DefineStatusLine()
         if &previewwindow
             let &l:statusline.="%5*Previewing:%* "
         endif
-        let &l:statusline.="%<Fugitive summary %1*%{statusline#StatusFlag()}%*"
+        let &l:statusline.="Fugitive summary %<%1*%{statusline#StatusFlag()}%*"
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let filename = s:FugitiveTemporaryBuffer()
         let &l:statusline=" "
