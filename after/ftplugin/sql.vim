@@ -4,7 +4,8 @@ function! s:SQLDatabaseAccess()
         let b:Statusline_custom_rightline = "%9*dadbod%*"
         let b:Statusline_custom_mod_rightline = "%9*dadbod%*"
         if stridx(b:db, "postgresql") == 0
-            nnoremap <buffer> <Leader>sdt :exe "DB \\d " . expand("<cWORD>")<CR>
+            " Describe this object
+            nnoremap <buffer> <Leader>dt :exe "DB \\d " . expand("<cWORD>")<CR>
             return
         endif
     endif
