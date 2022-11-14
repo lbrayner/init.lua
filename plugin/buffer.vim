@@ -106,24 +106,27 @@ endfunction
 " Unclutter, i.e. close certain special windows
 
 function! s:Unclutter(current_window_id,last_accessed_winnr)
-    " Close floating window
+    " Close current window if it's a floating one
     if exists("*nvim_win_get_config") && nvim_win_get_config(0).relative != ""
         quit
         return
     endif
+    " If we're in a help buffer, simply quit it
+    if &ft == "help"
+        quit
+        return
+    endif
+    " If not in one, close all help buffers
+    call s:CloseAllHelp(a:current_window_id, a:last_accessed_winnr)
+    pclose " Close preview window
+    cclose " Close quickfix window
+    " Close all local lists
+    call s:LCloseAllWindows(a:current_window_id, a:last_accessed_winnr)
     " Quit if there's at most one file and this is the last window
     " TODO this is not lazy, quite expensive and O(n)
     if len(filter(range(1,bufnr('$')),'buflisted(v:val)')) <= 1 && winnr('$') == 1
         quit
     endif
-    pclose " Close preview window
-    cclose " Close quickfix window
-    call s:LCloseAllWindows(a:current_window_id, a:last_accessed_winnr)
-    " TODO Should be confined to the tab
-    BWipe Result-
-    " TODO Should be confined to the tab
-    " TODO isn't a wipe too forceful?
-    call s:CloseAllHelp(a:current_window_id, a:last_accessed_winnr)
 endfunction
 
 command! Unclutter silent call s:Unclutter(win_getid(),winnr("#"))
