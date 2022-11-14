@@ -123,7 +123,7 @@ function! s:Unclutter(current_window_id,last_accessed_winnr)
     " Close all local lists
     call s:LCloseAllWindows(a:current_window_id, a:last_accessed_winnr)
     " Quit if there's at most one file and this is the last window
-    " TODO this is not lazy, quite expensive and O(n)
+    " XXX: this is not lazy, quite expensive and O(n)
     if len(filter(range(1,bufnr('$')),'buflisted(v:val)')) <= 1 && winnr('$') == 1
         quit
     endif
