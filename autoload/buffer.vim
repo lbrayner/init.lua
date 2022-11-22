@@ -15,14 +15,14 @@ function! s:WipeBuffers(predicate,...)
     call s:MessageBuffers(buffer_count)
 endfunction
 
+" TODO using getbufinfo, review predicates
 function! s:LoopBuffers(predicate,bang,silent)
-	let last_buffer = bufnr("$")
 	let buffer_count = 0
-	let n = 1
     let bang = a:bang ? "!" : ""
     let ei = &eventignore
     set eventignore+=TabClosed
-	while n <= last_buffer
+    for buf in getbufinfo()
+        let n = buf.bufnr
         if eval(a:predicate)
             let command = "bwipe" . bang . " " . n
             if a:silent
@@ -33,8 +33,7 @@ function! s:LoopBuffers(predicate,bang,silent)
             endif
             let buffer_count += 1
         endif
-		let n += 1
-	endwhile
+    endfor
     let &eventignore = ei
     return buffer_count
 endfunction
