@@ -197,6 +197,7 @@ function! statusline#DefineStatusLineNoFocus()
         endif
         return
     endif
+    " TODO add statusline#StatusFlag where possible
     let filename = util#truncateFilename(statusline#Filename(1),
                 \winwidth("%")-2-(1+len(statusline#StatusFlag())))
     let &l:statusline=" ".filename." %{statusline#StatusFlag()} "
