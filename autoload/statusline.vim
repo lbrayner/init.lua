@@ -197,12 +197,9 @@ function! statusline#DefineStatusLineNoFocus()
         endif
         return
     endif
-    let filename = statusline#Filename(1)
-    if &modified
-        let filename .= " ".statusline#StatusFlag()
-    endif
-    let filename = util#truncateFilename(filename,winwidth("%")-2)
-    let &l:statusline=" ".filename." "
+    let filename = util#truncateFilename(statusline#Filename(1),
+                \winwidth("%")-2-(1+len(statusline#StatusFlag())))
+    let &l:statusline=" ".filename." %{statusline#StatusFlag()} "
 endfunction
 
 function! statusline#DefineTerminalStatusLine()
