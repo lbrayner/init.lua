@@ -4,6 +4,7 @@ local nvim_buf_del_user_command = vim.api.nvim_buf_del_user_command
 local function jdtls_create_commands(bufnr)
     nvim_buf_create_user_command(bufnr, "JdtStop", function(_command)
         vim.lsp.stop_client(vim.lsp.get_active_clients({ name="jdtls" }))
+        vim.api.nvim_del_augroup_by_name("jdtls_setup")
     end, { nargs=0 })
     -- The following are commands from the nvim-jdtls README
     nvim_buf_create_user_command(bufnr, "JdtCompile", function(command)
