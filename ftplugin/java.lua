@@ -35,7 +35,7 @@ end
 nvim_buf_create_user_command(0, "JdtStart", function(_command)
     local config = require("lbrayner.jdtls").get_config()
 
-    if vim.lsp.get_active_clients({ name="jdt.ls" })[1] then
+    if vim.lsp.get_active_clients({ name="jdtls" })[1] then
         return require("jdtls").start_or_attach(config)
     end
 
@@ -44,7 +44,7 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
     vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
         group = jdtls_setup,
         pattern = config.root_dir .. "/*.java",
-        desc = "New Java buffers attach to jdt.ls",
+        desc = "New Java buffers attach to jdtls",
         callback = function()
             require("jdtls").start_or_attach(config)
         end,
@@ -59,7 +59,7 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
             vim.api.nvim_create_autocmd({ "BufEnter" }, {
                 group = jdtls_setup,
                 buffer = bufnr,
-                desc = "This Java buffer will attach to jdt.ls once focused",
+                desc = "This Java buffer will attach to jdtls once focused",
                 once = true,
                 callback = function(_args)
                     require("jdtls").start_or_attach(config)
@@ -71,7 +71,7 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
     vim.api.nvim_create_autocmd("LspAttach", {
         group = jdtls_setup,
         pattern = config.root_dir .. "/*.java",
-        desc = "jdt.ls buffer setup",
+        desc = "jdtls buffer setup",
         callback = function(args)
             -- Custom statusline
             vim.b[args.buf].Statusline_custom_leftline = '%<%{expand("%:t:r")} ' ..
@@ -87,7 +87,7 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
     vim.api.nvim_create_autocmd("LspDetach", {
         group = jdtls_setup,
         pattern = config.root_dir .. "/*.java",
-        desc = "Undo jdt.ls buffer setup",
+        desc = "Undo jdtls buffer setup",
         callback = function(args)
             -- Undo custom statusline
             vim.b[args.buf].Statusline_custom_leftline = nil
@@ -99,4 +99,4 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
     })
 
     require("jdtls").start_or_attach(config)
-end, { desc="Start jdt.ls and setup automatic attach, local buffer configuration", nargs=0 })
+end, { desc="Start jdtls and setup automatic attach, local buffer configuration", nargs=0 })

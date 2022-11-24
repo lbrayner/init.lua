@@ -27,7 +27,7 @@ local config = {
 
 -- Add this to site local configuration:
 
--- -- jdt.ls global settings
+-- -- jdtls global settings
 -- require("lbrayner.jdtls").get_config().settings = {
 --     java = {
 --         settings = {
