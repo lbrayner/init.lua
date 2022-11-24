@@ -25,6 +25,17 @@ local config = {
     root_dir = require("jdtls.setup").find_root({".git", "mvnw", "gradlew"}),
 }
 
+-- Add this to site local configuration:
+
+-- -- jdt.ls global settings
+-- require("lbrayner.jdtls").get_config().settings = {
+--     java = {
+--         settings = {
+--             url = os.getenv("HOME").."/.config/nvim/config/jdtls/settings.prefs",
+--         },
+--     },
+-- }
+
 return {
     get_config = function()
         return config
