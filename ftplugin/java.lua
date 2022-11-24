@@ -85,10 +85,13 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
         end,
     })
 
+    local jdtls_undo = vim.api.nvim_create_augroup("jdtls_undo", { clear=true })
+
     vim.api.nvim_create_autocmd("LspDetach", {
-        group = jdtls_setup,
+        group = jdtls_undo,
         pattern = config.root_dir .. "/*.java",
         desc = "Undo jdtls buffer setup",
+        once = true,
         callback = function(args)
             -- Undo custom statusline
             vim.b[args.buf].Statusline_custom_leftline = nil
