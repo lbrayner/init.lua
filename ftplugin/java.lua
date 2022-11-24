@@ -17,6 +17,8 @@ local function jdtls_create_commands(bufnr)
     nvim_buf_create_user_command(bufnr, "JdtJol", require("jdtls").jol, { nargs=0 })
     nvim_buf_create_user_command(bufnr, "JdtBytecode", require("jdtls").javap, { nargs=0 })
     nvim_buf_create_user_command(bufnr, "JdtJshell", require("jdtls").jshell, { nargs=0 })
+    nvim_buf_create_user_command(bufnr, "JdtOrganizeImports", require("jdtls").organize_imports, {
+        nargs=0 })
 end
 
 local function jdtls_delete_commands(bufnr)
@@ -27,6 +29,7 @@ local function jdtls_delete_commands(bufnr)
     nvim_buf_del_user_command(bufnr, "JdtJol")
     nvim_buf_del_user_command(bufnr, "JdtBytecode")
     nvim_buf_del_user_command(bufnr, "JdtJshell")
+    nvim_buf_del_user_command(bufnr, "JdtOrganizeImports")
 end
 
 nvim_buf_create_user_command(0, "JdtStart", function(_command)
