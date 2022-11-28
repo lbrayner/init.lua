@@ -305,6 +305,9 @@ function! statusline#RedefineStatusLine()
     if &buftype == "terminal" && stridx(mode(), "t") == 0
         return
     endif
+    if exists("g:actual_curwin") && g:actual_curwin != win_getid()
+        return
+    endif
     if &modified
         call statusline#DefineModifiedStatusLine()
     else
