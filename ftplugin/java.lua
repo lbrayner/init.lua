@@ -1,10 +1,33 @@
 local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
 local nvim_buf_del_user_command = vim.api.nvim_buf_del_user_command
 
+local function jdtls_buffer_undo(bufnr)
+    -- Undo custom statusline
+    vim.b[bufnr].Statusline_custom_leftline = nil
+    vim.b[bufnr].Statusline_custom_mod_leftline = nil
+
+    -- Delete buffer local commands
+    nvim_buf_del_user_command(bufnr, "JdtStop")
+    nvim_buf_del_user_command(bufnr, "JdtCompile")
+    nvim_buf_del_user_command(bufnr, "JdtSetRuntime")
+    nvim_buf_del_user_command(bufnr, "JdtUpdateConfig")
+    nvim_buf_del_user_command(bufnr, "JdtJol")
+    nvim_buf_del_user_command(bufnr, "JdtBytecode")
+    nvim_buf_del_user_command(bufnr, "JdtJshell")
+    nvim_buf_del_user_command(bufnr, "JdtOrganizeImports")
+end
+
 local function jdtls_create_commands(bufnr)
     nvim_buf_create_user_command(bufnr, "JdtStop", function(_command)
-        vim.lsp.stop_client(vim.lsp.get_active_clients({ name="jdtls" }))
+        local client = vim.lsp.get_active_clients({ name="jdtls" })[1]
+        if not client then
+            return
+        end
+        for _, buf in pairs(vim.lsp.get_buffers_by_client_id(client.id)) do
+            jdtls_buffer_undo(buf)
+        end
         vim.api.nvim_del_augroup_by_name("jdtls_setup")
+        vim.lsp.stop_client(client.id)
     end, { nargs=0 })
     -- The following are commands from the nvim-jdtls README
     nvim_buf_create_user_command(bufnr, "JdtCompile", function(command)
@@ -20,17 +43,6 @@ local function jdtls_create_commands(bufnr)
     nvim_buf_create_user_command(bufnr, "JdtJshell", require("jdtls").jshell, { nargs=0 })
     nvim_buf_create_user_command(bufnr, "JdtOrganizeImports", require("jdtls").organize_imports, {
         nargs=0 })
-end
-
-local function jdtls_delete_commands(bufnr)
-    nvim_buf_del_user_command(bufnr, "JdtStop")
-    nvim_buf_del_user_command(bufnr, "JdtCompile")
-    nvim_buf_del_user_command(bufnr, "JdtSetRuntime")
-    nvim_buf_del_user_command(bufnr, "JdtUpdateConfig")
-    nvim_buf_del_user_command(bufnr, "JdtJol")
-    nvim_buf_del_user_command(bufnr, "JdtBytecode")
-    nvim_buf_del_user_command(bufnr, "JdtJshell")
-    nvim_buf_del_user_command(bufnr, "JdtOrganizeImports")
 end
 
 nvim_buf_create_user_command(0, "JdtStart", function(_command)
@@ -82,22 +94,6 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
 
             -- Setup buffer local commands
             jdtls_create_commands(args.buf)
-        end,
-    })
-
-    local jdtls_undo = vim.api.nvim_create_augroup("jdtls_undo", { clear=true })
-
-    vim.api.nvim_create_autocmd("LspDetach", {
-        group = jdtls_undo,
-        pattern = config.root_dir .. "/*.java",
-        desc = "Undo jdtls buffer setup",
-        callback = function(args)
-            -- Undo custom statusline
-            vim.b[args.buf].Statusline_custom_leftline = nil
-            vim.b[args.buf].Statusline_custom_mod_leftline = nil
-
-            -- Delete buffer local commands
-            jdtls_delete_commands(args.buf)
         end,
     })
 
