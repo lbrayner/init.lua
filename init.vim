@@ -952,8 +952,8 @@ cnoreabbrev Gd Git difftool -y
 cnoreabbrev Gl Git log
 cnoreabbrev Glns Git log --name-status
 cnoreabbrev Glo Git log --oneline
-" To list branches of a specific remote: Git! ls-remote --heads upstream
-cnoreabbrev Gh Git! ls-remote --heads
+" To list branches of a specific remote: Git! ls-remote upstream
+cnoreabbrev Gr Git! ls-remote
 
 " dirvish
 
