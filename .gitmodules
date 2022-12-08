@@ -69,7 +69,7 @@
 	url = https://github.com/junegunn/vim-easy-align
 [submodule "pack/bundle/start/vim-matchit"]
 	path = pack/bundle/start/vim-matchit
-	url = https://github.com/lbrayner/vim-matchit
+	url = https://github.com/adelarsq/vim-matchit
 [submodule "pack/bundle/start/flattened"]
 	path = pack/bundle/start/flattened
 	url = https://github.com/romainl/flattened
