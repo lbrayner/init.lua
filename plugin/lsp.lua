@@ -62,8 +62,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
         vim.api.nvim_buf_create_user_command(args.buf, "LspDiagnosticQuickFixAll", function(_command)
             lsp_setqflist({}, args.buf)
         end, { nargs=0 })
-        vim.api.nvim_buf_create_user_command(args.buf, "LspDiagnosticQuickFixErrors", function(_command)
+        vim.api.nvim_buf_create_user_command(args.buf, "LspDiagnosticQuickFixError", function(_command)
             lsp_setqflist({ severity=vim.diagnostic.severity.ERROR }, args.buf)
+        end, { nargs=0 })
+        vim.api.nvim_buf_create_user_command(args.buf, "LspDiagnosticQuickFixWarn", function(_command)
+            lsp_setqflist({ severity={ min=vim.diagnostic.severity.WARN } }, args.buf)
         end, { nargs=0 })
     end,
 })
@@ -73,6 +76,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
     desc = "Undo LSP user commands",
     callback = function(args)
         vim.api.nvim_buf_del_user_command(args.buf, "LspDiagnosticQuickFixAll")
-        vim.api.nvim_buf_del_user_command(args.buf, "LspDiagnosticQuickFixErrors")
+        vim.api.nvim_buf_del_user_command(args.buf, "LspDiagnosticQuickFixError")
+        vim.api.nvim_buf_del_user_command(args.buf, "LspDiagnosticQuickFixWarn")
     end,
 })
