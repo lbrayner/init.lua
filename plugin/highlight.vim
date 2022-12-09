@@ -48,7 +48,6 @@ endfunction
 augroup HighlightAndMatch
     autocmd!
     autocmd ColorScheme * call TrailingWhitespaceGroup()
-    autocmd BufWinLeave * call ClearTrailingWhitespace()
     " BufWinEnter covers all windows on startup (think of sessions)
     autocmd BufWinEnter * call HighlightTrailingWhitespace()
     " But it becomes insufficient and redundant after that
