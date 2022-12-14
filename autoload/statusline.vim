@@ -72,8 +72,12 @@ function! s:GetNumberOfLines()
     return '%-'.length.'L'
 endfunction
 
+function! s:BufferPosition()
+    return s:GetLineFormat() . ',%-3.v %3.P ' . s:GetNumberOfLines()
+endfunction
+
 function! statusline#GetStatusLineTail()
-    let bufferPosition = s:GetLineFormat() . ',%-3.v %3.P ' . s:GetNumberOfLines()
+    let bufferPosition = s:BufferPosition()
     " TODO remove this?
     if &buftype == "nofile"
         return bufferPosition . ' %2*%{&filetype}%* '
@@ -122,12 +126,22 @@ function! statusline#DefineModifiedStatusLine()
     let filename = statusline#Filename()
     if exists("b:Statusline_custom_mod_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_mod_leftline."'"
+    " Fugitive summary
     elseif getbufvar(bufnr(),"fugitive_type") ==# "index"
         let &l:statusline=" "
         if &previewwindow
             let &l:statusline.="%5*Previewing:%* "
         endif
         let &l:statusline.="Fugitive summary%* %<%1 %{statusline#StatusFlag()}%*"
+    " Fugitive blame
+    elseif exists("*FugitiveResult") &&
+                \has_key(FugitiveResult(bufnr()), "filetype") &&
+                \has_key(FugitiveResult(bufnr()), "blame_file") &&
+                \FugitiveResult(bufnr()).filetype == "fugitiveblame"
+        let &l:statusline=" Fugitive blame %<%1*%{statusline#StatusFlag()}%*%="
+        let &l:statusline.=s:BufferPosition()
+        return
+    " Fugitive temporary buffers
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let filename = s:FugitiveTemporaryBuffer()
         let &l:statusline=" "
@@ -159,6 +173,7 @@ function! statusline#DefineStatusLineNoFocus()
         let &l:statusline=' '.filename.' '
         return
     endif
+    " Fugitive summary
     if getbufvar(bufnr(),"fugitive_type") ==# "index"
         let &l:statusline=" "
         if &previewwindow
@@ -169,11 +184,24 @@ function! statusline#DefineStatusLineNoFocus()
         let &l:statusline.=util#truncateFilename(dir,winwidth("%")-len(&statusline)-1)
         return
     endif
+    " Fugitive objects
     if exists("*FugitiveParse") && len(FObject())
         let filename = util#truncateFilename(FObject(),winwidth("%")-2)
         let &l:statusline=" ".filename." "
         return
     endif
+    " Fugitive blame
+    if exists("*FugitiveResult") &&
+                \has_key(FugitiveResult(bufnr()), "filetype") &&
+                \has_key(FugitiveResult(bufnr()), "blame_file") &&
+                \FugitiveResult(bufnr()).filetype == "fugitiveblame"
+        let &l:statusline="Fugitive blame:"
+        let filename = FugitiveResult(bufnr()).blame_file
+        let filename = util#truncateFilename(filename,winwidth("%")-3-len(&l:statusline))
+        let &l:statusline=" ".&l:statusline." ".filename." "
+        return
+    endif
+    " Fugitive temporary buffers
     if exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let cwd = fnamemodify(FugitiveResult(bufnr()).cwd,":p:~")
         let cwd = substitute(cwd,'/$',"","")
@@ -218,12 +246,22 @@ function! statusline#DefineStatusLine()
     let filename = statusline#Filename()
     if exists("b:Statusline_custom_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_leftline."'"
+    " Fugitive summary
     elseif getbufvar(bufnr(),"fugitive_type") ==# "index"
         let &l:statusline=" "
         if &previewwindow
             let &l:statusline.="%5*Previewing:%* "
         endif
         let &l:statusline.="Fugitive summary %<%1*%{statusline#StatusFlag()}%*"
+    " Fugitive blame
+    elseif exists("*FugitiveResult") &&
+                \has_key(FugitiveResult(bufnr()), "filetype") &&
+                \has_key(FugitiveResult(bufnr()), "blame_file") &&
+                \FugitiveResult(bufnr()).filetype == "fugitiveblame"
+        let &l:statusline=" Fugitive blame %<%1*%{statusline#StatusFlag()}%*%="
+        let &l:statusline.=s:BufferPosition()
+        return
+    " Fugitive temporary buffers
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let filename = s:FugitiveTemporaryBuffer()
         let &l:statusline=" "

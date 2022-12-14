@@ -17,6 +17,19 @@ function! RedefineTabline()
     let &tabline='%#Title#%4.{tabpagenr()}%#Normal# '.session.'%#NonText#'.cwd
     " At least one column separating left and right and a 1 column margin
     let max_length = &columns - 3 - 1 - 1 - len(session_name) - 1 - len(cwd) - 1 - 1
+    " Fugitive blame
+    if exists("*FugitiveResult") &&
+                \has_key(FugitiveResult(bufnr()), "filetype") &&
+                \has_key(FugitiveResult(bufnr()), "blame_file") &&
+                \FugitiveResult(bufnr()).filetype == "fugitiveblame"
+        let &tabline.=" %="
+        let blame="Fugitive blame: "
+        let max_length -= len(blame)
+        let filename = FugitiveResult(bufnr()).blame_file
+        let filename = util#truncateFilename(filename,max_length)
+        let &tabline.="%#WarningMsg#".blame."%#Normal#".filename." "
+        return
+    endif
     " Fugitive temporary buffers
     if exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let &tabline.=" %="
