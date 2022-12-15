@@ -186,8 +186,11 @@ function! statusline#DefineStatusLineNoFocus()
     endif
     " Fugitive objects
     if exists("*FugitiveParse") && len(FObject())
-        let filename = util#truncateFilename(FObject(),winwidth("%")-2)
-        let &l:statusline=" ".filename." "
+        let &l:statusline=" "
+        if &previewwindow
+            let &l:statusline.="Previewing: "
+        endif
+        let &l:statusline.=util#truncateFilename(FObject(),winwidth("%")-len(&statusline)-1)." "
         return
     endif
     " Fugitive blame
@@ -211,7 +214,7 @@ function! statusline#DefineStatusLineNoFocus()
         endif
         let &l:statusline.="Fugitive: "
         let &l:statusline.=util#truncateFilename(s:FugitiveTemporaryBuffer()." @ ".cwd,
-                    \winwidth("%")-len(&statusline)-1)
+                    \winwidth("%")-len(&statusline)-1)." "
         return
     endif
     if &previewwindow
