@@ -219,12 +219,13 @@ function! statusline#DefineStatusLineNoFocus()
     endif
     if &previewwindow
         if expand("%") == ""
-            let &l:statusline=" [Preview] "
+            let &l:statusline=" [Preview] %{statusline#StatusFlag()} "
         else
             let &l:statusline = " Previewing: "
             let filename = util#truncateFilename(
-                        \statusline#Filename(1),winwidth("%")-len(&statusline)-1)
-            let &l:statusline.=filename." "
+                        \statusline#Filename(1),
+                        \winwidth("%")-len(&statusline)-1-(1+len(statusline#StatusFlag())))
+            let &l:statusline.=filename." %{statusline#StatusFlag()} "
         endif
         return
     endif
