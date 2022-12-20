@@ -1,7 +1,7 @@
 " what: ftplugin/vidir.vim
 "  who: by Raimondi
 " when: 2018-12-30
-" Last changed: 2021-6-29
+" Last changed: 2022-12-20
 " Last changed by: lbrayner
 
 " TODO Revert functions to their old script local names
@@ -110,5 +110,8 @@ augroup END
 
 "reset &cpo back to users setting
 let &cpo = s:save_cpo
+
+" Calling VidirOnCursorMoved on startup
+call VidirOnCursorMoved()
 
 " vim: set sw=2 sts=2 et fdm=marker:
