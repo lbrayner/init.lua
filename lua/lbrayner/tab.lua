@@ -23,6 +23,18 @@ local function tab_close_range(bang, from, to)
     vim.o.eventignore = ei
 end
 
+local function switch_to_window(file)
+    for _, w in ipairs(vim.api.nvim_list_wins()) do
+        local buf = vim.api.nvim_win_get_buf(w)
+        local name = vim.api.nvim_buf_get_name(buf)
+        if vim.fn.fnamemodify(file,":p") == name then
+            -- TODO vim.api.nvim_win_call({window}, {fun}) could be useful
+            return vim.api.nvim_set_current_win(w)
+        end
+    end
+end
+
 return {
     tab_close_range = tab_close_range,
+    switch_to_window = switch_to_window,
 }
