@@ -596,7 +596,7 @@ augroup END
 augroup VidirGroup
     autocmd!
     autocmd BufEnter /tmp/dir*
-                \ if argc() == 1 && argv(0) =~# '^/tmp/dir' |
+                \ if argc() == 1 && argv(0) =~# '^/tmp/dir\w\{5}$' |
                 \     set ft=vidir |
                 \ endif
 augroup END
