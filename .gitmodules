@@ -113,3 +113,6 @@
 [submodule "pack/bundle/start/vim-dadbod"]
 	path = pack/bundle/start/vim-dadbod
 	url = https://github.com/tpope/vim-dadbod
+[submodule "pack/bundle/start/typescript.nvim"]
+	path = pack/bundle/start/typescript.nvim
+	url = https://github.com/jose-elias-alvarez/typescript.nvim
