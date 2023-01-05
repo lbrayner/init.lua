@@ -3,6 +3,8 @@ vim.cmd.packadd "nvim-jdtls"
 local lspconfig = require "lspconfig.server_configurations.jdtls"
 
 local function on_attach(client, bufnr)
+    -- TODO disabling semantic highlighting for now
+    client.server_capabilities.semanticTokensProvider = nil
     require "lbrayner.lspcommon".on_attach(client, bufnr)
 
     -- Override mappings
