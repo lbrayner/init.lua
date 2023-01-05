@@ -113,9 +113,9 @@ end
 
 local opts = { silent=true }
 
-nnoremap("<space>e", goto_first, opts)
-nnoremap("<space>E", function()
-    vim.diagnostic.open_float { close_events=close_events, scope="buffer" }
+nnoremap("<Space>e", goto_first, opts)
+nnoremap("<Space>E", function()
+    vim.diagnostic.open_float({ close_events=close_events, scope="buffer" })
 end, opts)
 nnoremap("[d", function()
     vim.diagnostic.goto_prev({ float={ close_events=close_events } })
