@@ -88,7 +88,6 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
     group = lspconfig_custom,
     desc = "New buffers attach to LS managed by lspconfig",
     callback = function(_args)
-        vim.fn.exists("#lspconfig#BufReadPost#" .. "/*")
         for _, client in ipairs(vim.lsp.get_active_clients()) do
             if vim.tbl_get(client, "config", "root_dir") then
                 if vim.fn.exists("#lspconfig#BufReadPost#" .. client.config.root_dir .. "/*") == 1 then
