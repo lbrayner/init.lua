@@ -81,3 +81,20 @@ vim.api.nvim_create_autocmd("LspDetach", {
         vim.api.nvim_buf_del_user_command(args.buf, "LspDiagnosticQuickFixWarn")
     end,
 })
+
+local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear=true })
+
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+    group = lspconfig_custom,
+    desc = "New buffers attach to LS managed by lspconfig",
+    callback = function(args) -- TODO unused?
+        vim.fn.exists("#lspconfig#BufReadPost#" .. "/*")
+        for _, client in ipairs(vim.lsp.get_active_clients()) do
+            if vim.tbl_get(client, "config", "root_dir") then
+                if vim.fn.exists("#lspconfig#BufReadPost#" .. client.config.root_dir .. "/*") == 1 then
+                    vim.cmd("doautocmd lspconfig BufReadPost " .. client.config.root_dir .. "/*")
+                end
+            end
+        end
+    end,
+})
