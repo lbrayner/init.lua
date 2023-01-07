@@ -3,8 +3,6 @@ if not vim.api["nvim_create_autocmd"] then
     return
 end
 
-local keymap = require("lbrayner.keymap")
-local nnoremap = keymap.nnoremap
 local prefix = require("lbrayner.diagnostic").get_prefix()
 
 local function is_long(bufnr, winid, virt_texts, lnum)
@@ -111,22 +109,22 @@ end
 
 local opts = { silent=true }
 
-nnoremap("<Space>e", goto_first, opts)
-nnoremap("<Space>E", function()
+vim.keymap.set("n","<Space>e", goto_first, opts)
+vim.keymap.set("n","<Space>E", function()
     vim.diagnostic.open_float({ close_events=close_events, scope="buffer" })
 end, opts)
-nnoremap("[d", function()
+vim.keymap.set("n","[d", function()
     vim.diagnostic.goto_prev({ float={ close_events=close_events } })
 end, opts)
-nnoremap("]d", function()
+vim.keymap.set("n","]d", function()
     vim.diagnostic.goto_next({ float={ close_events=close_events } })
 end, opts)
 
-nnoremap("[!", function()
+vim.keymap.set("n","[!", function()
     vim.diagnostic.goto_prev({ float={ close_events=close_events }, severity={
     min=vim.diagnostic.severity.WARN } })
 end, opts)
-nnoremap("]!", function()
+vim.keymap.set("n","]!", function()
     vim.diagnostic.goto_next({ float={ close_events=close_events }, severity={
     min=vim.diagnostic.severity.WARN } })
 end, opts)

@@ -15,8 +15,6 @@ vim.cmd.packadd "fzf-lua"
 local nvim_create_user_command = vim.api.nvim_create_user_command
 local fzf = require("fzf-lua")
 local actions = require "fzf-lua.actions"
-local keymap = require("lbrayner.keymap")
-local nnoremap = keymap.nnoremap
 
 fzf.setup {
     buffers = {
@@ -62,9 +60,9 @@ nvim_create_user_command("Tabs", fzf.tabs, { nargs=0 })
 
 local opts = { silent=true }
 
-nnoremap("<F5>", fzf.buffers, opts)
-nnoremap("<Leader><F7>", files_clear_cache, opts)
-nnoremap("<F7>", files, opts)
-nnoremap("<F8>", function()
+vim.keymap.set("n","<F5>", fzf.buffers, opts)
+vim.keymap.set("n","<Leader><F7>", files_clear_cache, opts)
+vim.keymap.set("n","<F7>", files, opts)
+vim.keymap.set("n","<F8>", function()
     fzf.tabs({ show_quickfix=true })
 end, opts)

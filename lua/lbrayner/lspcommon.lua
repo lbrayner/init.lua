@@ -1,8 +1,6 @@
 vim.cmd.packadd "nvim-lspconfig"
 
 local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
-local keymap = require("lbrayner.keymap")
-local nnoremap = keymap.nnoremap
 
 -- From nvim-lspconfig
 -- Use an on_attach function to only map the following keys
@@ -15,18 +13,18 @@ local function on_attach(client, bufnr)
 
     -- Mappings
     local bufopts = { buffer=bufnr }
-    nnoremap("gD", function()
+    vim.keymap.set("n","gD", function()
         vim.lsp.buf.declaration({ reuse_win=true })
     end, bufopts)
-    nnoremap("gd", function()
+    vim.keymap.set("n","gd", function()
         vim.lsp.buf.definition({ reuse_win=true })
     end, bufopts)
-    nnoremap("K", vim.lsp.buf.hover, bufopts)
-    nnoremap("gi", vim.lsp.buf.implementation, bufopts)
-    nnoremap("gK", vim.lsp.buf.signature_help, bufopts)
-    nnoremap("<Space>D", vim.lsp.buf.type_definition, bufopts)
-    nnoremap("<F11>", vim.lsp.buf.code_action, bufopts)
-    nnoremap("gr", vim.lsp.buf.references, bufopts)
+    vim.keymap.set("n","K", vim.lsp.buf.hover, bufopts)
+    vim.keymap.set("n","gi", vim.lsp.buf.implementation, bufopts)
+    vim.keymap.set("n","gK", vim.lsp.buf.signature_help, bufopts)
+    vim.keymap.set("n","<Space>D", vim.lsp.buf.type_definition, bufopts)
+    vim.keymap.set("n","<F11>", vim.lsp.buf.code_action, bufopts)
+    vim.keymap.set("n","gr", vim.lsp.buf.references, bufopts)
 
     -- Commands
     nvim_buf_create_user_command(bufnr, "LspRename", function(command)

@@ -8,10 +8,9 @@ local function on_attach(client, bufnr)
     require "lbrayner.lspcommon".on_attach(client, bufnr)
 
     -- Override mappings
-    local nnoremap = require("lbrayner.keymap").nnoremap
     local bufopts = { buffer=bufnr }
     -- Go to class declaration
-    nnoremap("gD", function()
+    vim.keymap.set("n","gD", function()
         vim.api.nvim_win_set_cursor(0, {1, 0})
         if vim.fn.search(
             "\\v^public\\s+%(abstract\\s+)?%(final\\s+)?%(class|enum|interface)\\s+\\zs" ..
