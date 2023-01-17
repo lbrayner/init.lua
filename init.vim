@@ -555,9 +555,6 @@ augroup END
 " buffer aesthetics
 
 function! s:Aesthetics()
-    if &ft ==# "netrw"
-        return
-    endif
     " setting nonumber if length of line count is greater than 3
     if len(line("$"))>3
         set nonumber
@@ -570,6 +567,25 @@ augroup AestheticsAutoGroup
     autocmd BufRead * call s:Aesthetics()
     autocmd VimEnter,WinEnter * if exists("b:aesthetics") | set nonumber | endif
 augroup END
+
+augroup WindowNumberAutoGroup
+    autocmd!
+    autocmd VimEnter * autocmd WindowNumberAutoGroup
+                \ WinNew * if !exists("b:aesthetics") && !&number && &relativenumber |
+                \     set number |
+                \ endif
+    autocmd VimEnter * autocmd WindowNumberAutoGroup
+                \ WinLeave * if &number |
+                \     set norelativenumber |
+                \ endif
+    autocmd VimEnter * autocmd WindowNumberAutoGroup
+                \ BufWinEnter,WinEnter * if &number && !s:RelativeNumberException() |
+                \     set relativenumber |
+                \ endif
+augroup END
+if v:vim_did_enter
+    doautocmd WindowNumberAutoGroup VimEnter
+endif
 
 "help buffers
 
@@ -663,22 +679,6 @@ function! s:RelativeNumberException()
     endif
     return 0
 endfunction
-
-" norelativenumber in non focused windows
-augroup RelativeNumberAutoGroup
-    autocmd!
-    autocmd VimEnter * autocmd RelativeNumberAutoGroup
-                \ WinLeave * if &number |
-                \     set norelativenumber |
-                \ endif
-    autocmd VimEnter * autocmd RelativeNumberAutoGroup
-                \ BufWinEnter,WinEnter * if !s:RelativeNumberException() |
-                \     set relativenumber |
-                \ endif
-augroup END
-if v:vim_did_enter
-    doautocmd RelativeNumberAutoGroup VimEnter
-endif
 
 " text format options
 
