@@ -366,6 +366,10 @@ function! Directory()
     return fnamemodify(expand("%"),":~:h")
 endfunction
 
+function! RelativeDirectory()
+    return fnamemodify(expand("%"),":h")
+endfunction
+
 if has("clipboard")
     function! Clip(...)
         if a:0 > 0
@@ -399,12 +403,14 @@ if has("clipboard")
     command! Name call Clip(Name())
     command! Cwd call Clip(Cwd())
     command! Directory call Clip(Directory())
+    command! RelativeDirectory call Clip(RelativeDirectory())
 else
     command! Path :let @"=Path()
     command! FullPath :let @"=FullPath()
     command! Name :let @"=Name()
     command! Cwd :let @"=Cwd()
     command! Directory :let @"=Directory()
+    command! RelativeDirectory :let @"=RelativeDirectory()
 endif
 
 command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
@@ -568,10 +574,11 @@ augroup AestheticsAutoGroup
     autocmd VimEnter,WinEnter * if exists("b:aesthetics") | set nonumber | endif
 augroup END
 
+" TODO WinNew happens before switching to buffer
 augroup WindowNumberAutoGroup
     autocmd!
     autocmd VimEnter * autocmd WindowNumberAutoGroup
-                \ WinNew * if !exists("b:aesthetics") && !&number && &relativenumber |
+                \ WinNew * if !&number && &relativenumber |
                 \     set number |
                 \ endif
     autocmd VimEnter * autocmd WindowNumberAutoGroup
