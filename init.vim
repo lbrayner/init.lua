@@ -45,7 +45,6 @@ set listchars=eol:¬,tab:»\ ,trail:·
 set splitbelow
 set splitright
 set number
-set relativenumber
 set wildmode=longest:full
 set wildmenu
 if has("linebreak")
@@ -565,16 +564,33 @@ function! s:Aesthetics()
     if len(line("$"))>3
         set nonumber
         let b:aesthetics = 1
+        return
+    endif
+    if exists("b:aesthetics")
+        unlet b:aesthetics
     endif
 endfun
 
 augroup AestheticsAutoGroup
     autocmd!
-    autocmd BufRead * call s:Aesthetics()
-    autocmd VimEnter,WinEnter * if exists("b:aesthetics") | set nonumber | endif
+    autocmd VimEnter * autocmd AestheticsAutoGroup BufRead,BufWritePost * call s:Aesthetics()
+    autocmd VimEnter * autocmd AestheticsAutoGroup
+                \ WinEnter * if exists("b:aesthetics") && b:aesthetics | set nonumber | endif
 augroup END
 
-" TODO WinNew happens before switching to buffer
+function! s:RelativeNumberException()
+    if exists("*nvim_win_get_config") && nvim_win_get_config(0).relative != ""
+        return 1
+    endif
+    if &filetype ==# "fugitiveblame"
+        return 1
+    endif
+    if !stridx(&syntax,"Neogit")
+        return 1
+    endif
+    return 0
+endfunction
+
 augroup WindowNumberAutoGroup
     autocmd!
     autocmd VimEnter * autocmd WindowNumberAutoGroup
@@ -589,6 +605,7 @@ augroup WindowNumberAutoGroup
                 \ BufWinEnter,WinEnter * if &number && !s:RelativeNumberException() |
                 \     set relativenumber |
                 \ endif
+    autocmd VimEnter * set relativenumber
 augroup END
 if v:vim_did_enter
     doautocmd WindowNumberAutoGroup VimEnter
@@ -673,19 +690,6 @@ augroup JSReactBufferSetup
     autocmd!
     autocmd FileType javascriptreact,typescriptreact call s:JSReactBufferSetup()
 augroup END
-
-function! s:RelativeNumberException()
-    if exists("*nvim_win_get_config") && nvim_win_get_config(0).relative != ""
-        return 1
-    endif
-    if &filetype ==# "fugitiveblame"
-        return 1
-    endif
-    if !stridx(&syntax,"Neogit")
-        return 1
-    endif
-    return 0
-endfunction
 
 " text format options
 
