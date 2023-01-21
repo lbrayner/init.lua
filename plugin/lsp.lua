@@ -111,11 +111,11 @@ vim.api.nvim_create_autocmd("LspDetach", {
             return
         end
 
-        -- Restoring the statusline
+        -- Restore the statusline
         vim.b[bufnr].Statusline_custom_rightline = nil
         vim.b[bufnr].Statusline_custom_mod_rightline = nil
 
-        -- Deleting user commands
+        -- Delete user commands
         for _, command in ipairs({
             "LspDeclaration",
             "LspDefinition",
@@ -123,8 +123,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
             "LspWorkspaceFolders",
             "LspDiagnosticQuickFixAll",
             "LspDiagnosticQuickFixError",
-            "LspDiagnosticQuickFixWarn",
-        }) do
+            "LspDiagnosticQuickFixWarn" }) do
             vim.api.nvim_buf_del_user_command(bufnr, command)
         end
     end,
