@@ -1,3 +1,5 @@
+vim.cmd.packadd "typescript.nvim"
+
 local lspcommon = require "lbrayner.lspcommon"
 
 -- Typescript, Javascript
