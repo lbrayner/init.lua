@@ -88,6 +88,22 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
         desc = "jdtls buffer setup",
         callback = function(args)
             local bufnr = args.buf
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            -- TODO disabling semantic highlighting for now
+            client.server_capabilities.semanticTokensProvider = nil
+
+            -- Mapping overrides
+            local bufopts = { buffer=bufnr }
+            -- Go to class declaration
+            vim.keymap.set("n","gD", function()
+                vim.api.nvim_win_set_cursor(0, {1, 0})
+                if vim.fn.search(
+                    "\\v^public\\s+%(abstract\\s+)?%(final\\s+)?%(class|enum|interface)\\s+\\zs" ..
+                    vim.fn.expand("%:t:r")) > 0 then
+                    vim.cmd "normal! zz"
+                end
+            end, bufopts)
+
             -- Custom statusline
             vim.b[bufnr].Statusline_custom_leftline = '%<%{expand("%:t:r")} ' ..
             '%{statusline#StatusFlag()}'

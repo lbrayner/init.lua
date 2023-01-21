@@ -71,22 +71,6 @@ local function on_attach(client, bufnr)
     vim.b[bufnr].Statusline_custom_rightline = '%9*' .. client.name .. '%* '
     vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. client.name .. '%* '
     vim.cmd "silent! doautocmd <nomodeline> User CustomStatusline"
-
-    -- Client specific settings
-
-    if client.name == "jdtls" then
-        -- TODO disabling semantic highlighting for now
-        client.server_capabilities.semanticTokensProvider = nil
-        -- Go to class declaration
-        vim.keymap.set("n","gD", function()
-            vim.api.nvim_win_set_cursor(0, {1, 0})
-            if vim.fn.search(
-                "\\v^public\\s+%(abstract\\s+)?%(final\\s+)?%(class|enum|interface)\\s+\\zs" ..
-                vim.fn.expand("%:t:r")) > 0 then
-                vim.cmd "normal! zz"
-            end
-        end, bufopts)
-    end
 end
 
 local lsp_setup = vim.api.nvim_create_augroup("lsp_setup", { clear=true })
