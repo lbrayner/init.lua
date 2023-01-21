@@ -110,9 +110,12 @@ vim.api.nvim_create_autocmd("LspDetach", {
         if not vim.lsp.buf_is_attached(bufnr, client.id) then
             return
         end
+
+        -- Restoring the statusline
         vim.b[bufnr].Statusline_custom_rightline = nil
         vim.b[bufnr].Statusline_custom_mod_rightline = nil
 
+        -- Deleting user commands
         for _, command in ipairs({
             "LspDeclaration",
             "LspDefinition",
@@ -122,7 +125,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
             "LspDiagnosticQuickFixError",
             "LspDiagnosticQuickFixWarn",
         }) do
-            vim.api.nvim_buf_del_user_command(args.buf, command)
+            vim.api.nvim_buf_del_user_command(bufnr, command)
         end
     end,
 })
@@ -157,7 +160,7 @@ local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear
 
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
     group = lspconfig_custom,
-    desc = "New buffers attach to LS managed by lspconfig",
+    desc = "New buffers attach to LS managed by lspconfig even when autostart is false",
     callback = function(args)
         for _, client in ipairs(vim.lsp.get_active_clients()) do
             if vim.tbl_get(client, "config", "workspace_folders") then

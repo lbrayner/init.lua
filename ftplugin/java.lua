@@ -85,14 +85,15 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
         pattern = config.root_dir .. "/*.java",
         desc = "jdtls buffer setup",
         callback = function(args)
+            local bufnr = args.buf
             -- Custom statusline
-            vim.b[args.buf].Statusline_custom_leftline = '%<%{expand("%:t:r")} ' ..
+            vim.b[bufnr].Statusline_custom_leftline = '%<%{expand("%:t:r")} ' ..
             '%{statusline#StatusFlag()}'
-            vim.b[args.buf].Statusline_custom_mod_leftline = '%<%1*%{expand("%:t:r")}' ..
+            vim.b[bufnr].Statusline_custom_mod_leftline = '%<%1*%{expand("%:t:r")}' ..
             ' %{statusline#StatusFlag()}%*'
 
             -- Setup buffer local commands
-            jdtls_create_commands(args.buf)
+            jdtls_create_commands(bufnr)
         end,
     })
 
