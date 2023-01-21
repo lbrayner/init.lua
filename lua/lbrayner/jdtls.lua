@@ -2,27 +2,8 @@ vim.cmd.packadd "nvim-jdtls"
 
 local lspconfig = require "lspconfig.server_configurations.jdtls"
 
-local function on_attach(client, bufnr)
-    -- TODO disabling semantic highlighting for now
-    client.server_capabilities.semanticTokensProvider = nil
-    require "lbrayner.lspcommon".on_attach(client, bufnr)
-
-    -- Override mappings
-    local bufopts = { buffer=bufnr }
-    -- Go to class declaration
-    vim.keymap.set("n","gD", function()
-        vim.api.nvim_win_set_cursor(0, {1, 0})
-        if vim.fn.search(
-            "\\v^public\\s+%(abstract\\s+)?%(final\\s+)?%(class|enum|interface)\\s+\\zs" ..
-            vim.fn.expand("%:t:r")) > 0 then
-            vim.cmd "normal! zz"
-        end
-    end, bufopts)
-end
-
 local config = {
     cmd = lspconfig.default_config.cmd,
-    on_attach = on_attach,
     root_dir = require("jdtls.setup").find_root({".git", "mvnw", "gradlew"}),
 }
 
