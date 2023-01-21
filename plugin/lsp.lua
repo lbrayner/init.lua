@@ -130,7 +130,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
 vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
     group = lsp_setup,
     callback = function(_args)
-        if string.find(vim.fn.getqflist({ title=true }).title, "^LSP Diagnostics") then
+        if vim.startswith(vim.fn.getqflist({ title=true }).title, "LSP Diagnostics") then
             vim.diagnostic.setqflist(vim.tbl_extend("error", quickfix_diagnostics_opts, {
                 open=false }))
         end
