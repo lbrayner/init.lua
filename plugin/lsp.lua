@@ -87,16 +87,24 @@ local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
     group = lspconfig_custom,
     desc = "New buffers attach to LS managed by lspconfig",
-    callback = function(_args)
-        local root_dirs = vim.empty_dict()
+    callback = function(args)
+        local workspace_folders = vim.empty_dict()
         for _, client in ipairs(vim.lsp.get_active_clients()) do
-            if vim.tbl_get(client, "config", "root_dir") then
-                root_dirs[client.config.root_dir] = true
+            if vim.tbl_get(client, "config", "workspace_folders") then
+                local names = vim.tbl_map(function (workspace_folder)
+                    return workspace_folder.name
+                end, client.config.workspace_folders)
+                for _, name in ipairs(names) do
+                    -- starts with
+                    if string.sub(vim.api.nvim_buf_get_name(args.buf), 1, #name) == name then
+                        workspace_folders[name] = true
+                    end
+                end
             end
         end
-        for root_dir, _ in pairs(root_dirs) do
-            if vim.fn.exists("#lspconfig#BufReadPost#" .. root_dir .. "/*") == 1 then
-                vim.cmd("doautocmd lspconfig BufReadPost " .. root_dir .. "/*")
+        for name, _ in pairs(workspace_folders) do
+            if vim.fn.exists("#lspconfig#BufReadPost#" .. name .. "/*") == 1 then
+                vim.cmd("doautocmd lspconfig BufReadPost " .. name .. "/*")
             end
         end
     end,
