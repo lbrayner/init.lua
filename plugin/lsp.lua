@@ -88,7 +88,6 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
     group = lspconfig_custom,
     desc = "New buffers attach to LS managed by lspconfig",
     callback = function(args)
-        local workspace_folders = vim.empty_dict()
         for _, client in ipairs(vim.lsp.get_active_clients()) do
             if vim.tbl_get(client, "config", "workspace_folders") then
                 local names = vim.tbl_map(function (workspace_folder)
