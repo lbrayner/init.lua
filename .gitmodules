@@ -116,3 +116,4 @@
 [submodule "pack/bundle/start/typescript.nvim"]
 	path = pack/bundle/opt/typescript.nvim
 	url = https://github.com/jose-elias-alvarez/typescript.nvim
+    branch = main
