@@ -557,27 +557,6 @@ augroup InsertModeUndoPoint
     autocmd CursorHoldI * call s:InsertModeUndoPoint()
 augroup END
 
-" buffer aesthetics
-
-function! s:Aesthetics()
-    " setting nonumber if length of line count is greater than 3
-    if len(line("$"))>3
-        set nonumber
-        let b:aesthetics = 1
-        return
-    endif
-    if exists("b:aesthetics")
-        unlet b:aesthetics
-    endif
-endfun
-
-augroup AestheticsAutoGroup
-    autocmd!
-    autocmd VimEnter * autocmd AestheticsAutoGroup BufRead,BufWritePost * call s:Aesthetics()
-    autocmd VimEnter * autocmd AestheticsAutoGroup
-                \ WinEnter * if exists("b:aesthetics") && b:aesthetics | set nonumber | endif
-augroup END
-
 function! s:RelativeNumberException()
     if exists("*nvim_win_get_config") && nvim_win_get_config(0).relative != ""
         return 1
@@ -609,6 +588,25 @@ augroup WindowNumberAutoGroup
 augroup END
 if v:vim_did_enter
     doautocmd WindowNumberAutoGroup VimEnter
+endif
+
+" buffer aesthetics
+
+function! s:Aesthetics()
+    " setting nonumber if length of line count is greater than 3
+    if len(line("$"))>3
+        set nonumber
+    endif
+endfun
+
+augroup AestheticsAutoGroup
+    autocmd!
+    autocmd VimEnter * autocmd AestheticsAutoGroup
+                \ BufRead,BufEnter,BufWritePost * call s:Aesthetics()
+    autocmd VimEnter * call s:Aesthetics()
+augroup END
+if v:vim_did_enter
+    doautocmd AestheticsAutoGroup VimEnter
 endif
 
 "help buffers
