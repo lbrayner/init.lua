@@ -97,14 +97,11 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
                 for _, name in ipairs(names) do
                     -- starts with
                     if string.sub(vim.api.nvim_buf_get_name(args.buf), 1, #name) == name then
-                        workspace_folders[name] = true
+                        if vim.fn.exists("#lspconfig#BufReadPost#" .. name .. "/*") == 1 then
+                            return vim.cmd("doautocmd lspconfig BufReadPost " .. name .. "/*")
+                        end
                     end
                 end
-            end
-        end
-        for name, _ in pairs(workspace_folders) do
-            if vim.fn.exists("#lspconfig#BufReadPost#" .. name .. "/*") == 1 then
-                vim.cmd("doautocmd lspconfig BufReadPost " .. name .. "/*")
             end
         end
     end,
