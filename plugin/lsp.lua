@@ -86,22 +86,7 @@ local function on_attach(client, bufnr)
                 vim.cmd "normal! zz"
             end
         end, bufopts)
-end
-
-lsp_setqflist = function(opts, bufnr)
-    local active_clients = vim.lsp.get_active_clients({bufnr=bufnr})
-    if #active_clients ~= 1 then
-        quickfix_diagnostics_opts = vim.tbl_extend("error", opts, {
-            title = "LSP Diagnostics"
-        })
-        return vim.diagnostic.setqflist(quickfix_diagnostics_opts)
     end
-    local active_client = active_clients[1]
-    quickfix_diagnostics_opts = vim.tbl_extend("error", opts, {
-        namespace = vim.lsp.diagnostic.get_namespace(active_client.id),
-        title = "LSP Diagnostics: " .. active_client.name
-    })
-    vim.diagnostic.setqflist(quickfix_diagnostics_opts)
 end
 
 local lsp_setup = vim.api.nvim_create_augroup("lsp_setup", { clear=true })
@@ -151,6 +136,22 @@ vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
         end
     end,
 })
+
+lsp_setqflist = function(opts, bufnr)
+    local active_clients = vim.lsp.get_active_clients({bufnr=bufnr})
+    if #active_clients ~= 1 then
+        quickfix_diagnostics_opts = vim.tbl_extend("error", opts, {
+            title = "LSP Diagnostics"
+        })
+        return vim.diagnostic.setqflist(quickfix_diagnostics_opts)
+    end
+    local active_client = active_clients[1]
+    quickfix_diagnostics_opts = vim.tbl_extend("error", opts, {
+        namespace = vim.lsp.diagnostic.get_namespace(active_client.id),
+        title = "LSP Diagnostics: " .. active_client.name
+    })
+    vim.diagnostic.setqflist(quickfix_diagnostics_opts)
+end
 
 local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear=true })
 
