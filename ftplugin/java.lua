@@ -63,13 +63,11 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
         end,
     })
 
-    local is_descendant = require("lspconfig.util").path.is_descendant
-
     for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
         if vim.api.nvim_get_current_buf() ~= bufnr and
             vim.api.nvim_buf_is_loaded(bufnr) and
             vim.bo[bufnr].ft == "java" and
-            is_descendant(config.root_dir, vim.api.nvim_buf_get_name(bufnr)) then
+            vim.startswith(vim.api.nvim_buf_get_name(bufnr), config.root_dir) then
             vim.api.nvim_create_autocmd({ "BufEnter" }, {
                 group = jdtls_setup,
                 buffer = bufnr,
