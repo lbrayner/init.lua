@@ -2,11 +2,6 @@ vim.cmd.packadd "nvim-jdtls"
 
 local lspconfig = require "lspconfig.server_configurations.jdtls"
 
-local config = {
-    cmd = lspconfig.default_config.cmd,
-    root_dir = require("jdtls.setup").find_root({".git", "mvnw", "gradlew"}),
-}
-
 -- Add this to site local configuration:
 
 -- -- jdtls global settings
@@ -20,6 +15,9 @@ local config = {
 
 return {
     get_config = function()
-        return config
+        return {
+            cmd = lspconfig.default_config.cmd,
+            root_dir = require("jdtls.setup").find_root({".git", "mvnw", "gradlew"}),
+        }
     end,
 }
