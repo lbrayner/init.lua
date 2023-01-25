@@ -1,32 +1,10 @@
 local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
 
-local function jdtls_buffer_undo(bufnr)
-    -- Restore the statusline
-    vim.b[bufnr].Statusline_custom_leftline = nil
-    vim.b[bufnr].Statusline_custom_mod_leftline = nil
-
-    -- Delete user commands
-    for _, command in ipairs({
-        "JdtStop",
-        "JdtCompile",
-        "JdtSetRuntime",
-        "JdtUpdateConfig",
-        "JdtJol",
-        "JdtBytecode",
-        "JdtJshell",
-        "JdtOrganizeImports" }) do
-        vim.api.nvim_buf_del_user_command(bufnr, command)
-    end
-end
-
 local function jdtls_create_commands(bufnr)
     nvim_buf_create_user_command(bufnr, "JdtStop", function(_command)
         local client = vim.lsp.get_active_clients({ name="jdtls" })[1]
         if not client then
             return
-        end
-        for _, buf in pairs(vim.lsp.get_buffers_by_client_id(client.id)) do
-            jdtls_buffer_undo(buf)
         end
         vim.api.nvim_del_augroup_by_name("jdtls_setup")
         vim.lsp.stop_client(client.id)
@@ -112,6 +90,34 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
 
             -- Setup buffer local commands
             jdtls_create_commands(bufnr)
+        end,
+    })
+
+    local jdtls_undo = vim.api.nvim_create_augroup("jdtls_undo", { clear=true })
+
+    vim.api.nvim_create_autocmd("LspDetach", {
+        group = jdtls_undo,
+        pattern = config.root_dir .. "/*.java",
+        desc = "Undo jdtls buffer setup",
+        callback = function(args)
+            local bufnr = args.buf
+
+            -- Restore the statusline
+            vim.b[bufnr].Statusline_custom_leftline = nil
+            vim.b[bufnr].Statusline_custom_mod_leftline = nil
+
+            -- Delete user commands
+            for _, command in ipairs({
+                "JdtStop",
+                "JdtCompile",
+                "JdtSetRuntime",
+                "JdtUpdateConfig",
+                "JdtJol",
+                "JdtBytecode",
+                "JdtJshell",
+                "JdtOrganizeImports" }) do
+                vim.api.nvim_buf_del_user_command(bufnr, command)
+            end
         end,
     })
 
