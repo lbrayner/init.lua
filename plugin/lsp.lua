@@ -51,11 +51,16 @@ local function on_attach(client, bufnr)
 
     vim.api.nvim_buf_create_user_command(bufnr, "LspDeclaration", vim.lsp.buf.declaration, { nargs=0 })
     vim.api.nvim_buf_create_user_command(bufnr, "LspDefinition", vim.lsp.buf.definition, { nargs=0 })
-    vim.api.nvim_buf_create_user_command(bufnr, "LspFormat", function()
+    vim.api.nvim_buf_create_user_command(bufnr, "LspFormat", function(_command)
         vim.lsp.buf.format { async=true }
     end, { nargs=0 })
-    vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceFolders", function()
+    vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceFolders", function(_command)
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, { nargs=0 })
+    vim.api.nvim_buf_create_user_command(bufnr, "LspDetach", function(_command)
+        for _, client in ipairs(vim.lsp.get_active_clients()) do
+            vim.lsp.buf_detach_client(0, client.id)
+        end
     end, { nargs=0 })
     vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixAll", function(_command)
         lsp_setqflist({}, bufnr)
@@ -105,6 +110,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
             "LspDefinition",
             "LspFormat",
             "LspWorkspaceFolders",
+            "LspDetach",
             "LspDiagnosticQuickFixAll",
             "LspDiagnosticQuickFixError",
             "LspDiagnosticQuickFixWarn" }) do
