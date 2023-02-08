@@ -45,6 +45,7 @@ set listchars=eol:¬,tab:»\ ,trail:·
 set splitbelow
 set splitright
 set number
+set relativenumber
 set wildmode=longest:full
 set wildmenu
 if has("linebreak")
@@ -429,7 +430,7 @@ command! -nargs=0 -bar -range=% Capitalize
 
 command! -nargs=1 FileSearch call quickfix#ilist_search(0,<f-args>,1,1)
 
-function! s:NumberToggle()
+function! s:ToggleNumber()
     if !&number
         set relativenumber number
         return
@@ -441,7 +442,22 @@ function! s:NumberToggle()
     set norelativenumber number
 endfunction
 
-command! -nargs=0 NumberToggle call s:NumberToggle()
+command! -nargs=0 ToggleNumber call s:ToggleNumber()
+
+function! s:MaybeNoNumber()
+    " setting nonumber if length of line count is greater than 3
+    if len(line("$"))>3
+        set nonumber
+    endif
+endfun
+
+function! s:Number()
+    set number
+    set relativenumber
+    call s:MaybeNoNumber()
+endfun
+
+command! -nargs=0 Number call s:Number()
 
 " https://vi.stackexchange.com/a/36414
 function! s:Source(line_start, line_end, ...)
@@ -557,53 +573,13 @@ augroup InsertModeUndoPoint
     autocmd CursorHoldI * call s:InsertModeUndoPoint()
 augroup END
 
-function! s:RelativeNumberException()
-    if exists("*nvim_win_get_config") && nvim_win_get_config(0).relative != ""
-        return 1
-    endif
-    if &filetype ==# "fugitiveblame"
-        return 1
-    endif
-    if !stridx(&syntax,"Neogit")
-        return 1
-    endif
-    return 0
-endfunction
-
-augroup WindowNumberAutoGroup
-    autocmd!
-    autocmd VimEnter * autocmd WindowNumberAutoGroup
-                \ WinNew * if !&number && &relativenumber |
-                \     set number |
-                \ endif
-    autocmd VimEnter * autocmd WindowNumberAutoGroup
-                \ WinLeave * if &number |
-                \     set norelativenumber |
-                \ endif
-    autocmd VimEnter * autocmd WindowNumberAutoGroup
-                \ BufWinEnter,WinEnter * if &number && !s:RelativeNumberException() |
-                \     set relativenumber |
-                \ endif
-    autocmd VimEnter * set relativenumber
-augroup END
-if v:vim_did_enter
-    doautocmd WindowNumberAutoGroup VimEnter
-endif
-
 " buffer aesthetics
-
-function! s:Aesthetics()
-    " setting nonumber if length of line count is greater than 3
-    if len(line("$"))>3
-        set nonumber
-    endif
-endfun
 
 augroup AestheticsAutoGroup
     autocmd!
     autocmd VimEnter * autocmd AestheticsAutoGroup
-                \ BufRead,BufEnter,BufWritePost * call s:Aesthetics()
-    autocmd VimEnter * call s:Aesthetics()
+                \ BufRead,BufEnter,BufWritePost * call s:MaybeNoNumber()
+    autocmd VimEnter * call s:MaybeNoNumber()
 augroup END
 if v:vim_did_enter
     doautocmd AestheticsAutoGroup VimEnter
