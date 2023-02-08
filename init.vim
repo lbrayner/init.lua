@@ -444,17 +444,13 @@ endfunction
 
 command! -nargs=0 ToggleNumber call s:ToggleNumber()
 
-function! s:MaybeNoNumber()
+function! s:Number()
+    set number
+    set relativenumber
     " setting nonumber if length of line count is greater than 3
     if len(line("$"))>3
         set nonumber
     endif
-endfun
-
-function! s:Number()
-    set number
-    set relativenumber
-    call s:MaybeNoNumber()
 endfun
 
 command! -nargs=0 Number call s:Number()
@@ -578,8 +574,8 @@ augroup END
 augroup AestheticsAutoGroup
     autocmd!
     autocmd VimEnter * autocmd AestheticsAutoGroup
-                \ BufRead,BufEnter,BufWritePost * call s:MaybeNoNumber()
-    autocmd VimEnter * call s:MaybeNoNumber()
+                \ BufRead,BufEnter,BufWritePost * call s:Number()
+    autocmd VimEnter * call s:Number()
 augroup END
 if v:vim_did_enter
     doautocmd AestheticsAutoGroup VimEnter
