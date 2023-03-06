@@ -462,13 +462,15 @@ function! s:Source(line_start, line_end, ...)
         let tempfile.=".lua"
     endif
     sil exe a:line_start.",".a:line_end."write ".fnameescape(tempfile)
-    exe "source ".fnameescape(tempfile)
-    call delete(tempfile)
-    if a:line_start == a:line_end
-        echom "Sourced line ".a:line_start."."
-        return
-    endif
-    echom "Sourced lines ".a:line_start." to ".a:line_end."."
+    try
+        exe "source ".fnameescape(tempfile)
+        call delete(tempfile)
+        if a:line_start == a:line_end
+            echom "Sourced line ".a:line_start."."
+            return
+        endif
+        echom "Sourced lines ".a:line_start." to ".a:line_end."."
+    endtry
 endfunction
 
 command! -nargs=0 -range Source call s:Source(<line1>, <line2>)
