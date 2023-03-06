@@ -413,20 +413,18 @@ else
     command! RelativeDirectory :let @"=RelativeDirectory()
 endif
 
-command! -bar AllLowercase call util#PreserveViewPort('keeppatterns %s/.*/\L&/g')
-
 command! -nargs=0 -bar -range=% DeleteTrailingWhitespace
             \ call util#PreserveViewPort("keeppatterns ".<line1>.",".<line2>.'s/\s\+$//e')
-
 cnoreabbrev D DeleteTrailingWhitespace
 
-command! Lcd lcd %
-
-cnoreabbrev L Lcd
-
+command! -bar -range AllLowercase call util#PreserveViewPort(
+            \'keeppatterns '.<line1>.','.<line2>.'s/.*/\L&/g')
 command! -nargs=0 -bar -range=% Capitalize
             \ call util#PreserveViewPort(
             \     "keeppatterns ".<line1>.",".<line2>.'s/\<./\u&/ge')
+
+command! Lcd lcd %
+cnoreabbrev L Lcd
 
 command! -nargs=1 FileSearch call quickfix#ilist_search(0,<f-args>,1,1)
 
