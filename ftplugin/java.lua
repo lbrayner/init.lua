@@ -26,7 +26,14 @@ local function jdtls_create_commands(bufnr)
 end
 
 nvim_buf_create_user_command(0, "JdtStart", function(_command)
-    local config = require("lbrayner.jdtls").get_config()
+    local config
+    local success, session = pcall(require, "lbrayner.session.jdtls")
+
+    if success then
+        config = session.get_config()
+    else
+        config = require("lbrayner.jdtls").get_config()
+    end
 
     if vim.lsp.get_active_clients({ name="jdtls" })[1] then
         return require("jdtls").start_or_attach(config)
