@@ -685,6 +685,11 @@ augroup TextFormatAutoGroup
     autocmd FileType text,svn setlocal textwidth=80
 augroup END
 
+augroup LuaAutoGroup
+    autocmd!
+    autocmd FileType lua setlocal shiftwidth=2
+augroup END
+
 " diff options
 
 " reverting wrap to its global value when in diff mode

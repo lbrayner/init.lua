@@ -1,13 +1,13 @@
 if vim.fn.executable("fzf") == 0 then
-    return
+  return
 end
 
 if vim.fn.isdirectory(os.getenv("HOME") .. "/.fzf") then
-    vim.cmd "set rtp+=~/.fzf"
+  vim.cmd "set rtp+=~/.fzf"
 elseif vim.fn.isdirectory("/usr/share/doc/fzf/examples") then -- Linux
-    vim.cmd "set rtp+=/usr/share/doc/fzf/examples"
+  vim.cmd "set rtp+=/usr/share/doc/fzf/examples"
 else
-    return
+  return
 end
 
 vim.cmd.packadd "fzf-lua"
@@ -17,41 +17,41 @@ local fzf = require("fzf-lua")
 local actions = require "fzf-lua.actions"
 
 fzf.setup {
-    buffers = {
-        actions = {
-            ["ctrl-v"] = false,
-            ["alt-s"]  = actions.buf_vsplit,
-        },
-        previewer = false,
+  buffers = {
+    actions = {
+      ["ctrl-v"] = false,
+      ["alt-s"]  = actions.buf_vsplit,
     },
-    files = {
-        actions = {
-            ["ctrl-v"] = false,
-            ["alt-s"]  = actions.file_vsplit,
-        },
-        previewer = false,
+    previewer = false,
+  },
+  files = {
+    actions = {
+      ["ctrl-v"] = false,
+      ["alt-s"]  = actions.file_vsplit,
     },
-    tabs = {
-        actions = {
-            ["ctrl-v"] = false,
-            ["alt-s"]  = actions.buf_vsplit,
-        },
-        previewer = false,
+    previewer = false,
+  },
+  tabs = {
+    actions = {
+      ["ctrl-v"] = false,
+      ["alt-s"]  = actions.buf_vsplit,
     },
+    previewer = false,
+  },
 }
 
 local function files()
-    if vim.fn.executable("find_file_cache") > 0 then
-        return fzf.files({ cmd="find_file_cache" })
-    end
-    fzf.files()
+  if vim.fn.executable("find_file_cache") > 0 then
+    return fzf.files({ cmd="find_file_cache" })
+  end
+  fzf.files()
 end
 
 local function files_clear_cache()
-    if vim.fn.executable("find_file_cache") > 0 then
-        return fzf.files({ cmd="find_file_cache -C" })
-    end
-    vim.cmd.echoerr("'find_file_cache not executable.'")
+  if vim.fn.executable("find_file_cache") > 0 then
+    return fzf.files({ cmd="find_file_cache -C" })
+  end
+  vim.cmd.echoerr("'find_file_cache not executable.'")
 end
 
 nvim_create_user_command("Files", files, { nargs=0 })
@@ -64,5 +64,5 @@ vim.keymap.set("n","<F5>", fzf.buffers, opts)
 vim.keymap.set("n","<Leader><F7>", files_clear_cache, opts)
 vim.keymap.set("n","<F7>", files, opts)
 vim.keymap.set("n","<F8>", function()
-    fzf.tabs({ show_quickfix=true })
+  fzf.tabs({ show_quickfix=true })
 end, opts)
