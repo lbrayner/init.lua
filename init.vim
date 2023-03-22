@@ -578,17 +578,11 @@ augroup AestheticsAutoGroup
     autocmd VimEnter * autocmd AestheticsAutoGroup
                 \ BufRead,BufEnter,BufWritePost * call s:Number()
     autocmd VimEnter * call s:Number()
+    autocmd FileType help autocmd! AestheticsAutoGroup BufEnter <buffer> set relativenumber
 augroup END
 if v:vim_did_enter
     doautocmd AestheticsAutoGroup VimEnter
 endif
-
-"help buffers
-
-augroup HelpAutoGroup
-    autocmd!
-    autocmd FileType help,eclimhelp autocmd! HelpAutoGroup BufEnter <buffer> set relativenumber
-augroup END
 
 " comment string
 
