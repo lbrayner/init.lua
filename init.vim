@@ -757,13 +757,6 @@ if has("gui_running")
     endif
 endif
 
-" Subsection: plugins
-
-" netrw
-
-let g:netrw_bufsettings = "noma nomod number relativenumber nobl wrap ro hidden"
-let g:netrw_liststyle = 3
-
 " Subsection: packages
 
 if !has("packages")
