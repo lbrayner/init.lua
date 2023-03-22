@@ -764,22 +764,6 @@ endif
 let g:netrw_bufsettings = "noma nomod number relativenumber nobl wrap ro hidden"
 let g:netrw_liststyle = 3
 
-" Eclim
-
-if !has("win32unix")
-    let g:EclimLogLevel = "info"
-
-    let g:EclimHighlightError = "Error"
-    let g:EclimHighlightWarning = "Comment"
-
-    let g:EclimXmlValidate=0
-    let g:EclimXsdValidate=0
-    let g:EclimDtdValidate=0
-
-    let g:EclimMakeLCD = 1
-    let g:EclimJavaSearchSingleResult = "edit"
-endif
-
 " }}}
 
 " Subsection: packages
