@@ -28,21 +28,23 @@ command! -nargs=0 StatusLineInitialize call statusline#initialize()
 " https://stackoverflow.com/questions/16165350/how-to-emulate-autocmd-visualleave-or-autocmd-visualenter-in-vim
 " }}}
 
-function! VisualModeEnter()
-    set updatetime=1
-    call statusline#HighlightMode('visual')
-    return util#trivialHorizontalMotion()
-endfunction
+if !has("nvim")
+    function! VisualModeEnter()
+        set updatetime=1
+        call statusline#HighlightMode('visual')
+        return util#trivialHorizontalMotion()
+    endfunction
 
-function! VisualModeLeave()
-    call statusline#HighlightMode('normal')
-endfunction
+    function! VisualModeLeave()
+        call statusline#HighlightMode('normal')
+    endfunction
 
-vnoremap <silent> <expr> <SID>VisualModeEnter VisualModeEnter()
-nnoremap <silent> <script> v v<SID>VisualModeEnter
-nnoremap <silent> <script> gv gv<SID>VisualModeEnter
-nnoremap <silent> <script> V V<SID>VisualModeEnter
-nnoremap <silent> <script> <C-v> <C-v><SID>VisualModeEnter
+    vnoremap <silent> <expr> <SID>VisualModeEnter VisualModeEnter()
+    nnoremap <silent> <script> v v<SID>VisualModeEnter
+    nnoremap <silent> <script> gv gv<SID>VisualModeEnter
+    nnoremap <silent> <script> V V<SID>VisualModeEnter
+    nnoremap <silent> <script> <C-v> <C-v><SID>VisualModeEnter
+endif
 
 function! CmdlineModeLeave()
     autocmd! CmdlineModeHighlight CmdlineLeave
@@ -74,17 +76,19 @@ augroup Statusline
     autocmd CmdlineEnter /,\? call statusline#HighlightMode('search') | redraw
     autocmd CmdlineLeave /,\? call statusline#HighlightPreviousMode()
     if has("nvim")
+        autocmd ModeChanged [^vV\x16]:[vV\x16]* call statusline#HighlightMode('visual')
+        autocmd ModeChanged [vV\x16]*:n* call statusline#HighlightMode('normal')
         autocmd TermEnter * call statusline#HighlightMode('terminal')
         autocmd TermEnter * call statusline#DefineTerminalStatusLine()
         autocmd TermLeave * call statusline#HighlightMode('normal')
         autocmd TermLeave * call statusline#RedefineStatusLine()
         autocmd TermLeave * set fillchars<
     elseif !has("win32unix")
+        autocmd CursorHold * call VisualModeLeave()
         " Vim 8.2
         autocmd TerminalWinOpen * call statusline#DefineTerminalStatusLine()
     endif
     autocmd CmdwinEnter,CmdwinLeave * call statusline#HighlightMode('normal')
-    autocmd CursorHold * call VisualModeLeave()
     autocmd User CustomStatusline call statusline#RedefineStatusLine()
     autocmd VimEnter * autocmd Statusline
                 \ BufWinEnter,BufWritePost,TextChanged,TextChangedI,WinEnter *
