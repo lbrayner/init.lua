@@ -130,10 +130,6 @@ function! util#TabExists(tabnr)
     return len(gettabinfo(a:tabnr)) > 0
 endfunction
 
-function! util#EclimLoaded()
-    return exists(':ProjectCreate')
-endfunction
-
 function! util#Options(...)
     if a:0 == 1
         if exists(a:1)
