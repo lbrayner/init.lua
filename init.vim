@@ -1,23 +1,12 @@
 " inferring where we are
 
 if $XDG_CONFIG_HOME == ""
-    let $XDG_CONFIG_HOME = '~/.config'
-    if has("win32") || has("win64")
-        let $XDG_CONFIG_HOME = '~/AppData/Local'
-    endif
+    let $XDG_CONFIG_HOME = "~/.config"
     let $XDG_CONFIG_HOME = fnamemodify($XDG_CONFIG_HOME,":p")
 endif
 
 if !exists("g:vim_dir") || g:vim_dir == ""
-    let g:vim_dir = $HOME . "/.vim"
-
-    if has("win32") || has("win64")
-        let g:vim_dir = $USERPROFILE . "/vimfiles"
-    endif
-
-    if has("nvim")
-        let g:vim_dir = $XDG_CONFIG_HOME . "/nvim"
-    endif
+    let g:vim_dir = $XDG_CONFIG_HOME . "/nvim"
 
     if $MYVIMRC == ""
         let g:vim_dir = expand("<sfile>:p:h")
@@ -31,12 +20,7 @@ filetype plugin indent on
 set nocompatible
 syntax on
 
-if stridx($TERM,"256color") >= 0
-    if !has("nvim") && $TERM ==# "st-256color"
-        let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-        let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-        set t_Co=256
-    endif
+if stridx($TERM, "256color") >= 0
     set termguicolors
 endif
 
@@ -59,19 +43,6 @@ set nostartofline
 set fileformats=unix,dos
 set fileformat=unix
 set backspace=indent,eol,start
-if has("win32") || has("win64")
-    if isdirectory('c:/cygwin64/bin')
-        let $PATH .= ';c:\cygwin64\bin'
-    endif
-    if executable("bash.exe")
-        set shell=bash.exe
-        set noshelltemp
-    endif
-    if executable("grep.exe")
-        set grepprg=grep.exe
-    endif
-    set shellslash
-endif
 set incsearch
 set nojoinspaces
 set ignorecase
@@ -101,17 +72,6 @@ if g:ssh_client
     set mouse=
 endif
 
-" setting dir
-
-if !has("nvim")
-    let s:swap_dir = g:vim_dir."/swap"
-    exe "let s:has_swap_dir = isdirectory('".s:swap_dir."')"
-    if !s:has_swap_dir
-        call mkdir(s:swap_dir)
-    endif
-    let &dir=s:swap_dir."//"
-endif
-
 " setting backupdir
 
 let s:bkp_dir = g:vim_dir."/backup"
@@ -124,17 +84,6 @@ let &backupdir=s:bkp_dir."/"
 " See backup in editing.txt
 " So that watchprocesses work as expected
 set backupcopy=yes
-
-" setting undodir
-
-if !has("nvim")
-    let s:undo_dir = g:vim_dir."/undo"
-    exe "let s:has_undo_dir = isdirectory('".s:undo_dir."')"
-    if !s:has_undo_dir
-        call mkdir(s:undo_dir)
-    endif
-    let &undodir=s:undo_dir."/"
-endif
 
 " diff & patch
 
@@ -240,57 +189,55 @@ augroup END
 nnoremap <kDivide> :call <SID>NoIncSearchStart()<cr>/
 nnoremap <leader>/ :call <SID>NoIncSearchStart()<cr>/
 
-" neovim terminal
-if has("nvim")
-    tnoremap <A-h> <C-\><C-n><C-w>h
-    tnoremap <A-j> <C-\><C-n><C-w>j
-    tnoremap <A-k> <C-\><C-n><C-w>k
-    tnoremap <A-l> <C-\><C-n><C-w>l
-    nnoremap <A-h> <C-w>h
-    nnoremap <A-j> <C-w>j
-    nnoremap <A-k> <C-w>k
-    nnoremap <A-l> <C-w>l
-endif
+" Neovim terminal
+
+tnoremap <A-h> <C-\><C-n><C-w>h
+tnoremap <A-j> <C-\><C-n><C-w>j
+tnoremap <A-k> <C-\><C-n><C-w>k
+tnoremap <A-l> <C-\><C-n><C-w>l
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
 
 " Emacs-style editing in command-line mode and insert mode
-if has("gui_running") || has("nvim")
-    " start of line
-    cnoremap <C-A> <Home>
-    " back one character
-    cnoremap <C-B> <Left>
-    " delete character under cursor
-    cnoremap <C-D> <Del>
-    " end of line
-    cnoremap <C-E> <End>
-    " open the command line buffer
-    cnoremap <C-X> <C-F>
-    " forward one character
-    cnoremap <C-F> <Right>
-    " recall newer command-line
-    cnoremap <M-n> <Down>
-    " recall previous (older) command-line
-    cnoremap <M-p> <Up>
-    " cancel
-    cnoremap <C-G> <C-C>
-    " forward word
-    cnoremap <M-f> <S-Right>
-    " backward a word
-    cnoremap <M-b> <S-Left>
-    " kill word
-    cnoremap <M-d> <C-F>ea<C-W><C-C>
-    " kill line
-    cnoremap <C-K> <C-F>D<C-C><Right>
-    " forward a word
-    inoremap <M-f> <C-Right>
-    " backward a word
-    inoremap <M-b> <C-Left>
-    " kill word
-    inoremap <M-d> <C-O>e<C-O>a<C-W>
-    " kill line
-    inoremap <C-K> <C-O>D
-    " remapping digraph
-    inoremap <C-B> <C-K>
-endif
+
+" start of line
+cnoremap <C-A> <Home>
+" back one character
+cnoremap <C-B> <Left>
+" delete character under cursor
+cnoremap <C-D> <Del>
+" end of line
+cnoremap <C-E> <End>
+" open the command line buffer
+cnoremap <C-X> <C-F>
+" forward one character
+cnoremap <C-F> <Right>
+" recall newer command-line
+cnoremap <M-n> <Down>
+" recall previous (older) command-line
+cnoremap <M-p> <Up>
+" cancel
+cnoremap <C-G> <C-C>
+" forward word
+cnoremap <M-f> <S-Right>
+" backward a word
+cnoremap <M-b> <S-Left>
+" kill word
+cnoremap <M-d> <C-F>ea<C-W><C-C>
+" kill line
+cnoremap <C-K> <C-F>D<C-C><Right>
+" forward a word
+inoremap <M-f> <C-Right>
+" backward a word
+inoremap <M-b> <C-Left>
+" kill word
+inoremap <M-d> <C-O>e<C-O>a<C-W>
+" kill line
+inoremap <C-K> <C-O>D
+" remapping digraph
+inoremap <C-B> <C-K>
 
 " inserting the current line
 cnoremap <c-r><c-l> <c-r>=getline(".")<cr>
@@ -473,9 +420,7 @@ function! s:Source(line_start, line_end, ...)
 endfunction
 
 command! -nargs=0 -range Source call s:Source(<line1>, <line2>)
-if has("nvim")
-    command! -nargs=0 -range LuaSource call s:Source(<line1>, <line2>, 1)
-endif
+command! -nargs=0 -range LuaSource call s:Source(<line1>, <line2>, 1)
 
 function! s:Filter(line_start,line_end)
     let offset = 0
@@ -702,16 +647,14 @@ augroup SessionLoadPostAutoGroup
     autocmd SessionLoadPost * silent call buffer#BWipeNotReadableForce()
 augroup END
 
-if has("nvim")
-    augroup TermAutoGroup
-        autocmd!
-        " To enter Terminal-mode automatically:
-        autocmd VimEnter * autocmd TermAutoGroup TermOpen * startinsert
-        autocmd TermEnter * set nonumber
-    augroup END
-    if v:vim_did_enter
-        doautocmd TermAutoGroup VimEnter
-    endif
+augroup TermAutoGroup
+    autocmd!
+    " To enter Terminal-mode automatically:
+    autocmd VimEnter * autocmd TermAutoGroup TermOpen * startinsert
+    autocmd TermEnter * set nonumber
+augroup END
+if v:vim_did_enter
+    doautocmd TermAutoGroup VimEnter
 endif
 
 augroup TabClosedAutoGroup
@@ -736,36 +679,6 @@ if filereadable(s:init_local)
   execute "source " . s:init_local
 endif
 
-" sourcing ginit.vim if it exists
-
-if has("gui_running")
-    if $MYGVIMRC == ""
-        let s:ginit = g:vim_dir . "/ginit.vim"
-        if filereadable(s:ginit)
-          execute "source " . s:ginit
-        endif
-    endif
-endif
-
-" sourcing ginit.local.vim if it exists
-
-if has("gui_running")
-    let s:ginit_local = g:vim_dir . "/ginit.local.vim"
-    if filereadable(s:ginit_local)
-      execute "source " . s:ginit_local
-    endif
-endif
-
-" Subsection: packages
-
-if !has("packages")
-    finish
-endif
-
-if !has("nvim")
-    packadd! matchit
-endif
-
 " Finish here if we haven't initialized the submodules
 
 if glob(g:vim_dir."/pack/bundle/start/*/plugin") == ""
@@ -783,7 +696,7 @@ map <silent> <leader>ge <Plug>CamelCaseMotion_ge
 
 " ctrlp
 
-if !has("nvim") || !executable("fzf")
+if !executable("fzf")
     let s:ctrlp_cache_dir = g:vim_dir."/ctrlp_cache"
     exe "let s:has_ctrlp_cache_dir = isdirectory('".s:ctrlp_cache_dir."')"
     if !s:has_ctrlp_cache_dir

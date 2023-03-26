@@ -1,69 +1,33 @@
-let sysvimrcreadable = 0
-let sysvimrc = ""
-
-if has("win32") || has("win64")
-    let sysvimrc = $VIM."/_vimrc"
-endif
-
-if has("unix")
-    let sysvimrc = $VIM."/vimrc"
-endif
-
-if !empty(sysvimrc)
-    exe "let sysvimrcreadable = filereadable('".sysvimrc."')"
-endif
-
-if sysvimrcreadable
-    exe "source ".sysvimrc
-endif
-
-if $XDG_CONFIG_HOME == ''
-    let $XDG_CONFIG_HOME = '~/.config'
-    if has("win32") || has("win64")
-        let $XDG_CONFIG_HOME = '~/AppData/Local'
-    endif
+if $XDG_CONFIG_HOME == ""
+    let $XDG_CONFIG_HOME = "~/.config"
     let $XDG_CONFIG_HOME = fnamemodify($XDG_CONFIG_HOME,":p")
 endif
 
-if has("win32") || has("win64")
-    set runtimepath-=$HOME/vimfiles
-    set runtimepath-=$HOME/vimfiles/after
-else
-    set runtimepath-=$HOME/.vim
-    set runtimepath-=$HOME/.vim/after
+if $XDG_DATA_HOME == ""
+    let $XDG_DATA_HOME = "~/.local/share"
+    let $XDG_DATA_HOME = fnamemodify($XDG_DATA_HOME,":p")
 endif
 
-if has("nvim")
-    set runtimepath-=$XDG_CONFIG_HOME/nvim
-    set runtimepath-=$XDG_CONFIG_HOME/nvim/after
-endif
+set runtimepath-=$XDG_CONFIG_HOME/nvim
+set runtimepath-=$XDG_CONFIG_HOME/nvim/after
+set runtimepath-=$XDG_DATA_HOME/nvim/site
+set runtimepath-=$XDG_DATA_HOME/nvim/site/after
 
-if has('packages')
-    if has("win32") || has("win64")
-        set packpath-=$HOME/vimfiles
-        set packpath-=$HOME/vimfiles/after
-    else
-        set packpath-=$HOME/.vim
-        set packpath-=$HOME/.vim/after
-    endif
-    if has("nvim")
-        set packpath-=$XDG_CONFIG_HOME/nvim
-        set packpath-=$XDG_CONFIG_HOME/nvim/after
-    endif
-endif
+set packpath-=$XDG_CONFIG_HOME/nvim
+set packpath-=$XDG_CONFIG_HOME/nvim/after
+set packpath-=$XDG_DATA_HOME/nvim/site
+set packpath-=$XDG_DATA_HOME/nvim/site/after
 
-if $MYVIMRC != ''
-    let g:vim_dir = fnamemodify($MYVIMRC,':p:h')
+if $MYVIMRC != ""
+    let g:vim_dir = fnamemodify($MYVIMRC,":p:h")
     exe "set runtimepath+=".g:vim_dir
     exe "set runtimepath+=".g:vim_dir."/after"
-    if has('packages')
-        exe "set packpath+=".g:vim_dir
-        exe "set packpath+=".g:vim_dir."/after"
-    endif
+    exe "set packpath+=".g:vim_dir
+    exe "set packpath+=".g:vim_dir."/after"
 endif
 
-if $MYVIMRC != ''
+if $MYVIMRC != ""
     let vimrc = $MYVIMRC
-    let $MYVIMRC = ''
+    let $MYVIMRC = ""
     exe "source ".vimrc
 endif
