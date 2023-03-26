@@ -1,14 +1,14 @@
 function! statusline#StatusFlag()
     if &modified
-        return '+'
+        return "+"
     endif
     if !&modifiable
-        return '-'
+        return "-"
     endif
     if &readonly
-        return 'R'
+        return "R"
     endif
-    return ' '
+    return " "
 endfunction
 
 function! statusline#Diagnostics()
@@ -39,43 +39,43 @@ function! statusline#VersionControl()
 endfunction
 
 function! s:GetLineFormat()
-    if &buftype ==# 'terminal'
-        return '%'.(len(&scrollback)+1).'l'
+    if &buftype ==# "terminal"
+        return "%".(len(&scrollback)+1)."l"
     endif
     let length = len(line("$"))
     if length < 5
         let length = 5
     endif
-    return '%'.length.'l'
+    return "%".length."l"
 endfunction
 
 function! s:GetNumberOfLines()
-    if &buftype ==# 'terminal'
-        return '%'.(len(&scrollback)+1).'L'
+    if &buftype ==# "terminal"
+        return "%".(len(&scrollback)+1)."L"
     endif
     let length = len(line("$"))
     if length < 5
         let length = 5
     endif
-    return '%-'.length.'L'
+    return "%-".length."L"
 endfunction
 
 function! s:BufferPosition()
-    return s:GetLineFormat() . ',%-3.v %3.P ' . s:GetNumberOfLines()
+    return s:GetLineFormat() . ",%-3.v %3.P " . s:GetNumberOfLines()
 endfunction
 
 function! statusline#GetStatusLineTail()
     let bufferPosition = s:BufferPosition()
     " TODO remove this?
     if &buftype == "nofile"
-        return bufferPosition . ' %2*%{&filetype}%* '
+        return bufferPosition . " %2*%{&filetype}%* "
     endif
     return bufferPosition
                 \ . statusline#Diagnostics()
-                \ . '%6*%{statusline#VersionControl()}%*'
-                \ . ' %4*%{util#Options("&fileencoding","&encoding")}%*'
-                \ . ' %4.(%4*%{&fileformat}%*%)'
-                \ . ' %2*%{&filetype}%* '
+                \ . "%6*%{statusline#VersionControl()}%*"
+                \ . " %4*%{util#Options('&fileencoding','&encoding')}%*"
+                \ . " %4.(%4*%{&fileformat}%*%)"
+                \ . " %2*%{&filetype}%* "
 endfunction
 
 function! statusline#Filename(...)
@@ -139,11 +139,11 @@ function! statusline#DefineModifiedStatusLine()
         let &l:statusline.="%9*Fugitive:%* %<%1".filename." %{statusline#StatusFlag()}%*"
     elseif &previewwindow
         let &l:statusline = " %5*Previewing:%* "
-        let &l:statusline.='%<%1*'.filename.' %{statusline#StatusFlag()}%*'
+        let &l:statusline.="%<%1*".filename." %{statusline#StatusFlag()}%*"
     else
-        let &l:statusline=' %<%1*'.filename.' %{statusline#StatusFlag()}%*'
+        let &l:statusline=" %<%1*".filename." %{statusline#StatusFlag()}%*"
     endif
-    let &l:statusline.=' %='
+    let &l:statusline.=" %="
     if exists("b:Statusline_custom_mod_rightline")
         let &l:statusline.=b:Statusline_custom_mod_rightline
     endif
@@ -158,7 +158,7 @@ function! statusline#DefineStatusLineNoFocus()
     let filename=statusline#Filename(1)
     let isnumbersonly=filename =~# '^[0-9]\+$'
     if isnumbersonly
-        let &l:statusline=' '.filename.' '
+        let &l:statusline=" ".filename." "
         return
     endif
     " Fugitive summary
@@ -224,7 +224,7 @@ function! statusline#DefineStatusLineNoFocus()
 endfunction
 
 function! statusline#DefineTerminalStatusLine()
-    let &l:statusline='%3*%=%*'
+    let &l:statusline="%3*%=%*"
 endfunction
 
 " b:Statusline_custom_leftline and b:Statusline_custom_rightline are
@@ -260,21 +260,21 @@ function! statusline#DefineStatusLine()
         let &l:statusline.="%9*Fugitive:%* %<".filename." %1*%{statusline#StatusFlag()}%*"
     elseif &previewwindow
         if expand("%") == ""
-            let &l:statusline=' %<[Preview] %1*%{statusline#StatusFlag()}%*'
+            let &l:statusline=" %<[Preview] %1*%{statusline#StatusFlag()}%*"
         else
             let &l:statusline=" %5*Previewing:%* %<".filename.
                         \" %1*%{statusline#StatusFlag()}%*"
         endif
     elseif util#isQuickfixList()
-        let &l:statusline=' %<%5*%f%* %{util#getQuickfixTitle()}'
+        let &l:statusline=" %<%5*%f%* %{util#getQuickfixTitle()}"
     elseif util#isLocationList()
-        let &l:statusline=' %<%5*[Location List]%* %{util#getLocationListTitle(0)}'
+        let &l:statusline=" %<%5*[Location List]%* %{util#getLocationListTitle(0)}"
     elseif &buftype == "nofile"
-        let &l:statusline=' %<%5*'.filename.' %1*%{statusline#StatusFlag()}%*'
+        let &l:statusline=" %<%5*".filename." %1*%{statusline#StatusFlag()}%*"
     else
-        let &l:statusline=' %<'.filename.' %1*%{statusline#StatusFlag()}%*'
+        let &l:statusline=" %<".filename." %1*%{statusline#StatusFlag()}%*"
     endif
-    let &l:statusline.=' %='
+    let &l:statusline.=" %="
     if exists("b:Statusline_custom_rightline")
         let &l:statusline.=b:Statusline_custom_rightline
     endif
@@ -352,16 +352,16 @@ function! statusline#loadTermAttrList(termAttrList)
 endfunction
 
 function! statusline#getTerm()
-    let term='cterm'
-    if has('gui_running') || &termguicolors
-        let term='gui'
+    let term="cterm"
+    if has("gui_running") || &termguicolors
+        let term="gui"
     endif
     return term
 endfunction
 
 function! statusline#HighlightStatusLineNC()
     call statusline#Highlight({
-        \ 'StatusLineNC': {'bg': s:not_current_bg, 'fg': s:not_current_fg}})
+        \ "StatusLineNC": {"bg": s:not_current_bg, "fg": s:not_current_fg}})
     exe "hi! StatusLineNC ".s:term."=".s:statuslinenc
 endfunction
 
@@ -375,13 +375,13 @@ function! statusline#LoadTheme(colorTheme)
 
     call statusline#loadColorTheme(colorMapping)
     call statusline#loadTermAttrList(termAttrList)
-    call statusline#HighlightMode('normal')
+    call statusline#HighlightMode("normal")
     call statusline#HighlightStatusLineNC()
 endfunction
 
 function! statusline#initialize()
     if !exists("g:Statusline_theme")
-        let g:Statusline_theme = 'default'
+        let g:Statusline_theme = "default"
     endif
 
     call statusline#LoadTheme(g:Statusline_theme)
