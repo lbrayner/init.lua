@@ -918,12 +918,6 @@ cnoreabbrev Gr Git! ls-remote
 let g:loaded_netrwPlugin = 1
 command! -nargs=? -complete=dir Explore Dirvish <args>
 
-" vim-diminactive
-
-if !has("nvim")
-    packadd! vim-diminactive
-endif
-
 " reply.vim
 
 command! -nargs=0 ReplFile call reply#command#send(join(getline(1,line("$")),"\n"),0,0)

@@ -94,9 +94,6 @@
 [submodule "pack/bundle/start/vim-ripgrep"]
 	path = pack/bundle/start/vim-ripgrep
 	url = https://github.com/lbrayner/vim-ripgrep
-[submodule "pack/bundle/opt/vim-diminactive"]
-	path = pack/bundle/opt/vim-diminactive
-	url = https://github.com/blueyed/vim-diminactive
 [submodule "pack/bundle/start/nvim-lspconfig"]
 	path = pack/bundle/opt/nvim-lspconfig
 	url = https://github.com/neovim/nvim-lspconfig
