@@ -835,6 +835,11 @@ command! -nargs=? -complete=dir Explore Dirvish <args>
 
 command! -nargs=0 ReplFile call reply#command#send(join(getline(1,line("$")),"\n"),0,0)
 
+" vim-ripgrep
+
+" Search by exact word
+cnoreabbrev Rw Rg -s '\b\b'<Left><Left><Left>
+
 " }}}
 
 " vim: fdm=marker
