@@ -92,9 +92,6 @@ function! statusline#Filename(...)
     else
         let filename = substitute(fnamemodify(path,":t"),"'","''","g")
     endif
-    if getcmdwintype() != ""
-        let filename = "[Command Line]"
-    endif
     if filename == ""
         return "#".bufnr("%")
     endif
@@ -269,6 +266,8 @@ function! statusline#DefineStatusLine()
         let &l:statusline=" %<%5*%f%* %{util#getQuickfixTitle()}"
     elseif util#isLocationList()
         let &l:statusline=" %<%5*[Location List]%* %{util#getLocationListTitle(0)}"
+    elseif getcmdwintype() != ""
+        let &l:statusline = " %<%5*[Command Line]%*"
     elseif &buftype == "nofile"
         let &l:statusline=" %<%5*".filename." %1*%{statusline#StatusFlag()}%*"
     else
