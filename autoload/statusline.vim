@@ -12,9 +12,6 @@ function! statusline#StatusFlag()
 endfunction
 
 function! statusline#Diagnostics()
-    if !has("nvim")
-        return ""
-    endif
     let buffer_severity = v:lua.require'lbrayner.diagnostic'.buffer_severity()
     if buffer_severity == v:null
         return "  "
@@ -42,7 +39,7 @@ function! statusline#VersionControl()
 endfunction
 
 function! s:GetLineFormat()
-    if has("nvim") && &buftype ==# 'terminal'
+    if &buftype ==# 'terminal'
         return '%'.(len(&scrollback)+1).'l'
     endif
     let length = len(line("$"))
@@ -53,7 +50,7 @@ function! s:GetLineFormat()
 endfunction
 
 function! s:GetNumberOfLines()
-    if has("nvim") && &buftype ==# 'terminal'
+    if &buftype ==# 'terminal'
         return '%'.(len(&scrollback)+1).'L'
     endif
     let length = len(line("$"))
@@ -227,9 +224,6 @@ function! statusline#DefineStatusLineNoFocus()
 endfunction
 
 function! statusline#DefineTerminalStatusLine()
-    if !has("nvim")
-        let &l:statusline=""
-    endif
     let &l:statusline='%3*%=%*'
 endfunction
 
@@ -301,17 +295,7 @@ function! statusline#Highlight(dict)
     endfor
 endfunction
 
-function! statusline#HighlightPreviousMode()
-    if exists("g:statusline#previousMode")
-        call statusline#HighlightMode(g:statusline#previousMode)
-    endif
-endfunction
-
 function! statusline#HighlightMode(mode)
-    if exists("g:statusline#mode")
-        let g:statusline#previousMode = g:statusline#mode
-    endif
-    let g:statusline#mode = a:mode
     exe "call statusline#Highlight({"
         \ . "'StatusLine': {'bg': s:".a:mode."_bg, 'fg': s:".a:mode."_fg},"
         \ . "'User1': {'bg': s:user1_".a:mode."_bg, 'fg': s:user1_".a:mode."_fg},"
@@ -338,6 +322,8 @@ function! statusline#RedefineStatusLine()
     if &buftype == "terminal" && stridx(mode(), "t") == 0
         return
     endif
+    " This variable is defined by the runtime.
+    " :h g:actual_curwin
     if exists("g:actual_curwin") && g:actual_curwin != win_getid()
         return
     endif

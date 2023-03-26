@@ -35,14 +35,6 @@ function! util#getVisualSelection()
     return visual_selection
 endfunction
 
-function! util#trivialHorizontalMotion()
-    let col = getpos('.')[2]
-    if col <= 1
-        return 'h'
-    endif
-    return 'lh'
-endfunction
-
 function! s:truncateNode(filename,maxlength,...)
     if len(a:filename) <= a:maxlength
         return a:filename

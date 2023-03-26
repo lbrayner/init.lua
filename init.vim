@@ -163,11 +163,10 @@ endif
 nmap Q <nop>
 
 " cedilla is right where : is on an en-US keyboard
-noremap <Plug>(Cmd) :
-nmap ç <Plug>(Cmd)
-vmap ç <Plug>(Cmd)
-nmap Ç :<Up><CR>
-vmap Ç :<Up><CR>
+nnoremap ç :
+vnoremap ç :
+nnoremap Ç :<Up><CR>
+vnoremap Ç :<Up><CR>
 nnoremap ¬ ^
 nnoremap qç q:
 vnoremap qç q:
