@@ -753,10 +753,6 @@ map <Space>F <Plug>Sneak_S
 
 nmap <Leader>x <Plug>(Scalpel)
 
-" supertab
-
-let g:SuperTabCtrlXCtrlPCtrlNSearchPlaces = 1
-
 " delimitMate
 
 augroup DelimitMatePackageGroup
