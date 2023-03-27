@@ -1,5 +1,5 @@
 " static snippets
 abclear <buffer>
-iabbrev <buffer> printf sprintf("")<c-o>F"
+iabbrev <buffer> printf sprintf("")<C-O>F"
 inoreabbrev <buffer> fmt printf
-inoreabbrev <buffer> /* /*<cr><space>*<space>*/<up>
+inoreabbrev <buffer> /* /*<CR><Space>*<Space>*/<Up>
