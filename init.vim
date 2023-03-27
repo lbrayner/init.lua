@@ -191,16 +191,18 @@ nnoremap <Leader>/ <Cmd>call <SID>NoIncSearchStart()<CR>/
 
 " Neovim terminal
 
-tnoremap <A-H> <C-\><C-N><C-W>h
-tnoremap <A-J> <C-\><C-N><C-W>j
-tnoremap <A-K> <C-\><C-N><C-W>k
-tnoremap <A-L> <C-\><C-N><C-W>l
-nnoremap <A-H> <C-W>h
-nnoremap <A-J> <C-W>j
-nnoremap <A-K> <C-W>k
-nnoremap <A-L> <C-W>l
+" Case matters for keys after alt or meta
+tnoremap <A-h> <C-\><C-N><C-W>h
+tnoremap <A-j> <C-\><C-N><C-W>j
+tnoremap <A-k> <C-\><C-N><C-W>k
+tnoremap <A-l> <C-\><C-N><C-W>l
+nnoremap <A-h> <C-W>h
+nnoremap <A-j> <C-W>j
+nnoremap <A-k> <C-W>k
+nnoremap <A-l> <C-W>l
 
 " Emacs-style editing in command-line mode and insert mode
+" Case matters for keys after alt or meta
 
 " start of line
 cnoremap <C-A> <Home>
