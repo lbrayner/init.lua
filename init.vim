@@ -769,14 +769,6 @@ xmap gy <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. <Plug>(EasyAlign)ip)
 nmap gy <Plug>(EasyAlign)
 
-" vim-DetectSpellLang
-
-" disabled by default
-if !exists("g:guesslang_disable")
-    let g:guesslang_disable = 1
-endif
-let g:guesslang_langs = [ "en", "pt" ]
-
 " vim-quickhl
 
 nmap <Space>m <Plug>(quickhl-manual-this)
