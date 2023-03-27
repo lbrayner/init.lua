@@ -133,10 +133,10 @@ nnoremap <C-J> <C-W>j
 nnoremap <C-K> <C-W>k
 nnoremap <C-L> <C-W>l
 
-vnoremap <C-H> <esc><C-W>h
-vnoremap <C-J> <esc><C-W>j
-vnoremap <C-K> <esc><C-W>k
-vnoremap <C-L> <esc><C-W>l
+vnoremap <C-H> <Esc><C-W>h
+vnoremap <C-J> <Esc><C-W>j
+vnoremap <C-K> <Esc><C-W>k
+vnoremap <C-L> <Esc><C-W>l
 
 " splits
 nnoremap <Leader>v <C-W>v
@@ -364,7 +364,7 @@ command! -nargs=0 -bar -range=% DeleteTrailingWhitespace
 cnoreabbrev D DeleteTrailingWhitespace
 
 command! -bar -range AllLowercase call util#PreserveViewPort(
-            \'keeppatterns '.<line1>.','.<line2>.'s/.*/\L&/g')
+            \"keeppatterns ".<line1>.",".<line2>.'s/.*/\L&/g')
 command! -nargs=0 -bar -range=% Capitalize
             \ call util#PreserveViewPort(
             \     "keeppatterns ".<line1>.",".<line2>.'s/\<./\u&/ge')
@@ -473,7 +473,7 @@ endfunction
 command! -nargs=0 -range SearchVisualSelectionNoMagic
             \ call s:SearchLastVisualSelectionNoMagic()
 
-if executable('svn')
+if executable("svn")
     command! Scursor call subversion#SVNDiffCursor()
     command! Sthis call subversion#SVNDiffThis()
     command! Sdiff call subversion#SVNDiffContextual()
@@ -708,7 +708,7 @@ if !executable("fzf")
     let g:extensions#ctrlp#ctrlp_custom_ignore = {
                 \ "file": '\v\.o$|\.exe$|\.lnk$|\.bak$|\.sw[a-z]$|\.class$|\.jasper$'
                 \               . '|\.r[0-9]+$|\.mine$',
-                \ "dir": '\C\V' . escape(expand('~'),' \') . '\$' . '\|ctrlp_cache\$'
+                \ "dir": '\C\V' . escape(expand("~"),' \') . '\$' . '\|ctrlp_cache\$'
                 \ }
 
     let g:ctrlp_custom_ignore = {
@@ -721,6 +721,7 @@ if !executable("fzf")
     let g:ctrlp_clear_cache_on_exit = 0
     nnoremap <F5> :CtrlPBuffer<cr>
 
+    " Copied from the help file
     let g:ctrlp_prompt_mappings = {
                 \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
                 \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
@@ -750,9 +751,7 @@ map <Space>F <Plug>Sneak_S
 
 " scalpel
 
-execute 'nmap <Leader>x <Plug>(Cmd)' .
-      \ 'Scalpel' .
-      \ "/\\v<<C-R>=expand('<cword>')<CR>>//<Left>"
+nmap <Leader>x <Plug>(Scalpel)
 
 " supertab
 
