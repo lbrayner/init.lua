@@ -15,13 +15,13 @@ function! s:AS_HandleSwapfile (filename, swapname)
         " if swapfile is older than file itself, just get rid of it
         if getftime(v:swapname) < getftime(a:filename)
                 call delete(v:swapname)
-                let v:swapchoice = 'e'
+                let v:swapchoice = "e"
         endif
 endfunction
 
 augroup AutoSwap
         autocmd!
-        autocmd SwapExists *  call s:AS_HandleSwapfile(expand('<afile>:p'), v:swapname)
+        autocmd SwapExists *  call s:AS_HandleSwapfile(expand("<afile>:p"), v:swapname)
         autocmd CursorHold,BufWritePost,BufReadPost,BufLeave *
                     \ if isdirectory(expand("<amatch>:h")) | let &swapfile = &modified | endif
 augroup END
@@ -47,12 +47,12 @@ function! s:SaveAs(name,bang)
     try
         let lazyr = &lazyredraw
         set lazyredraw
-        let buf_nr = bufnr('%')
+        let buf_nr = bufnr("%")
         let temp_file = tempname()
-        silent exec 'write ' . fnameescape(temp_file)
+        silent exec "write " . fnameescape(temp_file)
         enew
         normal! dG
-        let new_buf_nr = bufnr('%')
+        let new_buf_nr = bufnr("%")
         silent exec "read " . fnameescape(temp_file)
         1d_
         let write = "w"
@@ -99,7 +99,7 @@ endfunction
 command! LCloseAllWindows call s:LCloseAllWindows(win_getid(),winnr("#"))
 
 function! s:CloseAllHelp(current_window_id, last_accessed_winnr)
-    noautocmd windo if &ft == "help" | q | endif
+    noautocmd windo if &ft == "help" | quit | endif
     call s:ReturnToOriginalWindow(a:current_window_id, a:last_accessed_winnr)
 endfunction
 
@@ -116,6 +116,14 @@ function! s:Unclutter(current_window_id,last_accessed_winnr)
         quit
         return
     endif
+    if &previewwindow
+        quit
+        return
+    endif
+    if util#isQuickfixOrLocationList()
+        quit
+        return
+    endif
     " If not in one, close all help buffers
     call s:CloseAllHelp(a:current_window_id, a:last_accessed_winnr)
     pclose " Close preview window
@@ -124,7 +132,7 @@ function! s:Unclutter(current_window_id,last_accessed_winnr)
     call s:LCloseAllWindows(a:current_window_id, a:last_accessed_winnr)
     " Quit if there's at most one file and this is the last window
     " XXX: this is not lazy, quite expensive and O(n)
-    if len(filter(range(1,bufnr('$')),'buflisted(v:val)')) <= 1 && winnr('$') == 1
+    if len(filter(range(1,bufnr("$")),"buflisted(v:val)")) <= 1 && winnr("$") == 1
         quit
     endif
 endfunction

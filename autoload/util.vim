@@ -110,6 +110,14 @@ function! util#isQuickfixList(...)
     return getwininfo(winid)[0]["quickfix"] && !util#isLocationList(winid)
 endfunction
 
+function! util#isQuickfixOrLocationList(...)
+    let winid = win_getid()
+    if a:0 && a:1
+        let winid = a:1
+    endif
+    return getwininfo(winid)[0]["quickfix"]
+endfunction
+
 function! util#getQuickfixTitle()
     return getqflist({"title": 1}).title
 endfunction
