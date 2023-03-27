@@ -131,9 +131,9 @@ endfunction
 
 command! Unclutter silent call s:Unclutter(win_getid(),winnr("#"))
 
-nnoremap <F9> :Unclutter<cr>
+nnoremap <F9> <Cmd>Unclutter<CR>
 
 augroup CmdwinClose
     autocmd!
-    autocmd CmdwinEnter * nnoremap <buffer> <F9> :q<cr>
+    autocmd CmdwinEnter * nnoremap <buffer> <F9> <Cmd>q<CR>
 augroup END

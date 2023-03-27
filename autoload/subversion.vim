@@ -27,7 +27,7 @@ function! s:SVNDiff(filename)
         setlocal buftype=nofile
         setlocal bufhidden=wipe
         setlocal noswapfile
-        nnoremap <silent> <buffer> <nowait> q :bw<cr>:diffoff<cr>:tabc<cr>
+        nnoremap <silent> <buffer> <nowait> q <Cmd>bw<CR><Cmd>diffoff<CR><Cmd>tabc<CR>
         autocmd WinLeave <buffer> echo ""
         exe 'autocmd WinEnter <buffer> echo "'.s:DiffTabMessage.'"'
         wincmd w

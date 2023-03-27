@@ -1,6 +1,6 @@
 function! s:DatabaseAccess()
-    nnoremap <buffer> <Leader><Return> :call database#select_paragraph()<CR>
-    nnoremap <buffer> <Leader><kEnter> :call database#select_paragraph()<CR>
+    nnoremap <buffer> <Leader><Return> <Cmd>call database#select_paragraph()<CR>
+    nnoremap <buffer> <Leader><kEnter> <Cmd>call database#select_paragraph()<CR>
 
     function! s:DatabaseAccessClear()
         unlet! b:Statusline_custom_rightline
