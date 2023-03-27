@@ -1,6 +1,6 @@
-**Requires Neovim 0.5.0+ and Vim [8.2.0,9.0.0), i.e. Vim 8.2 or greater and no Vim 9.**
+**Requires Neovim 0.8.0+.**
 
-`init.vim` is my *vimrc*. That's the default *neovim* initialization file.
+`init.vim` is my *vimrc*. That's the default *Neovim* initialization file.
 
 ```
 $ git clone 'https://github.com/lbrayner/dotvim'
@@ -14,24 +14,13 @@ You can use these configurations (`init.vim` + plugins) without affecting your
 setup (`:h -u`).
 
 ```
-dotvim$ vim -u bundle.vim
+dotvim$ nvim -u bundle.vim
 ```
-
-Note that vim could also be `nvim` or `gvim`.
 
 # The regular way
 
-If you use *neovim*:
-
 ```
 dotvim$ ln -s "$(readlink -f ..)"/dotvim ~/.config/nvim
-```
-
-If you use *vim*:
-
-```
-dotvim$ ln -s "$(readlink -f ..)"/dotvim ~/.vim
-dotvim$ ln -s "$(readlink -f ..)"/dotvim/init.vim ~/.vimrc
 ```
 
 Packages (`:h packages`) are submodules in `pack/bundle/start`.
@@ -58,6 +47,6 @@ Packages (`:h packages`) are submodules in `pack/bundle/start`.
 
 ![Screenshot](https://user-images.githubusercontent.com/5733531/122801263-45a26800-d29a-11eb-8db9-be617eea7361.png)
 
-## Terminal-mode (Neovim)
+## Terminal-mode
 
 ![Screenshot](https://user-images.githubusercontent.com/5733531/174203958-b8139cce-4893-424b-9c8f-75ad7eff6f4e.png)
