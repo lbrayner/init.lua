@@ -121,11 +121,11 @@ nnoremap qç q:
 vnoremap qç q:
 vnoremap ¬ ^
 
-nnoremap <Space>o :only<CR>
+nnoremap <Space>o <Cmd>only<CR>
 
 " clear search highlights
 
-nnoremap <silent> <f2> :set invhlsearch hlsearch?<cr>
+nnoremap <silent> <F2> <Cmd>set invhlsearch hlsearch?<CR>
 
 " easier window switching
 nnoremap <C-H> <C-W>h
@@ -139,27 +139,27 @@ vnoremap <C-K> <esc><C-W>k
 vnoremap <C-L> <esc><C-W>l
 
 " splits
-nnoremap <leader>v <C-w>v
-nnoremap <leader>h <C-w>s
+nnoremap <Leader>v <C-W>v
+nnoremap <Leader>h <C-W>s
 
-nnoremap <leader>i :set invpaste paste?<CR>
+nnoremap <Leader>i <Cmd>set invpaste paste?<CR>
 
-nnoremap <leader><F5> :ls<CR>:buffer<Space>
-nnoremap <F6> :w<CR>
-inoremap <F6> <esc>:w<CR>
-vnoremap <F6> <esc>:w<CR>
-nnoremap <leader><F6> :w!<CR>
-nnoremap <silent> <F12>  :setlocal list!<CR>
-inoremap <silent> <F12>  <C-O>:setlocal list!<CR>
-vnoremap . :normal .
+nnoremap <Leader><F5> <Cmd>ls<CR><Cmd>buffer<Space>
+nnoremap <F6> <Cmd>w<CR>
+inoremap <F6> <Esc><Cmd>w<CR>
+vnoremap <F6> <Esc><Cmd>w<CR>
+nnoremap <Leader><F6> <Cmd>w!<CR>
+nnoremap <silent> <F12> <Cmd>setlocal list!<CR>
+inoremap <silent> <F12> <Cmd>setlocal list!<CR>
+vnoremap . <Cmd>normal .
 
 " previous buffer
-nnoremap <Space>b :b#<CR>
+nnoremap <Space>b <Cmd>b#<CR>
 
 " quickfix and locallist
 
-nnoremap <silent> <Space>l :botright lopen<CR>
-nnoremap <silent> <Space>q :botright copen<CR>
+nnoremap <silent> <Space>l <Cmd>botright lopen<CR>
+nnoremap <silent> <Space>q <Cmd>botright copen<CR>
 
 " force case sensitivity for *-search
 nnoremap <Plug>CaseSensitiveStar /\C\V\<<c-r>=expand("<cword>")<cr>\><cr>
@@ -186,19 +186,19 @@ augroup NoIncSearchCursorHoldAutoGroup
     autocmd CursorHold * call s:NoIncSearchEnd()
 augroup END
 
-nnoremap <kDivide> :call <SID>NoIncSearchStart()<cr>/
-nnoremap <leader>/ :call <SID>NoIncSearchStart()<cr>/
+nnoremap <kDivide> <Cmd>call <SID>NoIncSearchStart()<CR>/
+nnoremap <Leader>/ <Cmd>call <SID>NoIncSearchStart()<CR>/
 
 " Neovim terminal
 
-tnoremap <A-h> <C-\><C-n><C-w>h
-tnoremap <A-j> <C-\><C-n><C-w>j
-tnoremap <A-k> <C-\><C-n><C-w>k
-tnoremap <A-l> <C-\><C-n><C-w>l
-nnoremap <A-h> <C-w>h
-nnoremap <A-j> <C-w>j
-nnoremap <A-k> <C-w>k
-nnoremap <A-l> <C-w>l
+tnoremap <A-H> <C-\><C-N><C-W>h
+tnoremap <A-J> <C-\><C-N><C-W>j
+tnoremap <A-K> <C-\><C-N><C-W>k
+tnoremap <A-L> <C-\><C-N><C-W>l
+nnoremap <A-H> <C-W>h
+nnoremap <A-J> <C-W>j
+nnoremap <A-K> <C-W>k
+nnoremap <A-L> <C-W>l
 
 " Emacs-style editing in command-line mode and insert mode
 
@@ -240,9 +240,9 @@ inoremap <C-K> <C-O>D
 inoremap <C-B> <C-K>
 
 " inserting the current line
-cnoremap <c-r><c-l> <c-r>=getline(".")<cr>
+cnoremap <C-R><C-L> <C-R>=getline(".")<CR>
 " inserting the current line number
-cnoremap <c-r><c-n> <c-r>=line(".")<cr>
+cnoremap <C-R><C-N> <C-R>=line(".")<CR>
 
 " diff & patch
 
@@ -256,8 +256,8 @@ function! s:ToggleIWhite()
     echo "+iwhite"
 endfunction
 
-nnoremap <leader>do :diffoff!<cr>
-nnoremap <leader>di :call <SID>ToggleIWhite()<cr>
+nnoremap <Leader>do <Cmd>diffoff!<CR>
+nnoremap <Leader>di <Cmd>call <SID>ToggleIWhite()<CR>
 
 " Insert timestamps
 
@@ -338,11 +338,11 @@ if has("clipboard")
     " Copies arg to the system's clipboard
     command! -nargs=? Clip call Clip(<f-args>)
 
-    nnoremap <leader>c :Clip<cr>
-    vnoremap <leader>c y:Clip<cr>
+    nnoremap <Leader>c <Cmd>Clip<CR>
+    vnoremap <Leader>c y<Cmd>Clip<CR>
 
-    nnoremap <leader>p "+p
-    vnoremap <leader>p "+p
+    nnoremap <Leader>p "+p
+    vnoremap <Leader>p "+p
 
     command! Path call Clip(Path())
     command! FullPath call Clip(FullPath())
@@ -351,12 +351,12 @@ if has("clipboard")
     command! Directory call Clip(Directory())
     command! RelativeDirectory call Clip(RelativeDirectory())
 else
-    command! Path :let @"=Path()
-    command! FullPath :let @"=FullPath()
-    command! Name :let @"=Name()
-    command! Cwd :let @"=Cwd()
-    command! Directory :let @"=Directory()
-    command! RelativeDirectory :let @"=RelativeDirectory()
+    command! Path let @"=Path()
+    command! FullPath let @"=FullPath()
+    command! Name let @"=Name()
+    command! Cwd let @"=Cwd()
+    command! Directory let @"=Directory()
+    command! RelativeDirectory let @"=RelativeDirectory()
 endif
 
 command! -nargs=0 -bar -range=% DeleteTrailingWhitespace
@@ -582,8 +582,8 @@ function! s:XmlBufferSetup()
                 \ call jasper#JasperVerticalDisplacement(<line1>,<line2>,<f-args>)
     command! -buffer -range=% -nargs=+ JasperHorizontalDisplacement
                 \ call jasper#JasperHorizontalDisplacement(<line1>,<line2>,<f-args>)
-    nnoremap <buffer> <silent> [< :call xml#NavigateDepthBackward(v:count1)<cr>
-    nnoremap <buffer> <silent> ]> :call xml#NavigateDepth(v:count1)<cr>
+    nnoremap <buffer> <silent> [< <Cmd>call xml#NavigateDepthBackward(v:count1)<CR>
+    nnoremap <buffer> <silent> ]> <Cmd>call xml#NavigateDepth(v:count1)<CR>
 endfunction
 
 augroup XmlBufferSetup
@@ -592,8 +592,8 @@ augroup XmlBufferSetup
 augroup END
 
 function! s:JSReactBufferSetup()
-    nnoremap <buffer> <silent> [< :call xml#NavigateDepthBackward(v:count1)<cr>
-    nnoremap <buffer> <silent> ]> :call xml#NavigateDepth(v:count1)<cr>
+    nnoremap <buffer> <silent> [< <Cmd>call xml#NavigateDepthBackward(v:count1)<CR>
+    nnoremap <buffer> <silent> ]> <Cmd>call xml#NavigateDepth(v:count1)<CR>
 endfunction
 
 augroup JSReactBufferSetup
@@ -689,10 +689,10 @@ endif
 
 " CamelCase
 
-map <silent> <leader>w <Plug>CamelCaseMotion_w
-map <silent> <leader>b <Plug>CamelCaseMotion_b
-map <silent> <leader>e <Plug>CamelCaseMotion_e
-map <silent> <leader>ge <Plug>CamelCaseMotion_ge
+map <silent> <Leader>w <Plug>CamelCaseMotion_w
+map <silent> <Leader>b <Plug>CamelCaseMotion_b
+map <silent> <Leader>e <Plug>CamelCaseMotion_e
+map <silent> <Leader>ge <Plug>CamelCaseMotion_ge
 
 " ctrlp
 
