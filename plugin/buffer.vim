@@ -23,7 +23,7 @@ augroup AutoSwap
         autocmd!
         autocmd SwapExists *  call s:AS_HandleSwapfile(expand("<afile>:p"), v:swapname)
         autocmd CursorHold,BufWritePost,BufReadPost,BufLeave *
-                    \ if isdirectory(expand("<amatch>:h")) | let &swapfile = &modified | endif
+                    \ if &buftype == "" | let &swapfile = &modified | endif
 augroup END
 
 " Check if file was modified outside this instance
