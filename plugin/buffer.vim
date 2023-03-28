@@ -66,7 +66,6 @@ endfunction
 command! -nargs=1 -bang -complete=file SaveAs call s:SaveAs(<f-args>,<bang>0)
 
 function! s:ReturnToOriginalWindow(current_window_id, last_accessed_winnr)
-    let lastwinnr = winnr("$")
     let returnto_winnr = 0
     try
         let returnto_winnr = getwininfo(a:current_window_id)[0].winnr
@@ -74,29 +73,20 @@ function! s:ReturnToOriginalWindow(current_window_id, last_accessed_winnr)
     catch
         let returnto_winnr = a:last_accessed_winnr
         silent! exe returnto_winnr . "wincmd w"
-    finally
-        if returnto_winnr >= lastwinnr
-            doautocmd WinEnter
-        endif
     endtry
 endfunction
 
 " Close all local list windows
 
 function! s:LCloseAllWindows(current_window_id, last_accessed_winnr)
-    if util#isLocationList()
-        " Autocommands are triggered normally
-        windo lclose
-    else
-        noautocmd windo lclose
-    endif
+    windo if util#isLocationList() | quit | endif
     call s:ReturnToOriginalWindow(a:current_window_id, a:last_accessed_winnr)
 endfunction
 
 command! LCloseAllWindows call s:LCloseAllWindows(win_getid(),winnr("#"))
 
 function! s:CloseAllHelp(current_window_id, last_accessed_winnr)
-    noautocmd windo if &ft == "help" | quit | endif
+    windo if &ft == "help" | quit | endif
     call s:ReturnToOriginalWindow(a:current_window_id, a:last_accessed_winnr)
 endfunction
 
