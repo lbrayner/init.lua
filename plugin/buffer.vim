@@ -29,13 +29,10 @@ augroup END
 " Check if file was modified outside this instance
 augroup Checktime
     autocmd!
-    if !has("gui_running")
-        "silent! necessary otherwise throws errors when using command
-        "line window.
-        autocmd VimEnter * autocmd! Checktime BufEnter,CursorHold,CursorHoldI,CursorMoved,
-                    \CursorMovedI,FocusGained,BufEnter,FocusLost,WinLeave *
-                    \ sil! exe "checktime"
-    endif
+    "silent! necessary otherwise throws errors when using command
+    "line window.
+    autocmd VimEnter * autocmd! Checktime BufEnter,FocusGained,VimResume *
+                \ sil! exe "checktime"
 augroup END
 if v:vim_did_enter
     doautocmd Checktime VimEnter
