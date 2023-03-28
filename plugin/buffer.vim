@@ -65,34 +65,40 @@ endfunction
 
 command! -nargs=1 -bang -complete=file SaveAs call s:SaveAs(<f-args>,<bang>0)
 
-function! s:ReturnToOriginalWindow(current_window_id, last_accessed_winnr)
+function! s:ReturnToOriginalWindow(current_window_id, last_accessed_window_id)
     let returnto_winnr = 0
+    " Try to return to the last accessed window
     try
         let returnto_winnr = getwininfo(a:current_window_id)[0].winnr
         exe returnto_winnr . "wincmd w"
     catch
-        let returnto_winnr = a:last_accessed_winnr
-        silent! exe returnto_winnr . "wincmd w"
+        " Try to return to the the window before that
+        try
+            let returnto_winnr = getwininfo(a:last_accessed_window_id)[0].winnr
+            exe returnto_winnr . "wincmd w"
+        catch
+            " If all fails, do nothing
+        endtry
     endtry
 endfunction
 
 " Close all local list windows
 
-function! s:LCloseAllWindows(current_window_id, last_accessed_winnr)
+function! s:LCloseAllWindows(current_window_id, last_accessed_window_id)
     windo if util#isLocationList() | quit | endif
-    call s:ReturnToOriginalWindow(a:current_window_id, a:last_accessed_winnr)
+    call s:ReturnToOriginalWindow(a:current_window_id, a:last_accessed_window_id)
 endfunction
 
-command! LCloseAllWindows call s:LCloseAllWindows(win_getid(),winnr("#"))
+command! LCloseAllWindows call s:LCloseAllWindows(win_getid(), win_getid(winnr("#")))
 
-function! s:CloseAllHelp(current_window_id, last_accessed_winnr)
+function! s:CloseAllHelp(current_window_id, last_accessed_window_id)
     windo if &ft == "help" | quit | endif
-    call s:ReturnToOriginalWindow(a:current_window_id, a:last_accessed_winnr)
+    call s:ReturnToOriginalWindow(a:current_window_id, a:last_accessed_window_id)
 endfunction
 
 " Unclutter, i.e. close certain special windows
 
-function! s:Unclutter(current_window_id,last_accessed_winnr)
+function! s:Unclutter(current_window_id,last_accessed_window_id)
     " Close current window if it's a floating one
     if exists("*nvim_win_get_config") && nvim_win_get_config(0).relative != ""
         quit
@@ -112,11 +118,11 @@ function! s:Unclutter(current_window_id,last_accessed_winnr)
         return
     endif
     " If not in one, close all help buffers
-    call s:CloseAllHelp(a:current_window_id, a:last_accessed_winnr)
+    call s:CloseAllHelp(a:current_window_id, a:last_accessed_window_id)
     pclose " Close preview window
     cclose " Close quickfix window
     " Close all local lists
-    call s:LCloseAllWindows(a:current_window_id, a:last_accessed_winnr)
+    call s:LCloseAllWindows(a:current_window_id, a:last_accessed_window_id)
     " Quit if there's at most one file and this is the last window
     " XXX: this is not lazy, quite expensive and O(n)
     if len(filter(range(1,bufnr("$")),"buflisted(v:val)")) <= 1 && winnr("$") == 1
@@ -124,7 +130,7 @@ function! s:Unclutter(current_window_id,last_accessed_winnr)
     endif
 endfunction
 
-command! Unclutter silent call s:Unclutter(win_getid(),winnr("#"))
+command! Unclutter silent call s:Unclutter(win_getid(), win_getid(winnr("#")))
 
 nnoremap <F9> <Cmd>Unclutter<CR>
 
