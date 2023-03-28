@@ -29,10 +29,10 @@ augroup END
 " Check if file was modified outside this instance
 augroup Checktime
     autocmd!
-    "silent! necessary otherwise throws errors when using command
-    "line window.
     autocmd VimEnter * autocmd! Checktime BufEnter,FocusGained,VimResume *
-                \ sil! exe "checktime"
+                \ if getcmdwintype() == "" | " Not done in the cmdline-window
+                \     checktime |
+                \ endif
 augroup END
 if v:vim_did_enter
     doautocmd Checktime VimEnter
