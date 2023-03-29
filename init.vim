@@ -15,16 +15,12 @@ endif
 
 " Subsection: settings {{{
 
-set encoding=utf-8
 filetype plugin indent on
-set nocompatible
-syntax on
 
 if stridx($TERM, "256color") >= 0
     set termguicolors
 endif
 
-set laststatus=2
 set listchars=eol:¬,tab:»\ ,trail:·
 set splitbelow
 set splitright
@@ -32,19 +28,11 @@ set number
 set relativenumber
 set wildmode=longest:full
 set wildmenu
-if has("linebreak")
-    set breakindent
-endif
+set breakindent
 set linebreak
-set autoindent
-set hlsearch
-set hidden
-set nostartofline
 set fileformats=unix,dos
 set fileformat=unix
 set backspace=indent,eol,start
-set incsearch
-set nojoinspaces
 set ignorecase
 set smartcase
 set noruler
@@ -57,8 +45,6 @@ set tabstop=4
 " when indenting with '>', use 4 spaces width
 set shiftwidth=4
 set expandtab
-
-set mouse=a
 
 " are we using ssh?
 let g:ssh_client = 0
