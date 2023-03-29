@@ -554,6 +554,11 @@ augroup XmlFtGroup
     autocmd BufEnter *.wsdl set ft=xml " Web Services Description Language
 augroup END
 
+augroup QuickfixBufferSetup
+    autocmd!
+    autocmd FileType qf setlocal nospell nowrap
+augroup END
+
 function! s:XmlBufferSetup()
     let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
     let b:surround_indent = 0
