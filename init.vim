@@ -474,14 +474,10 @@ command! -nargs=0 -range Synstack call s:Synstack()
 
 " Subsection: autocmds {{{
 
-" Command-line Window
-
 augroup CmdWindow
     autocmd!
     autocmd CmdwinEnter * setlocal nospell
 augroup END
-
-" idle
 
 function! s:InsertModeUndoPoint()
     if mode() != "i"
@@ -495,8 +491,6 @@ augroup InsertModeUndoPoint
     autocmd CursorHoldI * call s:InsertModeUndoPoint()
 augroup END
 
-" buffer aesthetics
-
 augroup AestheticsAutoGroup
     autocmd!
     autocmd VimEnter * autocmd AestheticsAutoGroup
@@ -508,22 +502,16 @@ if v:vim_did_enter
     doautocmd AestheticsAutoGroup VimEnter
 endif
 
-" comment string
-
 augroup PoundComment
     autocmd!
     autocmd FileType apache,crontab,debsources,desktop,fstab,samba
                 \ autocmd! PoundComment BufEnter <buffer> ++once let &l:commentstring = "# %s"
 augroup END
 
-" svn commit files
-
 augroup SvnFtGroup
     autocmd!
     autocmd BufEnter *.svn set ft=svn
 augroup END
-
-" vidir
 
 augroup VidirGroup
     autocmd!
@@ -533,14 +521,10 @@ augroup VidirGroup
                 \ endif
 augroup END
 
-" infercase
-
 augroup InferCaseGroup
     autocmd!
     autocmd FileType markdown,gitcommit,text,svn,mail setlocal ignorecase infercase
 augroup END
-
-" XML
 
 let s:LargeXmlFile = 1024 * 512
 augroup LargeXmlAutoGroup
@@ -564,9 +548,13 @@ augroup MailBufferSetup
     autocmd FileType mail call util#setupMatchit()
 augroup END
 
+augroup SqlBufferSetup
+    autocmd!
+    autocmd FileType sql let b:delimitMate_matchpairs = "(:),[:],{:}"
+augroup END
+
 function! s:XmlBufferSetup()
     let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
-    let b:surround_indent = 0
     nnoremap <buffer> <silent> [< <Cmd>call xml#NavigateDepthBackward(v:count1)<CR>
     nnoremap <buffer> <silent> ]> <Cmd>call xml#NavigateDepth(v:count1)<CR>
 endfunction
@@ -586,8 +574,6 @@ augroup JSReactBufferSetup
     autocmd FileType javascriptreact,typescriptreact call s:JSReactBufferSetup()
 augroup END
 
-" text format options
-
 augroup DefaultFileType
     autocmd BufEnter *
                 \ if &filetype == "" |
@@ -605,7 +591,7 @@ augroup END
 
 augroup TextFormatAutoGroup
     autocmd!
-    autocmd FileType text,svn setlocal textwidth=80
+    autocmd FileType mediawiki,svn,text setlocal textwidth=80
 augroup END
 
 augroup LuaAutoGroup
@@ -613,11 +599,14 @@ augroup LuaAutoGroup
     autocmd FileType lua setlocal shiftwidth=2
 augroup END
 
-" diff options
+augroup DisableSurroundIndent
+    autocmd!
+    autocmd FileType groovy,html,sql,xml let b:surround_indent = 0
+augroup END
 
-" reverting wrap to its global value when in diff mode
 augroup DiffWrapAutoGroup
     autocmd!
+    " reverting wrap to its global value when in diff mode
     autocmd FilterWritePre * if &diff | setlocal wrap< | endif
 augroup END
 
@@ -802,6 +791,11 @@ cnoreabbrev Gr Git! ls-remote
 
 let g:loaded_netrwPlugin = 1
 command! -nargs=? -complete=dir Explore Dirvish <args>
+
+augroup DirvishBufferSetup
+    autocmd!
+    autocmd FileType dirvish let b:Statusline_custom_leftline = '%<%{expand("%:h:t")}'
+augroup END
 
 " reply.vim
 
