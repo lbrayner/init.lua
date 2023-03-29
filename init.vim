@@ -484,12 +484,6 @@ command! -nargs=0 -range Synstack call s:Synstack()
 
 " Subsection: autocmds {{{
 
-" Restores 'updatetime' to the default value
-augroup Updatetime
-    autocmd!
-    autocmd CursorHold * set updatetime=4000
-augroup END
-
 " Command-line Window
 
 augroup CmdWindow

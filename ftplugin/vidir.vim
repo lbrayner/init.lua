@@ -1,7 +1,7 @@
 " what: ftplugin/vidir.vim
 "  who: by Raimondi
 " when: 2018-12-30
-" Last changed: 2022-12-20
+" Last changed: 2023-03-29
 " Last changed by: lbrayner
 
 " TODO Revert functions to their old script local names
@@ -35,8 +35,6 @@ endfunction
 
 " do not allow non-numeric changes to the file index column
 function! VidirOnTextChanged()
-  " Autocommand group Updatetime is reponsible for restoring 'updatetime'
-  set updatetime=1
   let broken_lines = []
   silent vglobal/^ *\d\+	/ call add(broken_lines, line('.'))
   if empty(broken_lines)
