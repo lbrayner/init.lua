@@ -163,7 +163,6 @@ nnoremap <silent> <Space>q <Cmd>botright copen<CR>
 
 " force case sensitivity for *-search
 nnoremap <Plug>CaseSensitiveStar /\C\V\<<c-r>=expand("<cword>")<cr>\><cr>
-nmap <kMultiply> <Plug>CaseSensitiveStar
 nmap * <Plug>CaseSensitiveStar
 
 " sometimes you want to search with no noincsearch set
@@ -186,7 +185,6 @@ augroup NoIncSearchCursorHoldAutoGroup
     autocmd CursorHold * call s:NoIncSearchEnd()
 augroup END
 
-nnoremap <kDivide> <Cmd>call <SID>NoIncSearchStart()<CR>/
 nnoremap <Leader>/ <Cmd>call <SID>NoIncSearchStart()<CR>/
 
 " Neovim terminal
