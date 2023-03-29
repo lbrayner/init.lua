@@ -167,12 +167,6 @@ nmap * <Plug>CaseSensitiveStar
 
 " sometimes you want to search with no noincsearch set
 
-function! s:NoIncSearchStart()
-    set updatetime=1
-    let s:incsearch = &incsearch
-    set noincsearch
-endfunction
-
 function! s:NoIncSearchEnd()
     if !exists("s:incsearch")
         return
@@ -180,12 +174,14 @@ function! s:NoIncSearchEnd()
     let &incsearch = s:incsearch
 endfunction
 
-augroup NoIncSearchCursorHoldAutoGroup
-    autocmd!
-    autocmd CursorHold * call s:NoIncSearchEnd()
-augroup END
+function! s:NoIncSearchStart(pattern)
+    let s:incsearch = &incsearch
+    set noincsearch
+    exe "autocmd CmdlineLeave ".a:pattern." ++once call s:NoIncSearchEnd()"
+endfunction
 
-nnoremap <Leader>/ <Cmd>call <SID>NoIncSearchStart()<CR>/
+nnoremap <Leader>/ <Cmd>call <SID>NoIncSearchStart("/")<CR>/
+nnoremap <Leader>? <Cmd>call <SID>NoIncSearchStart("?")<CR>?
 
 " Neovim terminal
 
