@@ -567,11 +567,6 @@ augroup END
 function! s:XmlBufferSetup()
     let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
     let b:surround_indent = 0
-    " TODO remove Jasper related code
-    command! -buffer -range=% -nargs=+ JasperVerticalDisplacement
-                \ call jasper#JasperVerticalDisplacement(<line1>,<line2>,<f-args>)
-    command! -buffer -range=% -nargs=+ JasperHorizontalDisplacement
-                \ call jasper#JasperHorizontalDisplacement(<line1>,<line2>,<f-args>)
     nnoremap <buffer> <silent> [< <Cmd>call xml#NavigateDepthBackward(v:count1)<CR>
     nnoremap <buffer> <silent> ]> <Cmd>call xml#NavigateDepth(v:count1)<CR>
 endfunction
