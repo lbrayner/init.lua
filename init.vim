@@ -559,6 +559,11 @@ augroup QuickfixBufferSetup
     autocmd FileType qf setlocal nospell nowrap
 augroup END
 
+augroup MailBufferSetup
+    autocmd!
+    autocmd FileType mail call util#setupMatchit()
+augroup END
+
 function! s:XmlBufferSetup()
     let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
     let b:surround_indent = 0
