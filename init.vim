@@ -548,30 +548,14 @@ augroup MailBufferSetup
     autocmd FileType mail call util#setupMatchit()
 augroup END
 
-augroup SqlBufferSetup
-    autocmd!
-    autocmd FileType sql let b:delimitMate_matchpairs = "(:),[:],{:}"
-augroup END
-
-function! s:XmlBufferSetup()
-    let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
+function! s:XmlNavigate()
     nnoremap <buffer> <silent> [< <Cmd>call xml#NavigateDepthBackward(v:count1)<CR>
     nnoremap <buffer> <silent> ]> <Cmd>call xml#NavigateDepth(v:count1)<CR>
 endfunction
 
-augroup XmlBufferSetup
+augroup XmlNavigate
     autocmd!
-    autocmd FileType html,xml call s:XmlBufferSetup()
-augroup END
-
-function! s:JSReactBufferSetup()
-    nnoremap <buffer> <silent> [< <Cmd>call xml#NavigateDepthBackward(v:count1)<CR>
-    nnoremap <buffer> <silent> ]> <Cmd>call xml#NavigateDepth(v:count1)<CR>
-endfunction
-
-augroup JSReactBufferSetup
-    autocmd!
-    autocmd FileType javascriptreact,typescriptreact call s:JSReactBufferSetup()
+    autocmd FileType html,javascriptreact,typescriptreact,xml call s:XmlNavigate()
 augroup END
 
 augroup DefaultFileType
@@ -597,11 +581,6 @@ augroup END
 augroup LuaAutoGroup
     autocmd!
     autocmd FileType lua setlocal shiftwidth=2
-augroup END
-
-augroup DisableSurroundIndent
-    autocmd!
-    autocmd FileType groovy,html,sql,xml let b:surround_indent = 0
 augroup END
 
 augroup DiffWrapAutoGroup
@@ -660,6 +639,13 @@ if glob(g:vim_dir."/pack/bundle/start/*/plugin") == ""
 endif
 
 " Subsection: package customisation {{{
+
+" vim-surround
+
+augroup DisableSurroundIndent
+    autocmd!
+    autocmd FileType groovy,html,sql,xml let b:surround_indent = 0
+augroup END
 
 " CamelCase
 
@@ -729,11 +715,11 @@ nmap <Leader>x <Plug>(Scalpel)
 
 " delimitMate
 
-augroup DelimitMatePackageGroup
+augroup DelimitMateSetup
     autocmd!
-    autocmd FileType lisp,*clojure*,scheme,racket let b:loaded_delimitMate = 1
-    " apache
-    autocmd FileType apache let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
+    autocmd FileType *clojure*,lisp,racket,scheme let b:loaded_delimitMate = 1
+    autocmd FileType apache,html,xml let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
+    autocmd FileType sql let b:delimitMate_matchpairs = "(:),[:],{:}"
 augroup END
 
 " vim-easy-align
