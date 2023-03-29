@@ -15,5 +15,3 @@ augroup TabActionsOnVimEnter
     autocmd!
     autocmd VimEnter * if v:this_session != "" | call s:DoTabEqualizeWindows() | endif
 augroup END
-
-map <Plug>GoToTab :call tab#GoToTab()<cr>

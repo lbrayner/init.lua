@@ -263,11 +263,7 @@ imap <F3> <C-R>=strftime("%Y-%m-%d %a %0H:%M")<CR>
 
 " This mapping is overridden by packages
 if !v:vim_did_enter
-    if exists("*gettabinfo")
-        nmap <F8> <Plug>GoToTab
-    else
-        nmap <F8> :tabs<cr>
-    endif
+    nmap <F8> :tabs<cr>
 endif
 
 " }}}
