@@ -109,7 +109,7 @@ endif
 " Subsection: mappings — pt-BR keyboard {{{1
 
 " disable Ex mode mapping
-nmap Q <nop>
+nmap Q <Nop>
 
 " cedilla is right where : is on an en-US keyboard
 nnoremap ç :
