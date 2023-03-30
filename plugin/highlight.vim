@@ -15,12 +15,12 @@ function! HighlightTrailingWhitespace()
     endif
     if &syntax =~# '\v%(mail|markdown)'
         call ClearTrailingWhitespace()
-        let w:TrailingWhitespaceID = matchadd("TrailingWhitespace",'^\s\+$')
+        call matchadd("TrailingWhitespace",'^\s\+$')
         return
     endif
     if &syntax ==# "git"
         call ClearTrailingWhitespace()
-        let w:TrailingWhitespaceID = matchadd("TrailingWhitespace",
+        call matchadd("TrailingWhitespace",
                     \'^\%( \{4}\zs\s\+\|[| ]\+| \{5}\zs\s\+\)$')
         return
     endif
@@ -35,13 +35,15 @@ function! HighlightTrailingWhitespace()
         return
     endif
     call ClearTrailingWhitespace()
-    let w:TrailingWhitespaceID = matchadd("TrailingWhitespace",'\s\+$')
+    call matchadd("TrailingWhitespace",'\s\+$')
 endfunction
 
 function! ClearTrailingWhitespace()
-    if exists("w:TrailingWhitespaceID")
-        silent! call matchdelete(w:TrailingWhitespaceID)
-        unlet w:TrailingWhitespaceID
+    let matches = filter(getmatches(), "v:val.group == 'TrailingWhitespace'")
+    if !empty(matches)
+        for matchd in matches
+            call matchdelete(matchd.id)
+        endfor
     endif
 endfunction
 
