@@ -136,7 +136,6 @@ nnoremap <Leader><F6> <Cmd>w!<CR>
 " list mode
 nnoremap <silent> <F12> <Cmd>setlocal list!<CR>
 inoremap <silent> <F12> <Cmd>setlocal list!<CR>
-vnoremap . <Cmd>normal .
 
 " previous buffer
 nnoremap <Space>b <Cmd>b#<CR>
