@@ -137,10 +137,8 @@ nnoremap <Space>b <Cmd>b#<CR>
 nnoremap <silent> <Space>l <Cmd>botright lopen<CR>
 nnoremap <silent> <Space>q <Cmd>botright copen<CR>
 
-" TODO remove <Plug>, use <Cmd>
 " force case sensitivity for *-search
-nnoremap <Plug>CaseSensitiveStar /\C\V\<<c-r>=expand("<cword>")<cr>\><cr>
-nmap * <Plug>CaseSensitiveStar
+nnoremap * /\C\V\<<C-R><C-W>\><CR>
 
 " sometimes you want to search with no noincsearch set
 
