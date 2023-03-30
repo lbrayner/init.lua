@@ -426,18 +426,6 @@ endfunction
 
 command! -nargs=0 OverlengthToggle call s:OverlengthToggle()
 
-" TODO smelly code
-function! s:SearchLastVisualSelectionNoMagic()
-    normal! gvy
-    let pattern = escape(@",'\/')
-    let @/="\\V".pattern
-    exe "/\\V".pattern
-    normal! Nn
-endfunction
-
-command! -nargs=0 -range SearchVisualSelectionNoMagic
-            \ call s:SearchLastVisualSelectionNoMagic()
-
 function! s:Synstack()
     echo map(synstack(line("."), col(".")),"synIDattr(v:val, 'name')")
 endfunction
