@@ -1,3 +1,22 @@
+function! s:OverlengthToggle()
+    if !exists("w:Overlength")
+        let w:Overlength = 90
+    endif
+    let matches = filter(getmatches(), "v:val.group == 'Overlength'")
+    if !empty(matches)
+        for matchd in matches
+            call matchdelete(matchd.id)
+        endfor
+        echo "Overlength highlight cleared."
+        return
+    endif
+    highlight Overlength ctermbg=red ctermfg=white guibg=#592929
+    call matchadd("Overlength",'\%'.w:Overlength.'v.\+')
+    echo "Overlength highlighted."
+endfunction
+
+command! -nargs=0 OverlengthToggle call s:OverlengthToggle()
+
 function! TrailingWhitespaceGroup()
     highlight TrailingWhitespace ctermbg=red ctermfg=white guibg=#ff0000
 endfunction
