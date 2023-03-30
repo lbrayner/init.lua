@@ -410,18 +410,17 @@ function! s:OverlengthToggle()
     if !exists("w:Overlength")
         let w:Overlength = 90
     endif
-    if !exists("w:HighlightOverlengthFlag")
-        let w:HighlightOverlengthFlag = 1
-    endif
-    if w:HighlightOverlengthFlag
-        highlight Overlength ctermbg=red ctermfg=white guibg=#592929
-        exec 'match Overlength /\%' . w:Overlength . 'v.\+/'
-        echo "Overlength highlighted."
-    else
-        exec "match"
+    let matches = filter(getmatches(), "v:val.group == 'Overlength'")
+    if !empty(matches)
+        for matchd in matches
+            call matchdelete(matchd.id)
+        endfor
         echo "Overlength highlight cleared."
+        return
     endif
-    let w:HighlightOverlengthFlag = ! w:HighlightOverlengthFlag
+    highlight Overlength ctermbg=red ctermfg=white guibg=#592929
+    call matchadd("Overlength",'\%'.w:Overlength.'v.\+')
+    echo "Overlength highlighted."
 endfunction
 
 command! -nargs=0 OverlengthToggle call s:OverlengthToggle()
