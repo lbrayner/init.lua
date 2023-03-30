@@ -100,7 +100,6 @@ vnoremap ¬ ^
 nnoremap <Space>o <Cmd>only<CR>
 
 " clear search highlights
-
 nnoremap <silent> <F2> <Cmd>set invhlsearch hlsearch?<CR>
 
 " easier window switching
@@ -118,13 +117,23 @@ vnoremap <C-L> <Esc><C-W>l
 nnoremap <Leader>v <C-W>v
 nnoremap <Leader>h <C-W>s
 
+" copy & paste
 nnoremap <Leader>i <Cmd>set invpaste paste?<CR>
 
+" buffer navigation
 nnoremap <Leader><F5> <Cmd>ls<CR><Cmd>buffer<Space>
+" This mapping is overridden by packages
+if !v:vim_did_enter
+    nnoremap <F8> :tabs<CR>
+endif
+
+" write
 nnoremap <F6> <Cmd>w<CR>
 inoremap <F6> <Esc><Cmd>w<CR>
 vnoremap <F6> <Esc><Cmd>w<CR>
 nnoremap <Leader><F6> <Cmd>w!<CR>
+
+" list mode
 nnoremap <silent> <F12> <Cmd>setlocal list!<CR>
 inoremap <silent> <F12> <Cmd>setlocal list!<CR>
 vnoremap . <Cmd>normal .
@@ -133,7 +142,6 @@ vnoremap . <Cmd>normal .
 nnoremap <Space>b <Cmd>b#<CR>
 
 " quickfix and locallist
-
 nnoremap <silent> <Space>l <Cmd>botright lopen<CR>
 nnoremap <silent> <Space>q <Cmd>botright copen<CR>
 
@@ -141,7 +149,6 @@ nnoremap <silent> <Space>q <Cmd>botright copen<CR>
 nnoremap * /\C\V\<<C-R><C-W>\><CR>
 
 " sometimes you want to search with no noincsearch set
-
 function! s:NoIncSearchEnd()
     if !exists("s:incsearch")
         return
@@ -159,7 +166,6 @@ nnoremap <Leader>/ <Cmd>call <SID>NoIncSearchStart("/")<CR>/
 nnoremap <Leader>? <Cmd>call <SID>NoIncSearchStart("?")<CR>?
 
 " Neovim terminal
-
 " Case matters for keys after alt or meta
 tnoremap <A-h> <C-\><C-N><C-W>h
 tnoremap <A-j> <C-\><C-N><C-W>j
@@ -169,6 +175,8 @@ nnoremap <A-h> <C-W>h
 nnoremap <A-j> <C-W>j
 nnoremap <A-k> <C-W>k
 nnoremap <A-l> <C-W>l
+
+" Command line
 
 " Emacs-style editing in command-line mode and insert mode
 " Case matters for keys after alt or meta
@@ -215,7 +223,7 @@ cnoremap <C-R><C-L> <C-R>=getline(".")<CR>
 " inserting the current line number
 cnoremap <C-R><C-N> <C-R>=line(".")<CR>
 
-" diff & patch
+" diff
 
 function! s:ToggleIWhite()
     if &l:diffopt =~# "iwhite"
@@ -228,16 +236,11 @@ function! s:ToggleIWhite()
 endfunction
 
 " TODO turn these into commands?
-nnoremap <Leader>do <Cmd>diffoff!<CR>
 nnoremap <Leader>di <Cmd>call <SID>ToggleIWhite()<CR>
+nnoremap <Leader>do <Cmd>diffoff!<CR>
 
 " Insert timestamps
 imap <F3> <C-R>=strftime("%Y-%m-%d %a %0H:%M")<CR>
-
-" This mapping is overridden by packages
-if !v:vim_did_enter
-    nmap <F8> :tabs<cr>
-endif
 
 " }}}
 
