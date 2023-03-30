@@ -137,6 +137,7 @@ nnoremap <Space>b <Cmd>b#<CR>
 nnoremap <silent> <Space>l <Cmd>botright lopen<CR>
 nnoremap <silent> <Space>q <Cmd>botright copen<CR>
 
+" TODO remove <Plug>, use <Cmd>
 " force case sensitivity for *-search
 nnoremap <Plug>CaseSensitiveStar /\C\V\<<c-r>=expand("<cword>")<cr>\><cr>
 nmap * <Plug>CaseSensitiveStar
@@ -228,14 +229,12 @@ function! s:ToggleIWhite()
     echo "+iwhite"
 endfunction
 
+" TODO turn these into commands?
 nnoremap <Leader>do <Cmd>diffoff!<CR>
 nnoremap <Leader>di <Cmd>call <SID>ToggleIWhite()<CR>
 
 " Insert timestamps
-
 imap <F3> <C-R>=strftime("%Y-%m-%d %a %0H:%M")<CR>
-
-" tabs
 
 " This mapping is overridden by packages
 if !v:vim_did_enter
@@ -405,7 +404,6 @@ function! s:Filter(line_start,line_end)
 endfunction
 
 command! -nargs=0 -range Filter call s:Filter(<line1>,<line2>)
-
 command! -nargs=0 -range Execute <line1>,<line2>w !$SHELL
 
 " Overlength
@@ -430,6 +428,7 @@ endfunction
 
 command! -nargs=0 OverlengthToggle call s:OverlengthToggle()
 
+" TODO smelly code
 function! s:SearchLastVisualSelectionNoMagic()
     normal! gvy
     let pattern = escape(@",'\/')
@@ -455,6 +454,7 @@ augroup CmdWindow
     autocmd CmdwinEnter * setlocal nospell
 augroup END
 
+" TODO do we need this?
 function! s:InsertModeUndoPoint()
     if mode() != "i"
         return
@@ -504,7 +504,7 @@ augroup LargeXmlAutoGroup
                 \| setlocal syntax=unknown | endif | endif
 augroup END
 
-augroup XmlFtGroup
+augroup WsdlGroup
     autocmd!
     autocmd BufEnter *.wsdl set ft=xml " Web Services Description Language
 augroup END
