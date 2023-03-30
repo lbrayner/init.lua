@@ -484,11 +484,6 @@ augroup PoundComment
                 \ autocmd! PoundComment BufEnter <buffer> ++once let &l:commentstring = "# %s"
 augroup END
 
-augroup SvnFtGroup
-    autocmd!
-    autocmd BufEnter *.svn set ft=svn
-augroup END
-
 augroup VidirGroup
     autocmd!
     autocmd BufEnter /tmp/dir*
@@ -499,7 +494,7 @@ augroup END
 
 augroup InferCaseGroup
     autocmd!
-    autocmd FileType markdown,gitcommit,text,svn,mail setlocal ignorecase infercase
+    autocmd FileType gitcommit,mail,markdown,text setlocal ignorecase infercase
 augroup END
 
 let s:LargeXmlFile = 1024 * 512
@@ -551,7 +546,7 @@ augroup END
 
 augroup TextFormatAutoGroup
     autocmd!
-    autocmd FileType mediawiki,svn,text setlocal textwidth=80
+    autocmd FileType mediawiki,text setlocal textwidth=80
 augroup END
 
 augroup LuaAutoGroup
