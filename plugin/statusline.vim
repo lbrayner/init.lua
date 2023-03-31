@@ -31,5 +31,3 @@ augroup END
 if v:vim_did_enter
     doautocmd Statusline VimEnter
 endif
-
-" vim: fdm=marker
