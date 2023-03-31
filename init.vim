@@ -1,12 +1,7 @@
 " inferring where we are
 
-if $XDG_CONFIG_HOME == ""
-    let $XDG_CONFIG_HOME = "~/.config"
-    let $XDG_CONFIG_HOME = fnamemodify($XDG_CONFIG_HOME,":p")
-endif
-
 if !exists("g:vim_dir") || g:vim_dir == ""
-    let g:vim_dir = $XDG_CONFIG_HOME . "/nvim"
+    let g:vim_dir = stdpath("config")
 
     if $MYVIMRC == ""
         let g:vim_dir = expand("<sfile>:p:h")
@@ -521,12 +516,10 @@ map <silent> <Leader>ge <Plug>CamelCaseMotion_ge
 " ctrlp
 
 if !executable("fzf")
-    let s:ctrlp_cache_dir = g:vim_dir."/ctrlp_cache"
-    exe "let s:has_ctrlp_cache_dir = isdirectory('".s:ctrlp_cache_dir."')"
-    if !s:has_ctrlp_cache_dir
-        call mkdir(s:ctrlp_cache_dir)
+    let g:ctrlp_cache_dir = stdpath("cache")."/ctrlp_cache"
+    if !isdirectory(g:ctrlp_cache_dir)
+        call mkdir(g:ctrlp_cache_dir)
     endif
-    let g:ctrlp_cache_dir = s:ctrlp_cache_dir
     let g:ctrlp_working_path_mode = ""
     let g:ctrlp_reuse_window = 'netrw\|help'
     let g:extensions#ctrlp#ctrlp_custom_ignore = {

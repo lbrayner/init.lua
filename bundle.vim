@@ -1,11 +1,9 @@
 if $XDG_CONFIG_HOME == ""
-    let $XDG_CONFIG_HOME = "~/.config"
-    let $XDG_CONFIG_HOME = fnamemodify($XDG_CONFIG_HOME,":p")
+    let $XDG_CONFIG_HOME = fnamemodify(stdpath("config"), ":h:p")
 endif
 
 if $XDG_DATA_HOME == ""
-    let $XDG_DATA_HOME = "~/.local/share"
-    let $XDG_DATA_HOME = fnamemodify($XDG_DATA_HOME,":p")
+    let $XDG_DATA_HOME = fnamemodify(stdpath("data"), ":h:p")
 endif
 
 set runtimepath-=$XDG_CONFIG_HOME/nvim
