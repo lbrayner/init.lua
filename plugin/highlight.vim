@@ -71,8 +71,6 @@ augroup HighlightTrailingWhitespace
     autocmd ColorScheme * call TrailingWhitespaceGroup()
     " BufWinEnter covers all windows on startup (think of sessions)
     autocmd BufWinEnter * call HighlightTrailingWhitespace()
-    " But it becomes insufficient and redundant after that
-    autocmd VimEnter * autocmd! HighlightTrailingWhitespace BufWinEnter
     autocmd VimEnter * autocmd HighlightTrailingWhitespace
                 \ WinEnter,Syntax * call HighlightTrailingWhitespace()
     if has("nvim")
