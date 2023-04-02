@@ -13,9 +13,6 @@
 [submodule "pack/bundle/start/paredit.vim"]
 	path = pack/bundle/start/paredit.vim
 	url = https://github.com/vim-scripts/paredit.vim.git
-[submodule "pack/bundle/start/QFEnter"]
-	path = pack/bundle/start/QFEnter
-	url = https://github.com/yssl/QFEnter.git
 [submodule "pack/bundle/start/tpope-vim-abolish"]
 	path = pack/bundle/start/tpope-vim-abolish
 	url = https://github.com/tpope/tpope-vim-abolish.git
