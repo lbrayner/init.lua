@@ -66,21 +66,21 @@ function! ClearTrailingWhitespace()
     endif
 endfunction
 
-augroup HighlightAndMatch
+augroup HighlightTrailingWhitespace
     autocmd!
     autocmd ColorScheme * call TrailingWhitespaceGroup()
     " BufWinEnter covers all windows on startup (think of sessions)
     autocmd BufWinEnter * call HighlightTrailingWhitespace()
     " But it becomes insufficient and redundant after that
-    autocmd VimEnter * autocmd! HighlightAndMatch BufWinEnter
-    autocmd VimEnter * autocmd HighlightAndMatch
+    autocmd VimEnter * autocmd! HighlightTrailingWhitespace BufWinEnter
+    autocmd VimEnter * autocmd HighlightTrailingWhitespace
                 \ WinEnter,Syntax * call HighlightTrailingWhitespace()
     if has("nvim")
-        autocmd VimEnter * autocmd HighlightAndMatch
+        autocmd VimEnter * autocmd HighlightTrailingWhitespace
                     \ TermOpen * call HighlightTrailingWhitespace()
     endif
     autocmd VimEnter * call HighlightTrailingWhitespace()
 augroup END
 if v:vim_did_enter
-    doautocmd HighlightAndMatch VimEnter
+    doautocmd HighlightTrailingWhitespace VimEnter
 endif
