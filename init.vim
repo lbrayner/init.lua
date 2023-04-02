@@ -397,12 +397,6 @@ augroup WsdlGroup
     autocmd BufEnter *.wsdl set ft=xml " Web Services Description Language
 augroup END
 
-augroup QuickfixBufferSetup
-    autocmd!
-    autocmd FileType qf setlocal nospell nowrap
-    autocmd FileType qf nnoremap <buffer> <CR> <Cmd>call v:lua.require'lbrayner.quickfix'.switch_to_window()<CR>
-augroup END
-
 augroup MailBufferSetup
     autocmd!
     autocmd FileType mail call util#setupMatchit()
