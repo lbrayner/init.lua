@@ -479,13 +479,6 @@ augroup END
 
 " }}}
 
-" sourcing init.local.vim if it exists
-
-let s:init_local = g:vim_dir . "/init.local.vim"
-if filereadable(s:init_local)
-  execute "source " . s:init_local
-endif
-
 " Finish here if we haven't initialized the submodules
 
 if glob(g:vim_dir."/pack/bundle/start/*/plugin") == ""
