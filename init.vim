@@ -263,7 +263,7 @@ cnoreabbrev L Lcd
 command! Tcd tcd %
 cnoreabbrev T Tcd
 
-command! -nargs=1 FileSearch call quickfix#ilist_search(0,<f-args>,1,1)
+command! -nargs=1 SearchFile call quickfix#ilist_search(0,<f-args>,1,1)
 
 function! s:ToggleNumber()
     if !&number
