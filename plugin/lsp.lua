@@ -27,18 +27,18 @@ local function on_attach(client, bufnr)
 
   -- Mappings
   local bufopts = { buffer=bufnr }
-  vim.keymap.set("n","gD", function()
+  vim.keymap.set("n", "gD", function()
     vim.lsp.buf.declaration({ reuse_win=true })
   end, bufopts)
-  vim.keymap.set("n","gd", function()
+  vim.keymap.set("n", "gd", function()
     vim.lsp.buf.definition({ reuse_win=true })
   end, bufopts)
-  vim.keymap.set("n","K", vim.lsp.buf.hover, bufopts)
-  vim.keymap.set("n","gi", vim.lsp.buf.implementation, bufopts)
-  vim.keymap.set("n","gK", vim.lsp.buf.signature_help, bufopts)
-  vim.keymap.set("n","<Space>D", vim.lsp.buf.type_definition, bufopts)
-  vim.keymap.set("n","<F11>", vim.lsp.buf.code_action, bufopts)
-  vim.keymap.set("n","gr", vim.lsp.buf.references, bufopts)
+  vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
+  vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
+  vim.keymap.set("n", "gK", vim.lsp.buf.signature_help, bufopts)
+  vim.keymap.set("n", "<Space>D", vim.lsp.buf.type_definition, bufopts)
+  vim.keymap.set("n", "<F11>", vim.lsp.buf.code_action, bufopts)
+  vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
 
   -- Commands
   vim.api.nvim_buf_create_user_command(bufnr, "LspRename", function(command)

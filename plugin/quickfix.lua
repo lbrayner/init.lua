@@ -19,7 +19,7 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function(args)
     local bufnr = args.buf
     local bufopts = { buffer=bufnr }
-    vim.keymap.set("n","<CR>", switch_to_window, bufopts)
+    vim.keymap.set("n", "<CR>", switch_to_window, bufopts)
 
     vim.wo.spell = false
     vim.wo.wrap = false

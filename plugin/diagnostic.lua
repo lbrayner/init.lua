@@ -110,23 +110,23 @@ end
 
 local opts = { silent=true }
 
-vim.keymap.set("n","<Space>e", goto_first, opts)
-vim.keymap.set("n","<Space>E", function()
+vim.keymap.set("n", "<Space>e", goto_first, opts)
+vim.keymap.set("n", "<Space>E", function()
   vim.diagnostic.open_float({ close_events=close_events, scope="buffer" })
 end, opts)
-vim.keymap.set("n","[d", function()
+vim.keymap.set("n", "[d", function()
   vim.diagnostic.goto_prev({ float={ close_events=close_events } })
 end, opts)
-vim.keymap.set("n","]d", function()
+vim.keymap.set("n", "]d", function()
   vim.diagnostic.goto_next({ float={ close_events=close_events } })
 end, opts)
 
-vim.keymap.set("n","[!", function()
+vim.keymap.set("n", "[!", function()
   vim.diagnostic.goto_prev({ float={ close_events=close_events }, severity={
     min=vim.diagnostic.severity.WARN
   } })
 end, opts)
-vim.keymap.set("n","]!", function()
+vim.keymap.set("n", "]!", function()
   vim.diagnostic.goto_next({ float={ close_events=close_events }, severity={
     min=vim.diagnostic.severity.WARN
   } })

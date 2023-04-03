@@ -82,7 +82,7 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
       -- Mapping overrides
       local bufopts = { buffer=bufnr }
       -- Go to class declaration
-      vim.keymap.set("n","gD", function()
+      vim.keymap.set("n", "gD", function()
         vim.api.nvim_win_set_cursor(0, {1, 0})
         if vim.fn.search(
           "\\v^public\\s+%(abstract\\s+)?%(final\\s+)?%(class|enum|interface)\\s+\\zs" ..

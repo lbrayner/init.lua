@@ -60,9 +60,9 @@ nvim_create_user_command("Tabs", fzf.tabs, { nargs=0 })
 
 local opts = { silent=true }
 
-vim.keymap.set("n","<F5>", fzf.buffers, opts)
-vim.keymap.set("n","<Leader><F7>", files_clear_cache, opts)
-vim.keymap.set("n","<F7>", files, opts)
-vim.keymap.set("n","<F8>", function()
+vim.keymap.set("n", "<F5>", fzf.buffers, opts)
+vim.keymap.set("n", "<Leader><F7>", files_clear_cache, opts)
+vim.keymap.set("n", "<F7>", files, opts)
+vim.keymap.set("n", "<F8>", function()
   fzf.tabs({ show_quickfix=true })
 end, opts)
