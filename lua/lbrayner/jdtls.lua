@@ -1,5 +1,3 @@
-vim.cmd.packadd "nvim-jdtls"
-
 local lspconfig = require "lspconfig.server_configurations.jdtls"
 
 return {

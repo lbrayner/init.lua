@@ -1,6 +1,3 @@
-vim.cmd.packadd "nvim-lspconfig"
-vim.cmd.packadd "typescript.nvim"
-
 -- Typescript, Javascript
 require("typescript").setup({
   server = {

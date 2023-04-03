@@ -92,22 +92,22 @@
 	path = pack/bundle/start/vim-ripgrep
 	url = https://github.com/lbrayner/vim-ripgrep
 [submodule "pack/bundle/start/nvim-lspconfig"]
-	path = pack/bundle/opt/nvim-lspconfig
+	path = pack/bundle/start/nvim-lspconfig
 	url = https://github.com/neovim/nvim-lspconfig
 [submodule "pack/bundle/start/reply.vim"]
 	path = pack/bundle/start/reply.vim
 	url = https://github.com/rhysd/reply.vim
 [submodule "pack/bundle/opt/fzf-lua"]
-	path = pack/bundle/opt/fzf-lua
+	path = pack/bundle/start/fzf-lua
 	url = https://github.com/ibhagwan/fzf-lua
     branch = main
 [submodule "pack/bundle/opt/nvim-jdtls"]
-	path = pack/bundle/opt/nvim-jdtls
+	path = pack/bundle/start/nvim-jdtls
 	url = https://github.com/mfussenegger/nvim-jdtls
 [submodule "pack/bundle/start/vim-dadbod"]
 	path = pack/bundle/start/vim-dadbod
 	url = https://github.com/tpope/vim-dadbod
 [submodule "pack/bundle/start/typescript.nvim"]
-	path = pack/bundle/opt/typescript.nvim
+	path = pack/bundle/start/typescript.nvim
 	url = https://github.com/jose-elias-alvarez/typescript.nvim
     branch = main

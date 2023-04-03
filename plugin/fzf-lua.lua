@@ -10,8 +10,6 @@ else
   return
 end
 
-vim.cmd.packadd "fzf-lua"
-
 local nvim_create_user_command = vim.api.nvim_create_user_command
 local fzf = require("fzf-lua")
 local actions = require "fzf-lua.actions"
