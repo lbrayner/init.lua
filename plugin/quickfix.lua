@@ -17,16 +17,21 @@ vim.api.nvim_create_autocmd("FileType", {
   desc = "Quickfix buffer setup",
   pattern = "qf",
   callback = function(args)
-    local winid = vim.api.nvim_get_current_win()
-    if vim.fn.getwininfo(winid)[1].loclist == 1 then
-      return
-    end
-
     local bufnr = args.buf
-    local bufopts = { buffer=bufnr }
-    vim.keymap.set("n", "<CR>", switch_to_window, bufopts)
+    local wininfos = vim.tbl_filter(function(wininfo)
+      return wininfo.bufnr == bufnr
+    end, vim.fn.getwininfo())
 
-    vim.wo.spell = false
-    vim.wo.wrap = false
+    for _, wininfo in ipairs(wininfos) do
+      local winid = wininfo.winid
+
+      vim.wo[winid].spell = false
+      vim.wo[winid].wrap = false
+
+      -- Exclusive to quickfix
+      if vim.fn.getwininfo(winid)[1].loclist < 1 then
+        vim.keymap.set("n", "<CR>", switch_to_window, { buffer=bufnr })
+      end
+    end
   end,
 })
