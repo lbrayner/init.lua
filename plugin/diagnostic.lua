@@ -54,10 +54,7 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
       group = trunc_virt_text,
       callback = function(args)
         local bufnr = args.buf
-        local winid = vim.fn.bufwinid(bufnr)
-        if winid < 0 then
-          return
-        end
+        local winid = vim.api.nvim_get_current_win()
         for _, namespace in ipairs(vim.tbl_values(vim.api.nvim_get_namespaces())) do
           handle_long_extmarks(namespace, bufnr, winid)
         end
