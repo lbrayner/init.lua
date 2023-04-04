@@ -236,6 +236,9 @@ nnoremap <Leader>do <Cmd>diffoff!<CR>
 " Insert timestamps
 imap <F3> <C-R>=strftime("%Y-%m-%d %a %0H:%M")<CR>
 
+" Rename word
+nnoremap <Leader>x :%s/\C\V\<<C-R><C-W>\>//gc<Left><Left><Left>
+
 " }}}
 
 " Subsection: functions & commands
@@ -553,10 +556,6 @@ map T <Plug>Sneak_T
 
 map <Space>f <Plug>Sneak_s
 map <Space>F <Plug>Sneak_S
-
-" scalpel
-
-nmap <Leader>x <Plug>(Scalpel)
 
 " delimitMate
 

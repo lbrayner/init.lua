@@ -52,9 +52,6 @@
 [submodule "pack/bundle/start/vissort"]
 	path = pack/bundle/start/vissort
 	url = https://github.com/yaroot/vissort.git
-[submodule "pack/bundle/start/scalpel"]
-	path = pack/bundle/start/scalpel
-	url = https://github.com/wincent/scalpel
 [submodule "pack/bundle/start/email.vim"]
 	path = pack/bundle/start/email.vim
 	url = https://github.com/lbrayner/email.vim
