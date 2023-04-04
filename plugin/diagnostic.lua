@@ -175,11 +175,13 @@ local function CustomDiagnostics()
   vim.diagnostic.handlers.virtual_text = {
     show = function(namespace, bufnr, diagnostics, opts)
       _G.default_virtual_text_handler.show(namespace, bufnr, diagnostics, opts)
-      local winid = vim.fn.bufwinid(bufnr)
-      if winid < 0 then
-        return
+      local wininfos = vim.tbl_filter(function(wininfo)
+        return wininfo.bufnr == bufnr
+      end, vim.fn.getwininfo())
+      for _, wininfo in ipairs(wininfos) do
+        local winid = wininfo.winid
+        handle_long_extmarks(namespace, bufnr, winid)
       end
-      handle_long_extmarks(namespace, bufnr, winid)
     end,
     hide = function(namespace, bufnr)
       _G.default_virtual_text_handler.hide(namespace, bufnr)
