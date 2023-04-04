@@ -1,4 +1,3 @@
-" TODO port to quickfix.lua
 " https://github.com/wincent/ferret: ferret#private#qargs()
 
 function! s:QFBufnr2Bufname()
@@ -27,11 +26,13 @@ function! s:QFWriteFileNames(filename)
 endfunction
 
 function! s:SetupQuickfixBuffer()
-    command! -buffer -nargs=0 QFYankFileNames call <SID>QFYankFileNames()
-    command! -buffer -nargs=1 -complete=file QFWriteFileNames call <SID>QFWriteFileNames(<f-args>)
+    if util#isQuickfixList()
+        command! -buffer -nargs=0 QFYankFileNames call <SID>QFYankFileNames()
+        command! -buffer -nargs=1 -complete=file QFWriteFileNames call <SID>QFWriteFileNames(<f-args>)
+    endif
 endfunction
 
-augroup QuickfixBufferCommandSetup
+augroup QuickfixVimscriptBufferSetup
     autocmd!
     autocmd FileType qf call s:SetupQuickfixBuffer()
 augroup END
