@@ -8,6 +8,16 @@ local function find_window(bufnr)
   return nil
 end
 
+local function split_open()
+  local linenr = vim.api.nvim_win_get_cursor(0)[1]
+  local bufnr = vim.fn.getqflist()[linenr].bufnr
+  local winid = find_window(bufnr)
+  if winid then return vim.api.nvim_set_current_win(winid) end
+  vim.cmd.wincmd("p")
+  vim.cmd.split()
+  vim.cmd(linenr .. "cc")
+end
+
 local function switch_to_window()
   local linenr = vim.api.nvim_win_get_cursor(0)[1]
   local bufnr = vim.fn.getqflist()[linenr].bufnr
@@ -22,6 +32,16 @@ local function tab_open()
   local winid = find_window(bufnr)
   if winid then return vim.api.nvim_set_current_win(winid) end
   vim.cmd("tabnew")
+  vim.cmd(linenr .. "cc")
+end
+
+local function vsplit_open()
+  local linenr = vim.api.nvim_win_get_cursor(0)[1]
+  local bufnr = vim.fn.getqflist()[linenr].bufnr
+  local winid = find_window(bufnr)
+  if winid then return vim.api.nvim_set_current_win(winid) end
+  vim.cmd.wincmd("p")
+  vim.cmd.vsplit()
   vim.cmd(linenr .. "cc")
 end
 
@@ -46,6 +66,8 @@ vim.api.nvim_create_autocmd("FileType", {
       -- Exclusive to quickfix
       if vim.fn.getwininfo(winid)[1].loclist < 1 then
         vim.keymap.set("n", "<CR>", switch_to_window, { buffer=bufnr })
+        vim.keymap.set("n", "o", split_open, { buffer=bufnr })
+        vim.keymap.set("n", "O", vsplit_open, { buffer=bufnr })
         vim.keymap.set("n", "<Tab>", tab_open, { buffer=bufnr })
       end
     end
