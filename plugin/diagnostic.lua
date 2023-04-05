@@ -1,8 +1,3 @@
--- Requires Neovim 0.7.0+
-if not vim.api["nvim_create_autocmd"] then
-  return
-end
-
 local prefix = require("lbrayner.diagnostic").get_prefix()
 
 local function is_long(bufnr, winid, virt_texts, lnum)
