@@ -81,17 +81,17 @@ local function goto_first()
   -- Save the current cursor position
   local line_col = get_cursor()
   -- Move the cursor to the second column
-  vim.api.nvim_win_set_cursor(0,{ line_col[1], 1 })
+  vim.api.nvim_win_set_cursor(0, { line_col[1], 1 })
   local prev_pos = vim.diagnostic.get_prev_pos()
   -- If there's an anterior diagnostic in the current line, it's in column 1
   if prev_pos and prev_pos[1]+1 == line_col[1] and prev_pos[2] < get_cursor()[2] then
     -- Go to column 1 and open the floating window
-    vim.api.nvim_win_set_cursor(0,{ line_col[1], 0 })
+    vim.api.nvim_win_set_cursor(0, { line_col[1], 0 })
     -- Scheduling lest CursorMoved is triggered
     return vim.schedule(open_float)
   end
   -- Move the cursor to the beginning of the line
-  vim.api.nvim_win_set_cursor(0,{ line_col[1], 0 })
+  vim.api.nvim_win_set_cursor(0, { line_col[1], 0 })
   local next_pos = vim.diagnostic.get_next_pos()
   -- If there's no next diagnostic in the current line, there might be one in
   -- column 1
