@@ -58,6 +58,28 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
   end,
 })
 
+vim.api.nvim_create_autocmd({ "VimEnter" }, {
+  group = trunc_virt_text,
+  callback = function(_args)
+    vim.api.nvim_create_autocmd({ "WinResized" }, {
+      group = trunc_virt_text,
+      callback = function(args)
+        local winids = vim.v.event.windows
+        local wininfos = vim.tbl_filter(function(wininfo)
+          return vim.tbl_contains(winids, wininfo.winid)
+        end, vim.fn.getwininfo())
+        for _, wininfo in ipairs(wininfos) do
+          local bufnr = wininfo.bufnr
+          local winid = wininfo.winid
+          for _, namespace in ipairs(vim.tbl_values(vim.api.nvim_get_namespaces())) do
+            handle_long_extmarks(namespace, bufnr, winid)
+          end
+        end
+      end,
+    })
+  end,
+})
+
 if vim.v.vim_did_enter then
   vim.api.nvim_exec_autocmds("VimEnter", { group=trunc_virt_text })
 end
