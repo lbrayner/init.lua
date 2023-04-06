@@ -318,12 +318,11 @@ augroup CmdWindow
     autocmd CmdwinEnter * setlocal nospell
 augroup END
 
-" TODO do we need this?
 function! s:InsertModeUndoPoint()
     if mode() != "i"
         return
     endif
-    call feedkeys("\<c-g>u")
+    call feedkeys("\<C-G>u")
 endfunction
 
 augroup InsertModeUndoPoint
