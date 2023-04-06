@@ -109,7 +109,7 @@ nnoremap <Leader>i <Cmd>set invpaste paste?<CR>
 " buffer navigation (these mappings are going to be overridden by packages)
 if !v:vim_did_enter
     nnoremap <F5> <Cmd>ls<CR><Cmd>buffer<Space>
-    nnoremap <F8> :tabs<CR>
+    nnoremap <F8> <Cmd>tabs<CR>
 endif
 
 " write
