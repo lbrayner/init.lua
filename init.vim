@@ -106,10 +106,9 @@ nnoremap <Leader>h <C-W>s
 " copy & paste
 nnoremap <Leader>i <Cmd>set invpaste paste?<CR>
 
-" buffer navigation
-nnoremap <Leader><F5> <Cmd>ls<CR><Cmd>buffer<Space>
-" This mapping is overridden by packages
+" buffer navigation (these mappings are going to be overridden by packages)
 if !v:vim_did_enter
+    nnoremap <F5> <Cmd>ls<CR><Cmd>buffer<Space>
     nnoremap <F8> :tabs<CR>
 endif
 
