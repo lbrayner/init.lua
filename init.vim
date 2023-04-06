@@ -133,23 +133,6 @@ nnoremap <silent> <Space>q <Cmd>botright copen<CR>
 " force case sensitivity for *-search
 nnoremap * /\C\V\<<C-R><C-W>\><CR>
 
-" sometimes you want to search with no noincsearch set
-function! s:NoIncSearchEnd()
-    if !exists("s:incsearch")
-        return
-    endif
-    let &incsearch = s:incsearch
-endfunction
-
-function! s:NoIncSearchStart(pattern)
-    let s:incsearch = &incsearch
-    set noincsearch
-    exe "autocmd CmdlineLeave ".a:pattern." ++once call s:NoIncSearchEnd()"
-endfunction
-
-nnoremap <Leader>/ <Cmd>call <SID>NoIncSearchStart("/")<CR>/
-nnoremap <Leader>? <Cmd>call <SID>NoIncSearchStart("?")<CR>?
-
 " Neovim terminal
 " Case matters for keys after alt or meta
 tnoremap <A-h> <C-\><C-N><C-W>h
