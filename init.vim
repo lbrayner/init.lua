@@ -57,16 +57,6 @@ endif
 " So that watchprocesses work as expected
 set backupcopy=yes
 
-" diff & patch
-
-" Microsoft Windows standard input converts line endings, so it's best to
-" avoid using it
-set patchexpr=MyPatch()
-function MyPatch()
-   :call system("patch -o " . v:fname_out . " " . v:fname_in .
-               \ " " . v:fname_diff)
-endfunction
-
 command! MergeMarkers call quickfix#ilist_search(0
             \,"^\\(<<<<<<<\\||||||||\\|=======\\|>>>>>>>\\)",1,0)
 
