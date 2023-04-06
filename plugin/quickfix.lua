@@ -31,6 +31,7 @@ local function tab_open()
   local bufnr = vim.fn.getqflist()[linenr].bufnr
   local winid = find_window(bufnr)
   if winid then return vim.api.nvim_set_current_win(winid) end
+  vim.cmd.wincmd("p")
   vim.cmd("tabnew")
   vim.cmd(linenr .. "cc")
 end
