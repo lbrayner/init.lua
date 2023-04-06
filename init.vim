@@ -440,12 +440,6 @@ augroup LuaAutoGroup
     autocmd FileType lua setlocal shiftwidth=2
 augroup END
 
-augroup DiffWrapAutoGroup
-    autocmd!
-    " reverting wrap to its global value when in diff mode
-    autocmd FilterWritePre * if &diff | setlocal wrap< | endif
-augroup END
-
 augroup GitCommit
     autocmd!
     autocmd BufWinEnter COMMIT_EDITMSG startinsert
