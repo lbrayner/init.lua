@@ -404,12 +404,12 @@ augroup DetectFileType
                 \ endif
 augroup END
 
-augroup TextFormatAutoGroup
+augroup TextWidth
     autocmd!
     autocmd FileType mediawiki,text setlocal textwidth=80
 augroup END
 
-augroup LuaAutoGroup
+augroup LuaSetup
     autocmd!
     autocmd FileType lua setlocal shiftwidth=2
 augroup END
@@ -419,23 +419,23 @@ augroup GitCommit
     autocmd BufWinEnter COMMIT_EDITMSG startinsert
 augroup END
 
-augroup SessionLoadPostAutoGroup
+augroup SessionLoad
     autocmd!
     " Wiping empty buffers created by restoring sessions
     autocmd SessionLoadPost * silent call buffer#BWipeNotReadableForce()
 augroup END
 
-augroup TermAutoGroup
+augroup TerminalSetup
     autocmd!
     " To enter Terminal-mode automatically:
-    autocmd VimEnter * autocmd TermAutoGroup TermOpen * startinsert
+    autocmd VimEnter * autocmd TerminalSetup TermOpen * startinsert
     autocmd TermEnter * set nonumber
 augroup END
 if v:vim_did_enter
-    doautocmd TermAutoGroup VimEnter
+    doautocmd TerminalSetup VimEnter
 endif
 
-augroup TabClosedAutoGroup
+augroup TabEvents
     autocmd!
     " Returning to previous tab instead of the next
     autocmd TabClosed * if expand("<afile>") > 1 && expand("<afile>") <= tabpagenr("$") |
