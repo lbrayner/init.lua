@@ -330,15 +330,15 @@ augroup InsertModeUndoPoint
     autocmd CursorHoldI * call s:InsertModeUndoPoint()
 augroup END
 
-augroup AestheticsAutoGroup
+augroup Aesthetics
     autocmd!
-    autocmd VimEnter * autocmd AestheticsAutoGroup
+    autocmd VimEnter * autocmd Aesthetics
                 \ BufRead,BufEnter,BufWritePost * call s:Number()
     autocmd VimEnter * call s:Number()
-    autocmd FileType help autocmd! AestheticsAutoGroup BufEnter <buffer> set relativenumber
+    autocmd FileType help autocmd! Aesthetics BufEnter <buffer> set relativenumber
 augroup END
 if v:vim_did_enter
-    doautocmd AestheticsAutoGroup VimEnter
+    doautocmd Aesthetics VimEnter
 endif
 
 augroup PoundComment
@@ -347,7 +347,7 @@ augroup PoundComment
                 \ autocmd! PoundComment BufEnter <buffer> ++once let &l:commentstring = "# %s"
 augroup END
 
-augroup VidirGroup
+augroup Vidir
     autocmd!
     autocmd BufEnter /tmp/dir*
                 \ if argc() == 1 && argv(0) =~# '^/tmp/dir\w\{5}$' |
@@ -355,24 +355,24 @@ augroup VidirGroup
                 \ endif
 augroup END
 
-augroup InferCaseGroup
+augroup InferCase
     autocmd!
     autocmd FileType gitcommit,mail,markdown,text setlocal ignorecase infercase
 augroup END
 
 let s:LargeXmlFile = 1024 * 512
-augroup LargeXmlAutoGroup
+augroup LargeXml
     autocmd BufRead * if &filetype =~# '\v(xml|html)'
             \| if getfsize(expand("<afile>")) > s:LargeXmlFile
                 \| setlocal syntax=unknown | endif | endif
 augroup END
 
-augroup WsdlGroup
+augroup WsdlSetup
     autocmd!
     autocmd BufEnter *.wsdl set ft=xml " Web Services Description Language
 augroup END
 
-augroup MailBufferSetup
+augroup MailSetup
     autocmd!
     autocmd FileType mail call util#setupMatchit()
 augroup END
@@ -557,7 +557,7 @@ vmap <Space>c <Plug>(quickhl-manual-clear)
 let g:loaded_netrwPlugin = 1
 command! -nargs=? -complete=dir Explore Dirvish <args>
 
-augroup DirvishBufferSetup
+augroup DirvishSetup
     autocmd!
     autocmd FileType dirvish let b:Statusline_custom_leftline = '%<%{expand("%:h:t")}'
 augroup END
