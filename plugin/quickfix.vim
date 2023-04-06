@@ -32,7 +32,7 @@ function! s:SetupQuickfixBuffer()
     endif
 endfunction
 
-augroup QuickfixVimscriptBufferSetup
+augroup QuickfixVimscriptSetup
     autocmd!
     autocmd FileType qf call s:SetupQuickfixBuffer()
 augroup END

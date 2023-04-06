@@ -46,11 +46,11 @@ local function vsplit_open()
   vim.cmd(linenr .. "cc")
 end
 
-local qf_setup = vim.api.nvim_create_augroup("QuickfixBufferSetup", { clear=true })
+local qf_setup = vim.api.nvim_create_augroup("QuickfixSetup", { clear=true })
 
 vim.api.nvim_create_autocmd("FileType", {
   group = qf_setup,
-  desc = "Quickfix buffer setup",
+  desc = "Quickfix setup",
   pattern = "qf",
   callback = function(args)
     local bufnr = args.buf
