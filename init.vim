@@ -470,41 +470,6 @@ map <silent> <Leader>b <Plug>CamelCaseMotion_b
 map <silent> <Leader>e <Plug>CamelCaseMotion_e
 map <silent> <Leader>ge <Plug>CamelCaseMotion_ge
 
-" ctrlp
-
-if !executable("fzf")
-    let g:ctrlp_cache_dir = stdpath("cache")."/ctrlp_cache"
-    if !isdirectory(g:ctrlp_cache_dir)
-        call mkdir(g:ctrlp_cache_dir)
-    endif
-    let g:ctrlp_working_path_mode = ""
-    let g:ctrlp_reuse_window = 'netrw\|help'
-    let g:extensions#ctrlp#ctrlp_custom_ignore = {
-                \ "file": '\v\.o$|\.exe$|\.lnk$|\.bak$|\.sw[a-z]$|\.class$|\.jasper$'
-                \               . '|\.r[0-9]+$|\.mine$',
-                \ "dir": '\C\V' . escape(expand("~"),' \') . '\$' . '\|ctrlp_cache\$'
-                \ }
-
-    let g:ctrlp_custom_ignore = {
-                \ "func": "extensions#ctrlp#ignore"
-                \ }
-
-    let g:ctrlp_switch_buffer = "t"
-    let g:ctrlp_map = "<f7>"
-    let g:ctrlp_tabpage_position = "bc"
-    let g:ctrlp_clear_cache_on_exit = 0
-    nnoremap <F5> :CtrlPBuffer<cr>
-
-    " Copied from the help file
-    let g:ctrlp_prompt_mappings = {
-                \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
-                \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
-                \ 'PrtHistory(-1)':       ['<c-j>'],
-                \ 'PrtHistory(1)':        ['<c-k>'],
-                \ }
-    packadd! ctrlp.vim
-endif
-
 " vim-rzip
 
 let g:rzipPlugin_extra_ext = "*.odt"
