@@ -1,50 +1,15 @@
-local function find_window(bufnr)
-  for _, w in ipairs(vim.api.nvim_list_wins()) do
-    local buf = vim.api.nvim_win_get_buf(w)
-    if buf == bufnr then
-      return w
-    end
-  end
-  return nil
+local function display_error(swb)
+  local switchbuf = vim.go.switchbuf
+  vim.go.switchbuf = swb
+  local linenr = vim.api.nvim_win_get_cursor(0)[1]
+  vim.cmd(linenr .. "cc")
+  vim.go.switchbuf = switchbuf
 end
 
-local function split_open()
-  local linenr = vim.api.nvim_win_get_cursor(0)[1]
-  local bufnr = vim.fn.getqflist()[linenr].bufnr
-  local winid = find_window(bufnr)
-  if winid then return vim.api.nvim_set_current_win(winid) end
-  vim.cmd.wincmd("p")
-  vim.cmd.split()
-  vim.cmd(linenr .. "cc")
-end
-
-local function switch_to_window()
-  local linenr = vim.api.nvim_win_get_cursor(0)[1]
-  local bufnr = vim.fn.getqflist()[linenr].bufnr
-  local winid = find_window(bufnr)
-  if winid then vim.api.nvim_set_current_win(winid) end
-  vim.cmd(linenr .. "cc")
-end
-
-local function tab_open()
-  local linenr = vim.api.nvim_win_get_cursor(0)[1]
-  local bufnr = vim.fn.getqflist()[linenr].bufnr
-  local winid = find_window(bufnr)
-  if winid then return vim.api.nvim_set_current_win(winid) end
-  vim.cmd.wincmd("p")
-  vim.cmd("tabnew")
-  vim.cmd(linenr .. "cc")
-end
-
-local function vsplit_open()
-  local linenr = vim.api.nvim_win_get_cursor(0)[1]
-  local bufnr = vim.fn.getqflist()[linenr].bufnr
-  local winid = find_window(bufnr)
-  if winid then return vim.api.nvim_set_current_win(winid) end
-  vim.cmd.wincmd("p")
-  vim.cmd.vsplit()
-  vim.cmd(linenr .. "cc")
-end
+local function split_open()       display_error("usetab,split")  end
+local function switch_to_window() display_error("usetab")        end
+local function tab_open()         display_error("usetab,newtab") end
+local function vsplit_open()      display_error("usetab,vsplit") end
 
 local qf_setup = vim.api.nvim_create_augroup("QuickfixSetup", { clear=true })
 
@@ -65,7 +30,7 @@ vim.api.nvim_create_autocmd("FileType", {
       vim.wo[winid].wrap = false
 
       -- Exclusive to quickfix
-      if vim.fn.getwininfo(winid)[1].loclist < 1 then
+      if vim.fn.getwininfo(winid)[1].loclist == 0 then
         vim.keymap.set("n", "<CR>", switch_to_window, { buffer=bufnr })
         vim.keymap.set("n", "o", split_open, { buffer=bufnr })
         vim.keymap.set("n", "O", vsplit_open, { buffer=bufnr })
