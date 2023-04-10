@@ -211,6 +211,8 @@ imap <F3> <C-R>=strftime("%Y-%m-%d %a %0H:%M")<CR>
 
 " Rename word
 nnoremap <Leader>x :%s/\C\V\<<C-R><C-W>\>//gc<Left><Left><Left>
+" Rename visual selection
+vnoremap <Leader>x y:%s/\C\V<C-R>"//gc<Left><Left><Left>
 
 " }}}
 
