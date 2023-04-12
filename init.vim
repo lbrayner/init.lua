@@ -346,7 +346,7 @@ endif
 augroup PoundComment
     autocmd!
     autocmd FileType apache,crontab,debsources,desktop,fstab,samba
-                \ autocmd! PoundComment BufEnter <buffer> ++once let &l:commentstring = "# %s"
+                \ autocmd! PoundComment BufEnter <buffer> ++once setlocal commentstring=#\ %s
 augroup END
 
 augroup Vidir
@@ -457,6 +457,13 @@ if glob(g:vim_dir."/pack/bundle/start/*/plugin") == ""
 endif
 
 " Subsection: package customisation {{{
+
+" vim-commentary
+
+augroup VimCommentary
+    autocmd!
+    autocmd FileType sql setlocal commentstring=--\ %s
+augroup END
 
 " vim-surround
 
