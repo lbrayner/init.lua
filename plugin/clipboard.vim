@@ -60,7 +60,7 @@ endfunction
 " Copies arg to the system's clipboard
 command! -nargs=? Clip call Clip(<f-args>)
 
-vnoremap <Leader>c y<Cmd>Clip<CR>
+vnoremap <Leader>y y<Cmd>Clip<CR>
 
 nnoremap <Leader>p "+p
 vnoremap <Leader>p "+p
