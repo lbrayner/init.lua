@@ -26,7 +26,7 @@ function! s:Rg(txt)
         endif
     catch
         cclose
-        echom "Error searching for " . a:txt . ". Check your command."
+        echom "Error searching for " . a:txt . ". Unmatched quotes? Check your command."
     endtry
 endfunction
 
