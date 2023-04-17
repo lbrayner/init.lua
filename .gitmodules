@@ -79,9 +79,6 @@
 [submodule "pack/bundle/start/vim-nftables"]
 	path = pack/bundle/start/vim-nftables
 	url = https://github.com/nfnty/vim-nftables
-[submodule "pack/bundle/start/vim-ripgrep"]
-	path = pack/bundle/start/vim-ripgrep
-	url = https://github.com/lbrayner/vim-ripgrep
 [submodule "pack/bundle/start/nvim-lspconfig"]
 	path = pack/bundle/start/nvim-lspconfig
 	url = https://github.com/neovim/nvim-lspconfig

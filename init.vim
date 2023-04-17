@@ -126,7 +126,7 @@ inoremap <silent> <F12> <Cmd>setlocal list!<CR>
 nnoremap <Space>b <Cmd>b#<CR>
 
 " quickfix and locallist
-nnoremap <silent> <Space>l <Cmd>botright lopen<CR>
+nnoremap <silent> <Space>l <Cmd>lopen<CR>
 nnoremap <silent> <Space>q <Cmd>botright copen<CR>
 
 " force case sensitivity for *-search
@@ -534,11 +534,6 @@ augroup END
 " reply.vim
 
 command! -nargs=0 ReplFile call reply#command#send(join(getline(1,line("$")),"\n"),0,0)
-
-" vim-ripgrep
-
-" Search by exact word
-cnoreabbrev Rw Rg -s '\b\b'<Left><Left><Left>
 
 " }}}
 
