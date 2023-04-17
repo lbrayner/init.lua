@@ -343,12 +343,6 @@ if v:vim_did_enter
     doautocmd Aesthetics VimEnter
 endif
 
-augroup PoundComment
-    autocmd!
-    autocmd FileType apache,crontab,debsources,desktop,fstab,samba
-                \ autocmd! PoundComment BufEnter <buffer> ++once setlocal commentstring=#\ %s
-augroup END
-
 augroup Vidir
     autocmd!
     autocmd BufEnter /tmp/dir*
@@ -462,6 +456,7 @@ endif
 
 augroup VimCommentary
     autocmd!
+    autocmd FileType apache,crontab,debsources,desktop,fstab,samba setlocal commentstring=#\ %s
     autocmd FileType sql setlocal commentstring=--\ %s
 augroup END
 
