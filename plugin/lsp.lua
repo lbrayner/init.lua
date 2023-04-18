@@ -13,6 +13,14 @@ require("lspconfig").pyright.setup {
 local quickfix_diagnostics_opts = {}
 local lsp_setqflist
 
+local function on_list(options)
+  vim.fn.setqflist({}, " ", options)
+  if #options.items == 1  then
+    return vim.cmd("cfirst")
+  end
+  vim.cmd("botright copen")
+end
+
 -- From nvim-lspconfig
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -31,7 +39,9 @@ local function on_attach(client, bufnr)
     vim.lsp.buf.definition({ reuse_win=true })
   end, bufopts)
   vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-  vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
+  vim.keymap.set("n", "gi", function()
+    vim.lsp.buf.implementation({ on_list=on_list })
+  end, bufopts)
   vim.keymap.set("n", "gK", vim.lsp.buf.signature_help, bufopts)
   vim.keymap.set("n", "<Space>D", vim.lsp.buf.type_definition, bufopts)
   vim.keymap.set("n", "<F11>", vim.lsp.buf.code_action, bufopts)
