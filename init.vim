@@ -12,7 +12,7 @@ endif
 
 filetype plugin indent on
 
-if stridx($TERM, "256color") >= 0
+if $TERM == "foot" || stridx($TERM, "256color") >= 0
     set termguicolors
 endif
 
