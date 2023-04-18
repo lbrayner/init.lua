@@ -35,6 +35,7 @@ set noruler
 set lazyredraw
 set title
 set noshowmode
+exe "set cedit=\<C-X>"
 
 "show existing tab with 4 spaces width
 set tabstop=4
@@ -156,8 +157,6 @@ cnoremap <C-B> <Left>
 cnoremap <C-D> <Del>
 " end of line
 cnoremap <C-E> <End>
-" open the command line buffer
-cnoremap <C-X> <C-F>
 " forward one character
 cnoremap <C-F> <Right>
 " recall newer command-line
