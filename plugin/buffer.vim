@@ -99,8 +99,7 @@ endfunction
 " Unclutter, i.e. close certain special windows
 
 function! s:Unclutter(current_window_id,last_accessed_window_id)
-    " Close current window if it's a floating one
-    if exists("*nvim_win_get_config") && nvim_win_get_config(0).relative != ""
+    if util#WindowIsFloating()
         quit
         return
     endif

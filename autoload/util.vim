@@ -126,6 +126,10 @@ function! util#getLocationListTitle(nr)
     return getloclist(a:nr, {"title": 1}).title
 endfunction
 
+function! util#WindowIsFloating()
+    return nvim_win_get_config(0).relative != ""
+endfunction
+
 function! util#IsVimBundle()
     return filereadable("init.vim")
 endfunction

@@ -331,11 +331,24 @@ augroup InsertModeUndoPoint
     autocmd CursorHoldI * call s:InsertModeUndoPoint()
 augroup END
 
+function! s:DoAesthetics()
+    if util#WindowIsFloating()
+        return
+    endif
+    if &filetype ==# "fugitiveblame"
+        return
+    endif
+    if !stridx(&syntax, "Neogit")
+        return
+    endif
+    call s:Number()
+endfun
+
 augroup Aesthetics
     autocmd!
     autocmd VimEnter * autocmd Aesthetics
-                \ BufRead,BufEnter,BufWritePost * call s:Number()
-    autocmd VimEnter * call s:Number()
+                \ BufRead,BufEnter,BufWritePost * call s:DoAesthetics()
+    autocmd VimEnter * call s:DoAesthetics()
     autocmd FileType help autocmd! Aesthetics BufEnter <buffer> set relativenumber
 augroup END
 if v:vim_did_enter

@@ -78,8 +78,7 @@ function! RedefineTabline()
 endfunction
 
 function! s:TablineBufEnter()
-    " Floating windows
-    if nvim_win_get_config(0).relative != ""
+    if util#WindowIsFloating()
         return
     endif
     call RedefineTabline()
