@@ -1,13 +1,16 @@
 local function display_error(swb)
+  local command = "cc"
+  if vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].loclist == 1 then
+    command = "ll"
+  end
   local switchbuf = vim.go.switchbuf
   vim.go.switchbuf = swb
   local linenr = vim.api.nvim_win_get_cursor(0)[1]
-  vim.cmd(linenr .. "cc")
+  vim.cmd(linenr .. command)
   vim.go.switchbuf = switchbuf
 end
 
 local function split_open()       display_error("usetab,split")  end
-local function switch_to_window() display_error("usetab")        end
 local function tab_open()         display_error("usetab,newtab") end
 local function vsplit_open()      display_error("usetab,vsplit") end
 
@@ -29,13 +32,9 @@ vim.api.nvim_create_autocmd("FileType", {
       vim.wo[winid].spell = false
       vim.wo[winid].wrap = false
 
-      -- Exclusive to quickfix
-      if vim.fn.getwininfo(winid)[1].loclist == 0 then
-        vim.keymap.set("n", "<CR>", switch_to_window, { buffer=bufnr })
-        vim.keymap.set("n", "o", split_open, { buffer=bufnr })
-        vim.keymap.set("n", "O", vsplit_open, { buffer=bufnr })
-        vim.keymap.set("n", "<Tab>", tab_open, { buffer=bufnr })
-      end
+      vim.keymap.set("n", "o", split_open, { buffer=bufnr })
+      vim.keymap.set("n", "O", vsplit_open, { buffer=bufnr })
+      vim.keymap.set("n", "<Tab>", tab_open, { buffer=bufnr })
     end
   end,
 })
