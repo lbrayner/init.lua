@@ -355,9 +355,9 @@ if v:vim_did_enter
     doautocmd Aesthetics VimEnter
 endif
 
-augroup Vidir
+augroup VidirFiletype
     autocmd!
-    autocmd BufEnter /tmp/dir*
+    autocmd BufNewFile,BufRead /tmp/dir*
                 \ if argc() == 1 && argv(0) =~# '^/tmp/dir\w\{5}$' |
                 \     set filetype=vidir |
                 \ endif
@@ -368,36 +368,14 @@ augroup TerminalFiletype
     autocmd TermOpen * set filetype=terminal
 augroup END
 
-augroup InferCase
+augroup WsdlFiletype
     autocmd!
-    autocmd FileType gitcommit,mail,markdown,text setlocal ignorecase infercase
+    autocmd BufNewFile,BufRead *.wsdl set filetype=xml " Web Services Description Language
 augroup END
 
-let s:LargeXmlFile = 1024 * 512
-augroup LargeXml
-    autocmd BufRead * if &filetype =~# '\v(xml|html)'
-            \| if getfsize(expand("<afile>")) > s:LargeXmlFile
-                \| setlocal syntax=unknown | endif | endif
-augroup END
-
-augroup WsdlSetup
+augroup RedisFiletype
     autocmd!
-    autocmd BufEnter *.wsdl set filetype=xml " Web Services Description Language
-augroup END
-
-augroup MailSetup
-    autocmd!
-    autocmd FileType mail call util#setupMatchit()
-augroup END
-
-function! s:XmlNavigate()
-    nnoremap <buffer> <silent> [< <Cmd>call xml#NavigateDepthBackward(v:count1)<CR>
-    nnoremap <buffer> <silent> ]> <Cmd>call xml#NavigateDepth(v:count1)<CR>
-endfunction
-
-augroup XmlNavigate
-    autocmd!
-    autocmd FileType html,javascriptreact,typescriptreact,xml call s:XmlNavigate()
+    autocmd BufNewFile,BufRead *.redis set filetype=redis
 augroup END
 
 augroup DefaultFileType
@@ -413,6 +391,33 @@ augroup DetectFileType
                 \     setlocal infercase< | setlocal textwidth< | filetype detect |
                 \     unlet b:default_filetype |
                 \ endif
+augroup END
+
+augroup InferCase
+    autocmd!
+    autocmd FileType gitcommit,mail,markdown,text setlocal ignorecase infercase
+augroup END
+
+let s:LargeXmlFile = 1024 * 512
+augroup LargeXml
+    autocmd BufRead * if &filetype =~# '\v(xml|html)'
+            \| if getfsize(expand("<afile>")) > s:LargeXmlFile
+                \| setlocal syntax=unknown | endif | endif
+augroup END
+
+augroup MailSetup
+    autocmd!
+    autocmd FileType mail call util#setupMatchit()
+augroup END
+
+function! s:XmlNavigate()
+    nnoremap <buffer> <silent> [< <Cmd>call xml#NavigateDepthBackward(v:count1)<CR>
+    nnoremap <buffer> <silent> ]> <Cmd>call xml#NavigateDepth(v:count1)<CR>
+endfunction
+
+augroup XmlNavigate
+    autocmd!
+    autocmd FileType html,javascriptreact,typescriptreact,xml call s:XmlNavigate()
 augroup END
 
 augroup TextWidth
