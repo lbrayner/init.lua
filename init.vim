@@ -21,7 +21,7 @@ set splitbelow
 set splitright
 set number
 set relativenumber
-set switchbuf=usetab
+set switchbuf=usetab,uselast
 set wildmode=longest:full
 set wildmenu
 set breakindent
