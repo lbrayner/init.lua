@@ -359,8 +359,13 @@ augroup Vidir
     autocmd!
     autocmd BufEnter /tmp/dir*
                 \ if argc() == 1 && argv(0) =~# '^/tmp/dir\w\{5}$' |
-                \     set ft=vidir |
+                \     set filetype=vidir |
                 \ endif
+augroup END
+
+augroup TerminalFiletype
+    autocmd!
+    autocmd TermOpen * set filetype=terminal
 augroup END
 
 augroup InferCase
