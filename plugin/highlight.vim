@@ -73,10 +73,8 @@ augroup HighlightTrailingWhitespace
     autocmd BufWinEnter * call HighlightTrailingWhitespace()
     autocmd VimEnter * autocmd HighlightTrailingWhitespace
                 \ WinEnter,Syntax * call HighlightTrailingWhitespace()
-    if has("nvim")
-        autocmd VimEnter * autocmd HighlightTrailingWhitespace
-                    \ TermOpen * call HighlightTrailingWhitespace()
-    endif
+    autocmd VimEnter * autocmd HighlightTrailingWhitespace
+                \ TermOpen * call HighlightTrailingWhitespace()
     autocmd VimEnter * call HighlightTrailingWhitespace()
 augroup END
 if v:vim_did_enter
