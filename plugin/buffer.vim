@@ -101,19 +101,23 @@ endfunction
 function! s:Unclutter(current_window_id,last_accessed_window_id)
     if util#WindowIsFloating()
         quit
+        echo "Closed floating window."
         return
     endif
     " If we're in a help buffer, simply quit it
     if &ft == "help"
         quit
+        echo "Closed help."
         return
     endif
     if &previewwindow
         quit
+        echo "Closed Preview window."
         return
     endif
     if util#isQuickfixOrLocationList()
         quit
+        echo "Closed Quickfix or Location list window."
         return
     endif
     " If not in one, close all help buffers
@@ -127,13 +131,20 @@ function! s:Unclutter(current_window_id,last_accessed_window_id)
     if len(filter(range(1,bufnr("$")),"buflisted(v:val)")) <= 1 && winnr("$") == 1
         quit
     endif
+    echo "Closed help, Preview, Quickfix or Location list window(s)."
 endfunction
 
-command! Unclutter silent call s:Unclutter(win_getid(), win_getid(winnr("#")))
+command! Unclutter call s:Unclutter(win_getid(), win_getid(winnr("#")))
 
 nnoremap <F9> <Cmd>Unclutter<CR>
 
+function! s:UnclutterCmdline()
+    quit
+    " XXX: I don't think this is going to the API
+    lua vim.schedule(function() print("Closed Cmdline-window.") end)
+endfunction
+
 augroup CmdwinClose
     autocmd!
-    autocmd CmdwinEnter * nnoremap <buffer> <F9> <Cmd>q<CR>
+    autocmd CmdwinEnter * nnoremap <buffer> <F9> <Cmd>call <SID>UnclutterCmdline()<CR>
 augroup END
