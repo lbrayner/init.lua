@@ -10,20 +10,11 @@ require("lspconfig").pyright.setup {
   autostart = false,
 }
 
+local on_list
 local quickfix_diagnostics_opts = {}
 local lsp_setqflist
 
-local function on_list(options)
-  vim.fn.setqflist({}, " ", options)
-  if #options.items == 1  then
-    return vim.cmd("cfirst")
-  end
-  vim.cmd("botright copen")
-end
-
 -- From nvim-lspconfig
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
 local function on_attach(client, bufnr)
   -- Enable completion triggered by <c-x><c-o>
   -- Some filetype plugins define omnifunc and $VIMRUNTIME/lua/vim/lsp.lua
@@ -136,6 +127,14 @@ vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
     end
   end,
 })
+
+on_list = function(options)
+  vim.fn.setqflist({}, " ", options)
+  if #options.items == 1  then
+    return vim.cmd("cfirst")
+  end
+  vim.cmd("botright copen")
+end
 
 lsp_setqflist = function(opts, bufnr)
   local active_clients = vim.lsp.get_active_clients({bufnr=bufnr})
