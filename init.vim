@@ -382,7 +382,7 @@ augroup END
 
 augroup WsdlSetup
     autocmd!
-    autocmd BufEnter *.wsdl set ft=xml " Web Services Description Language
+    autocmd BufEnter *.wsdl set filetype=xml " Web Services Description Language
 augroup END
 
 augroup MailSetup
@@ -403,7 +403,7 @@ augroup END
 augroup DefaultFileType
     autocmd BufEnter *
                 \ if &filetype == "" |
-                \     set ft=text | let b:default_filetype = 1 |
+                \     set filetype=text | let b:default_filetype = 1 |
                 \ endif
 augroup END
 
