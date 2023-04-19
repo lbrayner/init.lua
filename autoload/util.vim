@@ -118,12 +118,11 @@ function! util#isQuickfixOrLocationList(...)
     return getwininfo(winid)[0]["quickfix"]
 endfunction
 
-function! util#getQuickfixTitle()
+function! util#getQuickfixOrLocationListTitle()
+    if util#isLocationList()
+        return getloclist(0, {"title": 1}).title
+    endif
     return getqflist({"title": 1}).title
-endfunction
-
-function! util#getLocationListTitle(nr)
-    return getloclist(a:nr, {"title": 1}).title
 endfunction
 
 function! util#WindowIsFloating()

@@ -149,7 +149,7 @@ endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineStatusLineNoFocus()
-    if util#isQuickfixList()
+    if util#isQuickfixOrLocationList()
         return
     endif
     let filename=statusline#Filename(1)
@@ -262,10 +262,8 @@ function! statusline#DefineStatusLine()
             let &l:statusline=" %5*Previewing:%* %<".filename.
                         \" %1*%{statusline#StatusFlag()}%*"
         endif
-    elseif util#isQuickfixList()
-        let &l:statusline=" %<%5*%f%* %{util#getQuickfixTitle()}"
-    elseif util#isLocationList()
-        let &l:statusline=" %<%5*[Location List]%* %{util#getLocationListTitle(0)}"
+    elseif util#isQuickfixOrLocationList()
+        let &l:statusline=" %<%5*%f%* %{util#getQuickfixOrLocationListTitle()}"
     elseif getcmdwintype() != ""
         let &l:statusline = " %<%5*[Command Line]%*"
     elseif &buftype == "nofile"
