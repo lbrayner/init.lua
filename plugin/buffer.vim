@@ -138,10 +138,14 @@ command! Unclutter call s:Unclutter(win_getid(), win_getid(winnr("#")))
 
 nnoremap <F9> <Cmd>Unclutter<CR>
 
+function! s:EchoClosedCmdline(...)
+    echo "Closed Cmdline-window."
+endfunction
+
 function! s:UnclutterCmdline()
     quit
-    " XXX: I don't think this is going to the API
-    lua vim.schedule(function() print("Closed Cmdline-window.") end)
+    " The same effect as lua's vim.schedule()
+    call timer_start(0, funcref("<SID>EchoClosedCmdline"))
 endfunction
 
 augroup CmdwinClose
