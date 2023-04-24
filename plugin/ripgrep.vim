@@ -31,4 +31,5 @@ function! s:Rg(txt)
 endfunction
 
 command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
+cnoreabbrev Rb Rg -s '\b\b'<Left><Left><Left>
 cnoreabbrev Rw Rg -s '\b\b'<Left><Left><Left><C-R><C-W>
