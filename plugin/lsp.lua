@@ -131,7 +131,11 @@ vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
 on_list = function(options)
   vim.fn.setqflist({}, " ", options)
   if #options.items == 1  then
-    return vim.cmd("cfirst")
+    local switchbuf = vim.go.switchbuf
+    vim.go.switchbuf = "usetab,newtab"
+    vim.cmd("cfirst")
+    vim.go.switchbuf = switchbuf
+    return
   end
   vim.cmd("botright copen")
 end
