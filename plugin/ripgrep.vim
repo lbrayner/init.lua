@@ -19,12 +19,15 @@ function! s:RgOpts()
     return rgopts
 endfunction
 
-function! s:RgLL(txt)
+function! s:RgLL(txt, ...)
     let rgopts = s:RgOpts()
     try
         " Escaping Command-line special characters '#', '%' (:h :_%), and '|' (:h :bar)
         silent exe "lgrep! " . rgopts . escape(a:txt, "#%|")
         if len(getloclist(0))
+            if a:0 > 0
+                call setloclist(0, [], "a", {"title": a:1})
+            endif
             lopen
         else
             lclose
@@ -36,12 +39,15 @@ function! s:RgLL(txt)
     endtry
 endfunction
 
-function! s:RgQF(txt)
+function! s:RgQF(txt, ...)
     let rgopts = s:RgOpts()
     try
         " Escaping Command-line special characters '#', '%' (:h :_%), and '|' (:h :bar)
         silent exe "grep! " . rgopts . escape(a:txt, "#%|")
         if len(getqflist())
+            if a:0 > 0
+                call setqflist([], "a", {"title": a:1})
+            endif
             botright copen
         else
             cclose
@@ -54,7 +60,8 @@ function! s:RgQF(txt)
 endfunction
 
 command! ConflictMarkers call s:RgLL(
-            \'"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)"' . " " . shellescape(expand("%")))
+            \'"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)"' . " " . shellescape(expand("%")),
+            \"Conflict markers for " . fnamemodify(expand("%"), ":t"))
 
 command! -nargs=* -complete=file Rg :call s:RgQF(<q-args>)
 cnoreabbrev Rb Rg -s '\b\b'<Left><Left><Left>
