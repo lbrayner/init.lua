@@ -419,7 +419,7 @@ augroup END
 
 augroup TextWidth
     autocmd!
-    autocmd FileType mediawiki,text setlocal textwidth=80
+    autocmd FileType text setlocal textwidth=80
 augroup END
 
 augroup LuaSetup
