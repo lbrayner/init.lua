@@ -3,12 +3,14 @@ function! s:DatabaseAccess()
     nnoremap <buffer> <Leader><kEnter> <Cmd>call database#select_paragraph()<CR>
 
     function! s:DatabaseAccessClear()
-        unlet! b:Statusline_custom_rightline
-        unlet! b:Statusline_custom_mod_rightline
-        silent! nunmap <buffer> <Leader>sdt
-        call statusline#RedefineStatusLine()
+        " postgresql
+        silent! nunmap <buffer> <Leader>dt
         " vim-dadbod
         unlet! b:db
+        " statusline
+        unlet! b:Statusline_custom_rightline
+        unlet! b:Statusline_custom_mod_rightline
+        call statusline#RedefineStatusLine()
     endfunction
 
     command! -buffer -nargs=0 DatabaseAccessClear call s:DatabaseAccessClear()
