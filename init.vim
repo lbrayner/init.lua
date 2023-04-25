@@ -58,9 +58,6 @@ endif
 " So that watchprocesses work as expected
 set backupcopy=yes
 
-command! MergeMarkers call quickfix#ilist_search(0
-            \,"^\\(<<<<<<<\\||||||||\\|=======\\|>>>>>>>\\)",1,0)
-
 " From tpope's vim-sensible
 if &synmaxcol == 3000
   " Lowering this improves performance in files with long lines.

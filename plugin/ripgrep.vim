@@ -2,22 +2,45 @@ if !executable("rg")
     finish
 endif
 
+" From vim-ripgrep (https://github.com/lbrayner/vim-ripgrep)
+
 set grepprg=rg\ --vimgrep
 let &grepformat = "%f:%l:%c:%m"
 let &shellpipe="&>"
 
-" From vim-ripgrep (https://github.com/lbrayner/vim-ripgrep)
-function! s:Rg(txt)
-    let l:rgopts = " "
+function! s:RgOpts()
+    let rgopts = " "
     if &ignorecase == 1
-        let l:rgopts = l:rgopts . "-i "
+        let rgopts .= "-i "
     endif
     if &smartcase == 1
-        let l:rgopts = l:rgopts . "-S "
+        let rgopts .= "-S "
     endif
+    return rgopts
+endfunction
+
+function! s:RgLL(txt)
+    let rgopts = s:RgOpts()
     try
         " Escaping Command-line special characters '#', '%' (:h :_%), and '|' (:h :bar)
-        silent exe "grep! " . l:rgopts . escape(a:txt, "#%|")
+        silent exe "lgrep! " . rgopts . escape(a:txt, "#%|")
+        if len(getloclist(0))
+            lopen
+        else
+            lclose
+            echom "No match found for " . a:txt
+        endif
+    catch
+        lclose
+        echom "Error searching for " . a:txt . ". Unmatched quotes? Check your command."
+    endtry
+endfunction
+
+function! s:RgQF(txt)
+    let rgopts = s:RgOpts()
+    try
+        " Escaping Command-line special characters '#', '%' (:h :_%), and '|' (:h :bar)
+        silent exe "grep! " . rgopts . escape(a:txt, "#%|")
         if len(getqflist())
             botright copen
         else
@@ -30,6 +53,9 @@ function! s:Rg(txt)
     endtry
 endfunction
 
-command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
+command! ConflictMarkers call s:RgLL(
+            \'"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)"' . " " . shellescape(expand("%")))
+
+command! -nargs=* -complete=file Rg :call s:RgQF(<q-args>)
 cnoreabbrev Rb Rg -s '\b\b'<Left><Left><Left>
-cnoreabbrev Rw Rg -s '\b\b'<Left><Left><Left><C-R><C-W>
+cnoreabbrev Rw Rg -s '\b<C-R><C-W>\b'
