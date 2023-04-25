@@ -427,6 +427,25 @@ augroup LuaSetup
     autocmd FileType lua setlocal shiftwidth=2
 augroup END
 
+augroup SqlSetup
+    autocmd!
+    autocmd FileType sql setlocal indentexpr=indent
+augroup END
+
+function! s:MarkdownSetup()
+    setlocal textwidth=80 tabstop=2 shiftwidth=2
+
+    if exists(":EasyAlign")
+        " Align markdown table
+        nnoremap <buffer> <silent> <Space>t vip:EasyAlign*\|<CR>
+    endif
+endfunction
+
+augroup MarkdownSetup
+    autocmd!
+    autocmd FileType markdown call s:MarkdownSetup()
+augroup END
+
 augroup GitCommit
     autocmd!
     autocmd BufWinEnter COMMIT_EDITMSG startinsert

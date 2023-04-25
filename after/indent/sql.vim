@@ -1,3 +1,0 @@
-" indentexpr
-
-setlocal indentexpr=indent
