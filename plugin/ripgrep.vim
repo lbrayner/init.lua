@@ -61,7 +61,7 @@ endfunction
 
 command! ConflictMarkers call s:RgLL(
             \'"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)"' . " " . shellescape(expand("%")),
-            \"Conflict markers for " . fnamemodify(expand("%"), ":t"))
+            \"Conflict markers")
 
 command! -nargs=* -complete=file Rg :call s:RgQF(<q-args>)
 cnoreabbrev Rb Rg -s '\b\b'<Left><Left><Left>
