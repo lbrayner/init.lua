@@ -45,6 +45,7 @@ end
 -- vim.api.nvim_create_user_command("FlashWindowMode", function(command)
 -- end, { nargs=0 })
 
-for _, mode in ipairs({ "n", "v", "o", "i" }) do
+for _, mode in ipairs({ "", -- nvo: normal, visual, operator-pending
+  "i" }) do
   vim.keymap.set(mode, "<F10>", function() flash_window(0) end)
 end
