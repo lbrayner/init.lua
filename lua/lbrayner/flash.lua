@@ -1,12 +1,28 @@
+local winhighlight_store = {}
+
+local function save_winhighlight(winid)
+  winhighlight_store[winid] = vim.wo[winid].winhighlight
+end
+
+local function restore_winhighlight(winid)
+  vim.wo[winid].winhighlight = winhighlight_store[winid]
+end
+
 local function flash_window(winid)
   if winid == 0 then
     winid = vim.api.nvim_get_current_win()
   end
 
+  save_winhighlight(winid)
+
   local timer = vim.loop.new_timer()
   local i = 0
 
   timer:start(0, 100, vim.schedule_wrap(function()
+    if vim.api.nvim_get_current_win() ~= winid then
+      timer:close()
+      return restore_winhighlight(winid)
+    end
     if i % 2 == 0 then
       vim.api.nvim_win_call(winid, function()
         vim.opt.winhighlight:append({ ["Normal"]="DiffAdd" })
@@ -18,8 +34,9 @@ local function flash_window(winid)
         print("remove " .. vim.wo[winid].winhighlight) -- TODO remove
       end)
     end
-    if i > 24 then
+    if i > 4 then
       timer:close()
+      return restore_winhighlight(winid)
     end
     i = i + 1
   end))
