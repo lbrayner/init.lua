@@ -59,7 +59,7 @@ function! s:RgQF(txt, ...)
     endtry
 endfunction
 
-command! ConflictMarkers call s:RgLL(
+command! -nargs=0 ConflictMarkers call s:RgLL(
             \'"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)"' . " " . shellescape(expand("%")),
             \"Conflict markers")
 
