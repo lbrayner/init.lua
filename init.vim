@@ -210,6 +210,11 @@ nnoremap <Leader>x :%s/\C\V\<<C-R><C-W>\>//gc<Left><Left><Left>
 " Rename visual selection
 vnoremap <Leader>x y:%s/\C\V<C-R>"//gc<Left><Left><Left>
 
+" Lua modules
+
+noremap <F10> <Cmd>call v:lua.require'lbrayner.flash'.flash_window(0)<CR>
+inoremap <F10> <Cmd>call v:lua.require'lbrayner.flash'.flash_window(0)<CR>
+
 " }}}
 
 " Subsection: functions & commands
