@@ -26,15 +26,15 @@ local function flash_window(winid)
     if i % 2 == 0 then
       vim.api.nvim_win_call(winid, function()
         vim.opt.winhighlight:append({ ["Normal"]="DiffAdd" })
-        print("append " .. vim.wo[winid].winhighlight) -- TODO remove
+        -- print("append " .. vim.wo[winid].winhighlight) -- TODO remove
       end)
     else
       vim.api.nvim_win_call(winid, function()
         vim.opt.winhighlight:remove({ "Normal" })
-        print("remove " .. vim.wo[winid].winhighlight) -- TODO remove
+        -- print("remove " .. vim.wo[winid].winhighlight) -- TODO remove
       end)
     end
-    if i > 4 then
+    if i > 2 then
       timer:close()
       return restore_winhighlight(winid)
     end
@@ -42,6 +42,9 @@ local function flash_window(winid)
   end))
 end
 
-return {
-  flash_window = flash_window,
-}
+-- vim.api.nvim_create_user_command("FlashWindowMode", function(command)
+-- end, { nargs=0 })
+
+for _, mode in ipairs({ "n", "v", "o", "i" }) do
+  vim.keymap.set(mode, "<F10>", function() flash_window(0) end)
+end
