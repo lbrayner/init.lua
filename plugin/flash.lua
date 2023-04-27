@@ -8,10 +8,8 @@ local function restore_winhighlight(winid)
   vim.wo[winid].winhighlight = winhighlight_store[winid]
 end
 
-local function flash_window(winid) -- TODO winid not being used, remove it
-  if winid == 0 then
-    winid = vim.api.nvim_get_current_win()
-  end
+local function flash_window()
+  local winid = vim.api.nvim_get_current_win()
 
   save_winhighlight(winid)
 
@@ -52,14 +50,13 @@ vim.api.nvim_create_user_command("FlashWindowMode", function()
   vim.api.nvim_create_autocmd("WinEnter", {
     group = flash_window_mode,
     desc = "Flash window mode",
-    callback = function()
-      flash_window(0)
-    end,
+    callback = flash_window,
   })
+  flash_window()
   print("Flash window mode enabled.")
 end, { nargs=0 })
 
 for _, mode in ipairs({ "", -- nvo: normal, visual, operator-pending
   "i" }) do
-  vim.keymap.set(mode, "<F10>", function() flash_window(0) end)
+  vim.keymap.set(mode, "<F10>", flash_window)
 end
