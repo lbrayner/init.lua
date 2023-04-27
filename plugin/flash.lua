@@ -5,7 +5,10 @@ local function save_winhighlight(winid)
 end
 
 local function restore_winhighlight(winid)
-  vim.wo[winid].winhighlight = winhighlight_store[winid]
+  if vim.api.nvim_win_is_valid(winid) then
+    vim.wo[winid].winhighlight = winhighlight_store[winid]
+  end
+  winhighlight_store[winid] = nil
 end
 
 local function flash_window()
