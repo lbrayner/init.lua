@@ -42,8 +42,19 @@ local function flash_window(winid)
   end))
 end
 
--- vim.api.nvim_create_user_command("FlashWindowMode", function(command)
--- end, { nargs=0 })
+local flash_window_mode
+
+vim.api.nvim_create_user_command("FlashWindowMode", function()
+  -- TODO toggle
+  flash_window_mode = vim.api.nvim_create_augroup("flash_window_mode", { clear=true })
+  vim.api.nvim_create_autocmd("WinEnter", {
+    group = flash_window_mode,
+    desc = "Flash window mode",
+    callback = function()
+      flash_window(0)
+    end,
+  })
+end, { nargs=0 })
 
 for _, mode in ipairs({ "", -- nvo: normal, visual, operator-pending
   "i" }) do
