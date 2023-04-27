@@ -5,6 +5,17 @@ local function save_winhighlight(winid)
 end
 
 local function restore_winhighlight(winid)
+  if vim.fn.exists("#FzfLua") == 1 then
+    local autocmds = vim.api.nvim_get_autocmds({ group="FzfLua"})
+    if not vim.tbl_isempty(autocmds) then
+      local autocmd = autocmds[1]
+      if vim.api.nvim_get_current_buf() == autocmd.buffer then
+        require("fzf-lua.win"):redraw()
+        require("fzf-lua.win"):reset_win_highlights(winid)
+        return
+      end
+    end
+  end
   if vim.api.nvim_win_is_valid(winid) then
     vim.wo[winid].winhighlight = winhighlight_store[winid]
   end
