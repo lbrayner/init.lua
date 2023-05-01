@@ -20,21 +20,6 @@ function! util#GetComparableNodeName(filename)
     return node
 endfunction
 
-" TODO possibly remove this, for it's currently not used
-" Based on tpope's vim-surround
-function! util#getVisualSelection()
-    let ve = &virtualedit
-    set virtualedit=
-    let reg = 'v'
-    let reg_save = getreg(reg)
-    let reg_type = getregtype(reg)
-    silent exe 'norm! gv"'.reg.'y'
-    let visual_selection = getreg(reg)
-    call setreg(reg,reg_save,reg_type)
-    let &virtualedit = ve
-    return visual_selection
-endfunction
-
 function! s:truncateNode(filename,maxlength,...)
     if len(a:filename) <= a:maxlength
         return a:filename
@@ -82,18 +67,6 @@ function! util#PreserveViewPort(command)
     endtry
 endfunction
 
-function! util#random()
-    if &sh =~# 'sh'
-        return system('echo $RANDOM')[:-2]
-    endif
-    if has("win32") || has("win64")
-        if &sh =~# 'cmd.exe'
-            return system('echo %RANDOM%')[:-2]
-        endif
-    endif
-    return -1
-endfunction
-
 function! util#isLocationList(...)
     let winid = win_getid()
     if a:0 && a:1
@@ -135,10 +108,6 @@ endfunction
 
 function! util#IsEclipseProject()
     return filereadable(".project")
-endfunction
-
-function! util#TabExists(tabnr)
-    return len(gettabinfo(a:tabnr)) > 0
 endfunction
 
 function! util#Options(...)
