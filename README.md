@@ -59,4 +59,4 @@ Packages (`:h packages`) are submodules in `pack/bundle/start`.
 ## Language Server
 
 ![Screenshot](https://user-images.githubusercontent.com/5733531/236518611-40d4946a-03bc-486c-b3cc-054c2375ad86.png)
-![Screenshot](https://user-images.githubusercontent.com/5733531/236528799-e0d4cfcd-e09b-4337-8d94-c1a2f262389b.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/236529725-5e3224d5-785c-4443-91d7-ef316b0ce306.png)
