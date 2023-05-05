@@ -29,24 +29,33 @@ Packages (`:h packages`) are submodules in `pack/bundle/start`.
 
 ## Normal mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/122801268-463afe80-d29a-11eb-9b78-f87cee3ee49c.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/236511466-fbb19859-0ec8-4733-8cb1-a64974b37c94.png)
 
 ## Visual mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/122801265-463afe80-d29a-11eb-9494-a46aaf93897a.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/236511428-cd4f4471-7263-4f30-af65-0366a87ccdae.png)
 
 ## Insert mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/122801259-4509d180-d29a-11eb-84a9-567958ab5f2d.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/236511440-3778db1e-5735-43c1-adeb-017f26e9cc45.png)
 
 ## Command-line mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/122801262-45a26800-d29a-11eb-8950-aeff35a8f013.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/236511452-b6a4df7c-e49b-4ace-bca7-045b9ace0a8f.png)
 
 ## Command-line mode (search)
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/122801263-45a26800-d29a-11eb-8db9-be617eea7361.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/236511457-09f978da-4a95-4f15-a66d-50cb8f3e85fb.png)
 
 ## Terminal-mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/174203958-b8139cce-4893-424b-9c8f-75ad7eff6f4e.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/236511434-6a5a53a8-7b44-4dbb-9758-290ca98a7fb4.png)
+
+## Fugitive buffers
+
+![Screenshot](https://user-images.githubusercontent.com/5733531/236518644-0ed89f4f-8660-4662-ba1c-792a51b355d7.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/236518636-17e29bac-4e36-42f7-bcad-d39504fcceb2.png)
+
+## Language Server
+
+![Screenshot](https://user-images.githubusercontent.com/5733531/236518611-40d4946a-03bc-486c-b3cc-054c2375ad86.png)
