@@ -12,7 +12,7 @@ function! s:DimInactiveWindowExceptions()
     if exists("b:dim_inactive") && b:dim_inactive
         return
     endif
-    if &diff
+    if &diff || &previewwindow
         set winhighlight=NormalNC:NONE
         return
     endif
