@@ -2,6 +2,12 @@ function! s:DatabaseAccess()
     nnoremap <buffer> <Leader><Return> <Cmd>call database#select_paragraph()<CR>
     nnoremap <buffer> <Leader><kEnter> <Cmd>call database#select_paragraph()<CR>
 
+    " vim-dadbod
+    if exists("b:db")
+        let b:Statusline_custom_rightline = "%9*dadbod%*"
+        let b:Statusline_custom_mod_rightline = "%9*dadbod%*"
+    endif
+
     function! s:DatabaseAccessClear()
         " postgresql
         silent! nunmap <buffer> <Leader>dt
@@ -25,8 +31,6 @@ augroup END
 function! s:SQLDatabaseAccess()
     " vim-dadbod
     if exists("b:db")
-        let b:Statusline_custom_rightline = "%9*dadbod%*"
-        let b:Statusline_custom_mod_rightline = "%9*dadbod%*"
         if stridx(b:db, "postgresql") == 0
             " Describe this object
             nnoremap <buffer> <Leader>dt <Cmd>exe "DB \\d " . expand("<cWORD>")<CR>
