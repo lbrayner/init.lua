@@ -120,9 +120,6 @@ nnoremap <Leader><F6> <Cmd>w!<CR>
 nnoremap <silent> <F12> <Cmd>setlocal list!<CR>
 inoremap <silent> <F12> <Cmd>setlocal list!<CR>
 
-" previous buffer
-nnoremap <Space>b <Cmd>b#<CR>
-
 " quickfix and locallist
 nnoremap <silent> <Space>l <Cmd>lopen<CR>
 nnoremap <silent> <Space>q <Cmd>botright copen<CR>
