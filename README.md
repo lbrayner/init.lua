@@ -53,10 +53,10 @@ Packages (`:h packages`) are submodules in `pack/bundle/start`.
 
 ## Fugitive buffers
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/236518644-0ed89f4f-8660-4662-ba1c-792a51b355d7.png)
-![Screenshot](https://user-images.githubusercontent.com/5733531/236518636-17e29bac-4e36-42f7-bcad-d39504fcceb2.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/237135198-09ad0fbc-68fc-4201-b4fc-e6a29a992aec.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/237135188-bb771185-623d-4c63-a35c-8f6b216dc4b4.png)
 
 ## Language Server
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/236518611-40d4946a-03bc-486c-b3cc-054c2375ad86.png)
-![Screenshot](https://user-images.githubusercontent.com/5733531/236529725-5e3224d5-785c-4443-91d7-ef316b0ce306.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/237135178-ce72ca35-4a64-4abd-a28f-c2597c55ba6a.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/237135156-0cebcbb3-9c41-4be2-a5e6-d742ceb6c0a8.png)
