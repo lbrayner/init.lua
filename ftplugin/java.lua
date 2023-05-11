@@ -83,9 +83,10 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
       local bufopts = { buffer=bufnr }
       -- Go to class declaration
       vim.keymap.set("n", "gD", function()
+        -- Go to the first line, first column
         vim.api.nvim_win_set_cursor(0, {1, 0})
         if vim.fn.search(
-          "\\v^public\\s+%(abstract\\s+)?%(final\\s+)?%(class|enum|interface)\\s+\\zs" ..
+          "\\v%(public\\s+)?%(abstract|final\\s+)?%(class|enum|interface)\\s+\\zs" ..
           vim.fn.expand("%:t:r")) > 0 then
           vim.cmd "normal! zz"
         end
