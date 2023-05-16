@@ -183,22 +183,6 @@ cnoremap <C-R><C-L> <C-R>=getline(".")<CR>
 " inserting the current line number
 cnoremap <C-R><C-N> <C-R>=line(".")<CR>
 
-" diff
-
-function! s:ToggleIWhite()
-    if &l:diffopt =~# "iwhite"
-        set diffopt-=iwhite
-        echo "-iwhite"
-        return
-    endif
-    set diffopt+=iwhite
-    echo "+iwhite"
-endfunction
-
-" TODO turn these into commands?
-nnoremap <Leader>di <Cmd>call <SID>ToggleIWhite()<CR>
-nnoremap <Leader>do <Cmd>diffoff!<CR>
-
 " Insert timestamps
 imap <F3> <C-R>=strftime("%Y-%m-%d %a %0H:%M")<CR>
 
@@ -302,6 +286,34 @@ command! -nargs=0 -range Execute <line1>,<line2>w !$SHELL
 function! s:Synstack()
     echo map(synstack(line("."), col(".")),"synIDattr(v:val, 'name')")
 endfunction
+
+" Ripgrep
+
+set grepprg=rg\ --vimgrep
+let &grepformat = "%f:%l:%c:%m"
+let &shellpipe="&>"
+
+function! s:Rg(txt, ...)
+    try
+        call ripgrep#rg(a:txt)
+        if len(getqflist())
+            botright copen
+        else
+            cclose
+            echom "No match found for " . a:txt
+        endif
+    catch /^Rg:/
+        cclose
+        echoe v:exception
+    catch
+        cclose
+        echom "Error searching for " . a:txt . ". Unmatched quotes? Check your command."
+    endtry
+endfunction
+
+command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
+cnoreabbrev Rb Rg -s '\b\b'<Left><Left><Left>
+cnoreabbrev Rw Rg -s '\b<C-R><C-W>\b'
 
 " Human-readable stack of syntax items
 command! -nargs=0 -range Synstack call s:Synstack()
