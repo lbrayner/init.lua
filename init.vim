@@ -303,6 +303,16 @@ function! s:Synstack()
     echo map(synstack(line("."), col(".")),"synIDattr(v:val, 'name')")
 endfunction
 
+" Ripgrep
+
+set grepprg=rg\ --vimgrep
+let &grepformat = "%f:%l:%c:%m"
+let &shellpipe="&>"
+
+command! -nargs=* -complete=file Rg :call ripgrep#RgQF(<q-args>)
+cnoreabbrev Rb Rg -s '\b\b'<Left><Left><Left>
+cnoreabbrev Rw Rg -s '\b<C-R><C-W>\b'
+
 " Human-readable stack of syntax items
 command! -nargs=0 -range Synstack call s:Synstack()
 
