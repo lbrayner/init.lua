@@ -16,6 +16,11 @@ function! s:UpdateConflictMarkers(winid)
     let bufnr = getwininfo(a:winid)[0].bufnr
     call ripgrep#RgLL('"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)"' . " " . shellescape(bufname(bufnr)),
                 \"Conflict markers")
+    " This function is called from a BufWritePost autocmd, so the current
+    " window afterwards is not the location list, but its owner. However, at
+    " this point it is the location list, so it can be assumed that a wincmd
+    " is run, but WinLeave is not triggered
+    silent! doautocmd <nomodeline> User CustomStatusline
 endfunction
 
 function! s:ClearConflictMarkersAutocmd(winid)
