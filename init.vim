@@ -183,22 +183,6 @@ cnoremap <C-R><C-L> <C-R>=getline(".")<CR>
 " inserting the current line number
 cnoremap <C-R><C-N> <C-R>=line(".")<CR>
 
-" diff
-
-function! s:ToggleIWhite()
-    if &l:diffopt =~# "iwhite"
-        set diffopt-=iwhite
-        echo "-iwhite"
-        return
-    endif
-    set diffopt+=iwhite
-    echo "+iwhite"
-endfunction
-
-" TODO turn these into commands?
-nnoremap <Leader>di <Cmd>call <SID>ToggleIWhite()<CR>
-nnoremap <Leader>do <Cmd>diffoff!<CR>
-
 " Insert timestamps
 imap <F3> <C-R>=strftime("%Y-%m-%d %a %0H:%M")<CR>
 
