@@ -1,3 +1,11 @@
+" From :h qf.vim:
+
+" The quickfix filetype plugin includes configuration for displaying the command
+" that produced the quickfix list in the status-line. To disable this setting,
+" configure as follows:
+
+let g:qf_disable_statusline = 1
+
 command! -nargs=0 StatusLineInitialize call statusline#initialize()
 
 " Autocommands
