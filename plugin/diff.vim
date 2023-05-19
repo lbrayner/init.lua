@@ -29,7 +29,7 @@ function! s:MaybeUpdateConflictMarkers(bufnr)
                 continue
             endif
             if getloclist(winnr, { "title": 1 }).title ==# "Conflict markers"
-                call s:UpdateConflictMarkers(a:bufnr)
+                call win_execute(winid, "call s:UpdateConflictMarkers(" . a:bufnr . ")")
                 return
             endif
         endif
