@@ -14,11 +14,18 @@ nnoremap <Leader>do <Cmd>diffoff!<CR>
 
 function! s:UpdateConflictMarkers(bufnr)
     call ripgrep#lrg('"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)" ' . shellescape(bufname(a:bufnr)))
-    call setloclist(0, [], "a", {"title": "Conflict markers"})
+    if len(getloclist(0))
+        augroup ConflictMarkers
+        augroup END
+        call s:ClearConflictMarkersAutocmd(a:bufnr)
+        autocmd ConflictMarkers BufWritePost <buffer> call s:MaybeUpdateConflictMarkers(str2nr(expand("<abuf>")))
+        autocmd ConflictMarkers WinEnter <buffer> call s:MaybeUpdateConflictMarkers(str2nr(expand("<abuf>")))
+        call setloclist(0, [], "a", {"title": "Conflict markers"})
+    endif
 endfunction
 
 function! s:ClearConflictMarkersAutocmd(bufnr)
-    exe "autocmd! ConflictMarkers BufWritePost <buffer=" . a:bufnr . ">"
+    silent! exe "autocmd! ConflictMarkers BufWritePost,WinEnter <buffer=" . a:bufnr . ">"
 endfunction
 
 function! s:MaybeUpdateConflictMarkers(bufnr)
@@ -26,23 +33,20 @@ function! s:MaybeUpdateConflictMarkers(bufnr)
         return
     endif
     if getloclist(winnr(), { "title": 1 }).title ==# "Conflict markers"
-        if b:conflict_marker_tick < b:changedtick
-            let b:conflict_marker_tick = b:changedtick
+        let qfbufnr = getloclist(0, {"qfbufnr": 1}).qfbufnr
+        if getbufvar(qfbufnr, "conflict_marker_tick") < b:changedtick
             call s:UpdateConflictMarkers(a:bufnr)
+            call setbufvar(qfbufnr, "conflict_marker_tick", b:changedtick)
         endif
     endif
 endfunction
 
 function! s:ConflictMarkers(bufnr)
-    augroup ConflictMarkers
-    augroup END
-    call s:ClearConflictMarkersAutocmd(a:bufnr)
-    autocmd ConflictMarkers BufWritePost <buffer> call s:MaybeUpdateConflictMarkers(str2nr(expand("<abuf>")))
-    autocmd ConflictMarkers WinEnter <buffer> call s:MaybeUpdateConflictMarkers(str2nr(expand("<abuf>")))
-    let b:conflict_marker_tick = b:changedtick
     call s:UpdateConflictMarkers(a:bufnr)
     if len(getloclist(0))
+        let changedtick = b:changedtick
         lopen
+        let b:conflict_marker_tick = changedtick
     else
         echo "No conflict markers found."
     endif
