@@ -26,6 +26,11 @@ function! s:MaybeUpdateConflictMarkers(bufnr)
         return
     endif
     if getloclist(winnr(), { "title": 1 }).title ==# "Conflict markers"
+        if !exists("b:conflict_marker_tick") || b:conflict_marker_tick < b:changedtick
+            let b:conflict_marker_tick = b:changedtick
+        else
+            return
+        endif
         call s:UpdateConflictMarkers(a:bufnr)
     endif
 endfunction
