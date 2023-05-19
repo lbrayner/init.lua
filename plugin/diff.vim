@@ -12,40 +12,36 @@ endfunction
 nnoremap <Leader>di <Cmd>call <SID>ToggleIWhite()<CR>
 nnoremap <Leader>do <Cmd>diffoff!<CR>
 
-function! s:UpdateConflictMarkers(winid)
-    let bufnr = getwininfo(a:winid)[0].bufnr
-    call ripgrep#RgLL('"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)"' . " " . shellescape(bufname(bufnr)),
+function! s:UpdateConflictMarkers(bufnr)
+    call ripgrep#RgLL('"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)"' . " " . shellescape(bufname(a:bufnr)),
                 \"Conflict markers")
 endfunction
 
-function! s:ClearConflictMarkersAutocmd(winid)
-    let bufnr = getwininfo(a:winid)[0].bufnr
-    exe "autocmd! ConflictMarkers BufWritePost <buffer=" . bufnr . ">"
+function! s:ClearConflictMarkersAutocmd(bufnr)
+    exe "autocmd! ConflictMarkers BufWritePost <buffer=" . a:bufnr . ">"
 endfunction
 
-function! s:MaybeUpdateConflictMarkers(winid)
-    if !has_key(getloclist(win_id2win(a:winid), { "title": 1 }), "title")
-        call s:ClearConflictMarkersAutocmd(a:winid)
-        return
-    endif
-    if getloclist(win_id2win(a:winid), { "title": 1 }).title ==# "Conflict markers"
-        call s:UpdateConflictMarkers(a:winid)
-        " This function is called from a BufWritePost autocmd, so the current
-        " window afterwards is not the location list, but its owner. However,
-        " at this point it is the location list, so it can be assumed that a
-        " wincmd is run, but WinLeave is not triggered
-        silent! doautocmd <nomodeline> User CustomStatusline
-    else
-        call s:ClearConflictMarkersAutocmd(a:winid)
-    endif
+function! s:MaybeUpdateConflictMarkers(bufnr)
+    for winid in gettabinfo(tabpagenr())[0].windows
+        if winbufnr(winid) == a:bufnr
+            let winnr = win_id2win(winid)
+            if empty(getloclist(winnr))
+                continue
+            endif
+            if getloclist(winnr, { "title": 1 }).title ==# "Conflict markers"
+                call s:UpdateConflictMarkers(a:bufnr)
+                return
+            endif
+        endif
+    endfor
 endfunction
 
-function! s:ConflictMarkers(winid)
+function! s:ConflictMarkers(bufnr)
     augroup ConflictMarkers
     augroup END
-    call s:ClearConflictMarkersAutocmd(a:winid)
-    exe "autocmd ConflictMarkers BufWritePost <buffer> call s:MaybeUpdateConflictMarkers(" . a:winid . ")"
-    call s:UpdateConflictMarkers(a:winid)
+    call s:ClearConflictMarkersAutocmd(a:bufnr)
+    autocmd ConflictMarkers BufWritePost <buffer> call s:MaybeUpdateConflictMarkers(str2nr(expand("<abuf>")))
+    call s:UpdateConflictMarkers(a:bufnr)
 endfunction
 
-command! -nargs=0 ConflictMarkers call s:ConflictMarkers(win_getid())
+command! -nargs=0 ConflictMarkers call s:ConflictMarkers(bufnr())
