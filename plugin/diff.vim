@@ -13,8 +13,11 @@ nnoremap <Leader>di <Cmd>call <SID>ToggleIWhite()<CR>
 nnoremap <Leader>do <Cmd>diffoff!<CR>
 
 function! s:UpdateConflictMarkers(bufnr)
-    call ripgrep#RgLL('"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)"' . " " . shellescape(bufname(a:bufnr)),
-                \"Conflict markers")
+    " call ripgrep#RgLL('"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)"' . " " . shellescape(bufname(a:bufnr)),
+    "             \"Conflict markers")
+    " silent exe "lgrep! " . escape('"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)" ' . bufname(a:bufnr), "#%|")
+    call ripgrep#RgLL('"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)" ' . shellescape(bufname(a:bufnr)))
+    call setloclist(0, [], "a", {"title": "Conflict markers"})
 endfunction
 
 function! s:ClearConflictMarkersAutocmd(bufnr)
@@ -22,18 +25,16 @@ function! s:ClearConflictMarkersAutocmd(bufnr)
 endfunction
 
 function! s:MaybeUpdateConflictMarkers(bufnr)
-    for winid in gettabinfo(tabpagenr())[0].windows
-        if winbufnr(winid) == a:bufnr
-            let winnr = win_id2win(winid)
-            if empty(getloclist(winnr))
-                continue
-            endif
-            if getloclist(winnr, { "title": 1 }).title ==# "Conflict markers"
-                call win_execute(winid, "call s:UpdateConflictMarkers(" . a:bufnr . ")")
-                return
-            endif
-        endif
-    endfor
+    if bufnr() != a:bufnr
+        " Only update if this is the current buffer
+        return
+    endif
+    " if empty(getloclist(winnr))
+    "     continue
+    " endif
+    if getloclist(winnr(), { "title": 1 }).title ==# "Conflict markers"
+        call s:UpdateConflictMarkers(a:bufnr)
+    endif
 endfunction
 
 function! s:ConflictMarkers(bufnr)
@@ -41,7 +42,13 @@ function! s:ConflictMarkers(bufnr)
     augroup END
     call s:ClearConflictMarkersAutocmd(a:bufnr)
     autocmd ConflictMarkers BufWritePost <buffer> call s:MaybeUpdateConflictMarkers(str2nr(expand("<abuf>")))
+    autocmd ConflictMarkers WinEnter <buffer> call s:MaybeUpdateConflictMarkers(str2nr(expand("<abuf>")))
     call s:UpdateConflictMarkers(a:bufnr)
+    if len(getloclist(0))
+        lopen
+    else
+        echo "No conflict markers found."
+    endif
 endfunction
 
 command! -nargs=0 ConflictMarkers call s:ConflictMarkers(bufnr())

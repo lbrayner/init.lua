@@ -293,7 +293,25 @@ set grepprg=rg\ --vimgrep
 let &grepformat = "%f:%l:%c:%m"
 let &shellpipe="&>"
 
-command! -nargs=* -complete=file Rg :call ripgrep#RgQF(<q-args>)
+function! s:Rg(txt, ...)
+    try
+        call ripgrep#RgQF(a:txt)
+        if len(getqflist())
+            botright copen
+        else
+            cclose
+            echom "No match found for " . a:txt
+        endif
+    catch /^Rg:/
+        cclose
+        echoe v:exception
+    catch
+        cclose
+        echom "Error searching for " . a:txt . ". Unmatched quotes? Check your command."
+    endtry
+endfunction
+
+command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
 cnoreabbrev Rb Rg -s '\b\b'<Left><Left><Left>
 cnoreabbrev Rw Rg -s '\b<C-R><C-W>\b'
 
