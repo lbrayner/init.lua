@@ -295,7 +295,7 @@ let &shellpipe="&>"
 
 function! s:Rg(txt, ...)
     try
-        call ripgrep#RgQF(a:txt)
+        call ripgrep#rg(a:txt)
         if len(getqflist())
             botright copen
         else

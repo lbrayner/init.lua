@@ -20,18 +20,23 @@ function! s:RgReady()
     endif
 endfunction
 
-" Location List
-function! ripgrep#RgLL(txt)
+function! s:rg(txt, ...)
+    let command = "grep"
+    if a:0 > 0 && a:1
+        let command = "lgrep"
+    endif
     let rgopts = s:RgOpts()
     call s:RgReady()
     " Escaping Command-line special characters '#', '%' (:h :_%), and '|' (:h :bar)
-    silent exe "lgrep! " . rgopts . escape(a:txt, "#%|")
+    silent exe command . "! " . rgopts . escape(a:txt, "#%|")
+endfunction
+
+" Location List
+function! ripgrep#lrg(txt)
+    call s:rg(a:txt, 1)
 endfunction
 
 " Quickfix
-function! ripgrep#RgQF(txt)
-    let rgopts = s:RgOpts()
-    call s:RgReady()
-    " Escaping Command-line special characters '#', '%' (:h :_%), and '|' (:h :bar)
-    silent exe "grep! " . rgopts . escape(a:txt, "#%|")
+function! ripgrep#rg(txt)
+    call s:rg(a:txt)
 endfunction

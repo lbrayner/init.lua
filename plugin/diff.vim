@@ -13,10 +13,7 @@ nnoremap <Leader>di <Cmd>call <SID>ToggleIWhite()<CR>
 nnoremap <Leader>do <Cmd>diffoff!<CR>
 
 function! s:UpdateConflictMarkers(bufnr)
-    " call ripgrep#RgLL('"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)"' . " " . shellescape(bufname(a:bufnr)),
-    "             \"Conflict markers")
-    " silent exe "lgrep! " . escape('"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)" ' . bufname(a:bufnr), "#%|")
-    call ripgrep#RgLL('"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)" ' . shellescape(bufname(a:bufnr)))
+    call ripgrep#lrg('"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)" ' . shellescape(bufname(a:bufnr)))
     call setloclist(0, [], "a", {"title": "Conflict markers"})
 endfunction
 
@@ -26,12 +23,8 @@ endfunction
 
 function! s:MaybeUpdateConflictMarkers(bufnr)
     if bufnr() != a:bufnr
-        " Only update if this is the current buffer
         return
     endif
-    " if empty(getloclist(winnr))
-    "     continue
-    " endif
     if getloclist(winnr(), { "title": 1 }).title ==# "Conflict markers"
         call s:UpdateConflictMarkers(a:bufnr)
     endif
