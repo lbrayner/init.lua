@@ -42,6 +42,7 @@ function! s:ConflictMarkers(bufnr)
     autocmd ConflictMarkers BufWritePost <buffer> call s:MaybeUpdateConflictMarkers(str2nr(expand("<abuf>")))
     autocmd ConflictMarkers WinEnter <buffer> call s:MaybeUpdateConflictMarkers(str2nr(expand("<abuf>")))
     call s:UpdateConflictMarkers(a:bufnr)
+    let b:conflict_marker_tick = b:changedtick
     if len(getloclist(0))
         lopen
     else
