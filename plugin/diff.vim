@@ -26,12 +26,10 @@ function! s:MaybeUpdateConflictMarkers(bufnr)
         return
     endif
     if getloclist(winnr(), { "title": 1 }).title ==# "Conflict markers"
-        if !exists("b:conflict_marker_tick") || b:conflict_marker_tick < b:changedtick
+        if b:conflict_marker_tick < b:changedtick
             let b:conflict_marker_tick = b:changedtick
-        else
-            return
+            call s:UpdateConflictMarkers(a:bufnr)
         endif
-        call s:UpdateConflictMarkers(a:bufnr)
     endif
 endfunction
 
@@ -41,8 +39,8 @@ function! s:ConflictMarkers(bufnr)
     call s:ClearConflictMarkersAutocmd(a:bufnr)
     autocmd ConflictMarkers BufWritePost <buffer> call s:MaybeUpdateConflictMarkers(str2nr(expand("<abuf>")))
     autocmd ConflictMarkers WinEnter <buffer> call s:MaybeUpdateConflictMarkers(str2nr(expand("<abuf>")))
-    call s:UpdateConflictMarkers(a:bufnr)
     let b:conflict_marker_tick = b:changedtick
+    call s:UpdateConflictMarkers(a:bufnr)
     if len(getloclist(0))
         lopen
     else
