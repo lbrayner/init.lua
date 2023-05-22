@@ -81,7 +81,10 @@ nnoremap qç q:
 vnoremap qç q:
 vnoremap ¬ ^
 
+" make the current window the only one on the screen
 nnoremap <Space>o <Cmd>only<CR>
+" previous buffer
+nnoremap <Space>b <Cmd>b#<CR>
 
 " clear search highlights
 nnoremap <silent> <F2> <Cmd>set invhlsearch hlsearch?<CR>
