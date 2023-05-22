@@ -104,9 +104,6 @@ vnoremap <C-L> <Esc><C-W>l
 nnoremap <Leader>v <C-W>v
 nnoremap <Leader>h <C-W>s
 
-" copy & paste
-nnoremap <Leader>i <Cmd>set invpaste paste?<CR>
-
 " buffer navigation (these mappings are going to be overridden by packages)
 if !v:vim_did_enter
     nnoremap <F5> <Cmd>ls<CR><Cmd>buffer<Space>
