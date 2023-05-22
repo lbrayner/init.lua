@@ -15,13 +15,10 @@ nnoremap <Leader>do <Cmd>diffoff!<CR>
 function! s:UpdateConflictMarkers(bufnr)
     call ripgrep#lrg('"^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)" ' . shellescape(bufname(a:bufnr)))
     if len(getloclist(0))
-        augroup ConflictMarkers
-        augroup END
-        call s:ClearConflictMarkersAutocmd(a:bufnr)
-        autocmd ConflictMarkers BufWritePost <buffer> call s:MaybeUpdateConflictMarkers(str2nr(expand("<abuf>")))
-        autocmd ConflictMarkers WinEnter <buffer> call s:MaybeUpdateConflictMarkers(str2nr(expand("<abuf>")))
         call setloclist(0, [], "a", {"title": "Conflict markers"})
+        return 1
     endif
+    return 0
 endfunction
 
 function! s:ClearConflictMarkersAutocmd(bufnr)
@@ -35,15 +32,22 @@ function! s:MaybeUpdateConflictMarkers(bufnr)
     if getloclist(winnr(), { "title": 1 }).title ==# "Conflict markers"
         let qfbufnr = getloclist(0, {"qfbufnr": 1}).qfbufnr
         if getbufvar(qfbufnr, "conflict_marker_tick") < b:changedtick
-            call s:UpdateConflictMarkers(a:bufnr)
+            if !s:UpdateConflictMarkers(a:bufnr)
+                lclose
+                return
+            endif
             call setbufvar(qfbufnr, "conflict_marker_tick", b:changedtick)
         endif
     endif
 endfunction
 
 function! s:ConflictMarkers(bufnr)
-    call s:UpdateConflictMarkers(a:bufnr)
-    if len(getloclist(0))
+    if s:UpdateConflictMarkers(a:bufnr)
+        augroup ConflictMarkers
+        augroup END
+        call s:ClearConflictMarkersAutocmd(a:bufnr)
+        autocmd ConflictMarkers BufWritePost,WinEnter <buffer>
+                    \ call s:MaybeUpdateConflictMarkers(str2nr(expand("<abuf>")))
         let changedtick = b:changedtick
         lopen
         let b:conflict_marker_tick = changedtick
