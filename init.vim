@@ -195,14 +195,6 @@ vnoremap <Leader>x y:%s/\C\V<C-R>"//gc<Left><Left><Left>
 
 " Subsection: functions & commands
 
-" Clear the Quickfix List
-
-function s:ClearQuickfixList()
-  call setqflist([])
-endfunction
-
-command! ClearQuickfixList call s:ClearQuickfixList()
-
 command! -nargs=0 -bar -range=% DeleteTrailingWhitespace
             \ call util#PreserveViewPort("keeppatterns ".<line1>.",".<line2>.'s/\s\+$//e')
 cnoreabbrev D DeleteTrailingWhitespace
