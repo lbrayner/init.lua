@@ -24,6 +24,7 @@ cnoreabbrev Gd Git difftool -y
 cnoreabbrev Gl Git log
 cnoreabbrev Glns Git log --name-status
 cnoreabbrev Glo Git log --oneline
+cnoreabbrev Gb Git blame --abbrev=6
 " To list branches of a specific remote: Git! ls-remote upstream
 cnoreabbrev Gr Git! ls-remote
 
