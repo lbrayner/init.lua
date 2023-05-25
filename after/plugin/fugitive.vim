@@ -2,12 +2,6 @@ if !exists("*FugitiveParse")
     finish
 endif
 
-augroup FugitiveCustomAutocommands
-    autocmd!
-    autocmd FileType fugitive Glcd
-    autocmd BufEnter fugitive://*//* setlocal nomodifiable
-augroup END
-
 command! -bar -bang -nargs=* -complete=customlist,fugitive#EditComplete Gdi
             \ exe fugitive#Diffsplit(1, <bang>0, "leftabove <mods>", <q-args>)
 function! FObject()
@@ -34,3 +28,16 @@ endif
 
 command! -nargs=0 FObject call Clip(FObject())
 command! -nargs=0 FPath call Clip(FPath())
+
+function! s:FugitiveMapOverrides()
+    " TODO until tpope catches up with patch vim-patch:9.0.1546
+    nunmap <buffer> <C-W>f
+    nnoremap <buffer> <CR> <Cmd>exe "normal! \<C-W>f"<CR>
+endfunction
+
+augroup FugitiveCustomAutocommands
+    autocmd!
+    autocmd FileType fugitive Glcd
+    autocmd BufEnter fugitive://*//* setlocal nomodifiable
+    autocmd FileType git call s:FugitiveMapOverrides()
+augroup END
