@@ -345,8 +345,8 @@ augroup Aesthetics
     autocmd VimEnter * autocmd Aesthetics
                 \ BufRead,BufEnter,BufWritePost * call s:DoAesthetics()
     " Triggered at window creation on startup, disabled after
-    autocmd WinEnter * call s:DoAesthetics()
-    autocmd VimEnter * autocmd! Aesthetics WinEnter
+    autocmd BufWinEnter,WinEnter * call s:DoAesthetics()
+    autocmd VimEnter * autocmd! Aesthetics BufWinEnter,WinEnter
     " Aesthetics for help buffers
     autocmd FileType help autocmd! Aesthetics BufEnter <buffer> set relativenumber
 augroup END
