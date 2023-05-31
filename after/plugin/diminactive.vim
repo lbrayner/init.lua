@@ -3,7 +3,7 @@ function! s:DimInactiveBuftypeExceptions()
         return
     endif
     if &buftype =~# '\v%(nofile|nowrite|acwrite|quickfix|help|terminal)'
-        set winhighlight=NormalNC:NONE
+        set winhighlight+=NormalNC:NONE
         let b:dim_inactive = 1
     endif
 endfunction
@@ -13,10 +13,10 @@ function! s:DimInactiveWindowExceptions()
         return
     endif
     if &diff || &previewwindow
-        set winhighlight=NormalNC:NONE
+        set winhighlight+=NormalNC:NONE
         return
     endif
-    set winhighlight=
+    set winhighlight-=NormalNC:NONE
 endfunction
 
 " https://gist.github.com/ctaylo21/c3620a945cee6fc3eb3cb0d7f57faf00
