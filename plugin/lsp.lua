@@ -109,6 +109,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
   group = lsp_setup,
   desc = "LSP buffer setup",
   callback = function(args)
+    if not vim.tbl_get(args, "data") then
+      return
+    end
     local bufnr = args.buf
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     on_attach(client, bufnr)
@@ -119,6 +122,9 @@ vim.api.nvim_create_autocmd("LspDetach", {
   group = lsp_setup,
   desc = "Undo LSP buffer setup",
   callback = function(args)
+    if not vim.tbl_get(args, "data") then
+      return
+    end
     local bufnr = args.buf
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if not vim.lsp.buf_is_attached(bufnr, client.id) then
