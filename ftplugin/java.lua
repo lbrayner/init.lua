@@ -27,7 +27,7 @@ local function jdtls_create_commands(bufnr)
   })
 end
 
-nvim_buf_create_user_command(0, "JdtStart", function(_command)
+nvim_buf_create_user_command(0, "JdtStart", function(command)
   local config
   local success, session = pcall(require, "lbrayner.session.jdtls")
 
@@ -37,7 +37,9 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
     config = require("lbrayner.jdtls").get_config()
   end
 
-  if vim.lsp.get_active_clients({ name="jdtls" })[1] then
+  local client = vim.lsp.get_active_clients({ name="jdtls" })[1]
+
+  if not command.bang and client then
     return require("jdtls").start_or_attach(config)
   end
 
@@ -56,7 +58,8 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
     if vim.api.nvim_get_current_buf() ~= bufnr and
       vim.api.nvim_buf_is_loaded(bufnr) and
       vim.bo[bufnr].ft == "java" and
-      vim.startswith(vim.api.nvim_buf_get_name(bufnr), config.root_dir) then
+      vim.startswith(vim.api.nvim_buf_get_name(bufnr), config.root_dir) and
+      (not client or not vim.lsp.buf_is_attached(bufnr, client.id)) then
       vim.api.nvim_create_autocmd({ "BufEnter" }, {
         group = jdtls_setup,
         buffer = bufnr,
@@ -75,9 +78,12 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
     desc = "jdtls buffer setup",
     callback = function(args)
       local bufnr = args.buf
-      local client = vim.lsp.get_client_by_id(args.data.client_id)
-      -- TODO disabling semantic highlighting for now
-      client.server_capabilities.semanticTokensProvider = nil
+
+      if vim.tbl_get(args, "data") then
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        -- TODO disabling semantic highlighting for now
+        client.server_capabilities.semanticTokensProvider = nil
+      end
 
       -- Mapping overrides
       local bufopts = { buffer=bufnr }
@@ -138,4 +144,4 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
   })
 
   require("jdtls").start_or_attach(config)
-end, { desc="Start jdtls and setup automatic attach, local buffer configuration", nargs=0 })
+end, { bang=true, desc="Start jdtls and setup automatic attach, local buffer configuration", nargs=0 })
