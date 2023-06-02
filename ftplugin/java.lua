@@ -85,14 +85,16 @@ nvim_buf_create_user_command(0, "JdtStart", function(_command)
       vim.keymap.set("n", "gD", function()
         -- Go to the first line, first column
         local line_col = vim.api.nvim_win_get_cursor(0)
+        -- Add current position to the jump list
+        vim.cmd("normal! " .. line_col[1] .. "G")
         vim.api.nvim_win_set_cursor(0, {1, 0})
         if vim.fn.search(
           "\\v%(public\\s+)?%(abstract|final\\s+)?%(class|enum|interface)\\s+\\zs" ..
           vim.fn.expand("%:t:r")) > 0 then
           vim.cmd "normal! zz"
         else
-          -- Restores cursor
-          vim.api.nvim_win_set_cursor(0, line_col)
+          -- Restores cursor by popping the jump list
+          vim.cmd("exe \"normal! \\<C-O>\"")
         end
       end, bufopts)
 
