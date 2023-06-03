@@ -1,5 +1,6 @@
 local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
 
+-- TODO `:lua require('jdtls.setup').add_commands()`
 local function jdtls_create_commands(bufnr)
   nvim_buf_create_user_command(bufnr, "JdtStop", function(_command)
     local client = vim.lsp.get_active_clients({ name="jdtls" })[1]
@@ -51,6 +52,16 @@ nvim_buf_create_user_command(0, "JdtStart", function(command)
     desc = "New Java buffers attach to jdtls",
     callback = function()
       require("jdtls").start_or_attach(config)
+    end,
+  })
+
+  vim.api.nvim_create_autocmd("BufRead", {
+    group = jdtls_setup,
+    pattern = { "jdt://*", "*.class" },
+    desc = "Handle jdt:// URIs and classfiles",
+    callback = function(command)
+      require("jdtls").start_or_attach(config)
+      require("jdtls").open_classfile(command.match)
     end,
   })
 

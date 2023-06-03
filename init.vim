@@ -568,8 +568,12 @@ augroup DirvishSetup
 augroup END
 
 " reply.vim
-
 command! -nargs=0 ReplFile call reply#command#send(join(getline(1,line("$")),"\n"),0,0)
+
+" nvim-jdtls
+
+" Skipping nvim-jdtls autocmds and commands
+let g:nvim_jdtls = 1
 
 " }}}
 
