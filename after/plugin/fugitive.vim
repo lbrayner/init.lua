@@ -30,9 +30,11 @@ command! -nargs=0 FObject call Clip(FObject())
 command! -nargs=0 FPath call Clip(FPath())
 
 function! s:FugitiveMapOverrides()
-    " TODO until tpope catches up with patch vim-patch:9.0.1546
+    " So we can jump with 'switchbuf'
     nunmap <buffer> <C-W>f
     nnoremap <buffer> <CR> <Cmd>exe "normal! \<C-W>f"<CR>
+    " So we can use Nvim builtin search selected
+    vunmap <buffer> *
 endfunction
 
 augroup FugitiveCustomAutocommands
