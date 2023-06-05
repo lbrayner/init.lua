@@ -138,6 +138,9 @@ nnoremap <A-j> <C-W>j
 nnoremap <A-k> <C-W>k
 nnoremap <A-l> <C-W>l
 
+" Search selected file path: Nvim builtin override
+vnoremap * y/\V<C-R>=escape("<C-R>"", "/")<CR><CR>
+
 " Command line
 
 " Emacs-style editing in command-line mode and insert mode
