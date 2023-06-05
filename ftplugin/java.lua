@@ -1,34 +1,4 @@
-local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
-
--- TODO `:lua require('jdtls.setup').add_commands()`
-local function jdtls_create_commands(bufnr)
-  nvim_buf_create_user_command(bufnr, "JdtStop", function(_command)
-    local client = vim.lsp.get_active_clients({ name="jdtls" })[1]
-    if not client then
-      return
-    end
-    vim.api.nvim_del_augroup_by_name("jdtls_setup")
-    vim.lsp.stop_client(client.id)
-  end, { nargs=0 })
-  -- The following are commands from the nvim-jdtls README
-  nvim_buf_create_user_command(bufnr, "JdtCompile", function(command)
-    require("jdtls").compile(command.fargs)
-  end, { complete="custom,v:lua.require'jdtls'._complete_compile", nargs="?" })
-  nvim_buf_create_user_command(bufnr, "JdtSetRuntime", function(command)
-    require("jdtls").set_runtime(command.fargs)
-  end, { complete="custom,v:lua.require'jdtls'._complete_set_runtime", nargs="?" })
-  nvim_buf_create_user_command(bufnr, "JdtUpdateConfig", require("jdtls").update_project_config, {
-    nargs=0
-  })
-  nvim_buf_create_user_command(bufnr, "JdtJol", require("jdtls").jol, { nargs=0 })
-  nvim_buf_create_user_command(bufnr, "JdtBytecode", require("jdtls").javap, { nargs=0 })
-  nvim_buf_create_user_command(bufnr, "JdtJshell", require("jdtls").jshell, { nargs=0 })
-  nvim_buf_create_user_command(bufnr, "JdtOrganizeImports", require("jdtls").organize_imports, {
-    nargs=0
-  })
-end
-
-nvim_buf_create_user_command(0, "JdtStart", function(command)
+vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
   local config
   local success, session = pcall(require, "lbrayner.session.jdtls")
 
@@ -128,7 +98,19 @@ nvim_buf_create_user_command(0, "JdtStart", function(command)
       ' %{statusline#StatusFlag()}%*'
 
       -- Setup buffer local commands
-      jdtls_create_commands(bufnr)
+      vim.api.nvim_buf_create_user_command(bufnr, "JdtStop", function(_command)
+        local client = vim.lsp.get_active_clients({ name="jdtls" })[1]
+        if not client then
+          return
+        end
+        vim.api.nvim_del_augroup_by_name("jdtls_setup")
+        vim.lsp.stop_client(client.id)
+      end, { nargs=0 })
+      vim.api.nvim_buf_create_user_command(bufnr, "JdtOrganizeImports", require("jdtls").organize_imports, {
+        nargs=0
+      })
+
+      require("jdtls.setup").add_commands()
     end,
   })
 
@@ -148,14 +130,17 @@ nvim_buf_create_user_command(0, "JdtStart", function(command)
       -- Delete user commands
       for _, command in ipairs({
         "JdtStop",
+        "JdtOrganizeImports",
         "JdtCompile",
         "JdtSetRuntime",
         "JdtUpdateConfig",
         "JdtJol",
         "JdtBytecode",
         "JdtJshell",
-        "JdtOrganizeImports" }) do
-        vim.api.nvim_buf_del_user_command(bufnr, command)
+        "JdtRestart" }) do
+        if vim.api.nvim_buf_get_commands(bufnr, {})[command] then
+          vim.api.nvim_buf_del_user_command(bufnr, command)
+        end
       end
     end,
   })
