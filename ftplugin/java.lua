@@ -98,8 +98,14 @@ nvim_buf_create_user_command(0, "JdtStart", function(command)
 
       -- Mapping overrides
       local bufopts = { buffer=bufnr }
+      -- Open type hierarchy
+      if require("jdtls").java_open_type_hierarchy then
+        vim.keymap.set("n", "gD", function()
+          require("jdtls").java_open_type_hierarchy(10, true)
+        end, bufopts)
+      end
       -- Go to class declaration
-      vim.keymap.set("n", "gD", function()
+      vim.keymap.set("n", "gC", function()
         -- Go to the first line, first column
         local line_col = vim.api.nvim_win_get_cursor(0)
         -- Add current position to the jump list
