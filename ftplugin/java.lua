@@ -55,7 +55,7 @@ nvim_buf_create_user_command(0, "JdtStart", function(command)
     end,
   })
 
-  vim.api.nvim_create_autocmd("BufRead", {
+  vim.api.nvim_create_autocmd("BufReadCmd", {
     group = jdtls_setup,
     pattern = { "jdt://*", "*.class" },
     desc = "Handle jdt:// URIs and classfiles",
