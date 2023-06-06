@@ -64,10 +64,6 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
         local client = vim.lsp.get_client_by_id(args.data.client_id)
         -- TODO disabling semantic highlighting for now
         client.server_capabilities.semanticTokensProvider = nil
-        -- Enabling codeAction/resolve
-        if not client.server_capabilities.codeActionProvider then
-          client.server_capabilities.codeActionProvider = { resolveProvider = true }
-        end
       end
 
       -- Mapping overrides
