@@ -6,6 +6,7 @@ local function display_error(swb)
   local switchbuf = vim.go.switchbuf
   vim.go.switchbuf = swb
   local linenr = vim.api.nvim_win_get_cursor(0)[1]
+  vim.cmd.wincmd("p") -- TODO to avoid https://github.com/vim/vim/issues/12436
   vim.cmd(linenr .. command)
   vim.go.switchbuf = switchbuf
 end
