@@ -6,7 +6,7 @@ return {
       cmd = lspconfig.default_config.cmd,
       root_dir = require("jdtls.setup").find_root({".git", "mvnw", "gradlew"}),
       url = (function()
-        local prefs = os.getenv("HOME").."/.config/nvim/config/jdtls/settings.prefs"
+        local prefs = vim.fn.fnamemodify("~/.config/nvim/config/jdtls/settings.prefs", ":p")
         if vim.fn.filereadable(prefs) == 1 then
           return prefs
         end
