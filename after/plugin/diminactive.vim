@@ -1,5 +1,8 @@
-function! s:DimInactiveBuftypeExceptions()
+function! s:DimInactiveExceptions()
     if exists("b:dim_inactive") && b:dim_inactive
+        return
+    endif
+    if util#WindowIsFloating()
         return
     endif
     if &buftype =~# '\v%(nofile|nowrite|acwrite|quickfix|help|terminal)'
@@ -8,7 +11,7 @@ function! s:DimInactiveBuftypeExceptions()
     endif
 endfunction
 
-function! s:DimInactiveWindowExceptions()
+function! s:DimInactiveWinLeave()
     if exists("b:dim_inactive") && b:dim_inactive
         return
     endif
@@ -30,11 +33,11 @@ endfunction
 function! s:DimInactiveEnable()
     augroup DimInactive
       autocmd!
-      autocmd BufWinEnter,TermOpen * call s:DimInactiveBuftypeExceptions()
+      autocmd BufWinEnter,TermOpen * call s:DimInactiveExceptions()
       autocmd VimEnter * autocmd DimInactive
-                  \ WinLeave * call s:DimInactiveWindowExceptions()
+                  \ WinLeave * call s:DimInactiveWinLeave()
         autocmd ColorScheme * call s:HighlightNormalNC()
-        autocmd User DimInactive call s:DimInactiveBuftypeExceptions()
+        autocmd User DimInactive call s:DimInactiveExceptions()
     augroup END
     call s:HighlightNormalNC()
     if v:vim_did_enter
