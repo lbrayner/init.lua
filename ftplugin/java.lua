@@ -66,12 +66,12 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
         client.server_capabilities.semanticTokensProvider = nil
       end
 
-      -- Mapping overrides
+      -- Mappings
       local bufopts = { buffer=bufnr }
-      -- Open type hierarchy
-      if require("jdtls").java_open_type_hierarchy then
+      -- Type hierarchy
+      if require("jdtls").java_type_hierarchy then
         vim.keymap.set("n", "gD", function()
-          require("jdtls").java_open_type_hierarchy(10, true)
+          require("jdtls").java_type_hierarchy(true)
         end, bufopts)
       end
       -- Go to class declaration
