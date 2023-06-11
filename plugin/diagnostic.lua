@@ -45,7 +45,7 @@ local trunc_virt_text = vim.api.nvim_create_augroup("trunc_virt_text", { clear=t
 vim.api.nvim_create_autocmd({ "VimEnter" }, {
   group = trunc_virt_text,
   callback = function(_args)
-    vim.api.nvim_create_autocmd({ "WinEnter" }, {
+    vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
       group = trunc_virt_text,
       callback = function(args)
         local bufnr = args.buf
