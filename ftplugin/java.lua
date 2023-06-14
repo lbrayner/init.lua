@@ -68,14 +68,12 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
 
       -- Mappings
       local bufopts = { buffer=bufnr }
-      -- Type hierarchy
-      if require("jdtls").java_type_hierarchy then
-        vim.keymap.set("n", "gD", function()
-          require("jdtls").java_type_hierarchy(true)
-        end, bufopts)
-      end
       -- Go to top level declaration
       vim.keymap.set("n", "gC", require("lbrayner.jdtls").java_go_to_top_level_declaration, bufopts)
+      -- Type hierarchy
+      vim.keymap.set("n", "gD", function()
+        require("lbrayner.jdtls").java_type_hierarchy(true)
+      end, bufopts)
 
       -- Custom statusline
       vim.b[bufnr].Statusline_custom_leftline = '%<%{expand("%:t:r")} ' ..
