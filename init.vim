@@ -492,7 +492,6 @@ endif
 " Subsection: package customisation {{{
 
 " vim-commentary
-
 augroup VimCommentary
     autocmd!
     autocmd FileType apache,crontab,debsources,desktop,fstab,samba setlocal commentstring=#\ %s
@@ -500,7 +499,6 @@ augroup VimCommentary
 augroup END
 
 " vim-surround
-
 augroup DisableSurroundIndent
     autocmd!
     autocmd FileType groovy,html,sql,xml let b:surround_indent = 0
@@ -514,11 +512,9 @@ map <silent> <Leader>e <Plug>CamelCaseMotion_e
 map <silent> <Leader>ge <Plug>CamelCaseMotion_ge
 
 " vim-rzip
-
 let g:rzipPlugin_extra_ext = "*.odt"
 
 " paredit
-
 let g:paredit_leader = '\'
 
 " sneak
@@ -539,13 +535,6 @@ augroup DelimitMateSetup
     autocmd FileType apache,html,xml let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
     autocmd FileType sql let b:delimitMate_matchpairs = "(:),[:],{:}"
 augroup END
-
-" vim-easy-align
-" Start interactive EasyAlign in visual mode (e.g. vip<Plug>(EasyAlign))
-xmap gy <Plug>(EasyAlign)
-
-" Start interactive EasyAlign for a motion/text object (e.g. <Plug>(EasyAlign)ip)
-nmap gy <Plug>(EasyAlign)
 
 " vim-quickhl
 
@@ -572,8 +561,6 @@ augroup END
 
 " reply.vim
 command! -nargs=0 ReplFile call reply#command#send(join(getline(1,line("$")),"\n"),0,0)
-
-" nvim-jdtls
 
 " Skipping nvim-jdtls autocmds and commands
 let g:nvim_jdtls = 1

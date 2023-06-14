@@ -63,7 +63,7 @@ local function on_attach(client, bufnr)
   end, bufopts)
   vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
   vim.keymap.set("n", "gK", vim.lsp.buf.signature_help, bufopts)
-  vim.keymap.set("n", "<Space>D", function()
+  vim.keymap.set("n", "gy", function()
     vim.lsp.buf.type_definition({ reuse_win=reuse_win })
   end, bufopts)
 
