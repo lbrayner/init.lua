@@ -37,6 +37,10 @@ require("lspconfig").lua_ls.setup {
   },
 }
 
+local declaration
+local definition
+local implementation
+local type_definition
 local on_list
 local quickfix_diagnostics_opts = {}
 local lsp_setqflist
@@ -51,28 +55,20 @@ local function on_attach(client, bufnr)
   -- Mappings
   local bufopts = { buffer=bufnr }
   vim.keymap.set("n", "<F11>", vim.lsp.buf.code_action, bufopts)
-  vim.keymap.set("n", "gD", function()
-    vim.lsp.buf.declaration({ reuse_win=true })
-  end, bufopts)
-  vim.keymap.set("n", "gd", function()
-    vim.lsp.buf.definition({ reuse_win=true })
-  end, bufopts)
+  vim.keymap.set("n", "gD", declaration, bufopts)
+  vim.keymap.set("n", "gd", definition, bufopts)
   vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-  vim.keymap.set("n", "gi", function()
-    vim.lsp.buf.implementation({ on_list=on_list })
-  end, bufopts)
+  vim.keymap.set("n", "gi", implementation, bufopts)
   vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
   vim.keymap.set("n", "gK", vim.lsp.buf.signature_help, bufopts)
-  vim.keymap.set("n", "gy", function()
-    vim.lsp.buf.type_definition({ reuse_win=reuse_win })
-  end, bufopts)
+  vim.keymap.set("n", "gy", type_definition, bufopts)
 
   -- Commands
   vim.api.nvim_buf_create_user_command(bufnr, "LspCodeAction", vim.lsp.buf.code_action, { nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDeclaration", vim.lsp.buf.declaration, { nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspDeclaration", declaration, { nargs=0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDocumentSymbol", vim.lsp.buf.document_symbol, {
     nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDefinition", vim.lsp.buf.definition, { nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspDefinition", definition, { nargs=0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDetach", function()
     for _, client in ipairs(vim.lsp.get_active_clients()) do
       vim.lsp.buf_detach_client(0, client.id)
@@ -82,9 +78,7 @@ local function on_attach(client, bufnr)
     vim.lsp.buf.format({ async=true })
   end, { nargs=0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspHover", vim.lsp.buf.hover, { nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspImplementation", function()
-    vim.lsp.buf.implementation({ on_list=on_list })
-  end, { nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspImplementation", implementation, { nargs=0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspReferences", vim.lsp.buf.references, { nargs=0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspRename", function()
     local name = command.args
@@ -95,9 +89,7 @@ local function on_attach(client, bufnr)
   end, { nargs="?" })
   vim.api.nvim_buf_create_user_command(bufnr, "LspSignatureHelp", vim.lsp.buf.signature_help, {
     nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspTypeDefinition", function()
-    vim.lsp.buf.type_definition({ reuse_win=true })
-  end, { nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspTypeDefinition", type_definition, { nargs=0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceFolders", function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, { nargs=0 })
@@ -184,6 +176,19 @@ vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
     end
   end,
 })
+
+declaration = function()
+  vim.lsp.buf.declaration({ reuse_win=true })
+end
+definition = function()
+  vim.lsp.buf.definition({ reuse_win=true })
+end
+implementation = function()
+  vim.lsp.buf.implementation({ on_list=on_list })
+end
+type_definition = function()
+  vim.lsp.buf.type_definition({ reuse_win=reuse_win })
+end
 
 on_list = function(options)
   vim.fn.setqflist({}, " ", options)
