@@ -50,6 +50,7 @@ local function on_attach(client, bufnr)
 
   -- Mappings
   local bufopts = { buffer=bufnr }
+  vim.keymap.set("n", "<F11>", vim.lsp.buf.code_action, bufopts)
   vim.keymap.set("n", "gD", function()
     vim.lsp.buf.declaration({ reuse_win=true })
   end, bufopts)
@@ -60,40 +61,55 @@ local function on_attach(client, bufnr)
   vim.keymap.set("n", "gi", function()
     vim.lsp.buf.implementation({ on_list=on_list })
   end, bufopts)
-  vim.keymap.set("n", "gK", vim.lsp.buf.signature_help, bufopts)
-  vim.keymap.set("n", "<Space>D", vim.lsp.buf.type_definition, bufopts)
-  vim.keymap.set("n", "<F11>", vim.lsp.buf.code_action, bufopts)
   vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
+  vim.keymap.set("n", "gK", vim.lsp.buf.signature_help, bufopts)
+  vim.keymap.set("n", "<Space>D", function()
+    vim.lsp.buf.type_definition({ reuse_win=reuse_win })
+  end, bufopts)
 
   -- Commands
-  vim.api.nvim_buf_create_user_command(bufnr, "LspRename", function(command)
+  vim.api.nvim_buf_create_user_command(bufnr, "LspCodeAction", vim.lsp.buf.code_action, { nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspDeclaration", vim.lsp.buf.declaration, { nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspDocumentSymbol", vim.lsp.buf.document_symbol, {
+    nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspDefinition", vim.lsp.buf.definition, { nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspDetach", function()
+    for _, client in ipairs(vim.lsp.get_active_clients()) do
+      vim.lsp.buf_detach_client(0, client.id)
+    end
+  end, { nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspFormat", function()
+    vim.lsp.buf.format({ async=true })
+  end, { nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspHover", vim.lsp.buf.hover, { nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspImplementation", function()
+    vim.lsp.buf.implementation({ on_list=on_list })
+  end, { nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspReferences", vim.lsp.buf.references, { nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspRename", function()
     local name = command.args
     if name and name ~= "" then
       return vim.lsp.buf.rename(name)
     end
     vim.lsp.buf.rename()
   end, { nargs="?" })
-
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDeclaration", vim.lsp.buf.declaration, { nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDefinition", vim.lsp.buf.definition, { nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspFormat", function(_command)
-    vim.lsp.buf.format { async=true }
+  vim.api.nvim_buf_create_user_command(bufnr, "LspSignatureHelp", vim.lsp.buf.signature_help, {
+    nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspTypeDefinition", function()
+    vim.lsp.buf.type_definition({ reuse_win=true })
   end, { nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceFolders", function(_command)
+  vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceFolders", function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, { nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDetach", function(_command)
-    for _, client in ipairs(vim.lsp.get_active_clients()) do
-      vim.lsp.buf_detach_client(0, client.id)
-    end
-  end, { nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixAll", function(_command)
+
+  -- Diagnostic on quickfix
+  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixAll", function()
     lsp_setqflist({}, bufnr)
   end, { nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixError", function(_command)
+  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixError", function()
     lsp_setqflist({ severity=vim.diagnostic.severity.ERROR }, bufnr)
   end, { nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixWarn", function(_command)
+  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixWarn", function()
     lsp_setqflist({ severity={ min=vim.diagnostic.severity.WARN } }, bufnr)
   end, { nargs=0 })
 
@@ -137,11 +153,19 @@ vim.api.nvim_create_autocmd("LspDetach", {
 
     -- Delete user commands
     for _, command in ipairs({
+      "LspCodeAction",
       "LspDeclaration",
+      "LspDocumentSymbol",
       "LspDefinition",
-      "LspFormat",
-      "LspWorkspaceFolders",
       "LspDetach",
+      "LspFormat",
+      "LspHover",
+      "LspImplementation",
+      "LspReferences",
+      "LspRename",
+      "LspSignatureHelp",
+      "LspTypeDefinition",
+      "LspWorkspaceFolders",
       "LspDiagnosticQuickFixAll",
       "LspDiagnosticQuickFixError",
       "LspDiagnosticQuickFixWarn" }) do
@@ -152,7 +176,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
 
 vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
   group = lsp_setup,
-  callback = function(_args)
+  callback = function()
     if vim.startswith(vim.fn.getqflist({ title=true }).title, "LSP Diagnostics") then
       vim.diagnostic.setqflist(vim.tbl_extend("error", quickfix_diagnostics_opts, {
         open=false
