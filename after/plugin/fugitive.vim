@@ -32,6 +32,8 @@ command! -nargs=0 FPath call Clip(FPath())
 function! s:FugitiveMapOverrides()
     " So we can jump with 'switchbuf'
     nunmap <buffer> <C-W>f
+    " So we can open in a new tab
+    nunmap <buffer> <C-W>gf
     nnoremap <buffer> <CR> <Cmd>exe "normal! \<C-W>f"<CR>
     " So we can use Nvim builtin search selected
     vunmap <buffer> *
