@@ -74,22 +74,8 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
           require("jdtls").java_type_hierarchy(true)
         end, bufopts)
       end
-      -- Go to class declaration
-      vim.keymap.set("n", "gC", function()
-        local line_col = vim.api.nvim_win_get_cursor(0)
-        -- Add current position to the jump list
-        vim.cmd("normal! " .. line_col[1] .. "G")
-        -- Go to the first line, first column
-        vim.api.nvim_win_set_cursor(0, {1, 0})
-        if vim.fn.search(
-          "\\v%(public\\s+)?%(abstract|final\\s+)?%(class|enum|interface)\\s+\\zs" ..
-          vim.fn.expand("%:t:r")) > 0 then
-          vim.cmd "normal! zz"
-        else
-          -- Restore cursor by popping the jump list
-          vim.cmd("exe \"normal! \\<C-O>\"")
-        end
-      end, bufopts)
+      -- Go to top level declaration
+      vim.keymap.set("n", "gC", require("lbrayner.jdtls").java_go_to_top_level_declaration, bufopts)
 
       -- Custom statusline
       vim.b[bufnr].Statusline_custom_leftline = '%<%{expand("%:t:r")} ' ..
