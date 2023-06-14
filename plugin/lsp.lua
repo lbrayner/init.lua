@@ -64,7 +64,9 @@ local function on_attach(client, bufnr)
   vim.keymap.set("n", "gy", type_definition, bufopts)
 
   -- Commands
-  vim.api.nvim_buf_create_user_command(bufnr, "LspCodeAction", vim.lsp.buf.code_action, { nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspCodeAction", function()
+    vim.lsp.buf.code_action()
+  end, { nargs=0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDeclaration", declaration, { nargs=0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDocumentSymbol", vim.lsp.buf.document_symbol, {
     nargs=0 })
