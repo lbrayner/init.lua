@@ -14,6 +14,11 @@ endfunction
 command! -nargs=0 FObject :let @"=FObject()
 command! -nargs=0 FPath :let @"=FPath()
 
+if exists("*Clip")
+    command! -nargs=0 FObject call Clip(FObject())
+    command! -nargs=0 FPath call Clip(FPath())
+endif
+
 cnoreabbrev Gd Git difftool -y
 cnoreabbrev Gl Git log
 cnoreabbrev Glns Git log --name-status
@@ -21,13 +26,6 @@ cnoreabbrev Glo Git log --oneline
 cnoreabbrev Gb Git blame --abbrev=6
 " To list branches of a specific remote: Git! ls-remote upstream
 cnoreabbrev Gr Git! ls-remote
-
-if !exists("*Clip")
-    finish
-endif
-
-command! -nargs=0 FObject call Clip(FObject())
-command! -nargs=0 FPath call Clip(FPath())
 
 function! s:FugitiveMapOverrides()
     " So we can jump with 'switchbuf'
