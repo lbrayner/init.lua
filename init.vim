@@ -305,8 +305,8 @@ function! s:Rg(txt, ...)
 endfunction
 
 command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
-cnoreabbrev Rb Rg -s '\b\b'<Left><Left><Left>
-cnoreabbrev Rw Rg -s '\b<C-R><C-W>\b'
+cnoreabbrev Rb Rg -s '\b''''\b'<Left><Left><Left><Left><Left>
+cnoreabbrev Rw Rg -s '\b''<C-R><C-W>''\b'
 
 " Human-readable stack of syntax items
 command! -nargs=0 -range Synstack call s:Synstack()
