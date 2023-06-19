@@ -76,10 +76,12 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
       end, bufopts)
 
       -- Custom statusline
-      vim.b[bufnr].Statusline_custom_leftline = '%<%{expand("%:t:r")} ' ..
-      '%{statusline#StatusFlag()}'
-      vim.b[bufnr].Statusline_custom_mod_leftline = '%<%1*%{expand("%:t:r")}' ..
-      ' %{statusline#StatusFlag()}%*'
+      if string.find(vim.api.nvim_buf_get_name(bufnr), "jdt://", 1, true) ~= 1 then
+        vim.b[bufnr].Statusline_custom_leftline = '%<%{expand("%:t:r")} ' ..
+          '%{statusline#StatusFlag()}'
+        vim.b[bufnr].Statusline_custom_mod_leftline = '%<%1*%{expand("%:t:r")}' ..
+          ' %{statusline#StatusFlag()}%*'
+      end
 
       -- Setup buffer local commands
       vim.api.nvim_buf_create_user_command(bufnr, "JdtStop", function(_command)
