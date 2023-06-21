@@ -82,9 +82,7 @@ function! statusline#Filename(...)
     let path = Path()
     if exists("*FPath") && stridx(expand("%"),"fugitive://") == 0
         let path = FPath()
-    endif
-    " jdtls
-    if stridx(expand("%"),"jdt://") == 0
+    elseif stridx(expand("%"),"jdt://") == 0 " jdtls
         let path = substitute(expand("%"), "?.*", "", "")
     endif
     if a:0 > 0 && a:1 " nofocus
@@ -93,7 +91,7 @@ function! statusline#Filename(...)
         let filename = substitute(fnamemodify(path,":t"),"'","''","g")
     endif
     if filename == ""
-        return "#".bufnr("%")
+        return "#%n"
     endif
     return filename
 endfunction
