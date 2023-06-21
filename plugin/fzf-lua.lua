@@ -34,6 +34,7 @@ fzf.setup {
       ["ctrl-v"] = false,
       ["alt-s"]  = actions.buf_vsplit,
     },
+    no_header_i = true, -- So that no header is displayed (can be accomplished with { ["ctrl-x"] = false }
     previewer = false,
   },
 }
