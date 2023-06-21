@@ -19,11 +19,13 @@ if exists("*Clip")
     command! -nargs=0 FPath call Clip(FPath())
 endif
 
+cnoreabbrev Gb Git blame --abbrev=6
 cnoreabbrev Gd Git difftool -y
+" To list files modified by a range of commits
+cnoreabbrev Gdn Git diff --name-only --stat
 cnoreabbrev Gl Git log
 cnoreabbrev Glns Git log --name-status
 cnoreabbrev Glo Git log --oneline
-cnoreabbrev Gb Git blame --abbrev=6
 " To list branches of a specific remote: Git! ls-remote upstream
 cnoreabbrev Gr Git! ls-remote
 
