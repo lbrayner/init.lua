@@ -64,9 +64,15 @@ local function on_attach(client, bufnr)
   vim.keymap.set("n", "gy", type_definition, bufopts)
 
   -- Commands
-  vim.api.nvim_buf_create_user_command(bufnr, "LspCodeAction", function()
-    vim.lsp.buf.code_action()
-  end, { nargs=0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspCodeAction", function(command)
+    local params
+    if command.line1 == command.line2 then
+      params = vim.lsp.util.make_range_params()
+    else
+      params = vim.lsp.util.make_given_range_params()
+    end
+    vim.lsp.buf.code_action(params.range)
+  end, { nargs=0, range=true })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDeclaration", declaration, { nargs=0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDocumentSymbol", vim.lsp.buf.document_symbol, {
     nargs=0 })
@@ -82,7 +88,7 @@ local function on_attach(client, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, "LspHover", vim.lsp.buf.hover, { nargs=0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspImplementation", implementation, { nargs=0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspReferences", vim.lsp.buf.references, { nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspRename", function()
+  vim.api.nvim_buf_create_user_command(bufnr, "LspRename", function(command)
     local name = command.args
     if name and name ~= "" then
       return vim.lsp.buf.rename(name)
