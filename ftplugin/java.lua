@@ -55,7 +55,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
 
   vim.api.nvim_create_autocmd("LspAttach", {
     group = jdtls_setup,
-    pattern = config.root_dir .. "/*.java",
+    pattern = { config.root_dir .. "/*.java", "jdt://*", "*.class" },
     desc = "jdtls buffer setup",
     callback = function(args)
       local bufnr = args.buf
@@ -76,7 +76,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
       end, bufopts)
 
       -- Custom statusline
-      if string.find(vim.api.nvim_buf_get_name(bufnr), "jdt://", 1, true) ~= 1 then
+      if string.find(vim.api.nvim_buf_get_name(bufnr), "jdt://", 1) ~= 1 then
         vim.b[bufnr].Statusline_custom_leftline = '%<%{expand("%:t:r")} ' ..
           '%{statusline#StatusFlag()}'
         vim.b[bufnr].Statusline_custom_mod_leftline = '%<%1*%{expand("%:t:r")}' ..
