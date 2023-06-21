@@ -125,12 +125,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
   group = lsp_setup,
   desc = "LSP buffer setup",
   callback = function(args)
-    if not vim.tbl_get(args, "data") then
-      return
-    end
     local bufnr = args.buf
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-    on_attach(client, bufnr)
+    local clients
+    if vim.tbl_get(args, "data") then
+      clients = { vim.lsp.get_client_by_id(args.data.client_id) }
+    else
+      clients = vim.lsp.get_active_clients({ bufnr = bufnr })
+    end
+    for _, client in ipairs(clients) do
+      on_attach(client, bufnr)
+    end
   end,
 })
 
@@ -138,38 +142,40 @@ vim.api.nvim_create_autocmd("LspDetach", {
   group = lsp_setup,
   desc = "Undo LSP buffer setup",
   callback = function(args)
-    if not vim.tbl_get(args, "data") then
-      return
-    end
     local bufnr = args.buf
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-    if not vim.lsp.buf_is_attached(bufnr, client.id) then
-      return
+    local clients
+    if vim.tbl_get(args, "data") then
+      clients = { vim.lsp.get_client_by_id(args.data.client_id) }
+    else
+      clients = vim.lsp.get_active_clients({ bufnr = bufnr })
     end
 
-    -- Restore the statusline
-    vim.b[bufnr].Statusline_custom_rightline = nil
-    vim.b[bufnr].Statusline_custom_mod_rightline = nil
+    for _, client in ipairs(clients) do
 
-    -- Delete user commands
-    for _, command in ipairs({
-      "LspCodeAction",
-      "LspDeclaration",
-      "LspDocumentSymbol",
-      "LspDefinition",
-      "LspDetach",
-      "LspFormat",
-      "LspHover",
-      "LspImplementation",
-      "LspReferences",
-      "LspRename",
-      "LspSignatureHelp",
-      "LspTypeDefinition",
-      "LspWorkspaceFolders",
-      "LspDiagnosticQuickFixAll",
-      "LspDiagnosticQuickFixError",
-      "LspDiagnosticQuickFixWarn" }) do
-      vim.api.nvim_buf_del_user_command(bufnr, command)
+      -- Restore the statusline
+      vim.b[bufnr].Statusline_custom_rightline = nil
+      vim.b[bufnr].Statusline_custom_mod_rightline = nil
+
+      -- Delete user commands
+      for _, command in ipairs({
+        "LspCodeAction",
+        "LspDeclaration",
+        "LspDocumentSymbol",
+        "LspDefinition",
+        "LspDetach",
+        "LspFormat",
+        "LspHover",
+        "LspImplementation",
+        "LspReferences",
+        "LspRename",
+        "LspSignatureHelp",
+        "LspTypeDefinition",
+        "LspWorkspaceFolders",
+        "LspDiagnosticQuickFixAll",
+        "LspDiagnosticQuickFixError",
+        "LspDiagnosticQuickFixWarn" }) do
+        vim.api.nvim_buf_del_user_command(bufnr, command)
+      end
     end
   end,
 })
