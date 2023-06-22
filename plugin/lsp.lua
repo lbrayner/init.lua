@@ -175,7 +175,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
         "LspDiagnosticQuickFixAll",
         "LspDiagnosticQuickFixError",
         "LspDiagnosticQuickFixWarn" }) do
-        vim.api.nvim_buf_del_user_command(bufnr, command)
+        pcall(vim.api.nvim_buf_del_user_command, bufnr, command) -- Ignore error if command doesn't exist
       end
     end
   end,
