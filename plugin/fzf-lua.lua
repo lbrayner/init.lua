@@ -48,7 +48,7 @@ local function buffers()
 
   if success then
     return fzf.buffers({
-      fzf_opts = { ['--history'] = session.get_history_file() },
+      fzf_opts = { ["--history"] = session.get_history_file() },
     })
   end
   return fzf.buffers()
@@ -61,7 +61,7 @@ local function files_clear_cache()
     if success then
       return fzf.files({
         cmd = string.format("find_file_cache -c '%s' -C", session.get_cache_dir()),
-        fzf_opts = { ['--history'] = session.get_history_file() },
+        fzf_opts = { ["--history"] = session.get_history_file() },
       })
     end
     return fzf.files({ cmd="find_file_cache -C" })
@@ -76,7 +76,7 @@ local function files()
     if success then
       return fzf.files({
         cmd = string.format("find_file_cache -c '%s'", session.get_cache_dir()),
-        fzf_opts = { ['--history'] = session.get_history_file() },
+        fzf_opts = { ["--history"] = session.get_history_file() },
       })
     end
     return fzf.files({ cmd="find_file_cache" })
@@ -89,7 +89,7 @@ local function tabs()
 
   if success then
     return fzf.tabs({
-      fzf_opts = { ['--history'] = session.get_history_file() },
+      fzf_opts = { ["--history"] = session.get_history_file() },
       show_quickfix = true,
     })
   end
