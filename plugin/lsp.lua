@@ -65,13 +65,14 @@ local function on_attach(client, bufnr)
 
   -- Commands
   vim.api.nvim_buf_create_user_command(bufnr, "LspCodeAction", function(command)
-    local params
-    if command.line1 == command.line2 then
-      params = vim.lsp.util.make_range_params()
-    else
-      params = vim.lsp.util.make_given_range_params()
+    local range
+    if command.line1 ~= command.line2 then
+      range = {
+        start = vim.api.nvim_buf_get_mark(bufnr, "<"),
+        ["end"] = vim.api.nvim_buf_get_mark(bufnr, ">"),
+      }
     end
-    vim.lsp.buf.code_action(params.range)
+    vim.lsp.buf.code_action({ range = range })
   end, { nargs=0, range=true })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDeclaration", declaration, { nargs=0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDocumentSymbol", vim.lsp.buf.document_symbol, {
