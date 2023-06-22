@@ -68,8 +68,8 @@ local function on_attach(client, bufnr)
     local range
     if command.line1 ~= command.line2 then
       range = {
-        start = vim.api.nvim_buf_get_mark(bufnr, "<"),
-        ["end"] = vim.api.nvim_buf_get_mark(bufnr, ">"),
+        start = vim.api.nvim_buf_get_mark(0, "<"),
+        ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
       }
     end
     vim.lsp.buf.code_action({ range = range })
