@@ -93,7 +93,7 @@ local function tabs()
       show_quickfix = true,
     })
   end
-  return fzf.tabs()
+  return fzf.tabs({ show_quickfix = true })
 end
 
 nvim_create_user_command("Buffers", buffers, { nargs=0 })
