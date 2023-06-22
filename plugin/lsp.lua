@@ -45,8 +45,8 @@ local on_list
 local quickfix_diagnostics_opts = {}
 local lsp_setqflist
 
--- From nvim-lspconfig
-local function on_attach(client, bufnr)
+-- From nvim-lspconfig. 'client' is not used.
+local function on_attach(_, bufnr)
   -- Enable completion triggered by <c-x><c-o>
   -- Some filetype plugins define omnifunc and $VIMRUNTIME/lua/vim/lsp.lua
   -- respects that, so we override it.
@@ -113,11 +113,6 @@ local function on_attach(client, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixWarn", function()
     lsp_setqflist({ severity={ min=vim.diagnostic.severity.WARN } }, bufnr)
   end, { nargs=0 })
-
-  -- Custom statusline
-  vim.b[bufnr].Statusline_custom_rightline = '%9*' .. client.name .. '%* '
-  vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. client.name .. '%* '
-  vim.cmd "silent! doautocmd <nomodeline> User CustomStatusline"
 end
 
 local lsp_setup = vim.api.nvim_create_augroup("lsp_setup", { clear=true })
@@ -126,16 +121,29 @@ vim.api.nvim_create_autocmd("LspAttach", {
   group = lsp_setup,
   desc = "LSP buffer setup",
   callback = function(args)
+    local clients = {}
     local bufnr = args.buf
-    local clients
     if vim.tbl_get(args, "data") then
       clients = { vim.lsp.get_client_by_id(args.data.client_id) }
     else
       clients = vim.lsp.get_active_clients({ bufnr = bufnr })
     end
-    for _, client in ipairs(clients) do
-      on_attach(client, bufnr)
+
+    if #clients == 0 then
+      return
     end
+
+    on_attach(nil, bufnr)
+
+    local names = vim.tbl_map(function (client)
+      return client.name
+    end, clients)
+    local stl_lsp = table.concat(names,",")
+
+    -- Custom statusline
+    vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
+    vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. stl_lsp .. '%* '
+    vim.cmd "silent! doautocmd <nomodeline> User CustomStatusline"
   end,
 })
 
@@ -143,40 +151,41 @@ vim.api.nvim_create_autocmd("LspDetach", {
   group = lsp_setup,
   desc = "Undo LSP buffer setup",
   callback = function(args)
+    local clients = {}
     local bufnr = args.buf
-    local clients
     if vim.tbl_get(args, "data") then
       clients = { vim.lsp.get_client_by_id(args.data.client_id) }
     else
       clients = vim.lsp.get_active_clients({ bufnr = bufnr })
     end
 
-    for _, client in ipairs(clients) do
+    if #clients == 0 then
+      return
+    end
 
-      -- Restore the statusline
-      vim.b[bufnr].Statusline_custom_rightline = nil
-      vim.b[bufnr].Statusline_custom_mod_rightline = nil
+    -- Restore the statusline
+    vim.b[bufnr].Statusline_custom_rightline = nil
+    vim.b[bufnr].Statusline_custom_mod_rightline = nil
 
-      -- Delete user commands
-      for _, command in ipairs({
-        "LspCodeAction",
-        "LspDeclaration",
-        "LspDocumentSymbol",
-        "LspDefinition",
-        "LspDetach",
-        "LspFormat",
-        "LspHover",
-        "LspImplementation",
-        "LspReferences",
-        "LspRename",
-        "LspSignatureHelp",
-        "LspTypeDefinition",
-        "LspWorkspaceFolders",
-        "LspDiagnosticQuickFixAll",
-        "LspDiagnosticQuickFixError",
-        "LspDiagnosticQuickFixWarn" }) do
-        pcall(vim.api.nvim_buf_del_user_command, bufnr, command) -- Ignore error if command doesn't exist
-      end
+    -- Delete user commands
+    for _, command in ipairs({
+      "LspCodeAction",
+      "LspDeclaration",
+      "LspDocumentSymbol",
+      "LspDefinition",
+      "LspDetach",
+      "LspFormat",
+      "LspHover",
+      "LspImplementation",
+      "LspReferences",
+      "LspRename",
+      "LspSignatureHelp",
+      "LspTypeDefinition",
+      "LspWorkspaceFolders",
+      "LspDiagnosticQuickFixAll",
+      "LspDiagnosticQuickFixError",
+      "LspDiagnosticQuickFixWarn" }) do
+      pcall(vim.api.nvim_buf_del_user_command, bufnr, command) -- Ignore error if command doesn't exist
     end
   end,
 })
