@@ -29,6 +29,9 @@ fzf.setup {
     },
     previewer = false,
   },
+  keymap = {
+    fzf = {}, -- completely overriding fzf '--bind=' options
+  },
   tabs = {
     actions = {
       ["ctrl-v"] = false,
