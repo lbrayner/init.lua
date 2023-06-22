@@ -40,14 +40,24 @@ fzf.setup {
 }
 
 local function files()
+  local success, session = pcall(require, "lbrayner.session.fzf")
+
   if vim.fn.executable("find_file_cache") > 0 then
+    if success then
+      return fzf.files({ cmd=string.format("find_file_cache -c '%s'", session.get_cache_dir()) })
+    end
     return fzf.files({ cmd="find_file_cache" })
   end
   fzf.files()
 end
 
 local function files_clear_cache()
+  local success, session = pcall(require, "lbrayner.session.fzf")
+
   if vim.fn.executable("find_file_cache") > 0 then
+    if success then
+      return fzf.files({ cmd=string.format("find_file_cache -c '%s' -C", session.get_cache_dir()) })
+    end
     return fzf.files({ cmd="find_file_cache -C" })
   end
   vim.cmd.echoerr("'find_file_cache not executable.'")
