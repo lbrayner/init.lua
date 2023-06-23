@@ -244,15 +244,17 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   group = lspconfig_custom,
   desc = "New buffers attach to LS managed by lspconfig even when autostart is false",
   callback = function(args)
+    local bufnr = args.buf
     for _, client in ipairs(vim.lsp.get_active_clients()) do
       if vim.tbl_get(client, "config", "workspace_folders") then
-        local names = vim.tbl_map(function (workspace_folder)
+        local folder_names = vim.tbl_map(function (workspace_folder)
           return workspace_folder.name
         end, client.config.workspace_folders)
-        for _, name in ipairs(names) do
-          if vim.startswith(vim.api.nvim_buf_get_name(args.buf), name) then
-            if vim.fn.exists("#lspconfig#BufReadPost#" .. name .. "/*") == 1 then
-              return vim.cmd("doautocmd lspconfig BufReadPost " .. name .. "/*")
+        for _, folder_name in ipairs(folder_names) do
+          local bufname = vim.api.nvim_buf_get_name(bufnr)
+          if vim.startswith(bufname, folder_name) then
+            if vim.fn.exists("#lspconfig#BufReadPost#" .. folder_name .. "/*") == 1 then
+              return vim.cmd("doautocmd lspconfig BufReadPost " .. bufname)
             end
           end
         end
