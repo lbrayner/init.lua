@@ -129,16 +129,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
       clients = vim.lsp.get_active_clients({ bufnr = bufnr })
     end
 
-    if #clients == 0 then
-      return
-    end
+    if #clients == 0 then return end
 
     on_attach(nil, bufnr)
 
     local names = vim.tbl_map(function (client)
       return client.name
     end, clients)
-    local stl_lsp = table.concat(names,",")
+    local stl_lsp = table.concat(names, ",") -- joining items with a separator
 
     -- Custom statusline
     vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
@@ -159,9 +157,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
       clients = vim.lsp.get_active_clients({ bufnr = bufnr })
     end
 
-    if #clients == 0 then
-      return
-    end
+    if #clients == 0 then return end
 
     -- Restore the statusline
     vim.b[bufnr].Statusline_custom_rightline = nil
