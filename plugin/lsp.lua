@@ -54,7 +54,7 @@ local function on_attach(_, bufnr)
 
   -- Mappings
   local bufopts = { buffer=bufnr }
-  vim.keymap.set("n", "<F11>", vim.lsp.buf.code_action, bufopts)
+  vim.keymap.set({ "n", "v" }, "<F11>", vim.lsp.buf.code_action, bufopts)
   vim.keymap.set("n", "gD", declaration, bufopts)
   vim.keymap.set("n", "gd", definition, bufopts)
   vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
