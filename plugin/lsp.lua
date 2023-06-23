@@ -53,7 +53,7 @@ local function on_attach(_, bufnr)
   vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 
   -- Mappings
-  local bufopts = { buffer=bufnr }
+  local bufopts = { buffer = bufnr }
   vim.keymap.set({ "n", "v" }, "<F11>", vim.lsp.buf.code_action, bufopts)
   vim.keymap.set("n", "gD", declaration, bufopts)
   vim.keymap.set("n", "gd", definition, bufopts)
@@ -73,49 +73,49 @@ local function on_attach(_, bufnr)
       }
     end
     vim.lsp.buf.code_action({ range = range })
-  end, { nargs=0, range=true })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDeclaration", declaration, { nargs=0 })
+  end, { nargs = 0, range = true })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspDeclaration", declaration, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDocumentSymbol", vim.lsp.buf.document_symbol, {
-    nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDefinition", definition, { nargs=0 })
+    nargs = 0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspDefinition", definition, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDetach", function()
     for _, client in ipairs(vim.lsp.get_active_clients()) do
       vim.lsp.buf_detach_client(0, client.id)
     end
-  end, { nargs=0 })
+  end, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspFormat", function()
-    vim.lsp.buf.format({ async=true })
-  end, { nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspHover", vim.lsp.buf.hover, { nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspImplementation", implementation, { nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspReferences", vim.lsp.buf.references, { nargs=0 })
+    vim.lsp.buf.format({ async = true })
+  end, { nargs = 0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspHover", vim.lsp.buf.hover, { nargs = 0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspImplementation", implementation, { nargs = 0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspReferences", vim.lsp.buf.references, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspRename", function(command)
     local name = command.args
     if name and name ~= "" then
       return vim.lsp.buf.rename(name)
     end
     vim.lsp.buf.rename()
-  end, { nargs="?" })
+  end, { nargs = "?" })
   vim.api.nvim_buf_create_user_command(bufnr, "LspSignatureHelp", vim.lsp.buf.signature_help, {
-    nargs=0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspTypeDefinition", type_definition, { nargs=0 })
+    nargs = 0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspTypeDefinition", type_definition, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceFolders", function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end, { nargs=0 })
+  end, { nargs = 0 })
 
   -- Diagnostic on quickfix
   vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixAll", function()
     lsp_setqflist({}, bufnr)
-  end, { nargs=0 })
+  end, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixError", function()
-    lsp_setqflist({ severity=vim.diagnostic.severity.ERROR }, bufnr)
-  end, { nargs=0 })
+    lsp_setqflist({ severity = vim.diagnostic.severity.ERROR }, bufnr)
+  end, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixWarn", function()
-    lsp_setqflist({ severity={ min=vim.diagnostic.severity.WARN } }, bufnr)
-  end, { nargs=0 })
+    lsp_setqflist({ severity = { min = vim.diagnostic.severity.WARN } }, bufnr)
+  end, { nargs = 0 })
 end
 
-local lsp_setup = vim.api.nvim_create_augroup("lsp_setup", { clear=true })
+local lsp_setup = vim.api.nvim_create_augroup("lsp_setup", { clear = true })
 
 vim.api.nvim_create_autocmd("LspAttach", {
   group = lsp_setup,
@@ -189,25 +189,25 @@ vim.api.nvim_create_autocmd("LspDetach", {
 vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
   group = lsp_setup,
   callback = function()
-    if vim.startswith(vim.fn.getqflist({ title=true }).title, "LSP Diagnostics") then
+    if vim.startswith(vim.fn.getqflist({ title = true }).title, "LSP Diagnostics") then
       vim.diagnostic.setqflist(vim.tbl_extend("error", quickfix_diagnostics_opts, {
-        open=false
+        open = false
       }))
     end
   end,
 })
 
 declaration = function()
-  vim.lsp.buf.declaration({ reuse_win=true })
+  vim.lsp.buf.declaration({ reuse_win = true })
 end
 definition = function()
-  vim.lsp.buf.definition({ reuse_win=true })
+  vim.lsp.buf.definition({ reuse_win = true })
 end
 implementation = function()
-  vim.lsp.buf.implementation({ on_list=on_list })
+  vim.lsp.buf.implementation({ on_list = on_list })
 end
 type_definition = function()
-  vim.lsp.buf.type_definition({ reuse_win=reuse_win })
+  vim.lsp.buf.type_definition({ reuse_win = reuse_win })
 end
 
 on_list = function(options)
@@ -223,7 +223,7 @@ on_list = function(options)
 end
 
 lsp_setqflist = function(opts, bufnr)
-  local active_clients = vim.lsp.get_active_clients({bufnr=bufnr})
+  local active_clients = vim.lsp.get_active_clients({ bufnr = bufnr })
   if #active_clients ~= 1 then
     quickfix_diagnostics_opts = vim.tbl_extend("error", opts, {
       title = "LSP Diagnostics"
@@ -238,7 +238,7 @@ lsp_setqflist = function(opts, bufnr)
   vim.diagnostic.setqflist(quickfix_diagnostics_opts)
 end
 
-local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear=true })
+local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear = true })
 
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   group = lspconfig_custom,
