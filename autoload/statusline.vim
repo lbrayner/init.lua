@@ -30,12 +30,15 @@ function! statusline#VersionControl()
     endif
     let branch = FugitiveHead()
     if branch == ""
+        let branch = fugitive#Head(7)
+    endif
+    if branch == ""
         return ""
     endif
-    if len(branch) > 20
-        return " " . FugitiveHead()[0:17]."..."
+    if len(branch) > 30
+        return " " . branch[0:19]."...".branch[-7:]
     endif
-    return " " . FugitiveHead()
+    return " " . branch
 endfunction
 
 function! s:GetLineFormat()
