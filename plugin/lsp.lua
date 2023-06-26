@@ -242,7 +242,7 @@ local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear
 
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   group = lspconfig_custom,
-  desc = "New buffers attach to LS managed by lspconfig even when autostart is false",
+  desc = "New buffers attach to language servers managed by lspconfig even when autostart is false",
   callback = function(args)
     local bufnr = args.buf
     for _, client in ipairs(vim.lsp.get_active_clients()) do
