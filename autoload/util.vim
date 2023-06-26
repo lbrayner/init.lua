@@ -20,26 +20,26 @@ function! util#GetComparableNodeName(filename)
     return node
 endfunction
 
-function! s:truncateNode(filename,maxlength,...)
+function! s:truncateNode(filename, maxlength,...)
     if len(a:filename) <= a:maxlength
         return a:filename
     endif
     if len(fnamemodify(a:filename,":t")) < a:maxlength
-        " -1 (forward slash), -3 (three dots)
+        " -1 (forward slash), -1 (horizontal ellipsis …)
         let trunc_fname_head=strpart(fnamemodify(a:filename,":h"),0,
-                    \a:maxlength-len(fnamemodify(a:filename,":t"))-1-3)
-        return trunc_fname_head.".../".fnamemodify(a:filename,":t")
+                    \a:maxlength-len(fnamemodify(a:filename,":t"))-1-1)
+        return trunc_fname_head."…/".fnamemodify(a:filename,":t")
     endif
     if a:0 > 0 && a:1
         if fnamemodify(a:filename,":e") != ""
-            " -1 (a dot), -3 (three dots)
+            " -1 (a dot), -1 (horizontal ellipsis …)
             let trunc_fname_tail=strpart(fnamemodify(a:filename,":t"),0,
-                        \a:maxlength-len(fnamemodify(a:filename,":e"))-1-3)
-            return trunc_fname_tail."....".fnamemodify(a:filename,":e")
+                        \a:maxlength-len(fnamemodify(a:filename,":e"))-1-1)
+            return trunc_fname_tail."…".fnamemodify(a:filename,":e")
         endif
     endif
-    let trunc_fname_tail=strpart(fnamemodify(a:filename,":t"),0,a:maxlength-3)
-    return trunc_fname_tail."..."
+    let trunc_fname_tail=strpart(fnamemodify(a:filename,":t"),0,a:maxlength-1)
+    return trunc_fname_tail."…"
 endfunction
 
 function! util#truncateFilename(filename,maxlength,...)
