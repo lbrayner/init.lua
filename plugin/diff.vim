@@ -34,6 +34,7 @@ function! s:MaybeUpdateConflictMarkers(bufnr)
         if getbufvar(qfbufnr, "conflict_marker_tick") < b:changedtick
             if !s:UpdateConflictMarkers(a:bufnr)
                 lclose
+                call s:ClearConflictMarkersAutocmd(a:bufnr)
                 return
             endif
             call setbufvar(qfbufnr, "conflict_marker_tick", b:changedtick)
