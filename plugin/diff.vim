@@ -26,6 +26,7 @@ function! s:ClearConflictMarkersAutocmd(bufnr)
 endfunction
 
 function! s:MaybeUpdateConflictMarkers(bufnr)
+    " After a BufWritePost, do nothing if bufnr is not current
     if bufnr() != a:bufnr
         return
     endif
