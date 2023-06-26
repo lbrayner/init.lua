@@ -1,4 +1,4 @@
-local lspconfig = require "lspconfig.server_configurations.jdtls"
+local lspconfig = require("lspconfig.server_configurations.jdtls")
 
 local M = {}
 
