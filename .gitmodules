@@ -1,9 +1,6 @@
 [submodule "pack/bundle/start/CamelCaseMotion"]
 	path = pack/bundle/start/CamelCaseMotion
 	url = https://github.com/bkad/CamelCaseMotion.git
-[submodule "pack/bundle/start/ctrlp.vim"]
-	path = pack/bundle/opt/ctrlp.vim
-	url = https://github.com/ctrlpvim/ctrlp.vim.git
 [submodule "pack/bundle/start/linediff.vim"]
 	path = pack/bundle/start/linediff.vim
 	url = https://github.com/AndrewRadev/linediff.vim.git
