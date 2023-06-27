@@ -60,12 +60,6 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
     callback = function(args)
       local bufnr = args.buf
 
-      if vim.tbl_get(args, "data") then
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
-        -- TODO disabling semantic highlighting for now
-        client.server_capabilities.semanticTokensProvider = nil
-      end
-
       -- Mappings
       local bufopts = { buffer=bufnr }
       -- Go to top level declaration
