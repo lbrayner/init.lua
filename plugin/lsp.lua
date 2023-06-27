@@ -39,6 +39,7 @@ require("lspconfig").lua_ls.setup {
 
 local declaration
 local definition
+local get_range
 local implementation
 local type_definition
 local on_list
@@ -65,14 +66,7 @@ local function on_attach(_, bufnr)
 
   -- Commands
   vim.api.nvim_buf_create_user_command(bufnr, "LspCodeAction", function(command)
-    local range
-    if command.line1 ~= command.line2 then
-      range = {
-        start = vim.api.nvim_buf_get_mark(0, "<"),
-        ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
-      }
-    end
-    vim.lsp.buf.code_action({ range = range })
+    vim.lsp.buf.code_action({ range = get_range(command.line1, command.line2) })
   end, { nargs = 0, range = true })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDeclaration", declaration, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDocumentSymbol", vim.lsp.buf.document_symbol, {
@@ -83,9 +77,9 @@ local function on_attach(_, bufnr)
       vim.lsp.buf_detach_client(0, client.id)
     end
   end, { nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspFormat", function()
-    vim.lsp.buf.format({ async = true })
-  end, { nargs = 0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspFormat", function(command)
+    vim.lsp.buf.format({ async = true, range = get_range(command.line1, command.line2) })
+  end, { nargs = 0, range = true })
   vim.api.nvim_buf_create_user_command(bufnr, "LspHover", vim.lsp.buf.hover, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspImplementation", implementation, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspReferences", vim.lsp.buf.references, { nargs = 0 })
@@ -220,6 +214,23 @@ on_list = function(options)
     return
   end
   vim.cmd("botright copen")
+end
+
+get_range = function(line1, line2)
+  -- Visual selection
+  local range = {
+    start = vim.api.nvim_buf_get_mark(0, "<"),
+    ["end"] = vim.api.nvim_buf_get_mark(0, ">")
+  }
+  if line1 ~= range.start[1] or
+    line2 ~= range["end"][1] then
+    -- Supplied range inferred
+    range = {
+      start = { line1, 0 },
+      ["end"] = { line2, 2147483647 }, -- Maximum line length (vi_diff.txt)
+    }
+  end
+  return range
 end
 
 lsp_setqflist = function(opts, bufnr)
