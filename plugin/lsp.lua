@@ -10,6 +10,7 @@ require("lspconfig").pyright.setup {
   autostart = false,
 }
 
+-- Lua
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#lua_ls
 require("lspconfig").lua_ls.setup {
   autostart = false,
@@ -39,10 +40,10 @@ require("lspconfig").lua_ls.setup {
 
 local declaration
 local definition
-local get_range
 local implementation
 local type_definition
 local on_list
+local get_range
 local quickfix_diagnostics_opts = {}
 local lsp_setqflist
 
@@ -66,7 +67,7 @@ local function on_attach(_, bufnr)
 
   -- Commands
   vim.api.nvim_buf_create_user_command(bufnr, "LspCodeAction", function(command)
-    vim.lsp.buf.code_action({ range = get_range(command.line1, command.line2) })
+    vim.lsp.buf.code_action({ range = get_range(command) })
   end, { nargs = 0, range = true })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDeclaration", declaration, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDocumentSymbol", vim.lsp.buf.document_symbol, {
@@ -78,7 +79,7 @@ local function on_attach(_, bufnr)
     end
   end, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspFormat", function(command)
-    vim.lsp.buf.format({ async = true, range = get_range(command.line1, command.line2) })
+    vim.lsp.buf.format({ async = true, range = get_range(command) })
   end, { nargs = 0, range = "%" })
   vim.api.nvim_buf_create_user_command(bufnr, "LspHover", vim.lsp.buf.hover, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspImplementation", implementation, { nargs = 0 })
@@ -201,7 +202,7 @@ implementation = function()
   vim.lsp.buf.implementation({ on_list = on_list })
 end
 type_definition = function()
-  vim.lsp.buf.type_definition({ reuse_win = reuse_win })
+  vim.lsp.buf.type_definition({ reuse_win = true })
 end
 
 on_list = function(options)
@@ -216,18 +217,18 @@ on_list = function(options)
   vim.cmd("botright copen")
 end
 
-get_range = function(line1, line2)
+get_range = function(command)
   -- Visual selection
   local range = {
     start = vim.api.nvim_buf_get_mark(0, "<"),
     ["end"] = vim.api.nvim_buf_get_mark(0, ">")
   }
-  if line1 ~= range.start[1] or
-    line2 ~= range["end"][1] then
+  if command.line1 ~= range.start[1] or
+    command.line2 ~= range["end"][1] then
     -- Supplied range inferred
     range = {
-      start = { line1, 0 },
-      ["end"] = { line2, 2147483647 }, -- Maximum line length (vi_diff.txt)
+      start = { command.line1, 0 },
+      ["end"] = { command.line2, 2147483647 }, -- Maximum line length (vi_diff.txt)
     }
   end
   return range
