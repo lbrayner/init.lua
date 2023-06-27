@@ -353,43 +353,25 @@ if v:vim_did_enter
     doautocmd Aesthetics VimEnter
 endif
 
-augroup VidirFiletype
+augroup SetFiletype
     autocmd!
+    autocmd BufNewFile,BufRead .ignore set filetype=gitignore
+    autocmd BufNewFile,BufRead *.redis set filetype=redis
+    autocmd TermOpen * set filetype=terminal
     autocmd BufNewFile,BufRead /tmp/dir*
                 \ if argc() == 1 && argv(0) =~# '^/tmp/dir\w\{5}$' |
                 \     set filetype=vidir |
                 \ endif
-augroup END
-
-augroup TerminalFiletype
-    autocmd!
-    autocmd TermOpen * set filetype=terminal
-augroup END
-
-augroup WsdlFiletype
-    autocmd!
     autocmd BufNewFile,BufRead *.wsdl set filetype=xml " Web Services Description Language
 augroup END
 
-augroup RedisFiletype
-    autocmd!
-    autocmd BufNewFile,BufRead *.redis set filetype=redis
-augroup END
-
-augroup IgnoreFileType
-    autocmd!
-    autocmd BufNewFile,BufRead .ignore set filetype=gitignore
-augroup END
-
+" Simulate Emacs' Fundamental mode
 augroup DefaultFileType
     autocmd BufEnter *
                 \ if &filetype == "" |
                 \     set filetype=text | let b:default_filetype = 1 |
                 \ endif
-augroup END
-
-augroup DetectFileType
-    autocmd BufWritePre *
+    autocmd BufWritePre * " Detect filetype after the first write
                 \ if exists("b:default_filetype") |
                 \     setlocal infercase< | setlocal textwidth< | filetype detect |
                 \     unlet b:default_filetype |
