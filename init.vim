@@ -376,6 +376,11 @@ augroup RedisFiletype
     autocmd BufNewFile,BufRead *.redis set filetype=redis
 augroup END
 
+augroup IgnoreFileType
+    autocmd!
+    autocmd BufNewFile,BufRead .ignore set filetype=gitignore
+augroup END
+
 augroup DefaultFileType
     autocmd BufEnter *
                 \ if &filetype == "" |
