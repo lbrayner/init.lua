@@ -11,15 +11,6 @@ function! util#setupMatchit()
     endif
 endfunction
 
-function! util#GetComparableNodeName(filename)
-    let node = resolve(substitute(fnamemodify(a:filename,":p"),'\','/','g'))
-    let node = substitute(node,"/$","","")
-    if has("win32") || has ("win64")
-        return tolower(node)
-    endif
-    return node
-endfunction
-
 function! util#truncateFilename(filename, maxlength)
     if len(a:filename) <= a:maxlength
         return a:filename
@@ -83,14 +74,6 @@ endfunction
 
 function! util#WindowIsFloating()
     return nvim_win_get_config(0).relative != ""
-endfunction
-
-function! util#IsVimBundle()
-    return filereadable("init.vim")
-endfunction
-
-function! util#IsEclipseProject()
-    return filereadable(".project")
 endfunction
 
 function! util#Options(...)
