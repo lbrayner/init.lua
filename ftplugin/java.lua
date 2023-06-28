@@ -53,6 +53,10 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
     end
   end
 
+  local function java_type_hierarchy()
+    require("lbrayner.jdtls").java_type_hierarchy(true)
+  end
+
   vim.api.nvim_create_autocmd("LspAttach", {
     group = jdtls_setup,
     pattern = { config.root_dir .. "/*.java", "jdt://*", "*.class" },
@@ -62,12 +66,8 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
 
       -- Mappings
       local bufopts = { buffer=bufnr }
-      -- Go to top level declaration
       vim.keymap.set("n", "gC", require("lbrayner.jdtls").java_go_to_top_level_declaration, bufopts)
-      -- Type hierarchy
-      vim.keymap.set("n", "gD", function()
-        require("lbrayner.jdtls").java_type_hierarchy(true)
-      end, bufopts)
+      vim.keymap.set("n", "gY", java_type_hierarchy, bufopts)
 
       -- Custom statusline
       if string.find(vim.api.nvim_buf_get_name(bufnr), "jdt://", 1) ~= 1 then
@@ -77,16 +77,19 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
           ' %{statusline#StatusFlag()}%*'
       end
 
-      -- Setup buffer local commands
+      -- Commands
+      vim.api.nvim_buf_create_user_command(bufnr, "JdtGoToTopLevelDeclaration",
+        require("lbrayner.jdtls").java_go_to_top_level_declaration, { nargs=0 })
+      vim.api.nvim_buf_create_user_command(bufnr, "JdtOrganizeImports", require("jdtls").organize_imports, {
+        nargs=0
+      })
       vim.api.nvim_buf_create_user_command(bufnr, "JdtStop", function(_command)
         local client = vim.lsp.get_active_clients({ name="jdtls" })[1]
-        if not client then
-          return
-        end
+        if not client then return end
         vim.api.nvim_del_augroup_by_name("jdtls_setup")
         vim.lsp.stop_client(client.id)
       end, { nargs=0 })
-      vim.api.nvim_buf_create_user_command(bufnr, "JdtOrganizeImports", require("jdtls").organize_imports, {
+      vim.api.nvim_buf_create_user_command(bufnr, "JdtTypeHierarchy", java_type_hierarchy, {
         nargs=0
       })
 
@@ -109,8 +112,10 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
 
       -- Delete user commands
       for _, command in ipairs({
-        "JdtStop",
+        "JdtGoToTopLevelDeclaration",
         "JdtOrganizeImports",
+        "JdtStop",
+        "JdtTypeHierarchy",
         "JdtCompile",
         "JdtSetRuntime",
         "JdtUpdateConfig",
@@ -118,9 +123,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
         "JdtBytecode",
         "JdtJshell",
         "JdtRestart" }) do
-        if vim.api.nvim_buf_get_commands(bufnr, {})[command] then
-          vim.api.nvim_buf_del_user_command(bufnr, command)
-        end
+        pcall(vim.api.nvim_buf_del_user_command, bufnr, command) -- Ignore error if command doesn't exist
       end
     end,
   })
