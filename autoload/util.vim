@@ -20,34 +20,17 @@ function! util#GetComparableNodeName(filename)
     return node
 endfunction
 
-function! s:truncateNode(filename, maxlength,...)
+function! util#truncateFilename(filename, maxlength)
     if len(a:filename) <= a:maxlength
         return a:filename
     endif
-    if len(fnamemodify(a:filename,":t")) < a:maxlength
+    let head = fnamemodify(a:filename, ":h")
+    let tail = fnamemodify(a:filename, ":t")
+    if head != "." && len(tail) < a:maxlength
         " -1 (forward slash), -1 (horizontal ellipsis …)
-        let trunc_fname_head=strpart(fnamemodify(a:filename,":h"),0,
-                    \a:maxlength-len(fnamemodify(a:filename,":t"))-1-1)
-        return trunc_fname_head."…/".fnamemodify(a:filename,":t")
+        return head[0:(a:maxlength - len(tail) - 1 - 1 - 1)]."…/".tail
     endif
-    if a:0 > 0 && a:1
-        if fnamemodify(a:filename,":e") != ""
-            " -1 (a dot), -1 (horizontal ellipsis …)
-            let trunc_fname_tail=strpart(fnamemodify(a:filename,":t"),0,
-                        \a:maxlength-len(fnamemodify(a:filename,":e"))-1-1)
-            return trunc_fname_tail."…".fnamemodify(a:filename,":e")
-        endif
-    endif
-    let trunc_fname_tail=strpart(fnamemodify(a:filename,":t"),0,a:maxlength-1)
-    return trunc_fname_tail."…"
-endfunction
-
-function! util#truncateFilename(filename,maxlength,...)
-    return s:truncateNode(a:filename,a:maxlength,1)
-endfunction
-
-function! util#truncateDirname(dirname,maxlength)
-    return s:truncateNode(a:dirname,a:maxlength)
+    return tail[0:(a:maxlength/2 - 1)]."…".tail[(-(a:maxlength/2 - 1)):]
 endfunction
 
 " a string or a 0-arg funcref
