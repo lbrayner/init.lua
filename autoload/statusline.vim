@@ -109,9 +109,24 @@ endfunction
 " margins of 1 column (on both sides)
 " TODO is vim-fugitive information necessary here?
 function! statusline#DefineModifiedStatusLine()
-    let filename = statusline#Filename()
+    " Fugitive blame
+    if exists("*FugitiveResult") &&
+                \has_key(FugitiveResult(bufnr()), "filetype") &&
+                \has_key(FugitiveResult(bufnr()), "blame_file") &&
+                \FugitiveResult(bufnr()).filetype == "fugitiveblame"
+        let &l:statusline=" Fugitive blame %<%1*%{statusline#StatusFlag()}%*%="
+        let &l:statusline.=s:BufferPosition()
+        return
+    endif
+
+    let rightline = ""
+    if exists("b:Statusline_custom_rightline")
+        let rightline.=b:Statusline_custom_rightline
+    endif
+    let rightline.=statusline#GetStatusLineTail()
+
     if exists("b:Statusline_custom_mod_leftline")
-        exec "let &l:statusline=' ".b:Statusline_custom_mod_leftline."'"
+        let &l:statusline=" ".b:Statusline_custom_mod_leftline
     " Fugitive summary
     elseif getbufvar(bufnr(),"fugitive_type") ==# "index"
         let &l:statusline=" "
@@ -119,33 +134,26 @@ function! statusline#DefineModifiedStatusLine()
             let &l:statusline.="%5*Previewing:%* "
         endif
         let &l:statusline.="Fugitive summary%* %<%1 %{statusline#StatusFlag()}%*"
-    " Fugitive blame
-    elseif exists("*FugitiveResult") &&
-                \has_key(FugitiveResult(bufnr()), "filetype") &&
-                \has_key(FugitiveResult(bufnr()), "blame_file") &&
-                \FugitiveResult(bufnr()).filetype == "fugitiveblame"
-        let &l:statusline=" Fugitive blame %<%1*%{statusline#StatusFlag()}%*%="
-        let &l:statusline.=s:BufferPosition()
-        return
     " Fugitive temporary buffers
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
-        let filename = s:FugitiveTemporaryBuffer()
+        let fugitive_temp_buf = s:FugitiveTemporaryBuffer()
         let &l:statusline=" "
         if &previewwindow
             let &l:statusline.="%5*Previewing%* "
         endif
-        let &l:statusline.="%9*Fugitive:%* %<%1".filename." %{statusline#StatusFlag()}%*"
-    elseif &previewwindow
-        let &l:statusline = " %5*Previewing:%* "
-        let &l:statusline.="%<%1*".filename." %{statusline#StatusFlag()}%*"
+        let &l:statusline.="%9*Fugitive:%* %<%1".fugitive_temp_buf." %{statusline#StatusFlag()}%*"
     else
-        let &l:statusline=" %<%1*".filename." %{statusline#StatusFlag()}%*"
+        let filename = statusline#Filename()
+
+        if &previewwindow
+            let &l:statusline = " %5*Previewing:%* "
+            let &l:statusline.="%<%1*".filename." %{statusline#StatusFlag()}%*"
+        else
+            let &l:statusline=" %<%1*".filename." %{statusline#StatusFlag()}%*"
+        endif
     endif
-    let &l:statusline.=" %="
-    if exists("b:Statusline_custom_mod_rightline")
-        let &l:statusline.=b:Statusline_custom_mod_rightline
-    endif
-    let &l:statusline.=statusline#GetStatusLineTail()
+
+    let &l:statusline.=" %=".rightline
 endfunction
 
 " margins of 1 column (on both sides)
@@ -230,7 +238,12 @@ endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineStatusLine()
-    let filename = statusline#Filename()
+    let rightline = ""
+    if exists("b:Statusline_custom_rightline")
+        let rightline.=b:Statusline_custom_rightline
+    endif
+    let rightline.=statusline#GetStatusLineTail()
+
     if exists("b:Statusline_custom_leftline")
         exec "let &l:statusline=' ".b:Statusline_custom_leftline."'"
     " Fugitive summary
@@ -250,33 +263,34 @@ function! statusline#DefineStatusLine()
         return
     " Fugitive temporary buffers
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
-        let filename = s:FugitiveTemporaryBuffer()
+        let fugitive_temp_buf = s:FugitiveTemporaryBuffer()
         let &l:statusline=" "
         if &previewwindow
             let &l:statusline.="%5*Previewing%* "
         endif
-        let &l:statusline.="%9*Fugitive:%* %<".filename." %1*%{statusline#StatusFlag()}%*"
-    elseif &previewwindow
-        if expand("%") == ""
-            let &l:statusline=" %<[Preview] %1*%{statusline#StatusFlag()}%*"
-        else
-            let &l:statusline=" %5*Previewing:%* %<".filename.
-                        \" %1*%{statusline#StatusFlag()}%*"
-        endif
+        let &l:statusline.="%9*Fugitive:%* %<".fugitive_temp_buf." %1*%{statusline#StatusFlag()}%*"
     elseif util#isQuickfixOrLocationList()
         let &l:statusline=" %<%5*%f%* %{util#getQuickfixOrLocationListTitle()}"
     elseif getcmdwintype() != ""
         let &l:statusline = " %<%5*[Command Line]%*"
-    elseif &buftype == "nofile"
-        let &l:statusline=" %<%5*".filename." %1*%{statusline#StatusFlag()}%*"
     else
-        let &l:statusline=" %<".filename." %1*%{statusline#StatusFlag()}%*"
+        let filename = statusline#Filename()
+
+        if &previewwindow
+            if expand("%") == ""
+                let &l:statusline=" %<[Preview] %1*%{statusline#StatusFlag()}%*"
+            else
+                let &l:statusline=" %5*Previewing:%* %<".filename.
+                            \" %1*%{statusline#StatusFlag()}%*"
+            endif
+        elseif &buftype == "nofile"
+            let &l:statusline=" %<%5*".filename." %1*%{statusline#StatusFlag()}%*"
+        else
+            let &l:statusline=" %<".filename." %1*%{statusline#StatusFlag()}%*"
+        endif
     endif
-    let &l:statusline.=" %="
-    if exists("b:Statusline_custom_rightline")
-        let &l:statusline.=b:Statusline_custom_rightline
-    endif
-    let &l:statusline.=statusline#GetStatusLineTail()
+
+    let &l:statusline.=" %=".rightline
 endfunction
 
 function! statusline#Highlight(dict)
