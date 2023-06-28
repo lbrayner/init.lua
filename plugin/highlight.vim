@@ -39,8 +39,10 @@ function! HighlightTrailingWhitespace()
     endif
     if &syntax ==# "git"
         call ClearTrailingWhitespace()
+        " Commit message paragraphs
+        " Git branch graphs
         call matchadd("TrailingWhitespace",
-                    \'^\%( \{4}\zs\s\+\|[| ]\+| \{5}\zs\s\+\)$')
+                    \'\%(^ \{4}\zs\s\+\|^[| ]\+| \{5}\zs\s\+\|[^ 	]\+\zs\s\+\)$')
         return
     endif
     " Neogit
