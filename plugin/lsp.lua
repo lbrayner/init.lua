@@ -205,16 +205,41 @@ type_definition = function()
   vim.lsp.buf.type_definition({ reuse_win = true })
 end
 
+-- From vim.lsp.util
+local function bufwinid(bufnr)
+  local win = vim.fn.bufwinid(bufnr)
+  if win > 0 then return win end
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_get_buf(win) == bufnr then
+      return win
+    end
+  end
+end
+
+-- From vim.lsp.util
+local function create_window_new_tab()
+  vim.cmd.tabnew()
+  return vim.api.nvim_get_current_win()
+end
+
 on_list = function(options)
-  vim.fn.setqflist({}, " ", options)
-  if #options.items == 1  then
-    local switchbuf = vim.go.switchbuf
-    vim.go.switchbuf = "usetab,newtab"
-    vim.cmd("cfirst")
-    vim.go.switchbuf = switchbuf
+  if #options.items > 1  then
+    vim.fn.setqflist({}, " ", options)
+    vim.cmd("botright copen")
     return
   end
-  vim.cmd("botright copen")
+  local item = options.items[1]
+  -- From vim.lsp.util.show_document
+  local bufnr = vim.fn.bufadd(item.filename)
+  vim.bo[bufnr].buflisted = true
+  local win = bufwinid(bufnr) or create_window_new_tab()
+  vim.api.nvim_win_set_buf(win, bufnr)
+  vim.api.nvim_set_current_win(win)
+  vim.api.nvim_win_set_cursor(win, { item.lnum, (item.col - 1) })
+  vim.api.nvim_win_call(win, function()
+    -- Open folds under the cursor
+    vim.cmd("normal! zv")
+  end)
 end
 
 get_range = function(command)
