@@ -205,7 +205,7 @@ type_definition = function()
   vim.lsp.buf.type_definition({ reuse_win = true })
 end
 
--- From vim.lsp.util
+-- From vim.lsp.util.bufwinid
 local function bufwinid(bufnr)
   local win = vim.fn.bufwinid(bufnr)
   if win > 0 then return win end
@@ -216,22 +216,8 @@ local function bufwinid(bufnr)
   end
 end
 
--- From vim.lsp.util
-local function create_window_new_tab()
-  vim.cmd.tabnew()
-  return vim.api.nvim_get_current_win()
-end
-
-on_list = function(options)
-  if #options.items > 1  then
-    vim.fn.setqflist({}, " ", options)
-    vim.cmd("botright copen")
-    return
-  end
-  local item = options.items[1]
+local function go_to_result(win, bufnr, qfitem)
   -- From vim.lsp.util.show_document
-  local bufnr = vim.fn.bufadd(item.filename)
-
   -- Save position in jumplist
   vim.cmd("normal! m'")
   -- Push a new item into tagstack
@@ -240,14 +226,49 @@ on_list = function(options)
   vim.fn.settagstack(vim.fn.win_getid(), { items = items }, "t")
 
   vim.bo[bufnr].buflisted = true
-  local win = bufwinid(bufnr) or create_window_new_tab()
+
   vim.api.nvim_win_set_buf(win, bufnr)
   vim.api.nvim_set_current_win(win)
-  vim.api.nvim_win_set_cursor(win, { item.lnum, (item.col - 1) })
+  vim.api.nvim_win_set_cursor(win, { qfitem.lnum, (qfitem.col - 1) })
   vim.api.nvim_win_call(win, function()
     -- Open folds under the cursor
     vim.cmd("normal! zv")
   end)
+end
+
+on_list = function(options)
+  if #options.items > 1  then
+    vim.fn.setqflist({}, " ", options)
+    vim.cmd("botright copen")
+    return
+  end
+  local qfitem = options.items[1]
+  local bufnr = vim.fn.bufadd(qfitem.filename)
+  local win = bufwinid(bufnr)
+
+  if not win then
+    vim.ui.select({
+      { command = "new", description = "Horizontal split" },
+      { command = "vnew", description = "Vertical split" },
+      { command = "tabnew", description = "Tab" } }, {
+      prompt = string.format("Open the only result (%s) in:",
+        vim.fn.fnamemodify(qfitem.filename, ":.")),
+      format_item = function(open_cmd) return open_cmd.description end,
+    }, function(open_cmd)
+      if not open_cmd then
+        return
+      end
+    -- From vim.lsp.util.create_window_without_focus
+      local prev = vim.api.nvim_get_current_win()
+      vim.cmd(open_cmd.command)
+      win = vim.api.nvim_get_current_win()
+      vim.api.nvim_set_current_win(prev)
+      go_to_result(win, bufnr, qfitem)
+    end)
+    return
+  end
+
+  go_to_result(win, bufnr, qfitem)
 end
 
 get_range = function(command)
