@@ -42,7 +42,6 @@ local declaration
 local definition
 local implementation
 local type_definition
-local on_list
 local get_range
 local quickfix_diagnostics_opts = {}
 local lsp_setqflist
@@ -192,19 +191,6 @@ vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
   end,
 })
 
-declaration = function()
-  vim.lsp.buf.declaration({ reuse_win = true })
-end
-definition = function()
-  vim.lsp.buf.definition({ reuse_win = true })
-end
-implementation = function()
-  vim.lsp.buf.implementation({ on_list = on_list })
-end
-type_definition = function()
-  vim.lsp.buf.type_definition({ reuse_win = true })
-end
-
 -- From vim.lsp.util.bufwinid
 local function bufwinid(bufnr)
   local win = vim.fn.bufwinid(bufnr)
@@ -226,7 +212,6 @@ local function go_to_result(win, bufnr, qfitem)
   vim.fn.settagstack(vim.fn.win_getid(), { items = items }, "t")
 
   vim.bo[bufnr].buflisted = true
-
   vim.api.nvim_win_set_buf(win, bufnr)
   vim.api.nvim_set_current_win(win)
   vim.api.nvim_win_set_cursor(win, { qfitem.lnum, (qfitem.col - 1) })
@@ -236,12 +221,13 @@ local function go_to_result(win, bufnr, qfitem)
   end)
 end
 
-on_list = function(options)
+local function on_list(options)
   if #options.items > 1  then
     vim.fn.setqflist({}, " ", options)
     vim.cmd("botright copen")
     return
   end
+
   local qfitem = options.items[1]
   local bufnr = vim.fn.bufadd(qfitem.filename)
   local win = bufwinid(bufnr)
@@ -258,17 +244,32 @@ on_list = function(options)
       if not open_cmd then
         return
       end
-    -- From vim.lsp.util.create_window_without_focus
+
+      -- From vim.lsp.util.create_window_without_focus
       local prev = vim.api.nvim_get_current_win()
       vim.cmd(open_cmd.command)
       win = vim.api.nvim_get_current_win()
       vim.api.nvim_set_current_win(prev)
+
       go_to_result(win, bufnr, qfitem)
     end)
     return
   end
 
   go_to_result(win, bufnr, qfitem)
+end
+
+declaration = function()
+  vim.lsp.buf.declaration({ reuse_win = true })
+end
+definition = function()
+  vim.lsp.buf.definition({ reuse_win = true })
+end
+implementation = function()
+  vim.lsp.buf.implementation({ on_list = on_list })
+end
+type_definition = function()
+  vim.lsp.buf.type_definition({ reuse_win = true })
 end
 
 get_range = function(command)
