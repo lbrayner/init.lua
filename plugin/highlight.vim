@@ -42,8 +42,7 @@ function! HighlightTrailingWhitespace()
         " Commit message paragraphs
         " Git branch graphs
         " Diffs
-        call matchadd("TrailingWhitespace",
-                    \'^\%( \{4}\zs\s\+\|[| ]\+| \{5}\zs\s\+\|[+-].*[^ 	]\+\zs\s\+\)$')
+        call matchadd("TrailingWhitespace", '^\%( \{4}\zs\s\+\|[| ]\+| \{5}\zs\s\+\|[+-].*[^ 	]\+\zs\s\+\)$')
         return
     endif
     " Neogit
