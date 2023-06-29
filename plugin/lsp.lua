@@ -231,6 +231,14 @@ on_list = function(options)
   local item = options.items[1]
   -- From vim.lsp.util.show_document
   local bufnr = vim.fn.bufadd(item.filename)
+
+  -- Save position in jumplist
+  vim.cmd("normal! m'")
+  -- Push a new item into tagstack
+  local from = { vim.fn.bufnr("%"), vim.fn.line("."), vim.fn.col("."), 0 }
+  local items = { { tagname = vim.fn.expand("<cword>"), from = from } }
+  vim.fn.settagstack(vim.fn.win_getid(), { items = items }, "t")
+
   vim.bo[bufnr].buflisted = true
   local win = bufwinid(bufnr) or create_window_new_tab()
   vim.api.nvim_win_set_buf(win, bufnr)
