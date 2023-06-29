@@ -97,8 +97,8 @@ local function tabs()
 end
 
 nvim_create_user_command("Buffers", buffers, { nargs=0 })
-nvim_create_user_command("Files", files, { nargs=0 })
 nvim_create_user_command("FilesClearCache", files_clear_cache, { nargs=0 })
+nvim_create_user_command("Files", files, { nargs=0 })
 nvim_create_user_command("Tabs", tabs, { nargs=0 })
 
 local opts = { silent=true }
