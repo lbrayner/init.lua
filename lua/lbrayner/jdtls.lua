@@ -5,13 +5,19 @@ local M = {}
 function M.get_config()
   return {
     cmd = lspconfig.default_config.cmd,
+    settings = {
+      java = {
+        settings = {
+          url = (function()
+            local prefs = vim.fn.fnamemodify("~/.config/nvim/config/jdtls/settings.prefs", ":p")
+            if vim.fn.filereadable(prefs) == 1 then
+              return prefs
+            end
+          end)(),
+        }
+      }
+    },
     root_dir = require("jdtls.setup").find_root({".git", "mvnw", "gradlew"}),
-    url = (function()
-      local prefs = vim.fn.fnamemodify("~/.config/nvim/config/jdtls/settings.prefs", ":p")
-      if vim.fn.filereadable(prefs) == 1 then
-        return prefs
-      end
-    end)(),
   }
 end
 
