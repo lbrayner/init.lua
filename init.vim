@@ -407,19 +407,6 @@ endif
 
 " Subsection: package customization {{{
 
-" vim-commentary
-augroup VimCommentary
-    autocmd!
-    autocmd FileType apache,crontab,debsources,desktop,fstab,samba setlocal commentstring=#\ %s
-    autocmd FileType sql setlocal commentstring=--\ %s
-augroup END
-
-" vim-surround
-augroup DisableSurroundIndent
-    autocmd!
-    autocmd FileType groovy,html,sql,xml let b:surround_indent = 0
-augroup END
-
 " CamelCase
 
 map <silent> <Leader>w <Plug>CamelCaseMotion_w
@@ -427,11 +414,33 @@ map <silent> <Leader>b <Plug>CamelCaseMotion_b
 map <silent> <Leader>e <Plug>CamelCaseMotion_e
 map <silent> <Leader>ge <Plug>CamelCaseMotion_ge
 
-" vim-rzip
-let g:rzipPlugin_extra_ext = "*.odt"
+" delimitMate
+
+augroup DelimitMateSetup
+    autocmd!
+    autocmd FileType *clojure*,lisp,racket,scheme let b:loaded_delimitMate = 1
+    autocmd FileType apache,html,xml let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
+    autocmd FileType sql let b:delimitMate_matchpairs = "(:),[:],{:}"
+augroup END
+
+" dirvish
+
+let g:loaded_netrwPlugin = 1
+command! -nargs=? -complete=dir Explore Dirvish <args>
+
+augroup DirvishSetup
+    autocmd!
+    autocmd FileType dirvish let b:Statusline_custom_leftline = '%<%{expand("%:h:t")}'
+augroup END
+
+" nvim-jdtls: skipping autocmds and commands
+let g:nvim_jdtls = 1
 
 " paredit
 let g:paredit_leader = '\'
+
+" reply.vim
+command! -nargs=0 ReplFile call reply#command#send(join(getline(1,line("$")),"\n"),0,0)
 
 " sneak
 
@@ -443,13 +452,11 @@ map T <Plug>Sneak_T
 map <Space>f <Plug>Sneak_s
 map <Space>F <Plug>Sneak_S
 
-" delimitMate
-
-augroup DelimitMateSetup
+" vim-commentary
+augroup VimCommentary
     autocmd!
-    autocmd FileType *clojure*,lisp,racket,scheme let b:loaded_delimitMate = 1
-    autocmd FileType apache,html,xml let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
-    autocmd FileType sql let b:delimitMate_matchpairs = "(:),[:],{:}"
+    autocmd FileType apache,crontab,debsources,desktop,fstab,samba setlocal commentstring=#\ %s
+    autocmd FileType sql setlocal commentstring=--\ %s
 augroup END
 
 " vim-quickhl
@@ -465,21 +472,14 @@ xmap <Space>w <Plug>(quickhl-manual-this-whole-word)
 nmap <Space>c <Plug>(quickhl-manual-clear)
 vmap <Space>c <Plug>(quickhl-manual-clear)
 
-" dirvish
+" vim-rzip
+let g:rzipPlugin_extra_ext = "*.odt"
 
-let g:loaded_netrwPlugin = 1
-command! -nargs=? -complete=dir Explore Dirvish <args>
-
-augroup DirvishSetup
+" vim-surround
+augroup DisableSurroundIndent
     autocmd!
-    autocmd FileType dirvish let b:Statusline_custom_leftline = '%<%{expand("%:h:t")}'
+    autocmd FileType groovy,html,sql,xml let b:surround_indent = 0
 augroup END
-
-" reply.vim
-command! -nargs=0 ReplFile call reply#command#send(join(getline(1,line("$")),"\n"),0,0)
-
-" Skipping nvim-jdtls autocmds and commands
-let g:nvim_jdtls = 1
 
 " }}}
 
