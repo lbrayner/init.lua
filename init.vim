@@ -202,30 +202,10 @@ command! -nargs=0 -bar -range=% DeleteTrailingWhitespace
             \ call util#PreserveViewPort("keeppatterns ".<line1>.",".<line2>.'s/\s\+$//e')
 cnoreabbrev D DeleteTrailingWhitespace
 
-command! -bar -range AllLowercase call util#PreserveViewPort(
-            \"keeppatterns ".<line1>.",".<line2>.'s/.*/\L&/g')
-command! -nargs=0 -bar -range=% Capitalize
-            \ call util#PreserveViewPort(
-            \     "keeppatterns ".<line1>.",".<line2>.'s/\<./\u&/ge')
-
 command! Lcd lcd %
 cnoreabbrev L Lcd
 command! Tcd tcd %
 cnoreabbrev T Tcd
-
-function! s:ToggleNumber()
-    if !&number
-        set relativenumber number
-        return
-    endif
-    if !&relativenumber
-        set norelativenumber nonumber
-        return
-    endif
-    set norelativenumber number
-endfunction
-
-command! -nargs=0 ToggleNumber call s:ToggleNumber()
 
 function! s:Number()
     set number
