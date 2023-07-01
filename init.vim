@@ -139,7 +139,7 @@ cnoremap <M-f> <S-Right>
 " backward a word
 cnoremap <M-b> <S-Left>
 " kill word
-cnoremap <M-d> <C-F>ea<C-W><C-C>
+cnoremap <M-d> <C-X>ea<C-W><C-C>
 " kill line
 cnoremap <C-K> <C-F>D<C-C><Right>
 " forward a word
