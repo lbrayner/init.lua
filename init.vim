@@ -337,46 +337,11 @@ augroup DefaultFileType
                 \ endif
 augroup END
 
-augroup InferCase
-    autocmd!
-    autocmd FileType gitcommit,mail,markdown,text setlocal ignorecase infercase
-augroup END
-
 let s:LargeXmlFile = 1024 * 512
 augroup LargeXml
     autocmd BufRead * if &filetype =~# '\v(xml|html)'
             \| if getfsize(expand("<afile>")) > s:LargeXmlFile
                 \| setlocal syntax=unknown | endif | endif
-augroup END
-
-augroup MailSetup
-    autocmd!
-    autocmd FileType mail call util#setupMatchit()
-augroup END
-
-function! s:XmlNavigate()
-    nnoremap <buffer> <silent> [< <Cmd>call xml#NavigateDepthBackward(v:count1)<CR>
-    nnoremap <buffer> <silent> ]> <Cmd>call xml#NavigateDepth(v:count1)<CR>
-endfunction
-
-augroup XmlNavigate
-    autocmd!
-    autocmd FileType html,javascriptreact,typescriptreact,xml call s:XmlNavigate()
-augroup END
-
-augroup TextWidth
-    autocmd!
-    autocmd FileType text setlocal textwidth=80
-augroup END
-
-augroup LuaSetup
-    autocmd!
-    autocmd FileType lua setlocal shiftwidth=2
-augroup END
-
-augroup SqlSetup
-    autocmd!
-    autocmd FileType sql setlocal indentexpr=indent
 augroup END
 
 function! s:MarkdownSetup()
@@ -388,9 +353,20 @@ function! s:MarkdownSetup()
     endif
 endfunction
 
-augroup MarkdownSetup
+function! s:XmlNavigate()
+    nnoremap <buffer> <silent> [< <Cmd>call xml#NavigateDepthBackward(v:count1)<CR>
+    nnoremap <buffer> <silent> ]> <Cmd>call xml#NavigateDepth(v:count1)<CR>
+endfunction
+
+augroup FileTypeSetup
     autocmd!
+    autocmd FileType gitcommit,mail,markdown,text setlocal ignorecase infercase
+    autocmd FileType html,javascriptreact,typescriptreact,xml call s:XmlNavigate()
+    autocmd FileType lua setlocal shiftwidth=2
+    autocmd FileType mail call util#setupMatchit()
     autocmd FileType markdown call s:MarkdownSetup()
+    autocmd FileType sql setlocal indentexpr=indent
+    autocmd FileType text setlocal textwidth=80
 augroup END
 
 augroup GitCommit
