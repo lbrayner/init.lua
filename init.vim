@@ -16,53 +16,31 @@ if $TERM == "foot" || stridx($TERM, "256color") >= 0
     set termguicolors
 endif
 
+exe "set cedit=\<C-X>"
+set backspace=indent,eol,start
+set backupcopy=yes " So that watchprocesses work as expected
+set breakindent
+set expandtab
+set fileformat=unix
+set fileformats=unix,dos
+set ignorecase
+set lazyredraw
+set linebreak
 set listchars=eol:¬,tab:»\ ,trail:·
-set splitbelow
-set splitright
+set noruler
+set noshowmode
 set number
 set relativenumber
-set switchbuf=usetab,uselast
-set wildmode=longest:full
-set wildmenu
-set breakindent
-set linebreak
-set fileformats=unix,dos
-set fileformat=unix
-set backspace=indent,eol,start
-set ignorecase
+set shiftwidth=4 " when indenting with '>', use 4 spaces width
 set smartcase
-set noruler
-set lazyredraw
+set splitbelow
+set splitright
+set switchbuf=usetab,uselast
+set synmaxcol=500 " From tpope's vim-sensible (lowering this improves performance in files with long lines)
+set tabstop=4 " show existing tab with 4 spaces width
 set title
-set noshowmode
-exe "set cedit=\<C-X>"
-
-"show existing tab with 4 spaces width
-set tabstop=4
-" when indenting with '>', use 4 spaces width
-set shiftwidth=4
-set expandtab
-
-" are we using ssh?
-let g:ssh_client = 0
-
-if $SSH_CLIENT != ""
-    let g:ssh_client = 1
-endif
-
-" mouse selection yanks to the system clipboard when using ssh
-if g:ssh_client
-    set mouse=
-endif
-
-" So that watchprocesses work as expected
-set backupcopy=yes
-
-" From tpope's vim-sensible
-if &synmaxcol == 3000
-  " Lowering this improves performance in files with long lines.
-  set synmaxcol=500
-endif
+set wildmenu
+set wildmode=longest:full
 
 " }}}
 

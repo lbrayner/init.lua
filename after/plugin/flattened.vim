@@ -14,16 +14,6 @@ augroup FlattenedColorScheme
     autocmd ColorScheme flattened_* call s:SetupFlattened()
 augroup END
 
-let s:enable = 1
-
-if exists("g:ssh_client") && g:ssh_client
-    let s:enable = 0
-endif
-
-if exists("g:disable_flattened")
-    let s:enable = !g:disable_flattened
-endif
-
-if s:enable
+if !exists("g:disable_flattened")
     colorscheme flattened_dark
 endif
