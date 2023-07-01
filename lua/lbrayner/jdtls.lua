@@ -5,6 +5,7 @@ local M = {}
 function M.get_config()
   return {
     cmd = lspconfig.default_config.cmd,
+    root_dir = require("jdtls.setup").find_root({".git", "mvnw", "gradlew"}),
     settings = {
       java = {
         settings = {
@@ -17,7 +18,6 @@ function M.get_config()
         }
       }
     },
-    root_dir = require("jdtls.setup").find_root({".git", "mvnw", "gradlew"}),
   }
 end
 
