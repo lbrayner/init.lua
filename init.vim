@@ -236,8 +236,8 @@ function! s:Source(line_start, line_end, ...)
     endtry
 endfunction
 
-command! -nargs=0 -range Source call s:Source(<line1>, <line2>)
 command! -nargs=0 -range LuaSource call s:Source(<line1>, <line2>, 1)
+command! -nargs=0 -range Source call s:Source(<line1>, <line2>)
 
 function! s:Filter(line_start,line_end)
     let offset = 0
@@ -253,8 +253,8 @@ function! s:Filter(line_start,line_end)
     call cursor(a:line_start,0)
 endfunction
 
-command! -nargs=0 -range Filter call s:Filter(<line1>,<line2>)
 command! -nargs=0 -range Execute <line1>,<line2>w !$SHELL
+command! -nargs=0 -range Filter call s:Filter(<line1>,<line2>)
 
 function! s:Synstack()
     echo map(synstack(line("."), col(".")),"synIDattr(v:val, 'name')")
