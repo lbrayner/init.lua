@@ -405,7 +405,7 @@ if glob(g:vim_dir."/pack/bundle/start/*/plugin") == ""
     finish
 endif
 
-" Subsection: package customisation {{{
+" Subsection: package customization {{{
 
 " vim-commentary
 augroup VimCommentary
