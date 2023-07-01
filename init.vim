@@ -371,7 +371,8 @@ augroup DefaultFileType
                 \ if &filetype == "" |
                 \     set filetype=text | let b:default_filetype = 1 |
                 \ endif
-    autocmd BufWritePre * " Detect filetype after the first write
+    " Detect filetype after the first write
+    autocmd BufWritePre *
                 \ if exists("b:default_filetype") |
                 \     setlocal infercase< | setlocal textwidth< | filetype detect |
                 \     unlet b:default_filetype |
