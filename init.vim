@@ -82,12 +82,6 @@ vnoremap <C-L> <Esc><C-W>l
 nnoremap <Leader>v <C-W>v
 nnoremap <Leader>h <C-W>s
 
-" buffer navigation (these mappings are going to be overridden by packages)
-if !v:vim_did_enter
-    nnoremap <F5> <Cmd>ls<CR><Cmd>buffer<Space>
-    nnoremap <F8> <Cmd>tabs<CR>
-endif
-
 " write
 nnoremap <F6> <Cmd>w<CR>
 inoremap <F6> <Esc><Cmd>w<CR>
