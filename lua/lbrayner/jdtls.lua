@@ -26,7 +26,8 @@ local SymbolKind = require("vim.lsp.protocol").SymbolKind
 
 -- Go to top level declaration
 function M.java_go_to_top_level_declaration()
-  local clients = vim.lsp.get_active_clients({ name = "jdtls" })
+  local bufnr = vim.api.nvim_get_current_buf()
+  local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "jdtls" })
   local _, client = next(clients)
   if not client then
     vim.notify("No LSP client with name `jdtls` available", vim.log.levels.WARN)
@@ -46,7 +47,7 @@ function M.java_go_to_top_level_declaration()
     vim.lsp.util.jump_to_location({
       uri = params.textDocument.uri, range = top_level_symbols[1].selectionRange
     }, offset_encoding)
-  end, vim.api.nvim_get_current_buf())
+  end, bufnr)
 end
 
 local maximum_resolve_depth = 10
