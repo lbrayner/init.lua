@@ -22,7 +22,7 @@ function M.get_config()
 end
 
 local offset_encoding = "utf-16"
-local SymbolKind = require("vim.lsp.protocol").SymbolKind
+local SymbolKind = vim.lsp.protocol.SymbolKind
 
 -- Go to top level declaration
 function M.java_go_to_top_level_declaration()
