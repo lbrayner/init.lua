@@ -29,9 +29,9 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
     group = jdtls_setup,
     pattern = { "jdt://*", "*.class" },
     desc = "Handle jdt:// URIs and classfiles",
-    callback = function(command)
+    callback = function(args)
       require("jdtls").start_or_attach(config)
-      require("jdtls").open_classfile(command.match)
+      require("jdtls").open_classfile(args.match)
     end,
   })
 
@@ -46,7 +46,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
         buffer = bufnr,
         desc = "This Java buffer will attach to jdtls once focused",
         once = true,
-        callback = function(_args)
+        callback = function()
           require("jdtls").start_or_attach(config)
         end,
       })
