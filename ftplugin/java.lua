@@ -92,8 +92,6 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
       vim.api.nvim_buf_create_user_command(bufnr, "JdtTypeHierarchy", java_type_hierarchy, {
         nargs=0
       })
-
-      require("jdtls.setup").add_commands()
     end,
   })
 
@@ -122,7 +120,9 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
         "JdtJol",
         "JdtBytecode",
         "JdtJshell",
-        "JdtRestart" }) do
+        "JdtRestart",
+        "JdtUpdateDebugConfig",
+        "JdtUpdateHotcode" }) do
         pcall(vim.api.nvim_buf_del_user_command, bufnr, command) -- Ignore error if command doesn't exist
       end
     end,
