@@ -26,8 +26,14 @@ local SymbolKind = require("vim.lsp.protocol").SymbolKind
 
 -- Go to top level declaration
 function M.java_go_to_top_level_declaration()
+  local clients = vim.lsp.get_active_clients({ name = "jdtls" })
+  local _, client = next(clients)
+  if not client then
+    vim.notify("No LSP client with name `jdtls` available", vim.log.levels.WARN)
+    return
+  end
   local params = { textDocument = vim.lsp.util.make_text_document_params() }
-  vim.lsp.buf_request(0, "textDocument/documentSymbol", params, function(err, result)
+  client.request("textDocument/documentSymbol", params, function(err, result)
     assert(not err, vim.inspect(err))
     local top_level_symbols = vim.tbl_filter(function(symbol)
       return vim.tbl_contains({
@@ -40,7 +46,7 @@ function M.java_go_to_top_level_declaration()
     vim.lsp.util.jump_to_location({
       uri = params.textDocument.uri, range = top_level_symbols[1].selectionRange
     }, offset_encoding)
-  end)
+  end, vim.api.nvim_get_current_buf())
 end
 
 local maximum_resolve_depth = 10
