@@ -74,8 +74,8 @@ function M.java_type_hierarchy(reuse_win)
     depth = depth + 1
 
     local parents = vim.tbl_filter(function(parent)
-      -- Filtering out org.eclipse.lsp4j.SymbolKind.Null(21) items
-      return parent.kind ~= 21
+      -- Filtering out SymbolKind.Null items
+      return parent.kind ~= SymbolKind.Null
     end, result.parents)
 
     if #parents > 0 and depth > maximum_resolve_depth then
@@ -83,8 +83,7 @@ function M.java_type_hierarchy(reuse_win)
         vim.log.levels.WARN)
     elseif #parents > 0 then
       local parent_classes = vim.tbl_filter(function(parent)
-        -- org.eclipse.lsp4j.SymbolKind.Class(5)
-        return parent.kind == 5
+        return parent.kind == SymbolKind.Class
       end, parents)
 
       assert(#parent_classes <= 1, "Type hierarchy: more than one parent class")
@@ -93,8 +92,7 @@ function M.java_type_hierarchy(reuse_win)
       if not parent then
         assert(#parents == 1, string.format("Type hierarchy: could not determine parent with result %s",
           vim.inspect(result)))
-        -- Symbol at point is a org.eclipse.lsp4j.SymbolKind.Method, parent is
-        -- a org.eclipse.lsp4j.SymbolKind.Interface
+        -- Symbol at point is a SymbolKind.Method, parent is a SymbolKind.Interface
         parent = parents[1]
       end
 
