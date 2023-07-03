@@ -48,13 +48,13 @@ function M.java_go_to_top_level_declaration()
       }, symbol.kind)
     end, result)
 
-    -- Removing children
-    top_level_symbols = vim.tbl_map(function(symbol)
-      symbol.children = nil
-      return symbol
-    end, top_level_symbols)
-
     if #top_level_symbols > 1 then
+      -- Removing children
+      top_level_symbols = vim.tbl_map(function(symbol)
+        symbol.children = nil
+        return symbol
+      end, top_level_symbols)
+
       local title = string.format("Top level symbols in %s",
         vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":."))
       local items = vim.lsp.util.symbols_to_items(top_level_symbols, bufnr)
