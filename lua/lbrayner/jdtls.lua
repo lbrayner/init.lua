@@ -89,7 +89,7 @@ function M.java_type_hierarchy(reuse_win)
   local depth = 0
   local open_type_hierarchy
 
-  local function resolve_handler(err, result)
+  local function resolve_handler(err, result, ctx)
     assert(not err, vim.inspect(err))
     depth = depth + 1
 
@@ -153,7 +153,7 @@ function M.java_type_hierarchy(reuse_win)
       return vim.lsp.util.jump_to_location(locations[1], offset_encoding, reuse_win)
     end
 
-    vim.fn.setqflist({}, " ", { title = title, items = items })
+    vim.fn.setqflist({}, " ", { title = title, items = items, context = ctx })
     vim.api.nvim_command("botright copen")
   end
 
