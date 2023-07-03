@@ -27,15 +27,19 @@ local SymbolKind = vim.lsp.protocol.SymbolKind
 -- Go to top level declaration
 function M.java_go_to_top_level_declaration()
   local bufnr = vim.api.nvim_get_current_buf()
+
   local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "jdtls" })
   local _, client = next(clients)
   if not client then
     vim.notify("No LSP client with name `jdtls` available", vim.log.levels.WARN)
     return
   end
-  local params = { textDocument = vim.lsp.util.make_text_document_params() }
-  client.request("textDocument/documentSymbol", params, function(err, result)
+
+  local params = { textDocument = vim.lsp.util.make_text_document_params(bufnr) }
+
+  client.request("textDocument/documentSymbol", params, function(err, result, ctx)
     assert(not err, vim.inspect(err))
+
     local top_level_symbols = vim.tbl_filter(function(symbol)
       return vim.tbl_contains({
         SymbolKind.Class,
@@ -43,7 +47,23 @@ function M.java_go_to_top_level_declaration()
         SymbolKind.Interface
       }, symbol.kind)
     end, result)
-    assert(#top_level_symbols == 1, "File contains more than one top level symbol declaration")
+
+    -- Removing children
+    top_level_symbols = vim.tbl_map(function(symbol)
+      symbol.children = nil
+      return symbol
+    end, top_level_symbols)
+
+    if #top_level_symbols > 1 then
+      local title = string.format("Top level symbols in %s",
+        vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":."))
+      local items = vim.lsp.util.symbols_to_items(top_level_symbols, bufnr)
+
+      vim.fn.setqflist({}, " ", { title = title, items = items, context = ctx })
+      vim.api.nvim_command("botright copen")
+      return
+    end
+
     vim.lsp.util.jump_to_location({
       uri = params.textDocument.uri, range = top_level_symbols[1].selectionRange
     }, offset_encoding)
