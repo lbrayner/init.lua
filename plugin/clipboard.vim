@@ -63,6 +63,7 @@ command! -nargs=? Clip call Clip(<f-args>)
 vnoremap <Leader>y y<Cmd>Clip<CR>
 
 nnoremap <Leader>p "+p
+nnoremap <Leader>P "+P
 vnoremap <Leader>p "+p
 
 command! Path call Clip(Path())
