@@ -43,5 +43,5 @@ augroup FugitiveCustomAutocommands
     autocmd!
     autocmd FileType fugitive Glcd
     autocmd BufEnter fugitive://*//* setlocal nomodifiable
-    autocmd FileType git call s:FugitiveMapOverrides()
+    autocmd FileType fugitive,git call s:FugitiveMapOverrides()
 augroup END
