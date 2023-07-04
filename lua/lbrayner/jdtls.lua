@@ -148,6 +148,11 @@ function M.java_type_hierarchy(opts)
       table.insert(items, vim.lsp.util.locations_to_items({ location }, offset_encoding)[1])
     end
 
+    if opts.on_list then
+      assert(type(opts.on_list) == "function", "on_list is not a function")
+      return opts.on_list({ title = title, items = items, context = ctx })
+    end
+
     if #locations == 1  then
       return vim.lsp.util.jump_to_location(locations[1], offset_encoding, opts.reuse_win)
     end
