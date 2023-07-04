@@ -73,7 +73,7 @@ end
 local maximum_resolve_depth = 10
 
 -- Type hierarchy on quickfix list
-function M.java_type_hierarchy(reuse_win)
+function M.java_type_hierarchy(opts)
   local function resolve_command(result)
     return {
       command = "java.navigate.resolveTypeHierarchy",
@@ -150,13 +150,14 @@ function M.java_type_hierarchy(reuse_win)
     end
 
     if #locations == 1  then
-      return vim.lsp.util.jump_to_location(locations[1], offset_encoding, reuse_win)
+      return vim.lsp.util.jump_to_location(locations[1], offset_encoding, opts.reuse_win)
     end
 
     vim.fn.setqflist({}, " ", { title = title, items = items, context = ctx })
     vim.api.nvim_command("botright copen")
   end
 
+  opts = opts or {}
   local position = vim.lsp.util.make_position_params(0, offset_encoding)
   local command = {
     command = "java.navigate.openTypeHierarchy",

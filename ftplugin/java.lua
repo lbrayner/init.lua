@@ -54,7 +54,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
   end
 
   local function java_type_hierarchy()
-    require("lbrayner.jdtls").java_type_hierarchy(true)
+    require("lbrayner.jdtls").java_type_hierarchy({ reuse_win = true })
   end
 
   vim.api.nvim_create_autocmd("LspAttach", {
