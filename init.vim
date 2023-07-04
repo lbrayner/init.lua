@@ -16,7 +16,6 @@ if $TERM == "foot" || stridx($TERM, "256color") >= 0
     set termguicolors
 endif
 
-exe "set cedit=\<C-X>"
 set backspace=indent,eol,start
 set backupcopy=yes " So that watchprocesses work as expected
 set breakindent
@@ -118,40 +117,9 @@ vnoremap <Leader>8 y/\V<C-R>=escape("<C-R>"", "/")<CR><CR>
 " Emacs-style editing in command-line mode and insert mode
 " Case matters for keys after alt or meta
 
-" start of line
-cnoremap <C-A> <Home>
-" back one character
-cnoremap <C-B> <Left>
-" delete character under cursor
-cnoremap <C-D> <Del>
-" end of line
-cnoremap <C-E> <End>
-" forward one character
-cnoremap <C-F> <Right>
-" recall newer command-line
-cnoremap <M-n> <Down>
-" recall previous (older) command-line
-cnoremap <M-p> <Up>
-" cancel
-cnoremap <C-G> <C-C>
-" forward word
-cnoremap <M-f> <S-Right>
-" backward a word
-cnoremap <M-b> <S-Left>
-" kill word
-cnoremap <M-d> <C-X>ea<C-W><C-C>
 " kill line
-cnoremap <C-K> <C-X>D<C-C><Right>
-" forward a word
-inoremap <M-f> <C-Right>
-" backward a word
-inoremap <M-b> <C-Left>
-" kill word
-inoremap <M-d> <C-O>e<C-O>a<C-W>
-" kill line
+cnoremap <C-K> <C-F>D<C-C><Right>
 inoremap <C-K> <C-O>D
-" remapping digraph
-inoremap <C-B> <C-K>
 
 " inserting the current line
 cnoremap <C-R><C-L> <C-R>=getline(".")<CR>
@@ -471,6 +439,16 @@ xmap <Space>w <Plug>(quickhl-manual-this-whole-word)
 
 nmap <Space>c <Plug>(quickhl-manual-clear)
 vmap <Space>c <Plug>(quickhl-manual-clear)
+
+" vim-rsi
+
+" vim-rsi's M-d is not at parity with readline's M-d
+" Case matters for keys after alt or meta
+
+augroup VimRsiOverride
+    " kill word
+    autocmd VimEnter * cnoremap <M-d> <C-F>ea<C-W><C-C>
+augroup END
 
 " vim-rzip
 let g:rzipPlugin_extra_ext = "*.odt"

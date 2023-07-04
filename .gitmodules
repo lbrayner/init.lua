@@ -93,3 +93,6 @@
 [submodule "pack/bundle/start/nvim-snippy"]
 	path = pack/bundle/start/nvim-snippy
 	url = https://github.com/dcampos/nvim-snippy
+[submodule "pack/bundle/start/vim-rsi"]
+	path = pack/bundle/start/vim-rsi
+	url = https://github.com/tpope/vim-rsi
