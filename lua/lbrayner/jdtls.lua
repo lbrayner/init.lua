@@ -24,7 +24,6 @@ end
 local offset_encoding = "utf-16"
 local SymbolKind = vim.lsp.protocol.SymbolKind
 
--- Go to top level declaration
 function M.java_go_to_top_level_declaration()
   local bufnr = vim.api.nvim_get_current_buf()
 
