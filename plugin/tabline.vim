@@ -1,13 +1,10 @@
 set showtabline=2
 
 function! RedefineTabline()
-    " vim-obsession
-    let this_session=substitute(v:this_session,'\.\d\+\.obsession\~',"","")
     " Is this a session?
-    let session_name=this_session == "" ? "" :
-                \ "(".fnamemodify(this_session,":t:r").")"
+    let session_name=util#getSession()
     let session=session_name == "" ? "" :
-                \ "%#Question#" . session_name . "%#Normal# "
+                \ "%#Question#" . "(" . session_name . ")" . "%#Normal# "
     " To be displayed on the left side
     let cwd=util#NPath(getcwd())
     let &tabline="%#Title#%4.{tabpagenr()}%#Normal# ".session."%#NonText#".cwd

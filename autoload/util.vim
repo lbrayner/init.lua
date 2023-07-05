@@ -1,3 +1,11 @@
+function! util#getSession()
+    " vim-obsession
+    let this_session=substitute(v:this_session, '\.\d\+\.obsession\~', "", "")
+    " Is this a session?
+    let session_name=this_session == "" ? "" : fnamemodify(this_session, ":t:r")
+    return session_name
+endfunction
+
 function! util#setupMatchit()
     if exists("g:loaded_matchit")
         let b:match_ignorecase=0
