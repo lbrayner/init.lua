@@ -83,15 +83,15 @@ endfunction
 
 function! statusline#Filename(...)
     let path = Path()
-    if exists("*FPath") && stridx(expand("%"),"fugitive://") == 0
+    if exists("*FPath") && stridx(expand("%"), "fugitive://") == 0
         let path = FPath()
-    elseif stridx(expand("%"),"jdt://") == 0 " jdtls
+    elseif stridx(expand("%"), "jdt://") == 0 " jdtls
         let path = substitute(expand("%"), "?.*", "", "")
     endif
     if a:0 > 0 && a:1 " nofocus
-        let filename=substitute(path,"'","''","g")
+        let filename=substitute(path, "'", "''", "g")
     else
-        let filename = substitute(fnamemodify(path,":t"),"'","''","g")
+        let filename = substitute(fnamemodify(path, ":t"), "'", "''", "g")
     endif
     if filename == ""
         return "#%n"
@@ -100,7 +100,7 @@ function! statusline#Filename(...)
 endfunction
 
 function! s:FugitiveTemporaryBuffer()
-    return "Git ".join(FugitiveResult(bufnr()).args," ")
+    return "Git ".join(FugitiveResult(bufnr()).args, " ")
 endfunction
 
 " b:Statusline_custom_mod_leftline and b:Statusline_custom_mod_rightline are
