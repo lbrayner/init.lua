@@ -161,10 +161,23 @@ function! statusline#DefineStatusLineNoFocus()
     if util#isQuickfixOrLocationList()
         return
     endif
+
     let filename=statusline#Filename(1)
     let isnumbersonly=filename =~# '^[0-9]\+$'
     if isnumbersonly
         let &l:statusline=" ".filename." "
+        return
+    endif
+
+    " Fugitive blame
+    if exists("*FugitiveResult") &&
+                \has_key(FugitiveResult(bufnr()), "filetype") &&
+                \has_key(FugitiveResult(bufnr()), "blame_file") &&
+                \FugitiveResult(bufnr()).filetype == "fugitiveblame"
+        let &l:statusline="Fugitive blame:"
+        let filename = FugitiveResult(bufnr()).blame_file
+        let filename = util#truncateFilename(filename,winwidth("%")-3-len(&l:statusline))
+        let &l:statusline=" ".&l:statusline." ".filename." "
         return
     endif
     " Fugitive summary
@@ -176,26 +189,6 @@ function! statusline#DefineStatusLineNoFocus()
         let dir = substitute(util#NPath(FugitiveGitDir()),'/\.git$',"","")
         let &l:statusline.="Fugitive summary @ "
         let &l:statusline.=util#truncateFilename(dir,winwidth("%")-len(&statusline)-1)
-        return
-    endif
-    " Fugitive objects
-    if exists("*FugitiveParse") && len(FObject())
-        let &l:statusline=" "
-        if &previewwindow
-            let &l:statusline.="⁋ "
-        endif
-        let &l:statusline.=util#truncateFilename(FObject(),winwidth("%")-len(&statusline)-1)." "
-        return
-    endif
-    " Fugitive blame
-    if exists("*FugitiveResult") &&
-                \has_key(FugitiveResult(bufnr()), "filetype") &&
-                \has_key(FugitiveResult(bufnr()), "blame_file") &&
-                \FugitiveResult(bufnr()).filetype == "fugitiveblame"
-        let &l:statusline="Fugitive blame:"
-        let filename = FugitiveResult(bufnr()).blame_file
-        let filename = util#truncateFilename(filename,winwidth("%")-3-len(&l:statusline))
-        let &l:statusline=" ".&l:statusline." ".filename." "
         return
     endif
     " Fugitive temporary buffers
@@ -211,6 +204,15 @@ function! statusline#DefineStatusLineNoFocus()
                     \winwidth("%")-len(&statusline)-1)." "
         return
     endif
+    " Fugitive objects
+    if exists("*FugitiveParse") && len(FObject())
+        let &l:statusline=" "
+        if &previewwindow
+            let &l:statusline.="⁋ "
+        endif
+        let &l:statusline.=util#truncateFilename(FObject(),winwidth("%")-len(&statusline)-1)." "
+        return
+    endif
     if &previewwindow
         if expand("%") == ""
             let &l:statusline=" ⁋ %{statusline#StatusFlag()} "
@@ -223,7 +225,7 @@ function! statusline#DefineStatusLineNoFocus()
         endif
         return
     endif
-    " TODO add statusline#StatusFlag where possible
+
     let filename = util#truncateFilename(statusline#Filename(1),
                 \winwidth("%")-2-(1+len(statusline#StatusFlag())))
     let &l:statusline=" ".filename." %{statusline#StatusFlag()} "
