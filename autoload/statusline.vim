@@ -238,6 +238,16 @@ endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineStatusLine()
+    " Fugitive blame
+    if exists("*FugitiveResult") &&
+                \has_key(FugitiveResult(bufnr()), "filetype") &&
+                \has_key(FugitiveResult(bufnr()), "blame_file") &&
+                \FugitiveResult(bufnr()).filetype == "fugitiveblame"
+        let &l:statusline=" Fugitive blame %<%1*%{statusline#StatusFlag()}%*%="
+        let &l:statusline.=s:BufferPosition()
+        return
+    endif
+
     let rightline = ""
     if exists("b:Statusline_custom_rightline")
         let rightline.=b:Statusline_custom_rightline
@@ -253,14 +263,6 @@ function! statusline#DefineStatusLine()
             let &l:statusline.="%5*⁋%* "
         endif
         let &l:statusline.="Fugitive summary %<%1*%{statusline#StatusFlag()}%*"
-    " Fugitive blame
-    elseif exists("*FugitiveResult") &&
-                \has_key(FugitiveResult(bufnr()), "filetype") &&
-                \has_key(FugitiveResult(bufnr()), "blame_file") &&
-                \FugitiveResult(bufnr()).filetype == "fugitiveblame"
-        let &l:statusline=" Fugitive blame %<%1*%{statusline#StatusFlag()}%*%="
-        let &l:statusline.=s:BufferPosition()
-        return
     " Fugitive temporary buffers
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let fugitive_temp_buf = s:FugitiveTemporaryBuffer()
