@@ -15,7 +15,7 @@ local function split_open()       display_error("usetab,split")  end
 local function tab_open()         display_error("usetab,newtab") end
 local function vsplit_open()      display_error("usetab,vsplit") end
 
-local qf_setup = vim.api.nvim_create_augroup("QuickfixSetup", { clear=true })
+local qf_setup = vim.api.nvim_create_augroup("qf_setup", { clear=true })
 
 vim.api.nvim_create_autocmd("FileType", {
   group = qf_setup,
