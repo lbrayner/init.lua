@@ -105,7 +105,7 @@ local function files_clear_cache()
         fzf_opts = { ["--history"] = session.get_history_file() },
       })
     end
-    return fzf.files({ cmd="find_file_cache -C" })
+    return fzf.files({ cmd = "find_file_cache -C" })
   end
   vim.cmd.echoerr("'find_file_cache not executable.'")
 end
@@ -120,7 +120,7 @@ local function files()
         fzf_opts = { ["--history"] = session.get_history_file() },
       })
     end
-    return fzf.files({ cmd="find_file_cache" })
+    return fzf.files({ cmd = "find_file_cache" })
   end
   fzf.files()
 end
@@ -141,20 +141,20 @@ local function tabs()
   fzf.tabs({ show_quickfix = true })
 end
 
-nvim_create_user_command("Buffers", buffers, { nargs=0 })
-nvim_create_user_command("FilesClearCache", files_clear_cache, { nargs=0 })
-nvim_create_user_command("Files", files, { nargs=0 })
-nvim_create_user_command("Marks", marks, { nargs=0 })
-nvim_create_user_command("Tabs", tabs, { nargs=0 })
+nvim_create_user_command("Buffers", buffers, { nargs = 0 })
+nvim_create_user_command("FilesClearCache", files_clear_cache, { nargs = 0 })
+nvim_create_user_command("Files", files, { nargs = 0 })
+nvim_create_user_command("Marks", marks, { nargs = 0 })
+nvim_create_user_command("Tabs", tabs, { nargs = 0 })
 
-local opts = { silent=true }
+local opts = { silent = true }
 
 vim.keymap.set("n", "<F5>", buffers, opts)
 vim.keymap.set("n", "<Leader><F7>", files_clear_cache, opts)
 vim.keymap.set("n", "<F7>", files, opts)
 vim.keymap.set("n", "<F8>", tabs, opts)
 
-local fzf_lua_qf = vim.api.nvim_create_augroup("fzf_lua_qf", { clear=true })
+local fzf_lua_qf = vim.api.nvim_create_augroup("fzf_lua_qf", { clear = true })
 
 vim.api.nvim_create_autocmd("FileType", {
   group = fzf_lua_qf,
@@ -162,7 +162,7 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "qf",
   callback = function(args)
     local bufnr = args.buf
-    vim.keymap.set("n", "<F5>", fzf.quickfix, { buffer=bufnr })
-    vim.keymap.set("n", "<F7>", fzf.quickfix_stack, { buffer=bufnr })
+    vim.keymap.set("n", "<F5>", fzf.quickfix, { buffer = bufnr })
+    vim.keymap.set("n", "<F7>", fzf.quickfix_stack, { buffer = bufnr })
   end,
 })

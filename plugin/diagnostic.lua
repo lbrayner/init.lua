@@ -26,7 +26,7 @@ local function handle_long_extmarks(namespace, bufnr, winid)
     return
   end
   local extmarks = vim.api.nvim_buf_get_extmarks(bufnr, virt_text_ns, 0, -1, {
-    details=true
+    details = true
   })
   for _, extmark in ipairs(extmarks) do
     local id, lnum, details = extmark[1], extmark[2], extmark[4]
@@ -40,11 +40,11 @@ local function handle_long_extmarks(namespace, bufnr, winid)
   end
 end
 
-local trunc_virt_text = vim.api.nvim_create_augroup("trunc_virt_text", { clear=true })
+local trunc_virt_text = vim.api.nvim_create_augroup("trunc_virt_text", { clear = true })
 
 vim.api.nvim_create_autocmd({ "VimEnter" }, {
   group = trunc_virt_text,
-  callback = function(_args)
+  callback = function()
     vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
       group = trunc_virt_text,
       callback = function(args)
@@ -60,7 +60,7 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
 
 vim.api.nvim_create_autocmd({ "VimEnter" }, {
   group = trunc_virt_text,
-  callback = function(_args)
+  callback = function()
     vim.api.nvim_create_autocmd({ "WinResized" }, {
       group = trunc_virt_text,
       callback = function(args)
@@ -81,7 +81,7 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
 })
 
 if vim.v.vim_did_enter then
-  vim.api.nvim_exec_autocmds("VimEnter", { group=trunc_virt_text })
+  vim.api.nvim_exec_autocmds("VimEnter", { group = trunc_virt_text })
 end
 
 local function get_cursor()
@@ -91,7 +91,7 @@ end
 local close_events = { "CursorMoved", "CursorMovedI", "InsertCharPre", "WinScrolled" }
 
 local function open_float()
-  return vim.diagnostic.open_float({ close_events=close_events })
+  return vim.diagnostic.open_float({ close_events = close_events })
 end
 
 local function goto_first()
@@ -122,31 +122,31 @@ local function goto_first()
   return vim.schedule(open_float)
 end
 
-local opts = { silent=true }
+local opts = { silent = true }
 
 vim.keymap.set("n", "<Space>e", goto_first, opts)
 vim.keymap.set("n", "<Space>E", function()
-  vim.diagnostic.open_float({ close_events=close_events, scope="buffer" })
+  vim.diagnostic.open_float({ close_events = close_events, scope = "buffer" })
 end, opts)
 vim.keymap.set("n", "[d", function()
-  vim.diagnostic.goto_prev({ float={ close_events=close_events } })
+  vim.diagnostic.goto_prev({ float = { close_events = close_events } })
 end, opts)
 vim.keymap.set("n", "]d", function()
-  vim.diagnostic.goto_next({ float={ close_events=close_events } })
+  vim.diagnostic.goto_next({ float = { close_events = close_events } })
 end, opts)
 
 vim.keymap.set("n", "[!", function()
-  vim.diagnostic.goto_prev({ float={ close_events=close_events }, severity={
-    min=vim.diagnostic.severity.WARN
+  vim.diagnostic.goto_prev({ float = { close_events = close_events }, severity = {
+    min = vim.diagnostic.severity.WARN
   } })
 end, opts)
 vim.keymap.set("n", "]!", function()
-  vim.diagnostic.goto_next({ float={ close_events=close_events }, severity={
-    min=vim.diagnostic.severity.WARN
+  vim.diagnostic.goto_next({ float = { close_events = close_events }, severity = {
+    min = vim.diagnostic.severity.WARN
   } })
 end, opts)
 
-local custom_diagnostics = vim.api.nvim_create_augroup("custom_diagnostics", { clear=true })
+local custom_diagnostics = vim.api.nvim_create_augroup("custom_diagnostics", { clear = true })
 
 local err = "DiagnosticSignError"
 local war = "DiagnosticSignWarn"
@@ -168,12 +168,12 @@ local function DefaultDiagnostics()
   vim.fn.sign_define(inf, { text="I", texthl=inf, linehl="", numhl="" })
   vim.fn.sign_define(hin, { text="H", texthl=hin, linehl="", numhl="" })
 
-  vim.diagnostic.config({ severity_sort=false, virtual_text=true })
+  vim.diagnostic.config({ severity_sort = false, virtual_text = true })
 
   vim.diagnostic.handlers.virtual_text = _G.default_virtual_text_handler
 end
 
-vim.api.nvim_create_user_command("DefaultDiagnostics", DefaultDiagnostics, { nargs=0 })
+vim.api.nvim_create_user_command("DefaultDiagnostics", DefaultDiagnostics, { nargs = 0 })
 
 local function CustomDiagnostics()
   vim.fn.sign_define(err, { text="", texthl=err, linehl="", numhl=err })
@@ -184,8 +184,8 @@ local function CustomDiagnostics()
   vim.diagnostic.config({
     severity_sort = true,
     virtual_text = {
-      prefix=prefix,
-      spacing=0,
+      prefix = prefix,
+      spacing = 0,
     },
   })
 
@@ -206,7 +206,7 @@ local function CustomDiagnostics()
   }
 end
 
-vim.api.nvim_create_user_command("CustomDiagnostics", CustomDiagnostics, { nargs=0 })
+vim.api.nvim_create_user_command("CustomDiagnostics", CustomDiagnostics, { nargs = 0 })
 
 vim.api.nvim_create_autocmd({ "VimEnter" }, {
   group = custom_diagnostics,
