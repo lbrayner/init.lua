@@ -17,61 +17,72 @@ local actions = require("fzf-lua.actions")
 -- register fzf-lua as the UI interface for `vim.ui.select`
 fzf.register_ui_select()
 
-fzf.setup {
-  -- These override the default tables completely
-  -- no need to set to `false` to disable an action
-  -- delete or modify is sufficient
-  actions = {
-    files = {
-      -- providers that inherit these actions:
-      --   files, git_files, git_status, grep, lsp
-      --   oldfiles, quickfix, loclist, tags, btags
-      --   args
-      ["default"]     = actions.file_edit_or_qf,
-      ["ctrl-s"]      = actions.file_split,
-      ["alt-s"]       = actions.file_vsplit,
-      ["ctrl-t"]      = actions.file_tabedit,
-      ["alt-q"]       = actions.file_sel_to_qf,
-      ["alt-l"]       = actions.file_sel_to_ll,
-    },
-    buffers = {
-      -- providers that inherit these actions:
-      --   buffers, tabs, lines, blines
-      ["default"]     = actions.buf_edit,
-      ["ctrl-s"]      = actions.buf_split,
-      ["alt-s"]       = actions.buf_vsplit,
-      ["ctrl-t"]      = actions.buf_tabedit,
-    }
-  },
-  buffers = {
-    no_header_i = true, -- So that no header is displayed (can be accomplished with { ["ctrl-x"] = false }
-    previewer = false,
-  },
-  files = {
-    previewer = false,
-  },
-  keymap = {
-    fzf = {}, -- completely overriding fzf '--bind=' options
-  },
-  -- marks = {
-  --   previewer = false,
-  -- },
-  quickfix = {
-    previewer = false,
-  },
-  quickfix_stack = {
-    previewer = false,
-  },
-  tabs = {
-    no_header_i = true, -- So that no header is displayed (can be accomplished with { ["ctrl-x"] = false }
-    previewer = false,
-  },
-  winopts = {
-    preview = {
-      layout = "vertical",
-    },
-  },
-}
+local fzf_lua_setup = vim.api.nvim_create_augroup("fzf_lua_setup", { clear = true })
+
+vim.api.nvim_create_autocmd({ "VimEnter" }, {
+  group = fzf_lua_setup,
+  callback = function()
+    fzf.setup({
+      -- These override the default tables completely
+      -- no need to set to `false` to disable an action
+      -- delete or modify is sufficient
+      actions = {
+        files = {
+          -- providers that inherit these actions:
+          --   files, git_files, git_status, grep, lsp
+          --   oldfiles, quickfix, loclist, tags, btags
+          --   args
+          ["default"]     = actions.file_edit_or_qf,
+          ["ctrl-s"]      = actions.file_split,
+          ["alt-s"]       = actions.file_vsplit,
+          ["ctrl-t"]      = actions.file_tabedit,
+          ["alt-q"]       = actions.file_sel_to_qf,
+          ["alt-l"]       = actions.file_sel_to_ll,
+        },
+        buffers = {
+          -- providers that inherit these actions:
+          --   buffers, tabs, lines, blines
+          ["default"]     = actions.buf_edit,
+          ["ctrl-s"]      = actions.buf_split,
+          ["alt-s"]       = actions.buf_vsplit,
+          ["ctrl-t"]      = actions.buf_tabedit,
+        }
+      },
+      buffers = {
+        no_header_i = true, -- So that no header is displayed (can be accomplished with { ["ctrl-x"] = false }
+        previewer = false,
+      },
+      files = {
+        previewer = false,
+      },
+      keymap = {
+        fzf = {}, -- completely overriding fzf '--bind=' options
+      },
+      -- marks = {
+      --   previewer = false,
+      -- },
+      quickfix = {
+        previewer = false,
+      },
+      quickfix_stack = {
+        previewer = false,
+      },
+      tabs = {
+        no_header_i = true, -- So that no header is displayed (can be accomplished with { ["ctrl-x"] = false }
+        previewer = false,
+      },
+      winopts = {
+        preview = {
+          layout = "vertical",
+        },
+      },
+    })
+  end,
+})
+
+if vim.v.vim_did_enter then
+  vim.api.nvim_exec_autocmds("VimEnter", { group = fzf_lua_setup })
+end
 
 local function buffers()
   local success, session = pcall(require, "lbrayner.session.fzf")
