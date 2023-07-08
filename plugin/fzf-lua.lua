@@ -53,9 +53,6 @@ fzf.setup({
   keymap = {
     fzf = {}, -- completely overriding fzf '--bind=' options
   },
-  -- marks = {
-  --   previewer = false,
-  -- },
   quickfix = {
     previewer = false,
   },
@@ -81,7 +78,7 @@ local function buffers()
       fzf_opts = { ["--history"] = session.get_history_file() },
     })
   end
-  return fzf.buffers()
+  fzf.buffers()
 end
 
 local function files_clear_cache()
