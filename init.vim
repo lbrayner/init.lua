@@ -401,6 +401,13 @@ augroup DirvishSetup
     autocmd FileType dirvish let b:Statusline_custom_leftline = '%<%{expand("%:h:t")}'
 augroup END
 
+" fzf-lua
+
+augroup FzfLuaHighlights
+    autocmd!
+    autocmd ColorScheme * lua require("fzf-lua").setup_highlights()
+augroup END
+
 " nvim-jdtls: skipping autocmds and commands
 let g:nvim_jdtls = 1
 
