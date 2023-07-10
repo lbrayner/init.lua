@@ -402,7 +402,6 @@ augroup DirvishSetup
 augroup END
 
 " fzf-lua
-
 augroup FzfLuaHighlights
     autocmd!
     autocmd ColorScheme * lua require("fzf-lua").setup_highlights()
