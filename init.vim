@@ -376,14 +376,12 @@ endif
 " Subsection: package customization {{{
 
 " CamelCase
-
 map <silent> <Leader>w <Plug>CamelCaseMotion_w
 map <silent> <Leader>b <Plug>CamelCaseMotion_b
 map <silent> <Leader>e <Plug>CamelCaseMotion_e
 map <silent> <Leader>ge <Plug>CamelCaseMotion_ge
 
 " delimitMate
-
 augroup DelimitMateSetup
     autocmd!
     autocmd FileType *clojure*,lisp,racket,scheme let b:loaded_delimitMate = 1
