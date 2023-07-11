@@ -31,17 +31,17 @@ cnoreabbrev Gr Git! ls-remote
 
 function! s:FugitiveMapOverrides()
     " So we can jump with 'switchbuf'
-    nunmap <buffer> <C-W>f
+    sil! exe "nunmap <buffer> <C-W>f"
     " So we can open in a new tab
-    nunmap <buffer> <C-W>gf
+    sil! exe "nunmap <buffer> <C-W>gf"
     nnoremap <buffer> <CR> <Cmd>exe "normal! \<C-W>f"<CR>
     " So we can use Nvim builtin search selected
-    vunmap <buffer> *
+    sil! exe "vunmap <buffer> *"
 endfunction
 
 augroup FugitiveCustomAutocommands
     autocmd!
     autocmd FileType fugitive Glcd
     autocmd BufEnter fugitive://*//* setlocal nomodifiable
-    autocmd FileType fugitive,git call s:FugitiveMapOverrides()
+    autocmd FileType fugitive,gitcommit,git call s:FugitiveMapOverrides()
 augroup END
