@@ -34,7 +34,6 @@ function! s:FugitiveMapOverrides()
     sil! exe "nunmap <buffer> <C-W>f"
     " So we can open in a new tab
     sil! exe "nunmap <buffer> <C-W>gf"
-    nnoremap <buffer> <CR> <Cmd>exe "normal! \<C-W>f"<CR>
     " So we can use Nvim builtin search selected
     sil! exe "vunmap <buffer> *"
 endfunction
