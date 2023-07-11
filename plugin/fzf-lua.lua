@@ -96,6 +96,10 @@ local function files_clear_cache()
   vim.cmd.echoerr("'find_file_cache not executable.'")
 end
 
+local function file_marks()
+  fzf.marks({ marks = "A-Z", prompt = "File marks> " })
+end
+
 local function files()
   local success, session = pcall(require, "lbrayner.session.fzf")
 
@@ -109,10 +113,6 @@ local function files()
     return fzf.files({ cmd = "find_file_cache" })
   end
   fzf.files()
-end
-
-local function marks()
-  fzf.marks({ marks = "A-Z", prompt = "File marks> " })
 end
 
 local function tabs()
@@ -130,7 +130,7 @@ end
 nvim_create_user_command("Buffers", buffers, { nargs = 0 })
 nvim_create_user_command("FilesClearCache", files_clear_cache, { nargs = 0 })
 nvim_create_user_command("Files", files, { nargs = 0 })
-nvim_create_user_command("Marks", marks, { nargs = 0 })
+nvim_create_user_command("Marks", file_marks, { nargs = 0 })
 nvim_create_user_command("Tabs", tabs, { nargs = 0 })
 
 local opts = { silent = true }
