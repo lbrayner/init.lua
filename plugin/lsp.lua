@@ -41,7 +41,9 @@ require("lspconfig").lua_ls.setup {
 local declaration
 local definition
 local implementation
+local references
 local type_definition
+local is_test_file
 local get_range
 local quickfix_diagnostics_opts = {}
 local lsp_setqflist
@@ -60,7 +62,13 @@ local function on_attach(_, bufnr)
   vim.keymap.set("n", "gd", definition, bufopts)
   vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
   vim.keymap.set("n", "gi", implementation, bufopts)
-  vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
+  vim.keymap.set("n", "gr", function()
+    -- Exclude test references if not visiting a test file
+    if not is_test_file(vim.api.nvim_buf_get_name(0)) then
+      return references({ no_tests = true })
+    end
+    references()
+  end, bufopts)
   vim.keymap.set("n", "gK", vim.lsp.buf.signature_help, bufopts)
   vim.keymap.set("n", "gy", type_definition, bufopts)
 
@@ -82,7 +90,10 @@ local function on_attach(_, bufnr)
   end, { nargs = 0, range = "%" })
   vim.api.nvim_buf_create_user_command(bufnr, "LspHover", vim.lsp.buf.hover, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspImplementation", implementation, { nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspReferences", vim.lsp.buf.references, { nargs = 0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspReferences", references, { nargs = 0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspReferencesNoTests", function()
+    references({ no_tests = true })
+  end, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspRename", function(command)
     local name = command.args
     if name and name ~= "" then
@@ -203,8 +214,25 @@ end
 implementation = function()
   vim.lsp.buf.implementation({ on_list = on_list, reuse_win = true })
 end
+references = function(config)
+  config = config or {}
+  if config.no_tests then
+    return vim.lsp.buf.references(nil, { on_list = function(options)
+      options.items = vim.tbl_filter(function(item)
+        -- Filter out tests
+        return not is_test_file(item.filename)
+      end, options.items)
+      on_list(options)
+    end })
+  end
+  vim.lsp.buf.references(nil, { on_list = on_list })
+end
 type_definition = function()
   vim.lsp.buf.type_definition({ on_list = on_list, reuse_win = true })
+end
+
+is_test_file = function(filename)
+  return string.find(vim.fn.fnamemodify(filename, ":t"), "[tT]est.")
 end
 
 get_range = function(command)
