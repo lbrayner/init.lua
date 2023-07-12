@@ -70,9 +70,13 @@ end
 local function go_to_file_mark(mark)
   if not mark then return end
   local filename = mark.file
-  local pos = { mark.pos[2], (mark.pos[3] - 1) }
   -- Full path because tilde is not expanded in lua
   filename = vim.fn.fnamemodify(filename, ":p")
+  local pos
+  local bufnr = vim.fn.bufadd(filename)
+  if not vim.api.nvim_buf_is_loaded(bufnr) then
+    pos = { mark.pos[2], (mark.pos[3] - 1) }
+  end
   require("lbrayner").jump_to_location(filename, pos)
 end
 

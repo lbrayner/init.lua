@@ -76,9 +76,9 @@ local function file_mark_jump_to_location(selected, _)
   local file_mark_by_mark, _ = require("lbrayner.marks").file_mark_navigator()
   local file_mark = file_mark_by_mark[mark]
   local filename = file_mark.file
-  local pos = { file_mark.pos[2], (file_mark.pos[3] - 1) }
   -- Full path because tilde is not expanded in lua
   filename = vim.fn.fnamemodify(filename, ":p")
+  local pos = { file_mark.pos[2], (file_mark.pos[3] - 1) }
   require("lbrayner").jump_to_location(filename, pos)
 end
 
