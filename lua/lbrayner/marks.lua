@@ -11,9 +11,9 @@ local function mark_navigator()
 
   if vim.tbl_isempty(file_marks) then return end
 
-  local file_by_mark = {}
+  local file_mark_by_mark = {}
   for _, file_mark in ipairs(file_marks) do
-    file_by_mark[file_mark.mark] = file_mark.file
+    file_mark_by_mark[file_mark.mark] = file_mark
   end
 
   local indexed_marks = {}
@@ -22,12 +22,12 @@ local function mark_navigator()
   end
   vim.tbl_add_reverse_lookup(indexed_marks)
 
-  return file_by_mark, indexed_marks
+  return file_mark_by_mark, indexed_marks
 end
 
-local function file_mark_next_file()
+local function file_mark_next_mark()
   local idx
-  local file_by_mark, indexed_marks = mark_navigator()
+  local file_mark_by_mark, indexed_marks = mark_navigator()
 
   if not indexed_marks then return end
 
@@ -44,16 +44,17 @@ local function file_mark_next_file()
     current_mark = indexed_marks[idx+1]
   end
 
-  return file_by_mark[current_mark]
+  return file_mark_by_mark[current_mark]
 end
 
 function M.go_to_next_file_mark()
-  local next_file = file_mark_next_file()
-  if not next_file then return end
+  local next_mark = file_mark_next_mark()
+  if not next_mark then return end
+  local next_file = next_mark.file
+  local pos = { next_mark.pos[2], (next_mark.pos[3] - 1) }
   -- Full path because tilde is not expanded in lua
   next_file = vim.fn.fnamemodify(next_file, ":p")
-  -- TODO consider buffer position (pos)
-  require("lbrayner").jump_to_location(next_file)
+  require("lbrayner").jump_to_location(next_file, pos)
 end
 
 return M
