@@ -46,7 +46,7 @@ function M.jump_to_location(filename, pos)
       { command = "new", description = "Horizontal split" },
       { command = "vnew", description = "Vertical split" },
       { command = "tabnew", description = "Tab" } }, {
-      prompt = string.format("Open %s in:", vim.fn.fnamemodify(filename, ":.")),
+      prompt = string.format("Open %s in:", vim.fn.fnamemodify(filename, ":~:.")),
       format_item = function(open_cmd) return open_cmd.description end,
     }, function(open_cmd)
       if not open_cmd then
