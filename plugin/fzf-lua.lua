@@ -71,29 +71,29 @@ fzf.setup({
 })
 
 local function buffers()
+  local fzf_opts
   local success, session = pcall(require, "lbrayner.session.fzf")
 
   if success then
-    return fzf.buffers({
-      fzf_opts = { ["--history"] = session.get_history_file() },
-    })
+    fzf_opts = { ["--history"] = session.get_history_file() }
   end
-  fzf.buffers()
+
+  fzf.buffers({ fzf_opts = fzf_opts })
 end
 
 local function files_clear_cache()
+  if vim.fn.executable("find_file_cache") == 0 then
+    return vim.cmd.echoerr("'find_file_cache not executable.'")
+  end
+
+  local fzf_opts
   local success, session = pcall(require, "lbrayner.session.fzf")
 
-  if vim.fn.executable("find_file_cache") > 0 then
-    if success then
-      return fzf.files({
-        cmd = string.format("find_file_cache -c '%s' -C", session.get_cache_dir()),
-        fzf_opts = { ["--history"] = session.get_history_file() },
-      })
-    end
-    return fzf.files({ cmd = "find_file_cache -C" })
+  if success then
+    fzf_opts = { ["--history"] = session.get_history_file() }
   end
-  vim.cmd.echoerr("'find_file_cache not executable.'")
+
+  fzf.files({ cmd = "find_file_cache -C", fzf_opts = fzf_opts })
 end
 
 local function file_marks()
@@ -101,30 +101,29 @@ local function file_marks()
 end
 
 local function files()
-  local success, session = pcall(require, "lbrayner.session.fzf")
-
-  if vim.fn.executable("find_file_cache") > 0 then
-    if success then
-      return fzf.files({
-        cmd = string.format("find_file_cache -c '%s'", session.get_cache_dir()),
-        fzf_opts = { ["--history"] = session.get_history_file() },
-      })
-    end
-    return fzf.files({ cmd = "find_file_cache" })
-  end
-  fzf.files()
-end
-
-local function tabs()
+  local cmd
+  local fzf_opts
   local success, session = pcall(require, "lbrayner.session.fzf")
 
   if success then
-    return fzf.tabs({
-      fzf_opts = { ["--history"] = session.get_history_file() },
-      show_quickfix = true,
-    })
+    fzf_opts = { ["--history"] = session.get_history_file() }
   end
-  fzf.tabs({ show_quickfix = true })
+
+  if vim.fn.executable("find_file_cache") > 0 then
+    cmd = "find_file_cache"
+  end
+  fzf.files({ cmd = cmd, fzf_opts = fzf_opts })
+end
+
+local function tabs()
+  local fzf_opts
+  local success, session = pcall(require, "lbrayner.session.fzf")
+
+  if success then
+    fzf_opts = { ["--history"] = session.get_history_file() }
+  end
+
+  fzf.tabs({ fzf_opts = fzf_opts, show_quickfix = true })
 end
 
 nvim_create_user_command("Buffers", buffers, { nargs = 0 })
