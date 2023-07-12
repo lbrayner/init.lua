@@ -2,7 +2,7 @@ local M = {}
 
 local current_mark
 
-function M.mark_navigator()
+function M.file_mark_navigator()
   local global_marks = vim.fn.getmarklist()
 
   local file_marks = vim.tbl_filter(function(mark)
@@ -27,7 +27,7 @@ end
 
 local function file_mark_next_mark()
   local idx
-  local file_mark_by_mark, indexed_marks = M.mark_navigator()
+  local file_mark_by_mark, indexed_marks = M.file_mark_navigator()
 
   if not indexed_marks then return end
 

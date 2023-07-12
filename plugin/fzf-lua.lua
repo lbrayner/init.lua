@@ -73,7 +73,7 @@ fzf.setup({
 local function file_mark_jump_to_location(selected, _)
   local mark = selected[1]
   mark = "'" .. mark:match("%u") -- Uppercase letters
-  local file_mark_by_mark, _ = require("lbrayner.marks").mark_navigator()
+  local file_mark_by_mark, _ = require("lbrayner.marks").file_mark_navigator()
   local file_mark = file_mark_by_mark[mark]
   local filename = file_mark.file
   local pos = { file_mark.pos[2], (file_mark.pos[3] - 1) }
