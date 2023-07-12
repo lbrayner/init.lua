@@ -25,6 +25,27 @@ function M.file_mark_navigator()
   return file_mark_by_mark, indexed_marks
 end
 
+local function file_mark_previous_mark()
+  local idx
+  local file_mark_by_mark, indexed_marks = M.file_mark_navigator()
+
+  if not indexed_marks then return end
+
+  if not current_mark then
+    idx = #indexed_marks + 1
+  else
+    idx = indexed_marks[current_mark]
+  end
+
+  if idx == 1 then
+    current_mark = indexed_marks[#indexed_marks]
+  else
+    current_mark = indexed_marks[idx-1]
+  end
+
+  return file_mark_by_mark[current_mark]
+end
+
 local function file_mark_next_mark()
   local idx
   local file_mark_by_mark, indexed_marks = M.file_mark_navigator()
@@ -46,14 +67,23 @@ local function file_mark_next_mark()
   return file_mark_by_mark[current_mark]
 end
 
+local function go_to_file_mark(mark)
+  if not mark then return end
+  local filename = mark.file
+  local pos = { mark.pos[2], (mark.pos[3] - 1) }
+  -- Full path because tilde is not expanded in lua
+  filename = vim.fn.fnamemodify(filename, ":p")
+  require("lbrayner").jump_to_location(filename, pos)
+end
+
+function M.go_to_previous_file_mark()
+  local previous_mark = file_mark_previous_mark()
+  go_to_file_mark(previous_mark)
+end
+
 function M.go_to_next_file_mark()
   local next_mark = file_mark_next_mark()
-  if not next_mark then return end
-  local next_file = next_mark.file
-  local pos = { next_mark.pos[2], (next_mark.pos[3] - 1) }
-  -- Full path because tilde is not expanded in lua
-  next_file = vim.fn.fnamemodify(next_file, ":p")
-  require("lbrayner").jump_to_location(next_file, pos)
+  go_to_file_mark(next_mark)
 end
 
 return M

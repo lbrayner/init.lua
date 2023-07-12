@@ -134,6 +134,10 @@ nnoremap <Leader>x :%s/\C\V\<<C-R><C-W>\>//gc<Left><Left><Left>
 " Rename visual selection
 vnoremap <Leader>x y:%s/\C\V<C-R>"//gc<Left><Left><Left>
 
+" Go to next file mark
+nnoremap [4 <Cmd>lua require("lbrayner.marks").go_to_previous_file_mark()<CR>
+nnoremap ]4 <Cmd>lua require("lbrayner.marks").go_to_next_file_mark()<CR>
+
 " }}}
 
 " Subsection: functions & commands
