@@ -22,6 +22,14 @@ fzf.setup({
   -- no need to set to `false` to disable an action
   -- delete or modify is sufficient
   actions = {
+    buffers = {
+      -- providers that inherit these actions:
+      --   buffers, tabs, lines, blines
+      ["default"]     = actions.buf_edit,
+      ["ctrl-s"]      = actions.buf_split,
+      ["alt-s"]       = actions.buf_vsplit,
+      ["ctrl-t"]      = actions.buf_tabedit,
+    },
     files = {
       -- providers that inherit these actions:
       --   files, git_files, git_status, grep, lsp
@@ -34,14 +42,6 @@ fzf.setup({
       ["alt-q"]       = actions.file_sel_to_qf,
       ["alt-l"]       = actions.file_sel_to_ll,
     },
-    buffers = {
-      -- providers that inherit these actions:
-      --   buffers, tabs, lines, blines
-      ["default"]     = actions.buf_edit,
-      ["ctrl-s"]      = actions.buf_split,
-      ["alt-s"]       = actions.buf_vsplit,
-      ["ctrl-t"]      = actions.buf_tabedit,
-    }
   },
   buffers = {
     no_header_i = true, -- So that no header is displayed (can be accomplished with { ["ctrl-x"] = false }
