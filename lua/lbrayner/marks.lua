@@ -25,9 +25,9 @@ local function mark_navigator()
   return file_by_mark, indexed_marks
 end
 
-local function next_file_mark()
+local function file_mark_next_file()
   local idx
-  local _, indexed_marks = mark_navigator()
+  local file_by_mark, indexed_marks = mark_navigator()
 
   if not indexed_marks then return end
 
@@ -44,12 +44,16 @@ local function next_file_mark()
     current_mark = indexed_marks[idx+1]
   end
 
-  return current_mark
+  return file_by_mark[current_mark]
 end
 
 function M.go_to_next_file_mark()
-  local next_file_mark = next_file_mark()
-  if next_file_mark then vim.cmd("normal! "..next_file_mark) end
+  local next_file = file_mark_next_file()
+  if not next_file then return end
+  -- Full path because tilde is not expanded in lua
+  next_file = vim.fn.fnamemodify(next_file, ":p")
+  -- TODO consider buffer position (pos)
+  require("lbrayner").jump_to_location(next_file)
 end
 
 return M
