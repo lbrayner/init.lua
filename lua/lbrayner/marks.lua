@@ -18,7 +18,7 @@ function M.file_mark_navigator()
 
   local indexed_marks = {}
   for _, file_mark in ipairs(file_marks) do
-    table.insert(indexed_marks, 1, file_mark.mark)
+    table.insert(indexed_marks, file_mark.mark)
   end
   vim.tbl_add_reverse_lookup(indexed_marks)
 
@@ -32,8 +32,7 @@ local function file_mark_next_mark()
   if not indexed_marks then return end
 
   if not current_mark then
-    idx = 1
-    current_mark = indexed_marks[idx]
+    idx = 0
   else
     idx = indexed_marks[current_mark]
   end
