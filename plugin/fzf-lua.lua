@@ -134,6 +134,7 @@ nvim_create_user_command("Tabs", tabs, { nargs = 0 })
 
 local opts = { silent = true }
 
+vim.keymap.set("n", "<F4>", file_marks, opts)
 vim.keymap.set("n", "<F5>", buffers, opts)
 vim.keymap.set("n", "<Leader><F7>", files_clear_cache, opts)
 vim.keymap.set("n", "<F7>", files, opts)
