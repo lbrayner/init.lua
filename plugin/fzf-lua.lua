@@ -90,7 +90,11 @@ local function files_clear_cache()
 end
 
 local function file_marks()
-  fzf.marks({ marks = "A-Z", prompt = "File marks> " })
+   -- Ignore error "No marks matching..."
+  pcall(fzf.marks, {
+    marks = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    prompt = "File marks> "
+  })
 end
 
 local function files()
