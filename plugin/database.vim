@@ -4,8 +4,8 @@ function! s:DatabaseAccess()
 
     " vim-dadbod
     if exists("b:db")
-        let b:Statusline_custom_rightline = "%9*dadbod%*"
-        let b:Statusline_custom_mod_rightline = "%9*dadbod%*"
+        let b:Statusline_custom_rightline = "%9*dadbod%* "
+        let b:Statusline_custom_mod_rightline = "%9*dadbod%* "
     endif
 
     function! s:DatabaseAccessClear()
