@@ -103,9 +103,6 @@ function! s:FugitiveTemporaryBuffer()
     return "Git ".join(FugitiveResult(bufnr()).args, " ")
 endfunction
 
-" b:Statusline_custom_mod_leftline and b:Statusline_custom_mod_rightline are
-" joined with %=
-
 " margins of 1 column (on both sides)
 " TODO is vim-fugitive information necessary here?
 function! statusline#DefineModifiedStatusLine()
@@ -130,15 +127,15 @@ function! statusline#DefineModifiedStatusLine()
         let &l:statusline.="%5*%w%* "
     endif
 
-    if exists("b:Statusline_custom_mod_leftline")
-        let &l:statusline.=b:Statusline_custom_mod_leftline
     " Fugitive summary
-    elseif getbufvar(bufnr(),"fugitive_type") ==# "index"
+    if getbufvar(bufnr(),"fugitive_type") ==# "index"
         let &l:statusline.="Fugitive summary%* %<%1 %{statusline#StatusFlag()}%*"
     " Fugitive temporary buffers
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let fugitive_temp_buf = s:FugitiveTemporaryBuffer()
         let &l:statusline.="%9*Fugitive:%* %<%1".fugitive_temp_buf." %{statusline#StatusFlag()}%*"
+    elseif exists("b:Statusline_custom_mod_leftline")
+        let &l:statusline.=b:Statusline_custom_mod_leftline
     else
         if &previewwindow
             let &l:statusline.="%<%1*".statusline#Filename(1)
@@ -173,10 +170,9 @@ function! statusline#DefineStatusLineNoFocus()
                 \has_key(FugitiveResult(bufnr()), "filetype") &&
                 \has_key(FugitiveResult(bufnr()), "blame_file") &&
                 \FugitiveResult(bufnr()).filetype == "fugitiveblame"
-        let &l:statusline="Fugitive blame:"
         let filename = FugitiveResult(bufnr()).blame_file
         let filename = util#truncateFilename(filename,winwidth("%")-3-len(&l:statusline))
-        let &l:statusline=" ".&l:statusline." ".filename." "
+        let &l:statusline=" Fugitive blame: ".filename." "
         return
     endif
     " Fugitive summary
@@ -213,9 +209,6 @@ function! statusline#DefineTerminalStatusLine()
     let &l:statusline="%3*%=%*"
 endfunction
 
-" b:Statusline_custom_leftline and b:Statusline_custom_rightline are
-" joined with %=
-
 " margins of 1 column (on both sides)
 function! statusline#DefineStatusLine()
     " Fugitive blame
@@ -239,10 +232,8 @@ function! statusline#DefineStatusLine()
         let &l:statusline.="%5*%w%* "
     endif
 
-    if exists("b:Statusline_custom_leftline")
-        let &l:statusline.=b:Statusline_custom_leftline
     " Fugitive summary
-    elseif getbufvar(bufnr(),"fugitive_type") ==# "index"
+    if getbufvar(bufnr(),"fugitive_type") ==# "index"
         let &l:statusline.="Fugitive summary %<%1*%{statusline#StatusFlag()}%*"
     " Fugitive temporary buffers
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
@@ -252,6 +243,8 @@ function! statusline#DefineStatusLine()
         let &l:statusline.="%<%5*%f%* %{util#getQuickfixOrLocationListTitle()}"
     elseif getcmdwintype() != ""
         let &l:statusline.="%<%5*[Command Line]%*"
+    elseif exists("b:Statusline_custom_leftline")
+        let &l:statusline.=b:Statusline_custom_leftline
     else
         if &previewwindow
             let &l:statusline.="%<".statusline#Filename(1)
