@@ -140,7 +140,7 @@ function! statusline#DefineModifiedStatusLine()
         if &previewwindow
             let &l:statusline.="%<%1*".statusline#Filename(1)
         else
-            let &l:statusline.=" %<%1*".statusline#Filename()
+            let &l:statusline.="%<%1*".statusline#Filename()
         endif
 
         let &l:statusline.=" %{statusline#StatusFlag()}%*"
