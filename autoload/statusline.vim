@@ -198,7 +198,7 @@ function! statusline#DefineStatusLine()
         if &previewwindow
             let &l:statusline.="%<".pathshorten(statusline#Filename(1))
         elseif !empty(&buftype)
-            let &l:statusline.=" %<%5*".statusline#Filename()
+            let &l:statusline.="%<%5*".statusline#Filename()
         else
             let &l:statusline.="%<".statusline#Filename()
         endif
