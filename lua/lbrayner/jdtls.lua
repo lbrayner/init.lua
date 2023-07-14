@@ -4,6 +4,19 @@ local M = {}
 
 function M.get_config()
   return {
+    capabilities = {
+      textDocument = {
+        completion = {
+          completionItem = {
+            snippetSupport = true,
+          },
+        },
+        declaration = {
+          dynamicRegistration = true,
+          linkSupport = true
+        },
+      },
+    },
     cmd = lspconfig.default_config.cmd,
     root_dir = require("jdtls.setup").find_root({".git", "mvnw", "gradlew"}),
     settings = {
