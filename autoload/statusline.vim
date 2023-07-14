@@ -119,7 +119,7 @@ function! statusline#DefineModifiedStatusLine()
         let &l:statusline.=b:Statusline_custom_mod_leftline
     else
         if &previewwindow
-            let &l:statusline.="%<%1*".statusline#Filename(1)
+            let &l:statusline.="%<%1*".pathshorten(statusline#Filename(1))
         else
             let &l:statusline.="%<%1*".statusline#Filename()
         endif
@@ -196,7 +196,7 @@ function! statusline#DefineStatusLine()
         let &l:statusline.=b:Statusline_custom_leftline
     else
         if &previewwindow
-            let &l:statusline.="%<".statusline#Filename(1)
+            let &l:statusline.="%<".pathshorten(statusline#Filename(1))
         elseif !empty(&buftype)
             let &l:statusline.=" %<%5*".statusline#Filename()
         else
