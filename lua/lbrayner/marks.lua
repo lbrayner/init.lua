@@ -52,7 +52,7 @@ local function file_mark_previous_mark()
 
   -- Repeat until the next buffer
   local file_mark_bufnr = file_mark.pos[1]
-  if file_mark_bufnr > 0 and file_mark_bufnr == vim.api.nvim_get_current_buf() then
+  if file_mark_bufnr == vim.api.nvim_get_current_buf() then
     return file_mark_previous_mark()
   end
 
@@ -81,7 +81,7 @@ local function file_mark_next_mark()
 
   -- Repeat until the next buffer
   local file_mark_bufnr = file_mark.pos[1]
-  if file_mark_bufnr > 0 and file_mark_bufnr == vim.api.nvim_get_current_buf() then
+  if file_mark_bufnr == vim.api.nvim_get_current_buf() then
     return file_mark_next_mark()
   end
 
