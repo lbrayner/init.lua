@@ -7,12 +7,18 @@ function M.delete_file_marks()
   current_mark = nil
 end
 
-function M.file_mark_navigator()
-  local global_marks = vim.fn.getmarklist()
+local function get_file_marks()
+  local all_marks = vim.fn.getmarklist()
 
   local file_marks = vim.tbl_filter(function(mark)
     return mark.mark:match("'".."%u") -- Uppercase letters
-  end, global_marks)
+  end, all_marks)
+
+  return file_marks
+end
+
+function M.file_mark_navigator()
+  local file_marks = get_file_marks()
 
   if vim.tbl_isempty(file_marks) then return end
 
@@ -87,7 +93,7 @@ end
 
 function M.go_to_previous_file_mark()
   -- Try to get a different buffer
-  for _ = 1, (#vim.fn.getmarklist() - 1) do
+  for _ = 1, (#get_file_marks() - 1) do
     local previous_mark = file_mark_previous_mark()
     if not previous_mark then return end
     local previous_mark_bufnr = previous_mark.pos[1]
@@ -99,7 +105,7 @@ end
 
 function M.go_to_next_file_mark()
   -- Try to get a different buffer
-  for _ = 1, (#vim.fn.getmarklist() - 1) do
+  for _ = 1, (#get_file_marks() - 1) do
     local next_mark = file_mark_next_mark()
     if not next_mark then return end
     local next_mark_bufnr = next_mark.pos[1]
