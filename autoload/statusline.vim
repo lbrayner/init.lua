@@ -182,12 +182,12 @@ function! statusline#DefineStatusLine()
     " Fugitive summary
     if getbufvar(bufnr(),"fugitive_type") ==# "index"
         let dir = pathshorten(substitute(util#NPath(FugitiveGitDir()),'/\.git$',"",""))
-        let &l:statusline.="%5*".dir."$%* %<"."Fugitive summary %1*%{statusline#StatusFlag()}%*"
+        let &l:statusline.="%6*".dir."$%* %<"."Fugitive summary %1*%{statusline#StatusFlag()}%*"
     " Fugitive temporary buffers
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let fugitive_temp_buf = s:FugitiveTemporaryBuffer()
         let dir = pathshorten(substitute(util#NPath(FugitiveGitDir()),'/\.git$',"",""))
-        let &l:statusline.="%5*".dir."$%* %<".fugitive_temp_buf." %1*%{statusline#StatusFlag()}%*"
+        let &l:statusline.="%6*".dir."$%* %<".fugitive_temp_buf." %1*%{statusline#StatusFlag()}%*"
     elseif util#isQuickfixOrLocationList()
         let &l:statusline.="%<%5*%f%* %{util#getQuickfixOrLocationListTitle()}"
     elseif getcmdwintype() != ""
