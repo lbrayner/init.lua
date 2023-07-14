@@ -2,6 +2,11 @@ local M = {}
 
 local current_mark
 
+function M.delete_file_marks()
+  vim.cmd("delmarks A-Z")
+  current_mark = nil
+end
+
 function M.file_mark_navigator()
   local global_marks = vim.fn.getmarklist()
 

@@ -235,6 +235,9 @@ cnoreabbrev Rw Rg -s '\b''<C-R><C-W>''\b'
 " Human-readable stack of syntax items
 command! -nargs=0 -range Synstack call s:Synstack()
 
+" Delete file marks
+command! -nargs=0 Delfilemarks lua require("lbrayner.marks").delete_file_marks()
+
 " Subsection: autocmds {{{
 
 augroup CmdWindow
