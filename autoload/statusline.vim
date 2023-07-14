@@ -36,9 +36,9 @@ function! statusline#VersionControl()
         return ""
     endif
     if strwidth(branch) > 20
-        return " " . branch[0:13]."…".branch[-5:]
+        return branch[0:13]."…".branch[-5:]
     endif
-    return " " . branch
+    return branch
 endfunction
 
 function! s:GetLineFormat()
@@ -75,7 +75,7 @@ function! statusline#GetStatusLineTail()
     endif
     return bufferPosition
                 \ . statusline#Diagnostics()
-                \ . "%6*%{statusline#VersionControl()}%*"
+                \ . "%( %6*%{statusline#VersionControl()}%*%)"
                 \ . " %4*%{util#Options('&fileencoding','&encoding')}%*"
                 \ . " %4.(%4*%{&fileformat}%*%)"
                 \ . " %2*%{&filetype}%* "
