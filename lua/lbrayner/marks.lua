@@ -48,7 +48,15 @@ local function file_mark_previous_mark()
     current_mark = indexed_marks[idx-1]
   end
 
-  return file_mark_by_mark[current_mark]
+  local file_mark = file_mark_by_mark[current_mark]
+
+  -- Repeat until the next buffer
+  local file_mark_bufnr = file_mark.pos[1]
+  if file_mark_bufnr > 0 and file_mark_bufnr == vim.api.nvim_get_current_buf() then
+    return file_mark_previous_mark()
+  end
+
+  return file_mark
 end
 
 local function file_mark_next_mark()
@@ -69,7 +77,15 @@ local function file_mark_next_mark()
     current_mark = indexed_marks[idx+1]
   end
 
-  return file_mark_by_mark[current_mark]
+  local file_mark = file_mark_by_mark[current_mark]
+
+  -- Repeat until the next buffer
+  local file_mark_bufnr = file_mark.pos[1]
+  if file_mark_bufnr > 0 and file_mark_bufnr == vim.api.nvim_get_current_buf() then
+    return file_mark_next_mark()
+  end
+
+  return file_mark
 end
 
 local function go_to_file_mark(mark)
