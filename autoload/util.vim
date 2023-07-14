@@ -103,6 +103,7 @@ function! util#Options(...)
                 endif
             endif
         endfor
+        " Default value (can be a constant, i.e. string or number)
         if exists(a:000[a:0-1])
             exec "let value = ".a:000[a:0-1]
             if value != ""
