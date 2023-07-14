@@ -5,7 +5,7 @@ function! s:DimInactiveExceptions()
     if util#WindowIsFloating()
         return
     endif
-    if &buftype =~# '\v%(nofile|nowrite|acwrite|quickfix|help|terminal)'
+    if !empty(&buftype)
         set winhighlight+=NormalNC:NONE
         let b:dim_inactive = 1
     endif

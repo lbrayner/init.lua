@@ -69,9 +69,8 @@ endfunction
 
 function! statusline#GetStatusLineTail()
     let bufferPosition = s:BufferPosition()
-    " TODO remove this?
-    if &buftype == "nofile"
-        return bufferPosition . " %2*%{&filetype}%* "
+    if !empty(&buftype)
+        return bufferPosition . "%( %6*%{statusline#VersionControl()}%*%) %2*%{&filetype}%* "
     endif
     return bufferPosition
                 \ . statusline#Diagnostics()
@@ -104,18 +103,7 @@ function! s:FugitiveTemporaryBuffer()
 endfunction
 
 " margins of 1 column (on both sides)
-" TODO is vim-fugitive information necessary here?
 function! statusline#DefineModifiedStatusLine()
-    " Fugitive blame
-    if exists("*FugitiveResult") &&
-                \has_key(FugitiveResult(bufnr()), "filetype") &&
-                \has_key(FugitiveResult(bufnr()), "blame_file") &&
-                \FugitiveResult(bufnr()).filetype == "fugitiveblame"
-        let &l:statusline=" Fugitive blame %<%1*%{statusline#StatusFlag()}%*%="
-        let &l:statusline.=s:BufferPosition()
-        return
-    endif
-
     let rightline = ""
     if exists("b:Statusline_custom_mod_rightline")
         let rightline.=b:Statusline_custom_mod_rightline
@@ -127,14 +115,7 @@ function! statusline#DefineModifiedStatusLine()
         let &l:statusline.="%5*%w%* "
     endif
 
-    " Fugitive summary
-    if getbufvar(bufnr(),"fugitive_type") ==# "index"
-        let &l:statusline.="Fugitive summary%* %<%1 %{statusline#StatusFlag()}%*"
-    " Fugitive temporary buffers
-    elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
-        let fugitive_temp_buf = s:FugitiveTemporaryBuffer()
-        let &l:statusline.="%9*Fugitive:%* %<%1".fugitive_temp_buf." %{statusline#StatusFlag()}%*"
-    elseif exists("b:Statusline_custom_mod_leftline")
+    if exists("b:Statusline_custom_mod_leftline")
         let &l:statusline.=b:Statusline_custom_mod_leftline
     else
         if &previewwindow
@@ -151,7 +132,8 @@ endfunction
 
 " margins of 1 column (on both sides)
 function! statusline#DefineStatusLineNoFocus()
-    if util#isQuickfixOrLocationList()
+    " Quickfix, terminal, help, prompt, and other special buffers
+    if !empty(&buftype)
         return
     endif
     if &previewwindow
@@ -162,41 +144,6 @@ function! statusline#DefineStatusLineNoFocus()
     let isnumbersonly=filename =~# '^[0-9]\+$'
     if isnumbersonly
         let &l:statusline=" ".filename." "
-        return
-    endif
-
-    " Fugitive blame
-    if exists("*FugitiveResult") &&
-                \has_key(FugitiveResult(bufnr()), "filetype") &&
-                \has_key(FugitiveResult(bufnr()), "blame_file") &&
-                \FugitiveResult(bufnr()).filetype == "fugitiveblame"
-        let filename = FugitiveResult(bufnr()).blame_file
-        let filename = util#truncateFilename(filename,winwidth("%")-3-len(&l:statusline))
-        let &l:statusline=" Fugitive blame: ".filename." "
-        return
-    endif
-    " Fugitive summary
-    if getbufvar(bufnr(),"fugitive_type") ==# "index"
-        let &l:statusline=" "
-        let dir = substitute(util#NPath(FugitiveGitDir()),'/\.git$',"","")
-        let &l:statusline.="Fugitive summary @ "
-        let &l:statusline.=util#truncateFilename(dir,winwidth("%")-len(&statusline)-1)
-        return
-    endif
-    " Fugitive temporary buffers
-    if exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
-        let cwd = fnamemodify(FugitiveResult(bufnr()).cwd,":p:~")
-        let cwd = substitute(cwd,'/$',"","")
-        let &l:statusline=" "
-        let &l:statusline.="Fugitive: "
-        let &l:statusline.=util#truncateFilename(s:FugitiveTemporaryBuffer()." @ ".cwd,
-                    \winwidth("%")-len(&statusline)-1)." "
-        return
-    endif
-    " Fugitive objects
-    if exists("*FugitiveParse") && len(FObject())
-        let &l:statusline=" "
-        let &l:statusline.=util#truncateFilename(FObject(),winwidth("%")-len(&statusline)-1)." "
         return
     endif
 
@@ -234,11 +181,13 @@ function! statusline#DefineStatusLine()
 
     " Fugitive summary
     if getbufvar(bufnr(),"fugitive_type") ==# "index"
-        let &l:statusline.="Fugitive summary %<%1*%{statusline#StatusFlag()}%*"
+        let dir = pathshorten(substitute(util#NPath(FugitiveGitDir()),'/\.git$',"",""))
+        let &l:statusline.="%5*".dir."$%* %<"."Fugitive summary %1*%{statusline#StatusFlag()}%*"
     " Fugitive temporary buffers
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let fugitive_temp_buf = s:FugitiveTemporaryBuffer()
-        let &l:statusline.="%9*Fugitive:%* %<".fugitive_temp_buf." %1*%{statusline#StatusFlag()}%*"
+        let dir = pathshorten(substitute(util#NPath(FugitiveGitDir()),'/\.git$',"",""))
+        let &l:statusline.="%5*".dir."$%* %<".fugitive_temp_buf." %1*%{statusline#StatusFlag()}%*"
     elseif util#isQuickfixOrLocationList()
         let &l:statusline.="%<%5*%f%* %{util#getQuickfixOrLocationListTitle()}"
     elseif getcmdwintype() != ""
@@ -248,7 +197,7 @@ function! statusline#DefineStatusLine()
     else
         if &previewwindow
             let &l:statusline.="%<".statusline#Filename(1)
-        elseif &buftype == "nofile"
+        elseif !empty(&buftype)
             let &l:statusline.=" %<%5*".statusline#Filename()
         else
             let &l:statusline.="%<".statusline#Filename()
@@ -298,7 +247,7 @@ function! statusline#HighlightMode(mode)
 endfunction
 
 function! statusline#RedefineStatusLine()
-    if &buftype == "terminal" && stridx(mode(), "t") == 0
+    if stridx(mode(), "t") == 0
         return
     endif
     " This variable is defined by the runtime.
