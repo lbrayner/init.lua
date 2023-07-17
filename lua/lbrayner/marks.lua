@@ -93,7 +93,7 @@ end
 
 function M.go_to_previous_file_mark()
   -- Try to get a different buffer
-  for _ = 1, (#get_file_marks() - 1) do
+  for _ = 1, #get_file_marks() do
     local previous_mark = file_mark_previous_mark()
     if not previous_mark then return end
     local previous_mark_bufnr = previous_mark.pos[1]
@@ -105,7 +105,7 @@ end
 
 function M.go_to_next_file_mark()
   -- Try to get a different buffer
-  for _ = 1, (#get_file_marks() - 1) do
+  for _ = 1, #get_file_marks() do
     local next_mark = file_mark_next_mark()
     if not next_mark then return end
     local next_mark_bufnr = next_mark.pos[1]
