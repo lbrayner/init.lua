@@ -42,7 +42,7 @@ local function file_mark_previous_mark()
 
   if not indexed_marks then return end
 
-  if not current_mark then
+  if not current_mark or not indexed_marks[current_mark] then
     idx = #indexed_marks + 1
   else
     idx = indexed_marks[current_mark]
@@ -63,7 +63,7 @@ local function file_mark_next_mark()
 
   if not indexed_marks then return end
 
-  if not current_mark then
+  if not current_mark or not indexed_marks[current_mark] then
     idx = 0
   else
     idx = indexed_marks[current_mark]
