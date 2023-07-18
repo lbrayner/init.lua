@@ -5,6 +5,7 @@ function! s:DimInactiveExceptions()
     if util#WindowIsFloating()
         return
     endif
+    " Quickfix, terminal, help, prompt, and other special buffers
     if !empty(&buftype)
         set winhighlight+=NormalNC:NONE
         let b:dim_inactive = 1
