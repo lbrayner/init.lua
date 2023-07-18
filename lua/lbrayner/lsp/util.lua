@@ -5,6 +5,9 @@ local M = {}
 
 --- From vim.lsp.util
 ---@private
+--- Sorts by CompletionItem.sortText.
+---
+--see https://microsoft.github.io/language-server-protocol/specifications/specification-current/#textDocument_completion
 local function sort_completion_items(items)
   table.sort(items, function(a, b)
     return (a.sortText or a.label) < (b.sortText or b.label)
@@ -15,20 +18,20 @@ end
 ---@private
 --- Returns text that should be inserted when selecting completion item. The
 --- precedence is as follows: textEdit.newText > insertText > label
-local function get_completion_word(item, parse)
+--see https://microsoft.github.io/language-server-protocol/specifications/specification-current/#textDocument_completion
+local function get_completion_word(item)
   if item.textEdit ~= nil and item.textEdit.newText ~= nil and item.textEdit.newText ~= '' then
     local insert_text_format = protocol.InsertTextFormat[item.insertTextFormat]
     if insert_text_format == 'PlainText' or insert_text_format == nil then
       return item.textEdit.newText
-    elseif parse then
+    else
       return util.parse_snippet(item.textEdit.newText)
     end
-  end
-  if item.insertText ~= nil and item.insertText ~= '' then
+  elseif item.insertText ~= nil and item.insertText ~= '' then
     local insert_text_format = protocol.InsertTextFormat[item.insertTextFormat]
     if insert_text_format == 'PlainText' or insert_text_format == nil then
       return item.insertText
-    elseif parse then
+    else
       return util.parse_snippet(item.insertText)
     end
   end
@@ -42,9 +45,15 @@ end
 --- does not match.
 local function remove_unmatch_completion_items(items, prefix)
   return vim.tbl_filter(function(item)
-    local word = get_completion_word(item)
-    -- print("word "..vim.inspect(word).." item "..vim.inspect(item)) -- TODO debug
-    return vim.startswith(word, prefix)
+    if vim.tbl_get(item, "textEdit", "newText") and
+      item.textEdit.newText ~= "" and
+      vim.startswith(item.textEdit.newText, prefix) then
+      return true
+    end
+    if item.insertText and item.insertText ~= "" and vim.startswith(item.insertText, prefix) then
+      return true
+    end
+    return vim.startswith(item.label, prefix)
   end, items)
 end
 
@@ -75,7 +84,7 @@ function M.text_document_completion_list_to_complete_items(result, prefix)
       end
     end
 
-    local word = get_completion_word(completion_item, true)
+    local word = get_completion_word(completion_item)
     table.insert(matches, {
       word = completion_item.additionalTextEdits and #prefix > 0 and prefix or word,
       abbr = completion_item.label,
@@ -89,9 +98,9 @@ function M.text_document_completion_list_to_complete_items(result, prefix)
         nvim = {
           lsp = {
             completion_item = completion_item,
+            completion_word = word,
           },
         },
-        word = word,
       },
     })
   end
