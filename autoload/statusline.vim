@@ -140,15 +140,14 @@ function! statusline#DefineStatusLineNoFocus()
         return
     endif
 
-    let filename=statusline#Filename(1)
-    let isnumbersonly=filename =~# '^[0-9]\+$'
-    if isnumbersonly
-        let &l:statusline=" ".filename." "
-        return
+    " Fugitive objects
+    if exists("*FugitiveParse") && len(FObject())
+        let filename=FObject()
+    else
+        let filename=statusline#Filename(1)
     endif
 
-    let filename = util#truncateFilename(statusline#Filename(1),
-                \winwidth("%")-2-(1+len(statusline#StatusFlag())))
+    let filename = util#truncateFilename(filename,winwidth("%")-2-(1+len(statusline#StatusFlag())))
     let &l:statusline=" ".filename." %{statusline#StatusFlag()} "
 endfunction
 
