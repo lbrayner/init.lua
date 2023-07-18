@@ -8,13 +8,13 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
     config = require("lbrayner.jdtls").get_config()
   end
 
-  local client = vim.lsp.get_active_clients({ name="jdtls" })[1]
+  local client = vim.lsp.get_active_clients({ name = "jdtls" })[1]
 
   if not command.bang and client then
     return require("jdtls").start_or_attach(config)
   end
 
-  local jdtls_setup = vim.api.nvim_create_augroup("jdtls_setup", { clear=true })
+  local jdtls_setup = vim.api.nvim_create_augroup("jdtls_setup", { clear = true })
 
   vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
     group = jdtls_setup,
@@ -68,7 +68,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
       local bufnr = args.buf
 
       -- Mappings
-      local bufopts = { buffer=bufnr }
+      local bufopts = { buffer = bufnr }
       vim.keymap.set("n", "gC", require("lbrayner.jdtls").java_go_to_top_level_declaration, bufopts)
       vim.keymap.set("n", "gY", java_type_hierarchy, bufopts)
 
@@ -82,23 +82,23 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
 
       -- Commands
       vim.api.nvim_buf_create_user_command(bufnr, "JdtGoToTopLevelDeclaration",
-        require("lbrayner.jdtls").java_go_to_top_level_declaration, { nargs=0 })
+        require("lbrayner.jdtls").java_go_to_top_level_declaration, { nargs = 0 })
       vim.api.nvim_buf_create_user_command(bufnr, "JdtOrganizeImports", require("jdtls").organize_imports, {
-        nargs=0
+        nargs = 0
       })
       vim.api.nvim_buf_create_user_command(bufnr, "JdtStop", function(_command)
-        local client = vim.lsp.get_active_clients({ name="jdtls" })[1]
+        local client = vim.lsp.get_active_clients({ name = "jdtls" })[1]
         if not client then return end
         vim.api.nvim_del_augroup_by_name("jdtls_setup")
         vim.lsp.stop_client(client.id)
-      end, { nargs=0 })
+      end, { nargs = 0 })
       vim.api.nvim_buf_create_user_command(bufnr, "JdtTypeHierarchy", java_type_hierarchy, {
-        nargs=0
+        nargs = 0
       })
     end,
   })
 
-  local jdtls_undo = vim.api.nvim_create_augroup("jdtls_undo", { clear=true })
+  local jdtls_undo = vim.api.nvim_create_augroup("jdtls_undo", { clear = true })
 
   vim.api.nvim_create_autocmd("LspDetach", {
     group = jdtls_undo,
@@ -132,4 +132,4 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
   })
 
   require("jdtls").start_or_attach(config)
-end, { bang=true, desc="Start jdtls and setup automatic attach, local buffer configuration", nargs=0 })
+end, { bang = true, desc = "Start jdtls and setup automatic attach, local buffer configuration", nargs = 0 })
