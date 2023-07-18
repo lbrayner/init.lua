@@ -118,6 +118,9 @@ vnoremap <Leader>8 y/\V<C-R>=escape("<C-R>"", "/")<CR><CR>
 " Emacs-style editing in command-line mode and insert mode
 " Case matters for keys after alt or meta
 
+" Return to Normal mode
+cnoremap <C-G> <C-C>
+
 " kill line
 cnoremap <C-K> <C-F>D<C-C><Right>
 inoremap <C-K> <C-O>D
