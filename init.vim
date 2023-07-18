@@ -19,6 +19,7 @@ endif
 set backspace=indent,eol,start
 set backupcopy=yes " So that watchprocesses work as expected
 set breakindent
+set completeopt=menuone
 set expandtab
 set fileformat=unix
 set fileformats=unix,dos
