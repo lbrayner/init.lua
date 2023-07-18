@@ -195,9 +195,7 @@ vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
   group = lsp_setup,
   callback = function()
     if vim.startswith(vim.fn.getqflist({ title = true }).title, "LSP Diagnostics") then
-      vim.diagnostic.setqflist(vim.tbl_extend("error", quickfix_diagnostics_opts, {
-        open = false
-      }))
+      lsp_setqflist({ open = false })
     end
   end,
 })
