@@ -32,13 +32,23 @@ vim.api.nvim_create_autocmd("CompleteDone", {
     local bufnr = args.buf
     -- print("completed_item " .. vim.inspect(vim.v.completed_item)) -- TODO debug
     if completion_item.additionalTextEdits then
-      vim.lsp.util.apply_text_edits(completion_item.additionalTextEdits, bufnr, client.offset_encoding)
-      local word = vim.v.completed_item.user_data.word
-      if word ~= vim.v.completed_item.word then
-        vim.api.nvim_put({ word }, "", false, true)
-        require("snippy").expand_snippet(completion_item.insertText, word)
-        return
+      local snippet
+      local completion_word = vim.v.completed_item.user_data.nvim.lsp.completion_word
+      if completion_item.textEdit then
+        local text_edit = vim.tbl_deep_extend("error", {}, completion_item.textEdit)
+        snippet = text_edit.newText
+        text_edit.newText = completion_word
+        local text_edits = { text_edit }
+        for _, text_edit in ipairs(completion_item.additionalTextEdits) do
+          table.insert(text_edits, text_edit)
+        end
+        vim.lsp.util.apply_text_edits(text_edits, bufnr, client.offset_encoding)
+      elseif completion_word ~= vim.v.completed_item.word then
+        snippet = completed_item.insertText
+        vim.lsp.util.apply_text_edits(completion_item.additionalTextEdits, bufnr, client.offset_encoding)
+        vim.api.nvim_put({ completion_word }, "", false, true)
       end
+      return require("snippy").expand_snippet(snippet, completion_word)
     end
     require("snippy").complete_done()
   end
