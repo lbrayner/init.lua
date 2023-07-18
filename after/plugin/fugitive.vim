@@ -20,14 +20,18 @@ if exists("*Clip")
 endif
 
 cnoreabbrev Gb Git blame --abbrev=6
+cnoreabbrev Gc Git cherry-pick
 cnoreabbrev Gd Git difftool -y
 " To list files modified by a range of commits
 cnoreabbrev Gdn Git diff --name-only --stat
+cnoreabbrev Gf Git! fetch upstream
 cnoreabbrev Gl Git log
 cnoreabbrev Glns Git log --name-status
 cnoreabbrev Glo Git log --oneline
 " To list branches of a specific remote: Git! ls-remote upstream
-cnoreabbrev Gr Git! ls-remote
+cnoreabbrev Gls Git! ls-remote
+cnoreabbrev Gp Git! push
+cnoreabbrev Gr Git rebase -i
 
 function! s:FugitiveMapOverrides()
     " So we can jump with 'switchbuf'
