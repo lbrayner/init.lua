@@ -40,6 +40,7 @@ local SymbolKind = vim.lsp.protocol.SymbolKind
 function M.java_go_to_top_level_declaration()
   local bufnr = vim.api.nvim_get_current_buf()
 
+  -- From nvim-jdtls
   local clients = vim.lsp.get_active_clients({ bufnr = bufnr, name = "jdtls" })
   local _, client = next(clients)
   if not client then
