@@ -85,8 +85,11 @@ function M.text_document_completion_list_to_complete_items(result, prefix)
     end
 
     local word = get_completion_word(completion_item)
+    local is_snippet = protocol.InsertTextFormat[completion_item.insertTextFormat] == 'Snippet'
+    local delayed_completion = is_snippet and completion_item.additionalTextEdits and #prefix > 0
     table.insert(matches, {
-      word = completion_item.additionalTextEdits and #prefix > 0 and prefix or word,
+      -- Delayed completion due to ecplise.jdt.ls's off-spec usage of additionalTextEdits
+      word = delayed_completion and prefix or word,
       abbr = completion_item.label,
       kind = util._get_completion_item_kind_name(completion_item.kind),
       menu = completion_item.detail or '',
@@ -98,7 +101,7 @@ function M.text_document_completion_list_to_complete_items(result, prefix)
         nvim = {
           lsp = {
             completion_item = completion_item,
-            completion_word = word,
+            delayed_completion = delayed_completion and { completion_word = word } or nil,
           },
         },
       },
