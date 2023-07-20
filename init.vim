@@ -204,10 +204,6 @@ endfunction
 command! -nargs=0 -range Execute <line1>,<line2>w !$SHELL
 command! -nargs=0 -range Filter call s:Filter(<line1>,<line2>)
 
-function! s:Synstack()
-    echo map(synstack(line("."), col(".")),"synIDattr(v:val, 'name')")
-endfunction
-
 " Ripgrep
 
 set grepprg=rg\ --vimgrep
@@ -236,8 +232,12 @@ command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
 cnoreabbrev Rb Rg -s '\b''''\b'<Left><Left><Left><Left><Left>
 cnoreabbrev Rw Rg -s '\b''<C-R><C-W>''\b'
 
+function! s:Synstack()
+    echo map(synstack(line("."), col(".")), "synIDattr(v:val, 'name')")
+endfunction
+
 " Human-readable stack of syntax items
-command! -nargs=0 -range Synstack call s:Synstack()
+command! -nargs=0 Synstack call s:Synstack()
 
 " Delete file marks
 command! -nargs=0 Delfilemarks lua require("lbrayner.marks").delete_file_marks()
