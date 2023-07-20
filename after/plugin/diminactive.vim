@@ -1,19 +1,24 @@
 function! s:DimInactiveExceptions()
-    if exists("b:dim_inactive") && b:dim_inactive
+    if util#WindowIsFloating()
+        " Buffers might be visited in floating windows after their creation
+        set winhighlight-=NormalNC:NONE
+        if exists("b:diminactive")
+            unlet b:diminactive
+        endif
         return
     endif
-    if util#WindowIsFloating()
+    if exists("b:diminactive") && b:diminactive
         return
     endif
     " Quickfix, terminal, help, prompt, and other special buffers
     if !empty(&buftype)
         set winhighlight+=NormalNC:NONE
-        let b:dim_inactive = 1
+        let b:diminactive = 1
     endif
 endfunction
 
 function! s:DimInactiveWinLeave()
-    if exists("b:dim_inactive") && b:dim_inactive
+    if exists("b:diminactive") && b:diminactive
         return
     endif
     if &diff || &previewwindow
