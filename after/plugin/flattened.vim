@@ -14,6 +14,6 @@ augroup FlattenedColorScheme
     autocmd ColorScheme flattened_* call s:SetupFlattened()
 augroup END
 
-if !exists("g:disable_flattened")
+if !exists("g:disable_flattened") || !g:disable_flattened
     colorscheme flattened_dark
 endif
