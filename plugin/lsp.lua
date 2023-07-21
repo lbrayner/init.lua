@@ -204,6 +204,20 @@ vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
   end,
 })
 
+vim.api.nvim_create_autocmd("LspProgress", {
+  group = lsp_setup,
+  desc = "LSP progress",
+  callback = function(args)
+    -- local client_id = args.data.client_id
+    -- local result = args.data.result
+    -- print("result "..vim.inspect(result)) -- TODO debug
+    -- From nvim-jdtls (double quotes required, single quotes would have to be
+    -- escaped otherwise)
+    vim.cmd(string.format(':echohl Statement | echo "%s" | echohl None',
+      string.sub(vim.lsp.status(), 1, vim.v.echospace)))
+  end,
+})
+
 local on_list = require("lbrayner.lsp").on_list
 
 declaration = function()
