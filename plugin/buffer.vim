@@ -92,7 +92,7 @@ endfunction
 command! LCloseAllWindows call s:LCloseAllWindows(win_getid(), win_getid(winnr("#")))
 
 function! s:CloseAllHelp(current_window_id, last_accessed_window_id)
-    windo if &ft == "help" | quit | endif
+    windo if &buftype == "help" | quit | endif
     call s:ReturnToOriginalWindow(a:current_window_id, a:last_accessed_window_id)
 endfunction
 
@@ -105,7 +105,7 @@ function! s:Unclutter(current_window_id,last_accessed_window_id)
         return
     endif
     " If we're in a help buffer, simply quit it
-    if &ft == "help"
+    if &buftype == "help"
         quit
         echo "Closed help."
         return
