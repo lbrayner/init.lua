@@ -98,3 +98,9 @@
 [submodule "pack/bundle/start/lir.nvim"]
 	path = pack/bundle/start/lir.nvim
 	url = https://github.com/tamago324/lir.nvim
+[submodule "pack/bundle/start/cmp-nvim-lsp"]
+	path = pack/bundle/start/cmp-nvim-lsp
+	url = https://github.com/hrsh7th/cmp-nvim-lsp
+[submodule "pack/bundle/start/nvim-cmp"]
+	path = pack/bundle/start/nvim-cmp
+	url = https://github.com/hrsh7th/nvim-cmp
