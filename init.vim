@@ -393,12 +393,16 @@ map <silent> <Leader>e <Plug>CamelCaseMotion_e
 map <silent> <Leader>ge <Plug>CamelCaseMotion_ge
 
 " delimitMate
+
 augroup DelimitMateSetup
     autocmd!
     autocmd FileType *clojure*,lisp,racket,scheme let b:loaded_delimitMate = 1
     autocmd FileType apache,html,xml let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
     autocmd FileType sql let b:delimitMate_matchpairs = "(:),[:],{:}"
 augroup END
+
+" Preventing delimitMate from mapping i_<C-G>g (using <C-G> with nvim-cmp)
+imap <F97> <Plug>delimitMateJumpMany
 
 " dirvish
 
@@ -469,10 +473,13 @@ augroup END
 let g:rzipPlugin_extra_ext = "*.odt"
 
 " vim-surround
+
 augroup DisableSurroundIndent
     autocmd!
     autocmd FileType groovy,html,sql,xml let b:surround_indent = 0
 augroup END
+
+let g:surround_no_insert_mappings = 1
 
 " }}}
 
