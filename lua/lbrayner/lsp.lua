@@ -1,5 +1,54 @@
 local M = {}
 
+-- From cmp_nvim_lsp
+function M.default_capabilities()
+  return {
+    textDocument = {
+      completion = {
+        completionItem = {
+          commitCharactersSupport = true,
+          deprecatedSupport = true,
+          insertReplaceSupport = true,
+          insertTextModeSupport = {
+            valueSet = { 1, 2 }
+          },
+          labelDetailsSupport = true,
+          preselectSupport = true,
+          resolveSupport = {
+            properties = {
+              "additionalTextEdits",
+              "detail",
+              "documentation",
+              "filterText",
+              "insertText",
+              "insertTextFormat",
+              "insertTextMode",
+              "sortText",
+              "textEdit",
+            }
+          },
+          snippetSupport = true,
+          tagSupport = {
+            valueSet = { 1 }
+          }
+        },
+        completionList = {
+          itemDefaults = {
+            "commitCharacters",
+            "data",
+            "editRange",
+            "insertTextFormat",
+            "insertTextMode",
+          }
+        },
+        contextSupport = true,
+        dynamicRegistration = false,
+        insertTextMode = 1
+      }
+    }
+  }
+end
+
 function M.on_list(options)
   if #options.items > 1  then
     vim.fn.setqflist({}, " ", options)
