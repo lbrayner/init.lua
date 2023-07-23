@@ -53,11 +53,15 @@ end
 local function adjust_start_col(lnum, line, items, encoding)
   local min_start_char = nil
   for _, item in pairs(items) do
-    if item.filterText == nil and item.textEdit and item.textEdit.range.start.line == lnum - 1 then
-      if min_start_char and min_start_char ~= item.textEdit.range.start.character then
+    local range = vim.tbl_get(item, "textEdit", "range")
+    if not range then
+      range = vim.tbl_get(item, "textEdit", "replace")
+    end
+    if item.filterText == nil and range and range.start.line == lnum - 1 then
+      if min_start_char and min_start_char ~= range.start.character then
         return nil
       end
-      min_start_char = item.textEdit.range.start.character
+      min_start_char = range.start.character
     end
   end
   if min_start_char then

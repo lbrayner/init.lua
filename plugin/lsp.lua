@@ -4,6 +4,7 @@ local capabilities = require("lbrayner.lsp").default_capabilities()
 require("typescript").setup({
   server = {
     autostart = false,
+    capabilities = capabilities,
   },
 })
 
