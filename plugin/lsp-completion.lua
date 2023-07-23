@@ -20,6 +20,10 @@ vim.api.nvim_create_autocmd("CompleteDone", {
     if not completion_item then
       return
     end
+    print("completion_item "..vim.inspect(completion_item)) -- TODO debug
+    if completion_item.insertTextFormat ~= InsertTextFormat.Snippet then
+      return
+    end
     local clients = vim.lsp.get_active_clients()
     if #clients ~= 1 then
       return
@@ -40,14 +44,13 @@ vim.api.nvim_create_autocmd("CompleteDone", {
 })
 
 complete = function(client, bufnr, completed_item, completion_item)
-  -- print("completion_item " .. vim.inspect(completion_item)) -- TODO debug
+  print("completed_item " .. vim.inspect(completed_item)) -- TODO debug
+  print("completion_item " .. vim.inspect(completion_item)) -- TODO debug
   local snippet
-  local completion_word
   if completion_item.textEdit then
     snippet = completion_item.textEdit.newText
-    completion_word = require("vim.lsp.util").parse_snippet(snippet)
     local text_edit = vim.tbl_deep_extend("error", {}, completion_item.textEdit)
-    text_edit.newText = completion_word
+    text_edit.newText = ""
     if text_edit.replace then -- lsp.InsertReplaceEdit
       text_edit.range = text_edit.replace
     end
@@ -60,16 +63,10 @@ complete = function(client, bufnr, completed_item, completion_item)
     vim.lsp.util.apply_text_edits(text_edits, bufnr, client.offset_encoding)
   else
     snippet = completion_item.insertText or completion_item.textEditText
-    completion_word = require("vim.lsp.util").parse_snippet(snippet)
     if completion_item.additionalTextEdits then
       vim.lsp.util.apply_text_edits(completion_item.additionalTextEdits, bufnr, client.offset_encoding)
     end
-    vim.api.nvim_put({ completion_word }, "", false, true)
   end
-  -- print("snippet "..vim.inspect(snippet)) -- TODO debug
-  -- print("completion_word "..vim.inspect(completion_word)) -- TODO debug
-  return require("snippy").expand_snippet(snippet, completion_word)
+  print("snippet "..vim.inspect(snippet)) -- TODO debug
+  return require("snippy").expand_snippet(snippet)
 end
-
-local comp_list_to_comp_items = require("lbrayner.lsp.util").text_document_completion_list_to_complete_items
-vim.lsp.util.text_document_completion_list_to_complete_items = comp_list_to_comp_items
