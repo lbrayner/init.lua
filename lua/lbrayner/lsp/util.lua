@@ -4,6 +4,32 @@ local M = {}
 
 --- From vim.lsp.util
 ---@private
+--- Some language servers return complementary candidates whose prefixes do not
+--- match are also returned. So we exclude completion candidates whose prefix
+--- does not match.
+local function remove_unmatch_completion_items(items, prefix)
+  return vim.tbl_filter(function(item)
+    -- tsserver will not always supply a textEdit, so prefix might be "." (see adjust_start_col)
+    if item.commitCharacters and vim.tbl_contains(item.commitCharacters, prefix) then
+      return true
+    end
+    if vim.tbl_get(item, "textEdit", "newText") and
+      item.textEdit.newText ~= "" and
+      vim.startswith(item.textEdit.newText, prefix) then
+      return true
+    end
+    if item.insertText and item.insertText ~= "" and vim.startswith(item.insertText, prefix) then
+      return true
+    end
+    if item.textEditText and item.textEditText ~= "" and vim.startswith(item.textEditText, prefix) then
+      return true
+    end
+    return vim.startswith(item.label, prefix)
+  end, items)
+end
+
+--- From vim.lsp.util
+---@private
 --- Sorts by CompletionItem.sortText.
 ---
 --see https://microsoft.github.io/language-server-protocol/specifications/specification-current/#textDocument_completion
@@ -19,6 +45,7 @@ function M.text_document_completion_list_to_complete_items(result, prefix)
     return {}
   end
 
+  items = remove_unmatch_completion_items(items, prefix)
   sort_completion_items(items)
 
   local matches = {}
