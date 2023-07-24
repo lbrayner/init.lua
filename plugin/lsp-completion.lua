@@ -19,7 +19,7 @@ vim.api.nvim_create_autocmd("CompleteDone", {
     if not completion_item then
       return
     end
-    print("completion_item "..vim.inspect(completion_item)) -- TODO debug
+    -- print("completion_item "..vim.inspect(completion_item)) -- TODO debug
     local clients = vim.lsp.get_active_clients()
     if #clients ~= 1 then
       return
@@ -42,8 +42,8 @@ vim.api.nvim_create_autocmd("CompleteDone", {
 local InsertTextFormat = vim.lsp.protocol.InsertTextFormat
 
 complete = function(client, bufnr, completed_item, completion_item)
-  print("completed_item " .. vim.inspect(completed_item)) -- TODO debug
-  print("completion_item " .. vim.inspect(completion_item)) -- TODO debug
+  -- print("completed_item " .. vim.inspect(completed_item)) -- TODO debug
+  -- print("completion_item " .. vim.inspect(completion_item)) -- TODO debug
   local is_snippet = completion_item.insertTextFormat == InsertTextFormat.Snippet
   local new_text
   if completion_item.textEdit then
@@ -55,7 +55,7 @@ complete = function(client, bufnr, completed_item, completion_item)
     if text_edit.replace then -- lsp.InsertReplaceEdit
       text_edit.range = text_edit.replace
     end
-    print("new_text "..vim.inspect(new_text)) -- TODO debug
+    -- print("new_text "..vim.inspect(new_text)) -- TODO debug
     local text_edits = { text_edit }
     if completion_item.additionalTextEdits then
       for _, text_edit in ipairs(completion_item.additionalTextEdits) do

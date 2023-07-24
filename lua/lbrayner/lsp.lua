@@ -104,6 +104,12 @@ function M.omnifunc(findstart, base)
     if err or not result or vim.fn.mode() ~= "i" then
       return
     end
+    -- print("result "..vim.inspect(result)) -- TODO debug
+    -- do -- TODO debug
+    --   local fd = assert(vim.uv.fs_open("/var/tmp/textDocument_completion_result.lua", "w", 438))
+    --   vim.uv.fs_write(fd, vim.inspect(result))
+    --   assert(vim.uv.fs_close(fd))
+    -- end
 
     -- Completion response items may be relative to a position different than `textMatch`.
     -- Concrete example, with sumneko/lua-language-server:
@@ -125,6 +131,7 @@ function M.omnifunc(findstart, base)
     local candidates = vim.lsp.util.extract_completion_items(result)
     local startbyte = adjust_start_col(pos[1], line, candidates, encoding) or textMatch
     local prefix = line:sub(startbyte + 1, pos[2])
+    -- print("prefix "..vim.inspect(prefix)) -- TODO debug
     local matches
 
     if vim.tbl_get(client.config.capabilities.textDocument, "completion", "completionItem", "snippetSupport") then
