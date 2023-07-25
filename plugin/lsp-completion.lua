@@ -32,6 +32,9 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
       return
     end -- TODO request ctx to be in user_data
     local client = clients[1]
+    if not require("lbrayner.lsp").snippet_support(client) then
+      return
+    end
     local bufnr = args.buf
     -- From cmp_nvim_lsp
     if vim.tbl_get(client.server_capabilities, "completionProvider", "resolveProvider") then
@@ -74,6 +77,9 @@ complete = function(client, bufnr, completed_item, completion_item)
     new_text = completion_item.insertText or completion_item.textEditText or completion_item.label
     if completion_item.additionalTextEdits then
       vim.lsp.util.apply_text_edits(completion_item.additionalTextEdits, bufnr, client.offset_encoding)
+    end
+    if not is_snippet then
+      vim.api.nvim_put({ new_text }, "", false, true)
     end
   end
   if is_snippet then

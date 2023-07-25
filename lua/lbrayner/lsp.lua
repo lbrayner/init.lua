@@ -136,7 +136,7 @@ function M.omnifunc(findstart, base)
     -- print(string.format("startbyte %s, pos[2] %s, prefix %s ", startbyte, pos[2], prefix)) -- TODO debug
     local matches
 
-    if vim.tbl_get(client.config.capabilities.textDocument, "completion", "completionItem", "snippetSupport") then
+    if M.snippet_support(client) then
       matches = require("lbrayner.lsp.util").text_document_completion_list_to_complete_items(result, prefix)
     else
       matches = vim.lsp.util.text_document_completion_list_to_complete_items(result, prefix)
@@ -170,6 +170,11 @@ function M.on_list(options)
   vim.fn.settagstack(vim.fn.win_getid(), { items = items }, "t")
 
   require("lbrayner").jump_to_location(filename, pos)
+end
+
+function M.snippet_support(client)
+  if not client then return end
+  return vim.tbl_get(client.config.capabilities.textDocument, "completion", "completionItem", "snippetSupport")
 end
 
 return M
