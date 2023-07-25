@@ -11,6 +11,7 @@ require("typescript").setup({
 -- Python
 require("lspconfig").pyright.setup {
   autostart = false,
+  capabilities = capabilities,
 }
 
 -- Lua

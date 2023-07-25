@@ -75,9 +75,6 @@ complete = function(client, bufnr, completed_item, completion_item)
     if completion_item.additionalTextEdits then
       vim.lsp.util.apply_text_edits(completion_item.additionalTextEdits, bufnr, client.offset_encoding)
     end
-    if not is_snippet then
-      vim.api.nvim_put({ new_text }, "", false, true)
-    end
   end
   if is_snippet then
     require("snippy").expand_snippet(new_text)
