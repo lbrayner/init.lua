@@ -11,11 +11,18 @@ local complete
 
 local lsp_completion = vim.api.nvim_create_augroup("lsp_completion", { clear = true })
 
-vim.api.nvim_create_autocmd("CompleteDone", {
+vim.api.nvim_create_autocmd("CompleteDonePre", {
   group = lsp_completion,
   desc = "LSP completion",
   callback = function(args)
-    local completion_item = vim.tbl_get(vim.v.completed_item, "user_data", "nvim", "lsp", "completion_item")
+    -- print("complete_info "..vim.inspect(vim.fn.complete_info({ "mode", "pum_visible", "selected" }))) -- TODO debug
+    local complete_info = vim.fn.complete_info({ "selected" })
+    if not complete_info.selected or complete_info.selected < 0 then
+      return
+    end
+    local completed_item = vim.v.completed_item
+    -- print("completed_item "..vim.inspect(completed_item)) -- TODO debug
+    local completion_item = vim.tbl_get(completed_item, "user_data", "nvim", "lsp", "completion_item")
     if not completion_item then
       return
     end
@@ -31,11 +38,11 @@ vim.api.nvim_create_autocmd("CompleteDone", {
       client.request("completionItem/resolve", completion_item, function(_, result)
         -- print("resolve " .. vim.inspect(result)) -- TODO debug
         completion_item = result or completion_item
-        complete(client, bufnr, vim.v.completed_item, completion_item)
+        complete(client, bufnr, completed_item, completion_item)
       end)
       return
     end
-    complete(client, bufnr, vim.v.completed_item, completion_item)
+    complete(client, bufnr, completed_item, completion_item)
   end
 })
 
