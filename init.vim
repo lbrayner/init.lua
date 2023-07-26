@@ -125,6 +125,10 @@ cnoremap <C-G> <C-C>
 cnoremap <C-K> <C-F>D<C-C><Right>
 inoremap <C-K> <C-O>D
 
+" Insert digraph
+cnoremap <C-X>8 <C-K>
+inoremap <C-X>8 <C-K>
+
 " inserting the current line
 cnoremap <C-R><C-L> <C-R>=getline(".")<CR>
 " inserting the current line number
