@@ -1,4 +1,4 @@
-local util = require('vim.lsp.util')
+local util = require("vim.lsp.util")
 
 local M = {}
 
@@ -51,16 +51,16 @@ function M.text_document_completion_list_to_complete_items(result, prefix)
   local matches = {}
 
   for _, completion_item in ipairs(items) do
-    local info = ''
+    local info = ""
     local documentation = completion_item.documentation
     if documentation then
-      if type(documentation) == 'string' and documentation ~= '' then
+      if type(documentation) == "string" and documentation ~= "" then
         info = documentation
-      elseif type(documentation) == 'table' and type(documentation.value) == 'string' then
+      elseif type(documentation) == "table" and type(documentation.value) == "string" then
         info = documentation.value
       else
         vim.notify(
-          ('invalid documentation value %s'):format(vim.inspect(documentation)),
+          ("invalid documentation value %s"):format(vim.inspect(documentation)),
           vim.log.levels.WARN
         )
       end
@@ -90,7 +90,7 @@ function M.text_document_completion_list_to_complete_items(result, prefix)
       word = prefix, -- Delayed completion
       abbr = completion_item.label,
       kind = util._get_completion_item_kind_name(completion_item.kind),
-      menu = completion_item.detail or '',
+      menu = completion_item.detail or "",
       info = #info > 0 and info or nil,
       icase = 1,
       dup = 1,
