@@ -1,3 +1,7 @@
+if vim.fn.exists("#flash_window_mode") == 1 then
+  vim.api.nvim_del_augroup_by_name("flash_window_mode")
+end
+
 local winhighlight_store = {}
 
 local function save_winhighlight(winid)
@@ -16,15 +20,19 @@ local function flash_window()
 
   save_winhighlight(winid)
 
-  local timer = vim.loop.new_timer()
+  local timer = vim.uv.new_timer()
+  local mod = 2
   local i = 0
 
   timer:start(0, 100, vim.schedule_wrap(function()
     if vim.api.nvim_get_current_win() ~= winid then
-      timer:close()
-      return restore_winhighlight(winid)
+      if not timer:is_closing() then
+        timer:close()
+      end
+      restore_winhighlight(winid)
+      return
     end
-    if i % 2 == 0 then
+    if i % mod == 0 then
       vim.api.nvim_win_call(winid, function()
         vim.opt.winhighlight:append({ Normal = "DiffAdd" })
       end)
@@ -33,8 +41,10 @@ local function flash_window()
         vim.opt.winhighlight:remove({ "Normal" })
       end)
     end
-    if i > 2 then
-      timer:close()
+    if i > mod then
+      if not timer:is_closing() then
+        timer:close()
+      end
       restore_winhighlight(winid)
       return
     end
