@@ -5,17 +5,6 @@ local function save_winhighlight(winid)
 end
 
 local function restore_winhighlight(winid)
-  if vim.fn.exists("#FzfLua") == 1 then
-    local autocmds = vim.api.nvim_get_autocmds({ group="FzfLua"})
-    if not vim.tbl_isempty(autocmds) then
-      local autocmd = autocmds[1]
-      if vim.api.nvim_get_current_buf() == autocmd.buffer then
-        require("fzf-lua.win"):redraw()
-        require("fzf-lua.win"):reset_win_highlights(winid)
-        return
-      end
-    end
-  end
   if vim.api.nvim_win_is_valid(winid) then
     vim.wo[winid].winhighlight = winhighlight_store[winid]
   end
@@ -37,7 +26,7 @@ local function flash_window()
     end
     if i % 2 == 0 then
       vim.api.nvim_win_call(winid, function()
-        vim.opt.winhighlight:append({ ["Normal"]="DiffAdd" })
+        vim.opt.winhighlight:append({ Normal = "DiffAdd" })
       end)
     else
       vim.api.nvim_win_call(winid, function()
@@ -46,7 +35,8 @@ local function flash_window()
     end
     if i > 2 then
       timer:close()
-      return restore_winhighlight(winid)
+      restore_winhighlight(winid)
+      return
     end
     i = i + 1
   end))
@@ -60,7 +50,7 @@ vim.api.nvim_create_user_command("FlashWindowMode", function()
     flash_window_mode = nil
     return print("Flash window mode disabled.")
   end
-  flash_window_mode = vim.api.nvim_create_augroup("flash_window_mode", { clear=true })
+  flash_window_mode = vim.api.nvim_create_augroup("flash_window_mode", { clear = true })
   vim.api.nvim_create_autocmd("WinEnter", {
     group = flash_window_mode,
     desc = "Flash window mode",
@@ -68,9 +58,8 @@ vim.api.nvim_create_user_command("FlashWindowMode", function()
   })
   flash_window()
   print("Flash window mode enabled.")
-end, { nargs=0 })
+end, { nargs = 0 })
 
-for _, mode in ipairs({ "", -- nvo: normal, visual, operator-pending
-  "i" }) do
-  vim.keymap.set(mode, "<F10>", flash_window)
-end
+vim.keymap.set({
+  "", -- nvo: normal, visual, operator-pending
+  "i" }, "<F10>", flash_window)
