@@ -1,6 +1,15 @@
+" vim-dadbod
+function! s:_SelectParagraph()
+    exe "normal! vip:DB\<cr>"
+endfunction
+
+function! s:SelectParagraph()
+    call util#PreserveViewPort(funcref("<SID>_SelectParagraph"))
+endfunction
+
 function! s:DatabaseAccess()
-    nnoremap <buffer> <Leader><Return> <Cmd>call database#select_paragraph()<CR>
-    nnoremap <buffer> <Leader><kEnter> <Cmd>call database#select_paragraph()<CR>
+    nnoremap <buffer> <Leader><Return> <Cmd>call <SID>SelectParagraph()<CR>
+    nnoremap <buffer> <Leader><kEnter> <Cmd>call <SID>SelectParagraph()<CR>
 
     " vim-dadbod
     if exists("b:db")
@@ -16,7 +25,7 @@ function! s:DatabaseAccess()
         " statusline
         unlet! b:Statusline_custom_rightline
         unlet! b:Statusline_custom_mod_rightline
-        call statusline#RedefineStatusLine()
+        silent! doautocmd <nomodeline> User CustomStatusline
     endfunction
 
     command! -buffer -nargs=0 DatabaseAccessClear call s:DatabaseAccessClear()
