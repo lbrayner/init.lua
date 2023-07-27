@@ -15,7 +15,8 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
   group = lsp_completion,
   desc = "LSP completion",
   callback = function(args)
-    -- print("complete_info "..vim.inspect(vim.fn.complete_info({ "mode", "pum_visible", "selected" }))) -- TODO debug
+    -- print("complete_info "..vim.inspect(vim.fn.complete_info({
+    --   "mode", "pum_visible", "selected" }))) -- TODO debug
     local complete_info = vim.fn.complete_info({ "selected" })
     if not complete_info.selected or complete_info.selected < 0 then
       return
