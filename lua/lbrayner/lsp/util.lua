@@ -69,6 +69,14 @@ function M.text_document_completion_list_to_complete_items(result, prefix)
     local defaults = result.itemDefaults or {}
 
     -- From nvim-cmp
+    if defaults.data then
+      completion_item.data = completion_item.data or defaults.data
+    end
+
+    if defaults.commitCharacters then
+      completion_item.commitCharacters = completion_item.commitCharacters or defaults.commitCharacters
+    end
+
     if defaults.insertTextFormat then
       completion_item.insertTextFormat = completion_item.insertTextFormat or defaults.insertTextFormat
     end
