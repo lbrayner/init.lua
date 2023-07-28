@@ -30,7 +30,7 @@ cnoreabbrev Glns Git log --name-status
 cnoreabbrev Glo Git log --oneline
 " To list branches of a specific remote: Git! ls-remote upstream
 cnoreabbrev Gls Git! ls-remote
-cnoreabbrev Gp Git! push
+cnoreabbrev Gp Git! pull
 cnoreabbrev Gr Git rebase -i
 
 function! s:FugitiveMapOverrides()
