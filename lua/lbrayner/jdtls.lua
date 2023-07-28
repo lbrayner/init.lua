@@ -3,20 +3,17 @@ local lspconfig = require("lspconfig.server_configurations.jdtls")
 local M = {}
 
 function M.get_config()
-  return {
-    capabilities = {
-      textDocument = {
-        completion = {
-          completionItem = {
-            snippetSupport = true,
-          },
-        },
-        declaration = {
-          dynamicRegistration = true,
-          linkSupport = true
-        },
+  local capabilities = vim.tbl_deep_extend("keep", {
+    textDocument = {
+      declaration = {
+        dynamicRegistration = true,
+        linkSupport = true
       },
     },
+  }, require("lbrayner.lsp").default_capabilities())
+
+  return {
+    capabilities = capabilities,
     cmd = lspconfig.default_config.cmd,
     root_dir = require("jdtls.setup").find_root({".git", "mvnw", "gradlew"}),
     settings = {
