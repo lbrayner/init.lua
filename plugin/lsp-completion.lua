@@ -34,7 +34,6 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
     -- print("completion_item "..vim.inspect(completion_item)) -- TODO debug
     local clients = vim.lsp.get_active_clients()
     if #clients ~= 1 then
-
       return
     end -- TODO request ctx to be in user_data
 
@@ -59,17 +58,15 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
   end
 })
 
-local InsertTextFormat = vim.lsp.protocol.InsertTextFormat
-
 complete = function(client, bufnr, completed_item, completion_item)
   -- print("completed_item " .. vim.inspect(completed_item)) -- TODO debug
   -- print("completion_item " .. vim.inspect(completion_item)) -- TODO debug
-  local is_snippet = completion_item.insertTextFormat == InsertTextFormat.Snippet
+  local is_snippet = completion_item.insertTextFormat == vim.lsp.protocol.InsertTextFormat.Snippet
   local new_text
 
   if completion_item.textEdit then
-    new_text = completion_item.textEdit.newText
-    local text_edit = vim.tbl_deep_extend("error", {}, completion_item.textEdit)
+    local text_edit = completion_item.textEdit
+    new_text = text_edit.newText
 
     if is_snippet then
       text_edit.newText = ""
