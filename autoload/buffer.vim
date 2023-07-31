@@ -1,46 +1,54 @@
 "Based on BufOnly.vim
 
-function! s:MessageBuffers(buffer_count)
-	if a:buffer_count == 1
-		echomsg a:buffer_count "buffer wiped"
-	elseif a:buffer_count > 1
-		echomsg a:buffer_count "buffers wiped"
+function! s:WipeBuffers(predicate, ...)
+    let count = s:LoopBuffers(a:predicate.
+                \" && getbufvar(n, '&buftype') !=# 'terminal'", a:0 > 0 ? a:1 : "")
+    let message = ""
+	if count.buffer_count == 0
+		let message .= "No buffers wiped"
+    elseif count.buffer_count == 1
+		let message .= "1 buffer wiped"
+	elseif count.buffer_count > 1
+		let message .= count.buffer_count . " buffers wiped"
 	endif
-endfunction
-
-function! s:WipeBuffers(predicate,...)
-    let buffer_count = s:LoopBuffers(a:predicate.
-                \" && getbufvar(n,'&buftype') !=# 'terminal'",
-                \a:0 > 0 ? a:1 : 0,a:0 > 1 ? a:2 : 0)
-    call s:MessageBuffers(buffer_count)
+	if count.error_count == 1
+		let message .= "; 1 buffer not wiped"
+	elseif count.error_count > 1
+		let message .= "; " . count.error_count . " buffers not wiped"
+	endif
+    echom l:message
 endfunction
 
 " TODO using getbufinfo, review predicates
-function! s:LoopBuffers(predicate,bang,silent)
+function! s:LoopBuffers(predicate, bang)
 	let buffer_count = 0
-    let bang = a:bang ? "!" : ""
+    let error_count = 0
     let ei = &eventignore
     set eventignore+=TabClosed
     for buf in getbufinfo()
         let n = buf.bufnr
         if eval(a:predicate)
-            let command = "bwipe" . bang . " " . n
-            if a:silent
-                " Ignore errors
-                silent! exe command
-            else
-                silent exe command
-            endif
-            let buffer_count += 1
+            let command = "bwipe" . a:bang . " " . n
+            try
+                if len(a:bang)
+                    " Ignore errors
+                    silent! exe command
+                else
+                    silent exe command
+                endif
+                let buffer_count += 1
+            catch
+                let error_count += 1
+            endtry
         endif
     endfor
     let &eventignore = ei
-    return buffer_count
+    return {"buffer_count": buffer_count, "error_count": error_count}
 endfunction
 
-function! buffer#BWipe(pattern)
+function! buffer#BWipe(pattern, bang)
     let s:wipe_pattern = a:pattern
-    call s:WipeBuffers('buflisted(n) && bufname(n) =~# s:wipe_pattern')
+    call s:WipeBuffers('buflisted(n) && bufname(n) =~# s:wipe_pattern', a:bang)
 endfunction
 
 function! buffer#BWipeFileType(...)
@@ -49,7 +57,7 @@ function! buffer#BWipeFileType(...)
     else
         let s:filetype = &ft
     endif
-    call s:WipeBuffers('getbufvar(n,"&ft") == s:filetype')
+    call s:WipeBuffers('getbufvar(n, "&ft") == s:filetype')
 endfunction
 
 function! buffer#BWipeHidden(pattern)
@@ -65,22 +73,12 @@ function! buffer#BWipeNotLoaded()
     call s:WipeBuffers('buflisted(n) && !bufloaded(n)')
 endfunction
 
-function! buffer#BWipeForce(pattern)
-    let s:wipe_pattern = a:pattern
-    call s:WipeBuffers('buflisted(n) && bufname(n) =~#'
-                \ . ' s:wipe_pattern',1,1)
-endfunction
-
-function! buffer#BWipeForceUnlisted(pattern)
+function! buffer#BWipeUnlisted(pattern, bang)
     let s:wipe_pattern = a:pattern
     call s:WipeBuffers('!buflisted(n) && bufname(n) =~#'
-                \ . ' s:wipe_pattern',1,1)
+                \ . ' s:wipe_pattern', a:bang, 1)
 endfunction
 
-function! buffer#BWipeNotReadable()
-    call s:WipeBuffers('buflisted(n) && !filereadable(bufname(n))')
-endfunction
-
-function! buffer#BWipeNotReadableForce()
-    call s:WipeBuffers('buflisted(n) && !filereadable(bufname(n))',1,1)
+function! buffer#BWipeNotReadable(bang)
+    call s:WipeBuffers('buflisted(n) && !filereadable(bufname(n))', a:bang)
 endfunction

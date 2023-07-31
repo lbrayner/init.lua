@@ -355,7 +355,7 @@ augroup END
 augroup SessionLoad
     autocmd!
     " Wiping empty buffers created by restoring sessions
-    autocmd SessionLoadPost * silent call buffer#BWipeNotReadableForce()
+    autocmd SessionLoadPost * autocmd SessionLoad VimEnter * silent BWipeNotReadable!
 augroup END
 
 augroup TerminalSetup
