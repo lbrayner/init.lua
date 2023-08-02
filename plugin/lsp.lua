@@ -1,3 +1,7 @@
+-- Standalone UI for nvim-lsp progress. Eye candy for the impatient.
+-- 'legacy' tag
+require("fidget").setup()
+
 local capabilities = require("lbrayner.lsp").default_capabilities()
 
 -- Typescript, Javascript

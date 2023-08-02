@@ -96,3 +96,8 @@
 [submodule "pack/bundle/start/vim-rsi"]
 	path = pack/bundle/start/vim-rsi
 	url = https://github.com/tpope/vim-rsi
+; 'legacy' tag
+[submodule "pack/bundle/start/fidget.nvim"]
+	path = pack/bundle/start/fidget.nvim
+	url = https://github.com/j-hui/fidget.nvim
+	update = none
