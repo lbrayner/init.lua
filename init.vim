@@ -234,8 +234,8 @@ endfunction
 
 command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
 cnoreabbrev Rg Rg -e
-cnoreabbrev Rb Rg -s -e '\b''''\b'<Left><Left><Left><Left><Left>
-cnoreabbrev Rw Rg -s -e '\b''<C-R><C-W>''\b'
+cnoreabbrev Rb Rg -s -e'\b''''\b'<Left><Left><Left><Left><Left>
+cnoreabbrev Rw Rg -s -e'\b''<C-R><C-W>''\b'
 
 function! s:Synstack()
     echo map(synstack(line("."), col(".")), "synIDattr(v:val, 'name')")
