@@ -1,3 +1,5 @@
+local M = {}
+
 local function table_find_index_eq(table, value)
   for i, t in ipairs(table) do
     if t == value then
@@ -6,7 +8,7 @@ local function table_find_index_eq(table, value)
   end
 end
 
-local function tab_close_range(bang, from, to)
+function M.tab_close_range(bang, from, to)
   local tabs_to_close = {}
   local tab = from
   while tab <= #vim.api.nvim_list_tabpages() and tab <= to do
@@ -14,7 +16,7 @@ local function tab_close_range(bang, from, to)
     tab = tab + 1
   end
   local ei = vim.o.eventignore
-  vim.opt.eventignore:append {"TabClosed"}
+  vim.opt.eventignore:append({ "TabClosed" })
   while not vim.tbl_isempty(tabs_to_close) do
     local tab = table.remove(tabs_to_close, 1)
     local tabnr = table_find_index_eq(vim.api.nvim_list_tabpages(), tab)
@@ -23,6 +25,4 @@ local function tab_close_range(bang, from, to)
   vim.o.eventignore = ei
 end
 
-return {
-  tab_close_range = tab_close_range,
-}
+return M
