@@ -39,6 +39,29 @@ local function sort_completion_items(items)
   end)
 end
 
+--- From vim.lsp.util
+--- Returns text that should be inserted when selecting completion item. The
+--- precedence is as follows: textEdit.newText > insertText > label
+--see https://microsoft.github.io/language-server-protocol/specifications/specification-current/#textDocument_completion
+local function get_completion_word(item)
+  if item.textEdit ~= nil and item.textEdit.newText ~= nil and item.textEdit.newText ~= '' then
+    local insert_text_format = protocol.InsertTextFormat[item.insertTextFormat]
+    if insert_text_format == 'PlainText' or insert_text_format == nil then
+      return item.textEdit.newText
+    else
+      return M.parse_snippet(item.textEdit.newText)
+    end
+  elseif item.insertText ~= nil and item.insertText ~= '' then
+    local insert_text_format = protocol.InsertTextFormat[item.insertTextFormat]
+    if insert_text_format == 'PlainText' or insert_text_format == nil then
+      return item.insertText
+    else
+      return M.parse_snippet(item.insertText)
+    end
+  end
+  return item.label
+end
+
 function M.text_document_completion_list_to_complete_items(result, prefix)
   local items = util.extract_completion_items(result)
   if vim.tbl_isempty(items) then
@@ -102,8 +125,14 @@ function M.text_document_completion_list_to_complete_items(result, prefix)
       end
     end
 
+    local word = prefix -- Delayed completion
+
+    if not completion_item.textEdit and not completion_item.additionalTextEdits then
+      word = get_completion_word(completion_item)
+    end
+
     table.insert(matches, {
-      word = prefix, -- Delayed completion
+      word = word,
       abbr = completion_item.label,
       kind = util._get_completion_item_kind_name(completion_item.kind),
       menu = completion_item.detail or "",

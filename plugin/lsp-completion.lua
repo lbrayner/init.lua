@@ -59,8 +59,8 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
 })
 
 complete = function(client, bufnr, completed_item, completion_item)
-  -- print("completed_item " .. vim.inspect(completed_item)) -- TODO debug
-  -- print("completion_item " .. vim.inspect(completion_item)) -- TODO debug
+  print("completed_item " .. vim.inspect(completed_item)) -- TODO debug
+  print("completion_item " .. vim.inspect(completion_item)) -- TODO debug
   local is_snippet = completion_item.insertTextFormat == vim.lsp.protocol.InsertTextFormat.Snippet
   local new_text
 
@@ -86,12 +86,10 @@ complete = function(client, bufnr, completed_item, completion_item)
     end
 
     vim.lsp.util.apply_text_edits(text_edits, bufnr, client.offset_encoding)
-  else
-    new_text = completion_item.insertText or completion_item.textEditText or completion_item.label
+  elseif completion_item.additionalTextEdits then
+    vim.lsp.util.apply_text_edits(completion_item.additionalTextEdits, bufnr, client.offset_encoding)
 
-    if completion_item.additionalTextEdits then
-      vim.lsp.util.apply_text_edits(completion_item.additionalTextEdits, bufnr, client.offset_encoding)
-    end
+    new_text = completion_item.insertText or completion_item.textEditText or completion_item.label
 
     if not is_snippet then
       vim.api.nvim_put({ new_text }, "", false, true)
