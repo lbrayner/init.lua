@@ -14,19 +14,6 @@ function M.default_capabilities()
           },
           labelDetailsSupport = true,
           preselectSupport = true,
-          resolveSupport = {
-            properties = {
-              "additionalTextEdits",
-              "detail",
-              "documentation",
-              "filterText",
-              "insertText",
-              "insertTextFormat",
-              "insertTextMode",
-              "sortText",
-              "textEdit",
-            }
-          },
           snippetSupport = true,
           tagSupport = {
             valueSet = { 1 }
