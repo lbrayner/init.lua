@@ -66,6 +66,9 @@ complete = function(client, bufnr, completed_item, completion_item)
   local word
 
   if completion_item.textEdit then
+    -- Delayed completion
+    -- Do textEdit, then possibly additionalTextEdits
+    -- Typically an auto-import
     local text_edit = completion_item.textEdit
     new_text = text_edit.newText
 
@@ -88,6 +91,9 @@ complete = function(client, bufnr, completed_item, completion_item)
 
     vim.lsp.util.apply_text_edits(text_edits, bufnr, client.offset_encoding)
   elseif completion_item.additionalTextEdits then
+    -- Delayed completion
+    -- Do additionalTextEdits, then insert insertText
+    -- eclipse.jdt.ls postfix snippets
     vim.lsp.util.apply_text_edits(completion_item.additionalTextEdits, bufnr, client.offset_encoding)
 
     new_text = completion_item.insertText or completion_item.textEditText or completion_item.label
@@ -96,6 +102,8 @@ complete = function(client, bufnr, completed_item, completion_item)
       vim.api.nvim_put({ new_text }, "", false, true)
     end
   elseif is_snippet then
+    -- Expand snippet of a regular completion
+    -- textEditText only possible if there are itemDefaults with a range
     new_text = completion_item.insertText or completion_item.label
     word = completed_item.word
   end

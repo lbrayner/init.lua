@@ -128,7 +128,7 @@ function M.text_document_completion_list_to_complete_items(result, prefix)
     local word = prefix -- Delayed completion
 
     if not completion_item.textEdit and not completion_item.additionalTextEdits then
-      word = get_completion_word(completion_item)
+      word = get_completion_word(completion_item) -- Regular completion
     end
 
     table.insert(matches, {
