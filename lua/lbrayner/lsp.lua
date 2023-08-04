@@ -39,6 +39,7 @@ end
 ---@private
 local function adjust_start_col(lnum, line, items, encoding)
   local min_start_char = nil
+  local no_start_char
   for _, item in pairs(items) do
     local range = vim.tbl_get(item, "textEdit", "range")
     if not range then
@@ -49,6 +50,11 @@ local function adjust_start_col(lnum, line, items, encoding)
         return nil
       end
       min_start_char = range.start.character
+    else
+      no_start_char = true
+    end
+    if min_start_char and no_start_char then
+      return nil
     end
   end
   if min_start_char then
