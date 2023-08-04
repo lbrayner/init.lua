@@ -96,7 +96,7 @@ complete = function(client, bufnr, completed_item, completion_item)
       vim.api.nvim_put({ new_text }, "", false, true)
     end
   elseif is_snippet then
-    new_text = completion_item.insertText or completion_item.textEditText or completion_item.label
+    new_text = completion_item.insertText or completion_item.label
     word = completed_item.word
   end
 
