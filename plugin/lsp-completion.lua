@@ -38,10 +38,6 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
     end -- TODO request ctx to be in user_data
 
     local client = clients[1]
-    if not require("lbrayner.lsp").snippet_support(client) then
-      return
-    end
-
     local bufnr = args.buf
 
     -- From cmp_nvim_lsp

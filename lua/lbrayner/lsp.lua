@@ -127,13 +127,7 @@ function M.omnifunc(findstart, base)
     local prefix = line:sub(startbyte + 1, pos[2])
     -- print("line "..vim.inspect(line)) -- TODO debug
     -- print(string.format("startbyte %s, pos[2] %s, prefix %s ", startbyte, pos[2], prefix)) -- TODO debug
-    local matches
-
-    if M.snippet_support(client) then
-      matches = require("lbrayner.lsp.util").text_document_completion_list_to_complete_items(result, prefix)
-    else
-      matches = vim.lsp.util.text_document_completion_list_to_complete_items(result, prefix)
-    end
+    local matches = require("lbrayner.lsp.util").text_document_completion_list_to_complete_items(result, prefix)
 
     -- TODO(ashkan): is this the best way to do this?
     vim.list_extend(items, matches)
@@ -163,11 +157,6 @@ function M.on_list(options)
   vim.fn.settagstack(vim.fn.win_getid(), { items = items }, "t")
 
   require("lbrayner").jump_to_location(filename, pos)
-end
-
-function M.snippet_support(client)
-  if not client then return end
-  return vim.tbl_get(client.config.capabilities.textDocument, "completion", "completionItem", "snippetSupport")
 end
 
 return M
