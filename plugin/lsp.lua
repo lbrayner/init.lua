@@ -89,7 +89,7 @@ local function on_attach(_, bufnr)
     nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDefinition", definition, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDetach", function()
-    for _, client in ipairs(vim.lsp.get_active_clients()) do
+    for _, client in ipairs(vim.lsp.get_clients()) do
       vim.lsp.buf_detach_client(0, client.id)
     end
   end, { nargs = 0 })
@@ -128,6 +128,7 @@ local function on_attach(_, bufnr)
   end, { nargs = 0 })
 end
 
+local lsp_set_statusline
 local lsp_setup = vim.api.nvim_create_augroup("lsp_setup", { clear = true })
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -139,22 +140,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
     if vim.tbl_get(args, "data") then
       clients = { vim.lsp.get_client_by_id(args.data.client_id) }
     else
-      clients = vim.lsp.get_active_clients({ bufnr = bufnr })
+      clients = vim.lsp.get_clients({ bufnr = bufnr })
     end
 
     if #clients == 0 then return end
 
     on_attach(nil, bufnr)
 
-    local names = vim.tbl_map(function (client)
-      return client.name
-    end, clients)
-    local stl_lsp = table.concat(names, ",") -- joining items with a separator
-
-    -- Custom statusline
-    vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
-    vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. stl_lsp .. '%* '
-    vim.cmd "silent! doautocmd <nomodeline> User CustomStatusline"
+    lsp_set_statusline(bufnr, clients)
   end,
 })
 
@@ -162,15 +155,17 @@ vim.api.nvim_create_autocmd("LspDetach", {
   group = lsp_setup,
   desc = "Undo LSP buffer setup",
   callback = function(args)
-    local clients = {}
     local bufnr = args.buf
-    if vim.tbl_get(args, "data") then
-      clients = { vim.lsp.get_client_by_id(args.data.client_id) }
-    else
-      clients = vim.lsp.get_active_clients({ bufnr = bufnr })
-    end
+    local clients = vim.lsp.get_clients({ bufnr = bufnr })
 
-    if #clients == 0 then return end
+    if vim.tbl_get(args, "data") and #clients > 1 then
+      local other_clients = vim.tbl_filter(function(client)
+        return client.id ~= args.data.client_id
+      end, clients)
+
+      lsp_set_statusline(bufnr, other_clients)
+      return
+    end
 
     -- Restore the statusline
     vim.b[bufnr].Statusline_custom_rightline = nil
@@ -259,7 +254,7 @@ get_range = function(command)
 end
 
 lsp_setqflist = function(opts, bufnr)
-  local active_clients = vim.lsp.get_active_clients({ bufnr = bufnr })
+  local active_clients = vim.lsp.get_clients({ bufnr = bufnr })
   if #active_clients ~= 1 then
     quickfix_diagnostics_opts = vim.tbl_extend("keep", {
       title = "LSP Diagnostics"
@@ -274,6 +269,18 @@ lsp_setqflist = function(opts, bufnr)
   vim.diagnostic.setqflist(quickfix_diagnostics_opts)
 end
 
+lsp_set_statusline = function(bufnr, clients)
+    local names = vim.tbl_map(function (client)
+      return client.name
+    end, clients)
+    local stl_lsp = table.concat(names, ",") -- joining items with a separator
+
+    -- Custom statusline
+    vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
+    vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. stl_lsp .. '%* '
+    vim.cmd "silent! doautocmd <nomodeline> User CustomStatusline"
+end
+
 local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear = true })
 
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
@@ -281,7 +288,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   desc = "New buffers attach to language servers managed by lspconfig even when autostart is false",
   callback = function(args)
     local bufnr = args.buf
-    for _, client in ipairs(vim.lsp.get_active_clients()) do
+    for _, client in ipairs(vim.lsp.get_clients()) do
       if vim.tbl_get(client, "config", "workspace_folders") then
         local folder_names = vim.tbl_map(function (workspace_folder)
           return workspace_folder.name
