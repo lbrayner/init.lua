@@ -32,7 +32,7 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
     end
 
     -- print("completion_item "..vim.inspect(completion_item)) -- TODO debug
-    local clients = vim.lsp.get_active_clients()
+    local clients = vim.lsp.get_clients()
     if #clients ~= 1 then
       return
     end -- TODO request ctx to be in user_data

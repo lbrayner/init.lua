@@ -197,6 +197,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
 vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
   group = lsp_setup,
   callback = function()
+    -- local diagnostics = args.data.diagnostics -- TODO use this to not clob chistory
     if vim.startswith(vim.fn.getqflist({ title = true }).title, "LSP Diagnostics") then
       lsp_setqflist({ open = false })
     end

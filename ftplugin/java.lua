@@ -8,7 +8,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
     config = require("lbrayner.jdtls").get_config()
   end
 
-  local client = vim.lsp.get_active_clients({ name = "jdtls" })[1]
+  local client = vim.lsp.get_clients({ name = "jdtls" })[1]
 
   if not command.bang and client then
     return require("jdtls").start_or_attach(config)
@@ -87,7 +87,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
         nargs = 0
       })
       vim.api.nvim_buf_create_user_command(bufnr, "JdtStop", function(_command)
-        local client = vim.lsp.get_active_clients({ name = "jdtls" })[1]
+        local client = vim.lsp.get_clients({ name = "jdtls" })[1]
         if not client then return end
         vim.api.nvim_del_augroup_by_name("jdtls_setup")
         vim.lsp.stop_client(client.id)
