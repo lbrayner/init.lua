@@ -53,7 +53,6 @@ local references
 local type_definition
 local is_test_file
 local get_range
-local quickfix_diagnostics_opts = {}
 local lsp_setqflist
 
 -- From nvim-lspconfig. 'client' is not used.
@@ -114,17 +113,6 @@ local function on_attach(_, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, "LspTypeDefinition", type_definition, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceFolders", function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end, { nargs = 0 })
-
-  -- Diagnostic on quickfix
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixAll", function()
-    lsp_setqflist({}, bufnr)
-  end, { nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixError", function()
-    lsp_setqflist({ severity = vim.diagnostic.severity.ERROR }, bufnr)
-  end, { nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixWarn", function()
-    lsp_setqflist({ severity = { min = vim.diagnostic.severity.WARN } }, bufnr)
   end, { nargs = 0 })
 end
 
@@ -194,16 +182,6 @@ vim.api.nvim_create_autocmd("LspDetach", {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
-  group = lsp_setup,
-  callback = function()
-    -- local diagnostics = args.data.diagnostics -- TODO use this to not clob chistory
-    if vim.startswith(vim.fn.getqflist({ title = true }).title, "LSP Diagnostics") then
-      lsp_setqflist({ open = false })
-    end
-  end,
-})
-
 local on_list = require("lbrayner.lsp").on_list
 
 declaration = function()
@@ -252,22 +230,6 @@ get_range = function(command)
     }
   end
   return range
-end
-
-lsp_setqflist = function(opts, bufnr)
-  local active_clients = vim.lsp.get_clients({ bufnr = bufnr })
-  if #active_clients ~= 1 then
-    quickfix_diagnostics_opts = vim.tbl_extend("keep", {
-      title = "LSP Diagnostics"
-    }, opts, quickfix_diagnostics_opts)
-    return vim.diagnostic.setqflist(quickfix_diagnostics_opts)
-  end
-  local active_client = active_clients[1]
-  quickfix_diagnostics_opts = vim.tbl_extend("keep", {
-    namespace = vim.lsp.diagnostic.get_namespace(active_client.id),
-    title = "LSP Diagnostics: " .. active_client.name
-  }, opts, quickfix_diagnostics_opts)
-  vim.diagnostic.setqflist(quickfix_diagnostics_opts)
 end
 
 lsp_set_statusline = function(bufnr, clients)

@@ -146,6 +146,40 @@ vim.keymap.set("n", "]!", function()
   } })
 end, opts)
 
+local quickfix_diagnostics_opts = {}
+
+local function lsp_setqflist(opts)
+  quickfix_diagnostics_opts = vim.tbl_extend("keep", {
+    title = "Diagnostics"
+  }, opts, quickfix_diagnostics_opts)
+  vim.diagnostic.setqflist(quickfix_diagnostics_opts)
+end
+
+local qf_diagnostics = vim.api.nvim_create_augroup("qf_diagnostics", { clear = true })
+
+vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
+  group = qf_diagnostics,
+  callback = function(args)
+    -- local diagnostics = args.data.diagnostics -- TODO use this to not clob chistory
+    -- print("diagnostics "..vim.inspect(vim.diagnostic.toqflist(args.data.diagnostics))) -- TODO debug
+    if vim.startswith(vim.fn.getqflist({ title = true }).title, "Diagnostics") then
+      lsp_setqflist({ open = false })
+    end
+  end,
+})
+
+-- Diagnostics on quickfix
+vim.api.nvim_create_user_command("DiagnosticsQuickFixAll", function()
+  quickfix_diagnostics_opts.severity = nil
+  lsp_setqflist({})
+end, { nargs = 0 })
+vim.api.nvim_create_user_command("DiagnosticsQuickFixError", function()
+  lsp_setqflist({ severity = vim.diagnostic.severity.ERROR })
+end, { nargs = 0 })
+vim.api.nvim_create_user_command("DiagnosticsQuickFixWarn", function()
+  lsp_setqflist({ severity = { min = vim.diagnostic.severity.WARN } })
+end, { nargs = 0 })
+
 local custom_diagnostics = vim.api.nvim_create_augroup("custom_diagnostics", { clear = true })
 
 local err = "DiagnosticSignError"
