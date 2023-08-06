@@ -118,6 +118,7 @@ local function on_attach(_, bufnr)
 
   -- Diagnostic on quickfix
   vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixAll", function()
+    quickfix_diagnostics_opts.severity = nil
     lsp_setqflist({}, bufnr)
   end, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixError", function()
@@ -257,10 +258,8 @@ end
 lsp_setqflist = function(opts, bufnr)
   local active_clients = vim.lsp.get_clients({ bufnr = bufnr })
   if #active_clients ~= 1 then
-    quickfix_diagnostics_opts = vim.tbl_extend("keep", {
-      title = "LSP Diagnostics"
-    }, opts, quickfix_diagnostics_opts)
-    return vim.diagnostic.setqflist(quickfix_diagnostics_opts)
+    vim.cmd.echoerr("'Only one client supported.'")
+    return
   end
   local active_client = active_clients[1]
   quickfix_diagnostics_opts = vim.tbl_extend("keep", {
