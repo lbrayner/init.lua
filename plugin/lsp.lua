@@ -271,15 +271,15 @@ lsp_setqflist = function(opts, bufnr)
 end
 
 lsp_set_statusline = function(bufnr, clients)
-    local names = vim.tbl_map(function (client)
-      return client.name
-    end, clients)
-    local stl_lsp = table.concat(names, ",") -- joining items with a separator
+  local names = vim.tbl_map(function (client)
+    return client.name
+  end, clients)
+  local stl_lsp = table.concat(names, ",") -- joining items with a separator
 
-    -- Custom statusline
-    vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
-    vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. stl_lsp .. '%* '
-    vim.cmd "silent! doautocmd <nomodeline> User CustomStatusline"
+  -- Custom statusline
+  vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
+  vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. stl_lsp .. '%* '
+  vim.cmd "silent! doautocmd <nomodeline> User CustomStatusline"
 end
 
 local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear = true })
