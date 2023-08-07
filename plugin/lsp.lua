@@ -55,6 +55,7 @@ local is_test_file
 local get_range
 local quickfix_diagnostics_opts = {}
 local lsp_setqflist
+local lsp_setqflist_replace
 
 -- From nvim-lspconfig. 'client' is not used.
 local function on_attach(_, bufnr)
@@ -202,11 +203,7 @@ vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
 
     if not quickfix_diagnostics_opts.namespace then return end
 
-    local bufnr = args.buf
-    local diagnostics = vim.diagnostic.get(bufnr, quickfix_diagnostics_opts)
-    local items = vim.diagnostic.toqflist(diagnostics)
-
-    vim.fn.setqflist({}, "r", { title = quickfix_diagnostics_opts.title, items = items })
+    lsp_setqflist_replace(args.buf)
   end,
 })
 
@@ -266,12 +263,37 @@ lsp_setqflist = function(opts, bufnr)
     -- Only one client supported.
     return
   end
+
   local active_client = active_clients[1]
+
   quickfix_diagnostics_opts = vim.tbl_extend("keep", {
     namespace = vim.lsp.diagnostic.get_namespace(active_client.id),
-    title = "LSP Diagnostics: " .. active_client.name
   }, opts, quickfix_diagnostics_opts)
+
+  local title = "LSP Diagnostics: " .. active_client.name
+
+  local severity = quickfix_diagnostics_opts.severity
+  if type(severity) == "table" then severity = severity.min end
+  if severity then
+    title = string.format("%s (%s)", title, vim.diagnostic.severity[severity])
+  end
+
+  quickfix_diagnostics_opts.title = title
+
+  if vim.fn.getqflist({ title = true }).title == quickfix_diagnostics_opts.title then
+    lsp_setqflist_replace(bufnr)
+    vim.cmd("botright copen")
+    return
+  end
+
   vim.diagnostic.setqflist(quickfix_diagnostics_opts)
+end
+
+lsp_setqflist_replace = function(bufnr)
+  local diagnostics = vim.diagnostic.get(bufnr, quickfix_diagnostics_opts)
+  local items = vim.diagnostic.toqflist(diagnostics)
+
+  vim.fn.setqflist({}, "r", { title = quickfix_diagnostics_opts.title, items = items })
 end
 
 lsp_set_statusline = function(bufnr, clients)
