@@ -197,11 +197,16 @@ vim.api.nvim_create_autocmd("LspDetach", {
 
 vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
   group = lsp_setup,
-  callback = function()
-    -- local diagnostics = args.data.diagnostics -- TODO use this to not clob chistory
-    if vim.startswith(vim.fn.getqflist({ title = true }).title, "LSP Diagnostics") then
-      lsp_setqflist({ open = false })
-    end
+  callback = function(args)
+    if not vim.startswith(vim.fn.getqflist({ title = true }).title, "LSP Diagnostics") then return end
+
+    if not quickfix_diagnostics_opts.namespace then return end
+
+    local bufnr = args.buf
+    local diagnostics = vim.diagnostic.get(bufnr, quickfix_diagnostics_opts)
+    local items = vim.diagnostic.toqflist(diagnostics)
+
+    vim.fn.setqflist({}, "r", { title = quickfix_diagnostics_opts.title, items = items })
   end,
 })
 
@@ -258,7 +263,7 @@ end
 lsp_setqflist = function(opts, bufnr)
   local active_clients = vim.lsp.get_clients({ bufnr = bufnr })
   if #active_clients ~= 1 then
-    vim.cmd.echoerr("'Only one client supported.'")
+    -- Only one client supported.
     return
   end
   local active_client = active_clients[1]
