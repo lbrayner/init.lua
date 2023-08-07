@@ -220,9 +220,12 @@ implementation = function()
   vim.lsp.buf.implementation({ on_list = on_list, reuse_win = true })
 end
 references = function(config)
+  local context = { includeDeclaration = false }
+
   config = config or {}
+
   if config.no_tests then
-    return vim.lsp.buf.references(nil, { on_list = function(options)
+    return vim.lsp.buf.references(context, { on_list = function(options)
       options.items = vim.tbl_filter(function(item)
         -- Filter out tests
         return not is_test_file(item.filename)
@@ -230,7 +233,8 @@ references = function(config)
       on_list(options)
     end })
   end
-  vim.lsp.buf.references(nil, { on_list = on_list })
+
+  vim.lsp.buf.references(context, { on_list = on_list })
 end
 type_definition = function()
   vim.lsp.buf.type_definition({ on_list = on_list, reuse_win = true })
