@@ -136,8 +136,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
   group = lsp_setup,
   desc = "LSP buffer setup",
   callback = function(args)
-    local clients = {}
     local bufnr = args.buf
+    local clients = {}
     if vim.tbl_get(args, "data") then
       clients = { vim.lsp.get_client_by_id(args.data.client_id) }
     else
@@ -146,9 +146,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     if #clients == 0 then return end
 
+    lsp_set_statusline(clients, bufnr)
     on_attach(nil, bufnr)
-
-    lsp_set_statusline(bufnr, clients)
   end,
 })
 
@@ -164,7 +163,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
         return client.id ~= args.data.client_id
       end, clients)
 
-      lsp_set_statusline(bufnr, other_clients)
+      lsp_set_statusline(other_clients, bufnr)
       return
     end
 
@@ -207,6 +206,18 @@ vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
     lsp_setqflist_replace(args.buf)
   end,
 })
+
+lsp_set_statusline = function(clients, bufnr)
+  local names = vim.tbl_map(function (client)
+    return client.name
+  end, clients)
+  local stl_lsp = table.concat(names, ",") -- joining items with a separator
+
+  -- Custom statusline
+  vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
+  vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. stl_lsp .. '%* '
+  vim.cmd "silent! doautocmd <nomodeline> User CustomStatusline"
+end
 
 local on_list = require("lbrayner.lsp").on_list
 
@@ -299,18 +310,6 @@ lsp_setqflist_replace = function(bufnr)
   local items = vim.diagnostic.toqflist(diagnostics)
 
   vim.fn.setqflist({}, "r", { title = quickfix_diagnostics_opts.title, items = items })
-end
-
-lsp_set_statusline = function(bufnr, clients)
-  local names = vim.tbl_map(function (client)
-    return client.name
-  end, clients)
-  local stl_lsp = table.concat(names, ",") -- joining items with a separator
-
-  -- Custom statusline
-  vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
-  vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. stl_lsp .. '%* '
-  vim.cmd "silent! doautocmd <nomodeline> User CustomStatusline"
 end
 
 local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear = true })
