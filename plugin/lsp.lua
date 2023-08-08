@@ -138,6 +138,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)
     local bufnr = args.buf
     local clients = {}
+
     if vim.tbl_get(args, "data") then
       clients = { vim.lsp.get_client_by_id(args.data.client_id) }
     else
@@ -216,7 +217,9 @@ lsp_set_statusline = function(clients, bufnr)
   -- Custom statusline
   vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
   vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. stl_lsp .. '%* '
-  vim.cmd "silent! doautocmd <nomodeline> User CustomStatusline"
+  if vim.api.nvim_get_current_buf() == bufnr then
+    vim.cmd "silent! doautocmd <nomodeline> User CustomStatusline"
+  end
 end
 
 local on_list = require("lbrayner.lsp").on_list
