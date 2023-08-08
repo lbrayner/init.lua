@@ -327,7 +327,7 @@ function! s:MarkdownSetup()
 
     if exists(":EasyAlign")
         " Align markdown table
-        nnoremap <buffer> <silent> <Space>t vip:EasyAlign*\|<CR>
+        nnoremap <buffer> <silent> <Space>t <Cmd>'{,'}EasyAlign*\|<CR>
     endif
 endfunction
 

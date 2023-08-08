@@ -1,15 +1,6 @@
-" vim-dadbod
-function! s:_SelectParagraph()
-    exe "normal! vip:DB\<cr>"
-endfunction
-
-function! s:SelectParagraph()
-    call util#PreserveViewPort(funcref("<SID>_SelectParagraph"))
-endfunction
-
 function! s:DatabaseAccess()
-    nnoremap <buffer> <Leader><Return> <Cmd>call <SID>SelectParagraph()<CR>
-    nnoremap <buffer> <Leader><kEnter> <Cmd>call <SID>SelectParagraph()<CR>
+    nnoremap <buffer> <Leader><Return> <Cmd>'{,'}DB<CR>
+    nnoremap <buffer> <Leader><kEnter> <Cmd>'{,'}DB<CR>
 
     " vim-dadbod
     if exists("b:db")
