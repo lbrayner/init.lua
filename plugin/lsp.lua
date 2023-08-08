@@ -31,7 +31,7 @@ require("lspconfig").lua_ls.setup {
       },
       diagnostics = {
         -- Get the language server to recognize the `vim` global
-        globals = {"vim"},
+        globals = { "vim" },
       },
       workspace = {
         -- Make the server aware of Neovim runtime files
@@ -55,14 +55,13 @@ local is_test_file
 local get_range
 local quickfix_diagnostics_opts = {}
 local lsp_setqflist
-local lsp_setqflist_replace
 
 -- From nvim-lspconfig. 'client' is not used.
 local function on_attach(_, bufnr)
   -- Enable completion triggered by <c-x><c-o>
   -- Some filetype plugins define omnifunc and $VIMRUNTIME/lua/vim/lsp.lua
   -- respects that, so we override it.
-  vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.require'lbrayner.lsp'.omnifunc")
+  vim.bo[bufnr].omnifunc = "v:lua.require'lbrayner.lsp'.omnifunc"
 
   -- Mappings
   local bufopts = { buffer = bufnr }
@@ -195,6 +194,8 @@ vim.api.nvim_create_autocmd("LspDetach", {
     end
   end,
 })
+
+local lsp_setqflist_replace
 
 vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
   group = lsp_setup,
