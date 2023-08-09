@@ -12,9 +12,35 @@ function M.get_config()
     },
   }, require("lbrayner.lsp").default_capabilities())
 
+  local java_debug_jar_pattern = string.format(
+    "%s/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar",
+    vim.fn.stdpath("data"))
+
+  local vscode_java_test_jar_pattern = string.format("%s/vscode-java-test/server/*.jar", vim.fn.stdpath("data"))
+
   return {
     capabilities = capabilities,
     cmd = lspconfig.default_config.cmd,
+    init_options = {
+      bundles = (function()
+        local bundles = {}
+
+        local java_debug_jar = vim.fn.glob(java_debug_jar_pattern, 1)
+        if #java_debug_jar > 0 then
+          table.insert(bundles, java_debug_jar)
+        end
+
+        local vscode_java_test_jars = vim.fn.glob(vscode_java_test_jar_pattern, 1)
+        if #vscode_java_test_jars > 0 then
+          vscode_java_test_jars = vim.split(vscode_java_test_jars, "\n")
+          vim.list_extend(bundles, vscode_java_test_jars)
+        end
+
+        if #bundles > 0 then
+          return bundles
+        end
+      end)(),
+    },
     root_dir = require("jdtls.setup").find_root({".git", "mvnw", "gradlew"}),
     settings = {
       java = {
