@@ -1,18 +1,18 @@
+" Backend is vim-dadbod
+
 function! s:DatabaseAccess()
     nnoremap <buffer> <Leader><Return> <Cmd>'{,'}DB<CR>
     nnoremap <buffer> <Leader><kEnter> <Cmd>'{,'}DB<CR>
 
-    " vim-dadbod
     if exists("b:db")
         let b:Statusline_custom_rightline = "%9*dadbod%* "
         let b:Statusline_custom_mod_rightline = "%9*dadbod%* "
     endif
 
     function! s:DatabaseAccessClear()
+        unlet! b:db
         " postgresql
         silent! nunmap <buffer> <Leader>dt
-        " vim-dadbod
-        unlet! b:db
         " statusline
         unlet! b:Statusline_custom_rightline
         unlet! b:Statusline_custom_mod_rightline
@@ -29,7 +29,6 @@ augroup DatabaseAccess
 augroup END
 
 function! s:SQLDatabaseAccess()
-    " vim-dadbod
     if exists("b:db")
         if stridx(b:db, "postgresql") == 0
             " Describe this object
@@ -43,4 +42,20 @@ augroup SQLDatabaseAccess
     autocmd!
     autocmd FileType sql
                 \ autocmd! SQLDatabaseAccess BufEnter <buffer> ++once call s:SQLDatabaseAccess()
+augroup END
+
+function! s:Postgres(name)
+    let url = substitute(a:name, '\v^postgresql:(.*)\.sql$', 'postgresql://\1', "")
+    let b:db = url
+endfunction
+
+function! s:Redis(name)
+    let url = substitute(a:name, '\v^redis:.*:(\d+)\.redis$', 'redis://:\1', "")
+    let b:db = url
+endfunction
+
+augroup DatabaseConnection
+    autocmd!
+    autocmd BufRead postgresql:*@*:*.sql call s:Postgres(fnamemodify(expand("<amatch>"), ":t"))
+    autocmd BufRead redis:*:*.redis call s:Redis(fnamemodify(expand("<amatch>"), ":t"))
 augroup END
