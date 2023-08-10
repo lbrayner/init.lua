@@ -360,9 +360,9 @@ augroup END
 
 augroup TerminalSetup
     autocmd!
+    autocmd BufWinEnter term://* set nonumber
     " To enter Terminal-mode automatically:
     autocmd VimEnter * autocmd TerminalSetup TermOpen * startinsert
-    autocmd TermEnter * set nonumber
 augroup END
 if v:vim_did_enter
     doautocmd TerminalSetup VimEnter
