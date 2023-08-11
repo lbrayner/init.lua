@@ -40,18 +40,15 @@ endfunction
 
 augroup SQLDatabaseAccess
     autocmd!
-    autocmd FileType sql
-                \ autocmd! SQLDatabaseAccess BufEnter <buffer> ++once call s:SQLDatabaseAccess()
+    autocmd FileType sql autocmd! SQLDatabaseAccess BufEnter <buffer> ++once call s:SQLDatabaseAccess()
 augroup END
 
 function! s:Postgres(name)
-    let url = substitute(a:name, '\v^postgresql:(.*)\.sql$', 'postgresql://\1', "")
-    let b:db = url
+    let b:db = substitute(a:name, '\v^postgresql:(.*)\.sql$', 'postgresql://\1', "")
 endfunction
 
 function! s:Redis(name)
-    let url = substitute(a:name, '\v^redis:.*:(\d+)\.redis$', 'redis://:\1', "")
-    let b:db = url
+    let b:db = substitute(a:name, '\v^redis:.*:(\d+)\.redis$', 'redis://:\1', "")
 endfunction
 
 augroup DatabaseConnection
