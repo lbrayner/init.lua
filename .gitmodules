@@ -52,9 +52,6 @@
 [submodule "pack/bundle/start/vim-easy-align"]
 	path = pack/bundle/start/vim-easy-align
 	url = https://github.com/junegunn/vim-easy-align
-[submodule "pack/bundle/start/flattened"]
-	path = pack/bundle/start/flattened
-	url = https://github.com/romainl/flattened
 [submodule "pack/bundle/start/vim-quickhl"]
 	path = pack/bundle/start/vim-quickhl
 	url = https://github.com/t9md/vim-quickhl
@@ -107,3 +104,9 @@
 [submodule "pack/bundle/start/nvim-dap"]
 	path = pack/bundle/start/nvim-dap
 	url = https://github.com/mfussenegger/nvim-dap
+[submodule "pack/bundle/start/colorbuddy.nvim"]
+	path = pack/bundle/start/colorbuddy.nvim
+	url = https://github.com/tjdevries/colorbuddy.nvim
+[submodule "pack/bundle/start/neosolarized.nvim"]
+	path = pack/bundle/start/neosolarized.nvim
+	url = https://github.com/svrana/neosolarized.nvim
