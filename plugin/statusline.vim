@@ -6,6 +6,8 @@
 
 let g:qf_disable_statusline = 1
 
+set laststatus=3
+
 command! -nargs=0 StatusLineInitialize call statusline#initialize()
 
 " Autocommands
@@ -31,11 +33,11 @@ augroup Statusline
     autocmd VimEnter * autocmd Statusline
                 \ BufWinEnter,BufWritePost,TextChanged,TextChangedI,WinEnter *
                 \ call statusline#RedefineStatusLine()
-    autocmd VimEnter * autocmd Statusline
-                \ WinLeave * call statusline#DefineStatusLineNoFocus()
     autocmd VimEnter * call statusline#initialize()
     autocmd VimEnter * call statusline#RedefineStatusLine()
 augroup END
 if v:vim_did_enter
     doautocmd Statusline VimEnter
 endif
+
+set winbar=%{%statusline#WinBar()%}

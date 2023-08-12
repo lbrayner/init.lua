@@ -131,25 +131,48 @@ function! statusline#DefineModifiedStatusLine()
     let &l:statusline.=" %=".rightline
 endfunction
 
-" margins of 1 column (on both sides)
-function! statusline#DefineStatusLineNoFocus()
-    " Quickfix, terminal, help, prompt, and other special buffers
-    if !empty(&buftype)
-        return
+function! statusline#WinBar()
+    " Fugitive blame
+    if exists("*FugitiveResult") &&
+                \has_key(FugitiveResult(bufnr()), "filetype") &&
+                \has_key(FugitiveResult(bufnr()), "blame_file") &&
+                \FugitiveResult(bufnr()).filetype == "fugitiveblame"
+        return " Fugitive blame %<%1*%{statusline#StatusFlag()}%*"
     endif
+
+    let statusline=" "
     if &previewwindow
-        return
+        let statusline.="%5*%w%* "
     endif
 
-    " Fugitive objects
-    if exists("*FugitiveParse") && len(FObject())
-        let filename=FObject()
+    " Fugitive summary
+    if getbufvar(bufnr(),"fugitive_type") ==# "index"
+        let dir = pathshorten(substitute(util#NPath(FugitiveGitDir()),'/\.git$',"",""))
+        let statusline.="%6*".dir."$%* %<"."Fugitive summary %1*%{statusline#StatusFlag()}%*"
+    " Fugitive temporary buffers
+    elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
+        let fugitive_temp_buf = s:FugitiveTemporaryBuffer()
+        let dir = pathshorten(substitute(util#NPath(FugitiveGitDir()),'/\.git$',"",""))
+        let statusline.="%6*".dir."$%* %<".fugitive_temp_buf." %1*%{statusline#StatusFlag()}%*"
+    elseif util#isQuickfixOrLocationList()
+        let statusline.="%<%5*%f%* %{util#getQuickfixOrLocationListTitle()}"
+    elseif getcmdwintype() != ""
+        let statusline.="%<%5*[Command Line]%*"
+    elseif exists("b:Statusline_custom_leftline")
+        let statusline.=b:Statusline_custom_leftline
     else
-        let filename=statusline#Filename(1)
+        if &previewwindow
+            let statusline.="%<".pathshorten(statusline#Filename(1))
+        elseif !empty(&buftype)
+            let statusline.="%<%5*".statusline#Filename()
+        else
+            let statusline.="%<".statusline#Filename()
+        endif
+
+        let statusline.=" %1*%{statusline#StatusFlag()}%*"
     endif
 
-    let filename = util#truncateFilename(filename,winwidth("%")-2-(1+len(statusline#StatusFlag())))
-    let &l:statusline=" ".filename." %{statusline#StatusFlag()} "
+    return statusline
 endfunction
 
 function! statusline#DefineTerminalStatusLine()
