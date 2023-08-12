@@ -18,6 +18,7 @@ function! statusline#Diagnostics()
     endif
     let group = "Diagnostic".buffer_severity[0].tolower(buffer_severity[1:])
     let cterm = synIDattr(synIDtrans(hlID(group)), "fg", "cterm")
+    let cterm = empty(cterm) ? "NONE" : cterm
     let gui = synIDattr(synIDtrans(hlID(group)), "fg", "gui")
     execute "highlight! User7 ctermfg=".cterm." guifg=".gui
     let prefix = v:lua.require'lbrayner.diagnostic'.get_prefix()
