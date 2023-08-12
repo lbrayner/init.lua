@@ -80,9 +80,7 @@ complete = function(client, bufnr, completed_item, completion_item)
     local text_edits = { text_edit }
 
     if completion_item.additionalTextEdits then
-      for _, text_edit in ipairs(completion_item.additionalTextEdits) do
-        table.insert(text_edits, text_edit)
-      end
+      vim.list_extend(text_edits, completion_item.additionalTextEdits)
     end
 
     vim.lsp.util.apply_text_edits(text_edits, bufnr, client.offset_encoding)

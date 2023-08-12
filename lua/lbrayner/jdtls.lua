@@ -152,9 +152,8 @@ function M.java_type_hierarchy(opts)
         parent = parents[1]
       end
 
-      for _, parent in ipairs(parents) do
-        table.insert(hierarchy, parent)
-      end
+      vim.list_extend(hierarchy, parents)
+
       return require("jdtls.util").execute_command(resolve_command(parent), resolve_handler)
     end
 
