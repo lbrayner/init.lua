@@ -1,6 +1,10 @@
 -- Standalone UI for nvim-lsp progress. Eye candy for the impatient.
 -- 'legacy' tag
-require("fidget").setup()
+require("fidget").setup({
+  window = {
+    blend = 0, -- to fix the interaction with transparent backgrounds
+  },
+})
 
 local capabilities = require("lbrayner.lsp").default_capabilities()
 
