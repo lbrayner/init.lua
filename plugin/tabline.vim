@@ -36,26 +36,19 @@ function! RedefineTabline()
         return
     endif
     " Fugitive objects
-    if exists("*FugitiveParse") && stridx(expand("%"),"fugitive://") == 0
+    if exists("*FugitiveParse") && len(FObject()) " Fugitive objects
         let [name, dir] = FugitiveParse(expand("%"))
         let dir = substitute(dir,'/\.git$',"","")
         " Fugitive summary
-        if name ==# ":"
-            let name = util#RelativeNode(dir, FugitiveReal(expand("%")))
-        endif
         let &tabline.=" %="
         if !util#IsInDirectory(getcwd(), dir)
-            let max_length -= len(name)
             let &tabline.="%#WarningMsg#".util#truncateFilename(
                         \util#NPath(dir),max_length)." "
         endif
-        let &tabline.="%<%#Normal#".name." "
         return
     endif
     " jdtls
     if stridx(expand("%"),"jdt://") == 0
-        let url = substitute(expand("%"), "?.*", "", "")
-        let &tabline.=" %=%<%#Normal#".url." "
         return
     endif
     if &buftype ==# "terminal"
@@ -67,11 +60,6 @@ function! RedefineTabline()
         let &tabline=&tabline." %=%#WarningMsg#".absolute_path." "
         return
     endif
-    " At least one column separating left and right and a 1 column margin
-    let relative_dir=util#truncateFilename(util#RelativeNode(getcwd(),
-                \fnamemodify(expand("%:h"),":~")),max_length)
-    let relative_dir = relative_dir == "." ? "" : relative_dir
-    let &tabline=&tabline." %#Directory#".relative_dir." "
 endfunction
 
 function! s:TablineBufEnter()
