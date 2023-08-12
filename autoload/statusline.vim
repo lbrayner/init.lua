@@ -83,11 +83,12 @@ endfunction
 
 function! statusline#Filename(...)
     let path = Path()
-    if exists("*FPath") && stridx(expand("%"), "fugitive://") == 0
-        let path = FPath()
+    if exists("*FugitiveParse") && len(FObject()) " Fugitive objects
+        let path = FObject()
     elseif stridx(expand("%"), "jdt://") == 0 " jdtls
         let path = substitute(expand("%"), "?.*", "", "")
     endif
+
     if a:0 > 0 && a:1 " Full path
         let filename=substitute(path, "'", "''", "g")
     else
