@@ -7,14 +7,11 @@
 let g:qf_disable_statusline = 1
 
 set laststatus=3
+set winbar=%{%statusline#WinBar()%}
 
 command! -nargs=0 StatusLineInitialize call statusline#initialize()
 
 " Autocommands
-
-" Setting a default not current statusline
-" margins of 1 column (on both sides)
-let &statusline=" %f "
 
 augroup Statusline
     autocmd!
@@ -39,5 +36,3 @@ augroup END
 if v:vim_did_enter
     doautocmd Statusline VimEnter
 endif
-
-set winbar=%{%statusline#WinBar()%}

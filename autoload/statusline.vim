@@ -137,39 +137,38 @@ function! statusline#WinBar()
                 \has_key(FugitiveResult(bufnr()), "filetype") &&
                 \has_key(FugitiveResult(bufnr()), "blame_file") &&
                 \FugitiveResult(bufnr()).filetype == "fugitiveblame"
-        return " Fugitive blame %<%1*%{statusline#StatusFlag()}%*"
+        return " Fugitive blame %<%{statusline#StatusFlag()}"
     endif
 
     let statusline=" "
     if &previewwindow
-        let statusline.="%5*%w%* "
+        let statusline.="%w "
     endif
 
     " Fugitive summary
     if getbufvar(bufnr(),"fugitive_type") ==# "index"
         let dir = pathshorten(substitute(util#NPath(FugitiveGitDir()),'/\.git$',"",""))
-        let statusline.="%6*".dir."$%* %<"."Fugitive summary %1*%{statusline#StatusFlag()}%*"
+        let statusline.="".dir."$ %<"."Fugitive summary %{statusline#StatusFlag()}"
     " Fugitive temporary buffers
     elseif exists("*FugitiveResult") && len(FugitiveResult(bufnr()))
         let fugitive_temp_buf = s:FugitiveTemporaryBuffer()
         let dir = pathshorten(substitute(util#NPath(FugitiveGitDir()),'/\.git$',"",""))
-        let statusline.="%6*".dir."$%* %<".fugitive_temp_buf." %1*%{statusline#StatusFlag()}%*"
+        let statusline.="".dir."$ %<".fugitive_temp_buf." %{statusline#StatusFlag()}"
     elseif util#isQuickfixOrLocationList()
-        let statusline.="%<%5*%f%* %{util#getQuickfixOrLocationListTitle()}"
-    elseif getcmdwintype() != ""
-        let statusline.="%<%5*[Command Line]%*"
+        let statusline.="%<%f %{util#getQuickfixOrLocationListTitle()}"
+    elseif len(getcmdwintype())
+        let statusline.="%<[Command Line]"
     elseif exists("b:Statusline_custom_leftline")
         let statusline.=b:Statusline_custom_leftline
     else
         if &previewwindow
             let statusline.="%<".pathshorten(statusline#Filename(1))
-        elseif !empty(&buftype)
-            let statusline.="%<%5*".statusline#Filename()
         else
-            let statusline.="%<".statusline#Filename()
+            " margins of 1 column, space and status flag
+            let statusline.="%<%{util#truncateFilename(statusline#Filename(1),winwidth('%')-4)}"
         endif
 
-        let statusline.=" %1*%{statusline#StatusFlag()}%*"
+        let statusline.=" %{statusline#StatusFlag()}"
     endif
 
     return statusline
@@ -213,7 +212,7 @@ function! statusline#DefineStatusLine()
         let &l:statusline.="%6*".dir."$%* %<".fugitive_temp_buf." %1*%{statusline#StatusFlag()}%*"
     elseif util#isQuickfixOrLocationList()
         let &l:statusline.="%<%5*%f%* %{util#getQuickfixOrLocationListTitle()}"
-    elseif getcmdwintype() != ""
+    elseif len(getcmdwintype())
         let &l:statusline.="%<%5*[Command Line]%*"
     elseif exists("b:Statusline_custom_leftline")
         let &l:statusline.=b:Statusline_custom_leftline
