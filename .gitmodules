@@ -96,7 +96,7 @@
 ; 'legacy' tag
 [submodule "pack/bundle/start/fidget.nvim"]
 	path = pack/bundle/start/fidget.nvim
-	url = https://github.com/j-hui/fidget.nvim
+	url = https://github.com/lbrayner/fidget.nvim
 	update = none
 [submodule "pack/bundle/start/nvim-dap-ui"]
 	path = pack/bundle/start/nvim-dap-ui
