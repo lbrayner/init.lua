@@ -25,18 +25,15 @@ function M.get_config()
       bundles = (function()
         local bundles = {}
 
-        local java_debug_jar = vim.fn.glob(java_debug_jar_pattern, 1)
-        if #java_debug_jar > 0 then
-          table.insert(bundles, java_debug_jar)
+        local java_debug_jars = vim.fn.glob(java_debug_jar_pattern, 1, 1)
+        if #java_debug_jars == 1 then
+          table.insert(bundles, java_debug_jars[1])
         end
 
-        local vscode_java_test_jars = vim.fn.glob(vscode_java_test_jar_pattern, 1)
-        if #vscode_java_test_jars > 0 then
-          vscode_java_test_jars = vim.split(vscode_java_test_jars, "\n")
-          vim.list_extend(bundles, vscode_java_test_jars)
-        end
+        local vscode_java_test_jars = vim.fn.glob(vscode_java_test_jar_pattern, 1, 1)
+        vim.list_extend(bundles, vscode_java_test_jars)
 
-        if #bundles > 0 then
+        if not vim.tbl_isempty(bundles) then
           return bundles
         end
       end)(),
