@@ -44,7 +44,7 @@ augroup SQLDatabaseAccess
 augroup END
 
 function! s:Postgres(name)
-    let b:db = substitute(a:name, '\v^postgresql:(.*)\.sql$', 'postgresql://\1', "")
+    let b:db = substitute(a:name, '\v^postgresql:(.*)\@.*:(\d+)\.sql$', 'postgresql://\1@localhost:\2', "")
 endfunction
 
 function! s:Redis(name)
