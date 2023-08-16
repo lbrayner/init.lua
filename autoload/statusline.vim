@@ -83,6 +83,7 @@ endfunction
 
 function! statusline#Filename(...)
     let path = Path()
+
     if exists("*FugitiveParse") && len(FObject()) " Fugitive objects
         let path = FObject()
     elseif stridx(expand("%"), "jdt://") == 0 " jdtls
@@ -94,9 +95,11 @@ function! statusline#Filename(...)
     else
         let filename = substitute(fnamemodify(path, ":t"), "'", "''", "g")
     endif
+
     if filename == ""
-        return "#%n"
+        return "#".bufnr()
     endif
+
     return filename
 endfunction
 
@@ -158,9 +161,7 @@ function! statusline#WinBar()
     elseif util#isQuickfixOrLocationList()
         let statusline.="%<%f %{util#getQuickfixOrLocationListTitle()}"
     elseif len(getcmdwintype())
-        let statusline.="%<[Command Line]"
-    elseif exists("b:Statusline_custom_leftline")
-        let statusline.=b:Statusline_custom_leftline
+        let statusline=""
     else
         if &previewwindow
             let statusline.="%<".pathshorten(statusline#Filename(1))
