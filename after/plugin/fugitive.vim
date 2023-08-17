@@ -32,6 +32,8 @@ cnoreabbrev Glo Git log --oneline
 cnoreabbrev Gls Git! ls-remote
 cnoreabbrev Gp Git! pull
 cnoreabbrev Gr Git rebase -i
+" Only list tags whose tips are reachable from the specified commit
+cnoreabbrev Gtm Git tag --merged
 
 function! s:FugitiveMapOverrides()
     " So we can jump with 'switchbuf'
