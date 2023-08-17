@@ -32,7 +32,7 @@ set noruler
 set noshowmode
 set number
 set relativenumber
-set shiftwidth=4 " when indenting with '>', use 4 spaces width
+set shiftwidth=2 " when indenting with '>', use 2 spaces width
 set smartcase
 set splitbelow
 set splitright
@@ -324,7 +324,7 @@ augroup LargeXml
 augroup END
 
 function! s:MarkdownSetup()
-    setlocal textwidth=80 tabstop=2 shiftwidth=2
+    setlocal textwidth=80 tabstop=2
 
     if exists(":EasyAlign")
         " Align markdown table
@@ -341,7 +341,6 @@ augroup FileTypeSetup
     autocmd!
     autocmd FileType gitcommit,mail,markdown,text setlocal ignorecase infercase
     autocmd FileType html,javascriptreact,typescriptreact,xml call s:XmlNavigate()
-    autocmd FileType lua setlocal shiftwidth=2
     autocmd FileType mail call util#setupMatchit()
     autocmd FileType markdown call s:MarkdownSetup()
     autocmd FileType sql setlocal indentexpr=indent
