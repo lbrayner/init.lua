@@ -30,9 +30,13 @@ augroup Statusline
     autocmd VimEnter * autocmd Statusline
                 \ BufWinEnter,BufWritePost,TextChanged,TextChangedI,WinEnter *
                 \ call statusline#RedefineStatusLine()
-    autocmd VimEnter * call statusline#initialize()
-    autocmd VimEnter * call statusline#RedefineStatusLine()
+    autocmd VimEnter * call timer_start(0, funcref("<SID>OnVimEnter"))
 augroup END
 if v:vim_did_enter
     doautocmd Statusline VimEnter
 endif
+
+function! s:OnVimEnter(...)
+  call statusline#initialize()
+  call statusline#RedefineStatusLine()
+endfunction
