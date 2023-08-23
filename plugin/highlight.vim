@@ -28,7 +28,7 @@ function! HighlightTrailingWhitespace()
         call ClearTrailingWhitespace()
         return
     endif
-    if &syntax =~# '\v%(help|netrw)'
+    if &syntax =~# '\v%(help|lspinfo|netrw)'
         call ClearTrailingWhitespace()
         return
     endif
