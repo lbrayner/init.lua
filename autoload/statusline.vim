@@ -36,8 +36,8 @@ function! statusline#VersionControl()
     if branch == ""
         return ""
     endif
-    if strwidth(branch) > 20
-        return branch[0:13]."…".branch[-5:]
+    if strwidth(branch) > 30
+        return branch[0:23]."…".branch[-5:]
     endif
     return branch
 endfunction
