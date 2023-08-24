@@ -9,6 +9,4 @@ vim.api.nvim_create_user_command("DapUiOpen", function(command)
   require("dapui").open({ layout = tonumber(command.args) })
 end, { nargs = "?" })
 
-vim.api.nvim_create_user_command("DapUiReset", function(command)
-  require("dapui").setup()
-end, { nargs = 0 })
+vim.api.nvim_create_user_command("DapUiReset", require("dapui").setup, { nargs = 0 })
