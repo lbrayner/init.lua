@@ -1,6 +1,7 @@
 -- TODO move to init.lua
 require("tint").setup({
   highlight_ignore_patterns = { "^VertSplit", "^WinSeparator", },
+  dynamic_window_ignore = true,
   window_ignore_function = function(winid)
     local diff = vim.wo[winid].diff
     local preview = vim.wo[winid].previewwindow
