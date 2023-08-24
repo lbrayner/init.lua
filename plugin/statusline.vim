@@ -1,3 +1,9 @@
+" vim: sw=4
+function! s:OnVimEnter(...)
+  call statusline#initialize()
+  call statusline#RedefineStatusLine()
+endfunction
+
 " From :h qf.vim:
 
 " The quickfix filetype plugin includes configuration for displaying the command
@@ -19,7 +25,7 @@ augroup Statusline
     autocmd CmdlineEnter : call statusline#HighlightMode("command") | redraw
     autocmd CmdlineEnter /,\? call statusline#HighlightMode("search") | redraw
     autocmd ColorScheme * call statusline#initialize()
-    autocmd DiagnosticChanged * call statusline#RedefineStatusLine()
+    autocmd DiagnosticChanged * call statusline#HighlightDiagnostics()
     autocmd InsertEnter * call statusline#HighlightMode("insert")
     autocmd ModeChanged [^vV\x16]:[vV\x16]* call statusline#HighlightMode("visual")
     autocmd ModeChanged [^n]*:n* call statusline#HighlightMode("normal")
@@ -35,8 +41,3 @@ augroup END
 if v:vim_did_enter
     doautocmd Statusline VimEnter
 endif
-
-function! s:OnVimEnter(...)
-  call statusline#initialize()
-  call statusline#RedefineStatusLine()
-endfunction

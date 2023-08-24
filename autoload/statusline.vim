@@ -1,3 +1,4 @@
+" vim: sw=4
 function! statusline#StatusFlag()
     if &modified
         return "+"
@@ -11,18 +12,26 @@ function! statusline#StatusFlag()
     return " "
 endfunction
 
-function! statusline#Diagnostics()
+function! statusline#HighlightDiagnostics()
     let buffer_severity = v:lua.require'lbrayner.diagnostic'.buffer_severity()
     if buffer_severity == v:null
-        return "  "
+        return
     endif
     let group = "Diagnostic".buffer_severity[0].tolower(buffer_severity[1:])
     let cterm = synIDattr(synIDtrans(hlID(group)), "fg", "cterm")
     let cterm = empty(cterm) ? "NONE" : cterm
     let gui = synIDattr(synIDtrans(hlID(group)), "fg", "gui")
     execute "highlight! User7 ctermfg=".cterm." guifg=".gui
+endfunction
+
+function! statusline#Diagnostics()
+    let buffer_severity = v:lua.require'lbrayner.diagnostic'.buffer_severity()
+    if buffer_severity == v:null
+        return " "
+    endif
+    call statusline#HighlightDiagnostics()
     let prefix = v:lua.require'lbrayner.diagnostic'.get_prefix()
-    return " %7*".prefix."%*"
+    return "%7*".prefix."%*"
 endfunction
 
 function! statusline#VersionControl()
@@ -74,7 +83,7 @@ function! statusline#GetStatusLineTail()
         return bufferPosition . "%( %6*%{statusline#VersionControl()}%*%) %2*%{&filetype}%* "
     endif
     return bufferPosition
-                \ . statusline#Diagnostics()
+                \ . " %1.1{%statusline#Diagnostics()%}"
                 \ . "%( %6*%{statusline#VersionControl()}%*%)"
                 \ . " %4*%{util#Options('&fileencoding','&encoding')}%*"
                 \ . " %4.(%4*%{&fileformat}%*%)"
