@@ -100,7 +100,8 @@
 	update = none
 [submodule "pack/bundle/start/nvim-dap-ui"]
 	path = pack/bundle/start/nvim-dap-ui
-	url = https://github.com/rcarriga/nvim-dap-ui
+	url = https://github.com/lbrayner/nvim-dap-ui
+	branch = winhl-append
 [submodule "pack/bundle/start/nvim-dap"]
 	path = pack/bundle/start/nvim-dap
 	url = https://github.com/mfussenegger/nvim-dap
