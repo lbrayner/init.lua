@@ -42,6 +42,8 @@ function! s:FugitiveMapOverrides()
     sil! exe "nunmap <buffer> <C-W>gf"
     " So we can use Nvim builtin search selected
     sil! exe "vunmap <buffer> *"
+    " So I can use my case sensitive star search
+    sil! exe "nunmap <buffer> *"
 endfunction
 
 augroup FugitiveCustomAutocommands
