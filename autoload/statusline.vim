@@ -1,4 +1,9 @@
 " vim: sw=4
+
+function! statusline#Empty()
+    return ""
+endfunction
+
 function! statusline#StatusFlag()
     if &modified
         return "+"

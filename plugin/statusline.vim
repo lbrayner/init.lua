@@ -1,6 +1,5 @@
 " vim: sw=4
 function! s:OnVimEnter(...)
-  call statusline#initialize()
   call statusline#RedefineStatusLine()
 endfunction
 
@@ -12,8 +11,9 @@ endfunction
 
 let g:qf_disable_statusline = 1
 
-set laststatus=3
+set statusline=%{statusline#Empty()}
 set winbar=%{%statusline#WinBar()%}
+set laststatus=3
 
 command! -nargs=0 StatusLineInitialize call statusline#initialize()
 
@@ -41,3 +41,5 @@ augroup END
 if v:vim_did_enter
     doautocmd Statusline VimEnter
 endif
+
+call statusline#initialize()
