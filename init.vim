@@ -155,11 +155,6 @@ command! -nargs=0 -bar -range=% DeleteTrailingWhitespace
             \ call util#PreserveViewPort("keeppatterns ".<line1>.",".<line2>.'s/\s\+$//e')
 cnoreabbrev D DeleteTrailingWhitespace
 
-command! Lcd lcd %
-cnoreabbrev L Lcd
-command! Tcd tcd %
-cnoreabbrev T Tcd
-
 function! s:Number()
     set number
     set relativenumber
@@ -408,16 +403,6 @@ augroup END
 
 " Preventing delimitMate from mapping i_<C-G>g (using <C-G> with nvim-cmp)
 imap <F97> <Plug>delimitMateJumpMany
-
-" dirvish
-
-let g:loaded_netrwPlugin = 1
-command! -nargs=? -complete=dir Explore Dirvish <args>
-
-augroup DirvishSetup
-    autocmd!
-    autocmd FileType dirvish let b:Statusline_custom_leftline = '%<%{expand("%:h:t")}'
-augroup END
 
 " fzf-lua
 augroup FzfLuaHighlights

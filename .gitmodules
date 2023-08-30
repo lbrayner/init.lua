@@ -58,9 +58,6 @@
 [submodule "pack/bundle/start/vim-characterize"]
 	path = pack/bundle/start/vim-characterize
 	url = https://github.com/tpope/vim-characterize
-[submodule "pack/bundle/start/vim-dirvish"]
-	path = pack/bundle/start/vim-dirvish
-	url = https://github.com/justinmk/vim-dirvish
 [submodule "pack/bundle/start/vim-eunuch"]
 	path = pack/bundle/start/vim-eunuch
 	url = https://github.com/tpope/vim-eunuch
@@ -114,3 +111,9 @@
 [submodule "pack/bundle/start/tint.nvim"]
 	path = pack/bundle/start/tint.nvim
 	url = https://github.com/levouh/tint.nvim
+[submodule "pack/bundle/start/mini.nvim"]
+	path = pack/bundle/start/mini.nvim
+	url = https://github.com/echasnovski/mini.nvim
+[submodule "pack/bundle/start/nvim-web-devicons"]
+	path = pack/bundle/start/nvim-web-devicons
+	url = https://github.com/nvim-tree/nvim-web-devicons
