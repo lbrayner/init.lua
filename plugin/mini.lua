@@ -1,4 +1,21 @@
 --
+-- mini.jump
+--
+
+require("mini.jump").setup({
+  mappings = {
+    repeat_jump = "",
+  },
+})
+
+vim.keymap.set("n", ";", function()
+  MiniJump.jump(nil, false)
+end)
+vim.keymap.set("n", ",", function()
+  MiniJump.jump(nil, true)
+end)
+
+--
 -- mini.files
 --
 

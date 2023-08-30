@@ -419,16 +419,6 @@ let g:paredit_leader = '\'
 " reply.vim
 command! -nargs=0 ReplFile call reply#command#send(join(getline(1,line("$")),"\n"),0,0)
 
-" sneak
-
-map f <Plug>Sneak_f
-map F <Plug>Sneak_F
-map t <Plug>Sneak_t
-map T <Plug>Sneak_T
-
-map <Space>f <Plug>Sneak_s
-map <Space>F <Plug>Sneak_S
-
 " vim-commentary
 augroup VimCommentary
     autocmd!
