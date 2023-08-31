@@ -7,9 +7,6 @@
 [submodule "pack/bundle/start/LogiPat"]
 	path = pack/bundle/start/LogiPat
 	url = https://github.com/vim-scripts/LogiPat.git
-[submodule "pack/bundle/start/paredit.vim"]
-	path = pack/bundle/start/paredit.vim
-	url = https://github.com/vim-scripts/paredit.vim.git
 [submodule "pack/bundle/start/tpope-vim-abolish"]
 	path = pack/bundle/start/tpope-vim-abolish
 	url = https://github.com/tpope/tpope-vim-abolish.git
@@ -43,9 +40,6 @@
 [submodule "pack/bundle/start/vissort"]
 	path = pack/bundle/start/vissort
 	url = https://github.com/yaroot/vissort.git
-[submodule "pack/bundle/start/delimitMate"]
-	path = pack/bundle/start/delimitMate
-	url = https://github.com/Raimondi/delimitMate
 [submodule "pack/bundle/start/vim-easy-align"]
 	path = pack/bundle/start/vim-easy-align
 	url = https://github.com/junegunn/vim-easy-align

@@ -52,3 +52,9 @@ vim.keymap.set("n", "g-", MiniFiles.open)
 vim.keymap.set("n", "-", function()
   MiniFiles.open(vim.api.nvim_buf_get_name(0), false)
 end)
+
+--
+-- mini.pairs
+--
+
+require("mini.pairs").setup()

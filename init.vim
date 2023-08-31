@@ -392,18 +392,6 @@ map <silent> <Leader>b <Plug>CamelCaseMotion_b
 map <silent> <Leader>e <Plug>CamelCaseMotion_e
 map <silent> <Leader>ge <Plug>CamelCaseMotion_ge
 
-" delimitMate
-
-augroup DelimitMateSetup
-    autocmd!
-    autocmd FileType *clojure*,lisp,racket,scheme let b:loaded_delimitMate = 1
-    autocmd FileType apache,html,xml let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
-    autocmd FileType sql let b:delimitMate_matchpairs = "(:),[:],{:}"
-augroup END
-
-" Preventing delimitMate from mapping i_<C-G>g (using <C-G> with nvim-cmp)
-imap <F97> <Plug>delimitMateJumpMany
-
 " fzf-lua
 augroup FzfLuaHighlights
     autocmd!
@@ -412,9 +400,6 @@ augroup END
 
 " nvim-jdtls: skipping autocmds and commands
 let g:nvim_jdtls = 1
-
-" paredit
-let g:paredit_leader = '\'
 
 " reply.vim
 command! -nargs=0 ReplFile call reply#command#send(join(getline(1,line("$")),"\n"),0,0)

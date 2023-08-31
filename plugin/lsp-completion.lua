@@ -1,7 +1,6 @@
 local mappings = require("snippy.mapping")
 
 vim.keymap.set({ "i", "s" }, "<C-Tab>", mappings.next())
--- Overrides delimitMate's <S-Tab> mapping
 vim.keymap.set({ "i", "s" }, "<S-Tab>", mappings.previous())
 -- TODO analyze the utility of cut_text
 -- vim.keymap.set("x", "<Tab>", mappings.cut_text, { remap = true })
