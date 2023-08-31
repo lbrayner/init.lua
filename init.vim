@@ -437,15 +437,6 @@ augroup END
 " vim-rzip
 let g:rzipPlugin_extra_ext = "*.odt"
 
-" vim-surround
-
-augroup DisableSurroundIndent
-    autocmd!
-    autocmd FileType groovy,html,sql,xml let b:surround_indent = 0
-augroup END
-
-let g:surround_no_insert_mappings = 1
-
 " }}}
 
 " vim: fdm=marker
