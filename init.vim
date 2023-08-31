@@ -250,6 +250,12 @@ augroup CmdWindow
     autocmd CmdwinEnter * setlocal nospell
 augroup END
 
+augroup Commentstring
+    autocmd!
+    autocmd FileType apache,crontab,debsources,desktop,fstab,samba setlocal commentstring=#\ %s
+    autocmd FileType sql setlocal commentstring=--\ %s
+augroup END
+
 function! s:InsertModeUndoPoint()
     if mode() != "i"
         return
@@ -403,13 +409,6 @@ let g:nvim_jdtls = 1
 
 " reply.vim
 command! -nargs=0 ReplFile call reply#command#send(join(getline(1,line("$")),"\n"),0,0)
-
-" vim-commentary
-augroup VimCommentary
-    autocmd!
-    autocmd FileType apache,crontab,debsources,desktop,fstab,samba setlocal commentstring=#\ %s
-    autocmd FileType sql setlocal commentstring=--\ %s
-augroup END
 
 " vim-quickhl
 

@@ -1,4 +1,10 @@
 --
+-- mini.comment
+--
+
+require("mini.comment").setup()
+
+--
 -- mini.jump
 --
 
@@ -63,4 +69,14 @@ require("mini.pairs").setup()
 -- mini.surround
 --
 
-require("mini.surround").setup()
+require("mini.surround").setup({
+  mappings = {
+    add = "ys",
+    delete = "ds",
+    find = "ysf", -- Find surrounding (to the right)
+    find_left = "ysF", -- Find surrounding (to the left)
+    highlight = "ysh", -- Highlight surrounding
+    replace = "ysr", -- Replace surrounding
+    update_n_lines = "ysn", -- Update `n_lines`
+  },
+})
