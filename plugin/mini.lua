@@ -5,6 +5,12 @@
 require("mini.comment").setup()
 
 --
+-- mini.indentscope
+--
+
+require("mini.indentscope").setup()
+
+--
 -- mini.jump
 --
 
