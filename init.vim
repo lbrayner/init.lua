@@ -106,10 +106,6 @@ tnoremap <A-h> <C-\><C-N><C-W>h
 tnoremap <A-j> <C-\><C-N><C-W>j
 tnoremap <A-k> <C-\><C-N><C-W>k
 tnoremap <A-l> <C-\><C-N><C-W>l
-nnoremap <A-h> <C-W>h
-nnoremap <A-j> <C-W>j
-nnoremap <A-k> <C-W>k
-nnoremap <A-l> <C-W>l
 
 " Search selected file path: based on Nvim builtin vmap *
 vnoremap <Leader>8 y/\V<C-R>=escape("<C-R>"", "/")<CR><CR>

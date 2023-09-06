@@ -28,9 +28,6 @@
 [submodule "pack/bundle/start/vim-rzip"]
 	path = pack/bundle/start/vim-rzip
 	url = https://github.com/lbrayner/vim-rzip.git
-[submodule "pack/bundle/start/vim-unimpaired"]
-	path = pack/bundle/start/vim-unimpaired
-	url = https://github.com/tpope/vim-unimpaired.git
 [submodule "pack/bundle/start/vissort"]
 	path = pack/bundle/start/vissort
 	url = https://github.com/yaroot/vissort.git
