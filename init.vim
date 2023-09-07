@@ -1,3 +1,4 @@
+" vim: sw=4
 " inferring where we are
 
 if !exists("g:vim_dir") || g:vim_dir == ""
@@ -320,15 +321,6 @@ augroup LargeXml
                 \| setlocal syntax=unknown | endif | endif
 augroup END
 
-function! s:MarkdownSetup()
-    setlocal textwidth=80 tabstop=2
-
-    if exists(":EasyAlign")
-        " Align markdown table
-        nnoremap <buffer> <silent> <Space>t <Cmd>'{,'}EasyAlign*\|<CR>
-    endif
-endfunction
-
 function! s:XmlNavigate()
     nnoremap <buffer> <silent> [< <Cmd>call xml#NavigateDepthBackward(v:count1)<CR>
     nnoremap <buffer> <silent> ]> <Cmd>call xml#NavigateDepth(v:count1)<CR>
@@ -339,7 +331,7 @@ augroup FileTypeSetup
     autocmd FileType gitcommit,mail,markdown,text setlocal ignorecase infercase
     autocmd FileType html,javascriptreact,typescriptreact,xml call s:XmlNavigate()
     autocmd FileType mail call util#setupMatchit()
-    autocmd FileType markdown call s:MarkdownSetup()
+    autocmd FileType markdown setlocal textwidth=80 tabstop=2
     autocmd FileType sql setlocal indentexpr=indent
     autocmd FileType text setlocal textwidth=80
 augroup END
@@ -405,6 +397,11 @@ let g:nvim_jdtls = 1
 
 " reply.vim
 command! -nargs=0 ReplFile call reply#command#send(join(getline(1,line("$")),"\n"),0,0)
+
+" vim-characterize
+
+nmap <F13> <Plug>(characterize)
+command! -nargs=0 Characterize normal <F13>
 
 " vim-quickhl
 

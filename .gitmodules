@@ -31,9 +31,6 @@
 [submodule "pack/bundle/start/vissort"]
 	path = pack/bundle/start/vissort
 	url = https://github.com/yaroot/vissort.git
-[submodule "pack/bundle/start/vim-easy-align"]
-	path = pack/bundle/start/vim-easy-align
-	url = https://github.com/junegunn/vim-easy-align
 [submodule "pack/bundle/start/vim-quickhl"]
 	path = pack/bundle/start/vim-quickhl
 	url = https://github.com/t9md/vim-quickhl

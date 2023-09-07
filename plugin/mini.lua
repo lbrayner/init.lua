@@ -1,4 +1,10 @@
 --
+-- mini.align
+--
+
+require("mini.align").setup()
+
+--
 -- mini.bracketed
 --
 
