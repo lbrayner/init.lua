@@ -92,4 +92,4 @@
 	url = https://github.com/nvim-tree/nvim-web-devicons
 [submodule "pack/bundle/start/nvim-colorizer.lua"]
 	path = pack/bundle/start/nvim-colorizer.lua
-	url = https://github.com/norcalli/nvim-colorizer.lua
+	url = https://github.com/NvChad/nvim-colorizer.lua
