@@ -392,6 +392,9 @@ augroup FzfLuaHighlights
     autocmd ColorScheme * lua require("fzf-lua").setup_highlights()
 augroup END
 
+" nvim-colorizer.lua
+lua require("colorizer").setup()
+
 " nvim-jdtls: skipping autocmds and commands
 let g:nvim_jdtls = 1
 
