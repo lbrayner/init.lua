@@ -4,9 +4,6 @@
 [submodule "pack/bundle/start/linediff.vim"]
 	path = pack/bundle/start/linediff.vim
 	url = https://github.com/AndrewRadev/linediff.vim.git
-[submodule "pack/bundle/start/LogiPat"]
-	path = pack/bundle/start/LogiPat
-	url = https://github.com/vim-scripts/LogiPat.git
 [submodule "pack/bundle/start/tpope-vim-abolish"]
 	path = pack/bundle/start/tpope-vim-abolish
 	url = https://github.com/tpope/tpope-vim-abolish.git
