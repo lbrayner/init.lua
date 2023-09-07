@@ -3,7 +3,9 @@
 --
 
 require("mini.bracketed").setup({
+  comment = { suffix = "n" },
   diagnostic = { suffix = "" },
+  indent = { suffix = "" },
 })
 
 --
