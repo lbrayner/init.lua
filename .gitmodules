@@ -1,6 +1,3 @@
-[submodule "pack/bundle/start/CamelCaseMotion"]
-	path = pack/bundle/start/CamelCaseMotion
-	url = https://github.com/bkad/CamelCaseMotion.git
 [submodule "pack/bundle/start/linediff.vim"]
 	path = pack/bundle/start/linediff.vim
 	url = https://github.com/AndrewRadev/linediff.vim.git
@@ -84,3 +81,6 @@
 [submodule "pack/bundle/start/nvim-colorizer.lua"]
 	path = pack/bundle/start/nvim-colorizer.lua
 	url = https://github.com/NvChad/nvim-colorizer.lua
+[submodule "pack/bundle/start/nvim-spider"]
+	path = pack/bundle/start/nvim-spider
+	url = https://github.com/chrisgrieser/nvim-spider

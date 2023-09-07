@@ -380,12 +380,6 @@ endif
 
 " Subsection: package customization {{{
 
-" CamelCase
-map <silent> <Leader>w <Plug>CamelCaseMotion_w
-map <silent> <Leader>b <Plug>CamelCaseMotion_b
-map <silent> <Leader>e <Plug>CamelCaseMotion_e
-map <silent> <Leader>ge <Plug>CamelCaseMotion_ge
-
 " fzf-lua
 augroup FzfLuaHighlights
     autocmd!
