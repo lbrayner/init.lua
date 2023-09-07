@@ -22,9 +22,6 @@
 [submodule "pack/bundle/start/vim-obsession"]
 	path = pack/bundle/start/vim-obsession
 	url = https://github.com/tpope/vim-obsession.git
-[submodule "pack/bundle/start/vim-repeat"]
-	path = pack/bundle/start/vim-repeat
-	url = https://github.com/tpope/vim-repeat.git
 [submodule "pack/bundle/start/vim-rzip"]
 	path = pack/bundle/start/vim-rzip
 	url = https://github.com/lbrayner/vim-rzip.git
