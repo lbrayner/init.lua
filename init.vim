@@ -144,6 +144,10 @@ vnoremap <Leader>x y:%s/\C\V<C-R>"//gc<Left><Left><Left>
 nnoremap [4 <Cmd>lua require("lbrayner.marks").go_to_previous_file_mark()<CR>
 nnoremap ]4 <Cmd>lua require("lbrayner.marks").go_to_next_file_mark()<CR>
 
+" From vim-unimpaired: insert blank lines above and below
+nnoremap [<Space> <Cmd>exe "put!=repeat(nr2char(10), v:count1)\<Bar>silent ']+"<CR>
+nnoremap ]<Space> <Cmd>exe "put =repeat(nr2char(10), v:count1)\<Bar>silent ']-"<CR>
+
 " }}}
 
 " Subsection: functions & commands
