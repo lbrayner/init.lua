@@ -84,3 +84,5 @@
 [submodule "pack/bundle/start/nvim-spider"]
 	path = pack/bundle/start/nvim-spider
 	url = https://github.com/chrisgrieser/nvim-spider
+[submodule "pack/bundle/start/nvim-dap-ui/"]
+	url = https://github.com/rcarriga/nvim-dap-ui
