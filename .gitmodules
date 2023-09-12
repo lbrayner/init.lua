@@ -72,6 +72,7 @@
 [submodule "pack/bundle/start/tint.nvim"]
 	path = pack/bundle/start/tint.nvim
 	url = https://github.com/levouh/tint.nvim
+	update = none
 [submodule "pack/bundle/start/mini.nvim"]
 	path = pack/bundle/start/mini.nvim
 	url = https://github.com/echasnovski/mini.nvim
