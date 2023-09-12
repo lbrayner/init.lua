@@ -140,6 +140,11 @@ function M.omnifunc(findstart, base)
 end
 
 function M.on_list(options)
+  if vim.tbl_isempty(options.items) then
+    print("Empty list.")
+    return
+  end
+
   if #options.items > 1  then
     vim.fn.setqflist({}, " ", options)
     vim.cmd("botright copen")
