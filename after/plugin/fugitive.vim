@@ -20,7 +20,7 @@ if exists("*Clip")
 endif
 
 cnoreabbrev Gb Git blame --abbrev=6
-cnoreabbrev Gc Git cherry-pick
+cnoreabbrev Gc Git checkout
 cnoreabbrev Gd Git difftool -y
 " To list files modified by a range of commits
 cnoreabbrev Gdn Git diff --name-only --stat
@@ -30,7 +30,7 @@ cnoreabbrev Glns Git log --name-status
 cnoreabbrev Glo Git log --oneline
 " To list branches of a specific remote: Git! ls-remote upstream
 cnoreabbrev Gls Git! ls-remote
-cnoreabbrev Gp Git! pull
+cnoreabbrev Gp Git cherry-pick
 cnoreabbrev Gr Git rebase -i
 " Only list tags whose tips are reachable from the specified commit
 cnoreabbrev Gtm Git tag --merged
