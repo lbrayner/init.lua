@@ -22,7 +22,9 @@ end
 local function _jump_to_location(win, bufnr, pos)
   -- From vim.lsp.util.show_document
   -- Save position in jumplist
-  vim.cmd("normal! m'")
+  if vim.bo.buftype ~= "terminal" then -- TODO debug to find the real cause
+    vim.cmd("normal! m'")
+  end
 
   vim.bo[bufnr].buflisted = true
   vim.api.nvim_win_set_buf(win, bufnr)
