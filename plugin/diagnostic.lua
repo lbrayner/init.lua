@@ -9,7 +9,10 @@ local function is_long(bufnr, winid, virt_texts, lnum)
   if mess_len == 0 then
     return false
   end
-  local line = vim.api.nvim_buf_get_lines(bufnr, lnum, lnum+1, true)[1]
+  -- Dealing with E5555: API call: Index out of bounds
+  local success, lines = pcall(vim.api.nvim_buf_get_lines, bufnr, lnum, lnum+1, true)
+  if not success then return false end
+  local line = lines[1]
   local line_len = string.len(line)
   local winwidth = vim.api.nvim_win_get_width(winid) - 2 - 3 -- sign & column number
   local long = line_len + 1 + mess_len > winwidth
