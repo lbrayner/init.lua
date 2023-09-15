@@ -20,6 +20,7 @@ endfunction
 function! statusline#HighlightDiagnostics()
     let buffer_severity = v:lua.require'lbrayner.diagnostic'.buffer_severity()
     if buffer_severity == v:null
+        highlight! User7 ctermfg=NONE guifg=NONE
         return
     endif
     let group = "Diagnostic".buffer_severity[0].tolower(buffer_severity[1:])
