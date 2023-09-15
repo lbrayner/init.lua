@@ -108,3 +108,6 @@ require("mini.surround").setup({
     update_n_lines = "ysn", -- Update `n_lines`
   },
 })
+
+vim.keymap.del("x", "ys")
+vim.keymap.set("x", "S", [[:<C-u>lua MiniSurround.add("visual")<CR>]], { desc = "Add surrounding to selection" })
