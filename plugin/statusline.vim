@@ -11,9 +11,9 @@ endfunction
 
 let g:qf_disable_statusline = 1
 
+set laststatus=3
 set statusline=%{statusline#Empty()}
 set winbar=%{%statusline#WinBar()%}
-set laststatus=3
 
 command! -nargs=0 StatusLineInitialize call statusline#initialize()
 
