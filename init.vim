@@ -1,13 +1,4 @@
 " vim: sw=4
-" inferring where we are
-
-if !exists("g:vim_dir") || g:vim_dir == ""
-    let g:vim_dir = stdpath("config")
-
-    if $MYVIMRC == ""
-        let g:vim_dir = expand("<sfile>:p:h")
-    endif
-endif
 
 " Subsection: settings {{{
 
@@ -150,7 +141,7 @@ nnoremap ]<Space> <Cmd>exe "put =repeat(nr2char(10), v:count1)\<Bar>silent ']-"<
 
 " }}}
 
-" Subsection: functions & commands
+" Subsection: functions & commands {{{
 
 command! -nargs=0 -bar -range=% DeleteTrailingWhitespace
             \ call util#PreserveViewPort("keeppatterns ".<line1>.",".<line2>.'s/\s\+$//e')
@@ -195,7 +186,7 @@ function! s:Filter(line_start,line_end)
         let output = systemlist(getline(linenr+offset))
         exe "delete"
         call append(linenr+offset-1,output)
-        if len(offset) > 0
+        if len(output) > 0
             let offset += len(output) - 1
         endif
     endfor
@@ -204,6 +195,18 @@ endfunction
 
 command! -nargs=0 -range Execute <line1>,<line2>w !$SHELL
 command! -nargs=0 -range Filter call s:Filter(<line1>,<line2>)
+
+function! s:Synstack()
+    echo map(synstack(line("."), col(".")), "synIDattr(v:val, 'name')")
+endfunction
+
+" Human-readable stack of syntax items
+command! -nargs=0 Synstack call s:Synstack()
+
+" Delete file marks
+command! -nargs=0 Delfilemarks lua require("lbrayner.marks").delete_file_marks()
+
+" }}}
 
 " Ripgrep
 
@@ -233,16 +236,6 @@ command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
 cnoreabbrev Rg Rg -e
 cnoreabbrev Rb Rg -s -e'\b''''\b'<Left><Left><Left><Left><Left>
 cnoreabbrev Rw Rg -s -e'\b''<C-R><C-W>''\b'
-
-function! s:Synstack()
-    echo map(synstack(line("."), col(".")), "synIDattr(v:val, 'name')")
-endfunction
-
-" Human-readable stack of syntax items
-command! -nargs=0 Synstack call s:Synstack()
-
-" Delete file marks
-command! -nargs=0 Delfilemarks lua require("lbrayner.marks").delete_file_marks()
 
 " Subsection: autocmds {{{
 
@@ -288,9 +281,6 @@ augroup Aesthetics
     " Aesthetics for help buffers
     autocmd FileType help autocmd! Aesthetics BufEnter <buffer> set relativenumber
 augroup END
-if v:vim_did_enter
-    doautocmd Aesthetics VimEnter
-endif
 
 augroup SetFiletype
     autocmd!
@@ -320,7 +310,7 @@ augroup END
 
 let s:LargeXmlFile = 1024 * 512
 augroup LargeXml
-    autocmd BufRead * if &filetype =~# '\v(xml|html)'
+    autocmd BufRead * if &filetype =~# '\v%(xml|html)'
             \| if getfsize(expand("<afile>")) > s:LargeXmlFile
                 \| setlocal syntax=unknown | endif | endif
 augroup END
@@ -376,9 +366,15 @@ augroup END
 
 " }}}
 
+let s:vim_dir = stdpath("config")
+
+if $MYVIMRC == ""
+    let s:vim_dir = expand("<sfile>:p:h")
+endif
+
 " Finish here if we haven't initialized the submodules
 
-if glob(g:vim_dir."/pack/bundle/start/*/plugin") == ""
+if glob(s:vim_dir."/pack/bundle/start/*/plugin") == ""
     finish
 endif
 

@@ -16,16 +16,16 @@ set packpath-=$XDG_CONFIG_HOME/nvim/after
 set packpath-=$XDG_DATA_HOME/nvim/site
 set packpath-=$XDG_DATA_HOME/nvim/site/after
 
-let g:vim_dir = expand("<sfile>:p:h")
-let s:vim_dir = fnameescape(g:vim_dir)
-exe "set runtimepath+=".s:vim_dir
-exe "set runtimepath+=".s:vim_dir."/after"
-exe "set packpath+=".s:vim_dir
-exe "set packpath+=".s:vim_dir."/after"
+let s:vim_dir = expand("<sfile>:p:h")
+let s:_vim_dir_ = fnameescape(s:vim_dir)
+exe "set runtimepath+=".s:_vim_dir_
+exe "set runtimepath+=".s:_vim_dir_."/after"
+exe "set packpath+=".s:_vim_dir_
+exe "set packpath+=".s:_vim_dir_."/after"
 
 " sourcing init.vim
 
-let s:init = g:vim_dir . "/init.vim"
+let s:init = s:vim_dir . "/init.vim"
 if filereadable(s:init)
     execute "source " . fnameescape(s:init)
 endif
