@@ -367,15 +367,13 @@ augroup END
 
 " }}}
 
-" Finish here if we haven't initialized the submodules
+let s:vim_dir = stdpath("config")
 
-if !exists("s:vim_dir") || s:vim_dir == ""
-    let s:vim_dir = stdpath("config")
-
-    if $MYVIMRC == ""
-        let s:vim_dir = expand("<sfile>:p:h")
-    endif
+if $MYVIMRC == ""
+    let s:vim_dir = expand("<sfile>:p:h")
 endif
+
+" Finish here if we haven't initialized the submodules
 
 if glob(s:vim_dir."/pack/bundle/start/*/plugin") == ""
     finish
