@@ -1,13 +1,4 @@
 " vim: sw=4
-" inferring where we are
-
-if !exists("g:vim_dir") || g:vim_dir == ""
-    let g:vim_dir = stdpath("config")
-
-    if $MYVIMRC == ""
-        let g:vim_dir = expand("<sfile>:p:h")
-    endif
-endif
 
 " Subsection: settings {{{
 
@@ -378,7 +369,15 @@ augroup END
 
 " Finish here if we haven't initialized the submodules
 
-if glob(g:vim_dir."/pack/bundle/start/*/plugin") == ""
+if !exists("s:vim_dir") || s:vim_dir == ""
+    let s:vim_dir = stdpath("config")
+
+    if $MYVIMRC == ""
+        let s:vim_dir = expand("<sfile>:p:h")
+    endif
+endif
+
+if glob(s:vim_dir."/pack/bundle/start/*/plugin") == ""
     finish
 endif
 
