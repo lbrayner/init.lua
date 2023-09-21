@@ -1,3 +1,5 @@
+-- Subsection: settings {{{
+
 vim.bo.expandtab = true
 vim.bo.fileformat = "unix"
 vim.bo.shiftwidth = 2 -- when indenting with '>', use 2 spaces width
@@ -17,6 +19,9 @@ vim.go.smartcase = true
 vim.go.splitbelow = true
 vim.go.splitright = true
 vim.go.switchbuf = "usetab,uselast"
+if vim.env.TERM == "foot" or string.find(vim.env.TERM, "256color") then
+    vim.go.termguicolors = true
+end
 vim.go.title = true
 vim.go.wildmenu = true
 vim.go.wildmode = "longest:full"
@@ -26,3 +31,110 @@ vim.wo.cursorline = true
 vim.wo.linebreak = true
 vim.wo.number = true
 vim.wo.relativenumber = true
+-- }}}
+
+-- Subsection: mappings — pt-BR keyboard {{{
+
+-- disable Ex mode mapping
+vim.keymap.set("n", "Q", "<Nop>", { remap = true })
+
+-- cedilla is right where : is on an en-US keyboard
+vim.keymap.set("n", "ç", ":")
+vim.keymap.set("v", "ç", ":")
+vim.keymap.set("n", "Ç", ":<Up><CR>")
+vim.keymap.set("v", "Ç", ":<Up><CR>")
+vim.keymap.set("n", "¬", "^")
+vim.keymap.set("n", "qç", "q:")
+vim.keymap.set("v", "qç", "q:")
+vim.keymap.set("v", "¬", "^")
+
+-- make the current window the only one on the screen
+vim.keymap.set("n", "<Space>o", "<Cmd>only<CR>")
+-- alternate file
+vim.keymap.set("n", "<Space>a", "<Cmd>b#<CR>")
+
+-- clear search highlights
+vim.keymap.set("n", "<F2>", "<Cmd>set invhlsearch hlsearch?<CR>", { silent = true })
+
+-- easier window switching
+vim.keymap.set("n", "<C-H>", "<C-W>h")
+vim.keymap.set("n", "<C-J>", "<C-W>j")
+vim.keymap.set("n", "<C-K>", "<C-W>k")
+vim.keymap.set("n", "<C-L>", "<C-W>l")
+
+vim.keymap.set("v", "<C-H>", "<Esc><C-W>h")
+vim.keymap.set("v", "<C-J>", "<Esc><C-W>j")
+vim.keymap.set("v", "<C-K>", "<Esc><C-W>k")
+vim.keymap.set("v", "<C-L>", "<Esc><C-W>l")
+
+-- splits
+vim.keymap.set("n", "<Leader>v", "<C-W>v")
+vim.keymap.set("n", "<Leader>h", "<C-W>s")
+
+-- write
+vim.keymap.set("n", "<F6>", "<Cmd>w<CR>")
+vim.keymap.set("i", "<F6>", "<Esc><Cmd>w<CR>")
+vim.keymap.set("v", "<F6>", "<Esc><Cmd>w<CR>")
+vim.keymap.set("n", "<Leader><F6>", "<Cmd>w!<CR>")
+
+-- list mode
+vim.keymap.set("n", "<F12>", "<Cmd>setlocal list!<CR>", { silent = true })
+vim.keymap.set("i", "<F12>", "<Cmd>setlocal list!<CR>", { silent = true })
+
+-- quickfix and locallist
+vim.keymap.set("n", "<Space>l", "<Cmd>lopen<CR>", { silent = true })
+vim.keymap.set("n", "<Space>q", "<Cmd>botright copen<CR>", { silent = true })
+
+-- force case sensitivity for *-search
+vim.keymap.set("n", "*", [[/\C\V\<<C-R><C-W>\><CR>]])
+
+-- Neovim terminal
+-- Case matters for keys after alt or meta
+vim.keymap.set("t", "<A-h>", [[<C-\><C-N><C-W>h]])
+vim.keymap.set("t", "<A-j>", [[<C-\><C-N><C-W>j]])
+vim.keymap.set("t", "<A-k>", [[<C-\><C-N><C-W>k]])
+vim.keymap.set("t", "<A-l>", [[<C-\><C-N><C-W>l]])
+
+-- Search selected file path: based on Nvim builtin vmap *
+vim.keymap.set("v", "<Leader>8", [[y/\V<C-R>=escape("<C-R>"", "/")<CR><CR>]])
+
+-- Command line
+
+-- Emacs-style editing in command-line mode and insert mode
+-- Case matters for keys after alt or meta
+
+-- Return to Normal mode
+vim.keymap.set("c", "<C-G>", "<C-C>")
+
+-- kill line
+vim.keymap.set("c", "<C-K>", "<C-F>D<C-C><Right>")
+vim.keymap.set("i", "<C-K>", "<C-O>D")
+
+-- Insert digraph
+vim.keymap.set("c", "<C-X>8", "<C-K>")
+vim.keymap.set("i", "<C-X>8", "<C-K>")
+
+-- inserting the current line
+vim.keymap.set("c", "<C-R><C-L>", [[<C-R>=getline(".")<CR>]])
+-- inserting the current line number
+vim.keymap.set("c", "<C-R><C-N>", [[<C-R>=line(".")<CR>]])
+
+-- Insert timestamps
+vim.keymap.set("i", "<F3>", [[<C-R>=strftime("%Y-%m-%d %a %0H:%M")<CR>]])
+
+-- Rename word
+vim.keymap.set("n", "<Leader>x", [[:%s/\C\V\<<C-R><C-W>\>//gc<Left><Left><Left>]])
+-- Rename visual selection
+vim.keymap.set("v", "<Leader>x", [[y:%s/\C\V<C-R>"//gc<Left><Left><Left>]])
+
+-- Go to next file mark
+vim.keymap.set("n", "[4", require("lbrayner.marks").go_to_next_file_mark)
+vim.keymap.set("n", "]4", require("lbrayner.marks").go_to_previous_file_mark)
+
+-- From vim-unimpaired: insert blank lines above and below
+vim.keymap.set("n", "[<Space>", [[<Cmd>exe "put!=repeat(nr2char(10), v:count1)\<Bar>silent ']+"<CR>]])
+vim.keymap.set("n", "]<Space>", [[<Cmd>exe "put =repeat(nr2char(10), v:count1)\<Bar>silent ']-"<CR>]])
+
+-- }}}
+
+-- vim: fdm=marker
