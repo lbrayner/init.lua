@@ -137,4 +137,79 @@ vim.keymap.set("n", "]<Space>", [[<Cmd>exe "put =repeat(nr2char(10), v:count1)\<
 
 -- }}}
 
+local vim_dir = vim.fn.stdpath("config")
+
+if vim.env.MYVIMRC == "" then
+  vim_dir = vim.fn.expand("<sfile>:p:h")
+end
+
+-- Finish here if we haven't initialized the submodules
+
+if vim.fn.glob(vim_dir.."/pack/bundle/start/*/plugin") == "" then
+    return
+end
+
+-- Subsection: package customization {{{
+
+-- fzf-lua
+
+local fzf_lua_highlights = vim.api.nvim_create_augroup("fzf_lua_highlights", { clear = true })
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = fzf_lua_highlights,
+  desc = "Setup fzf-lua highlights after a colorscheme change",
+  callback = require("fzf-lua").setup_highlights,
+})
+
+-- nvim-colorizer.lua
+require("colorizer").setup()
+
+-- nvim-jdtls: skipping autocmds and commands
+vim.g.nvim_jdtls = 1
+
+-- reply.vim
+vim.api.nvim_create_user_command("ReplFile", function()
+  vim.cmd([[call reply#command#send(join(getline(1,line("$")),"\n"),0,0)]])
+end, { nargs = 0 })
+
+-- vim-characterize
+
+vim.keymap.set("n", "<F13>", "<Plug>(characterize)", { remap = true })
+vim.api.nvim_create_user_command("Characterize", function()
+  vim.cmd([[exe "normal \<F13>"]])
+end, { nargs = 0 })
+
+-- vim-quickhl
+
+vim.keymap.set("n", "<Space>m", "<Plug>(quickhl-manual-this)", { remap = true })
+vim.keymap.set("x", "<Space>m", "<Plug>(quickhl-manual-this)", { remap = true })
+vim.keymap.set("n", "<Space>M", "<Plug>(quickhl-manual-reset)", { remap = true })
+vim.keymap.set("x", "<Space>M", "<Plug>(quickhl-manual-reset)", { remap = true })
+
+vim.keymap.set("n", "<Space>w", "<Plug>(quickhl-manual-this-whole-word)", { remap = true })
+vim.keymap.set("x", "<Space>w", "<Plug>(quickhl-manual-this-whole-word)", { remap = true })
+
+vim.keymap.set("n", "<Space>c", "<Plug>(quickhl-manual-clear)", { remap = true })
+vim.keymap.set("v", "<Space>c", "<Plug>(quickhl-manual-clear)", { remap = true })
+
+-- vim-rsi
+
+-- vim-rsi's M-d is not at parity with readline's M-d
+-- Case matters for keys after alt or meta
+
+local vim_rsi_override = vim.api.nvim_create_augroup("vim_rsi_override", { clear = true })
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = vim_rsi_override,
+  desc = "Override vim-rsi mappings",
+  callback = function()
+    vim.keymap.set("c", "<M-d>", "<C-F>ea<C-W><C-C>")
+  end,
+})
+
+-- vim-rzip
+vim.g.rzipPlugin_extra_ext = "*.odt"
+
+-- }}}
+
 -- vim: fdm=marker
