@@ -52,3 +52,14 @@ augroup FugitiveCustomAutocommands
     autocmd BufEnter fugitive://*//* setlocal nomodifiable
     autocmd FileType fugitive,gitcommit,git call s:FugitiveMapOverrides()
 augroup END
+
+function! s:GitFileExpr(fname)
+    " diff hunks in vim-fugitive buffers
+    let fname = substitute(a:fname, '\v^%(a|b)/', "", "")
+    return fname
+endfunction
+
+augroup GitGoToFile
+  autocmd!
+  autocmd FileType git setlocal includeexpr=s:GitFileExpr(v:fname)
+augroup END
