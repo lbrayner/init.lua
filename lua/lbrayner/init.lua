@@ -85,4 +85,8 @@ function M.preserve_view_port(command)
   end
 end
 
+function M.window_is_floating()
+  return vim.api.nvim_win_get_config(0).relative ~= ""
+end
+
 return M

@@ -249,6 +249,85 @@ vim.keymap.set("ca", "Rg", "Rg -e")
 vim.keymap.set("ca", "Rb", [[Rg -s -e'\b''''\b'<Left><Left><Left><Left><Left>]])
 vim.keymap.set("ca", "Rw", [[Rg -s -e'\b''<C-R><C-W>''\b']])
 
+-- Subsection: autocmds {{{
+
+local cmdwindow = vim.api.nvim_create_augroup("cmdwindow", { clear = true })
+vim.api.nvim_create_autocmd("CmdwinEnter", {
+  group = cmdwindow,
+  desc = "Disable spell in Command-line window",
+  callback = function()
+    vim.wo.spell = false
+  end,
+})
+
+local commentstring = vim.api.nvim_create_augroup("commentstring", { clear = true })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "apache", "crontab", "debsources", "desktop", "fstab", "samba" },
+  group = commentstring,
+  desc = "Pound comment",
+  callback = function()
+    vim.bo.commentstring = "# %s"
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "sql",
+  group = commentstring,
+  desc = "SQL comment",
+  callback = function()
+    vim.bo.commentstring = "-- %s"
+  end,
+})
+
+local insert_mode_undo_point = vim.api.nvim_create_augroup("insert_mode_undo_point", { clear = true })
+vim.api.nvim_create_autocmd("CursorHoldI", {
+  group = insert_mode_undo_point,
+  desc = "Insert mode undo point",
+  callback = function()
+    if vim.fn.mode() ~= "i" then -- TODO use Neovim API
+      return
+    end
+    vim.fn.feedkeys([[\<C-G>u]]) -- TODO user Neovim API
+  end,
+})
+
+local aesthetics = vim.api.nvim_create_augroup("aesthetics", { clear = true })
+
+vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
+  group = aesthetics,
+  desc = "Buffer aesthetics",
+  callback = function()
+    if require("lbrayner").window_is_floating() then
+      return
+    end
+    if vim.bo.filetype == "fugitiveblame" then
+      return
+    end
+    if vim.startswith(vim.bo.syntax, "Neogit") then
+      return
+    end
+    number()
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "help",
+  group = aesthetics,
+  callback = function(args)
+    vim.api.nvim_create_autocmd("BufEnter", {
+      group = aesthetics,
+      buffer = args.buf,
+      desc = "Aesthetics for help buffers",
+      callback = function()
+        vim.wo.relativenumber = true
+      end,
+    })
+  end,
+})
+
+-- }}}
+
 local vim_dir = vim.fn.stdpath("config")
 
 if vim.env.MYVIMRC == "" then
@@ -266,7 +345,6 @@ end
 -- fzf-lua
 
 local fzf_lua_highlights = vim.api.nvim_create_augroup("fzf_lua_highlights", { clear = true })
-
 vim.api.nvim_create_autocmd("ColorScheme", {
   group = fzf_lua_highlights,
   desc = "Setup fzf-lua highlights after a colorscheme change",
@@ -310,7 +388,6 @@ vim.keymap.set("v", "<Space>c", "<Plug>(quickhl-manual-clear)", { remap = true }
 -- Case matters for keys after alt or meta
 
 local vim_rsi_override = vim.api.nvim_create_augroup("vim_rsi_override", { clear = true })
-
 vim.api.nvim_create_autocmd("VimEnter", {
   group = vim_rsi_override,
   desc = "Override vim-rsi mappings",
