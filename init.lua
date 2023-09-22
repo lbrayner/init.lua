@@ -184,7 +184,9 @@ vim.api.nvim_create_user_command("Source", function(command)
   source(command.line1, command.line2)
 end, { nargs = 0, range = true })
 
-local function filter(line_start,line_end)
+vim.api.nvim_create_user_command("Filter", function(command)
+  local line_start = command.line1
+  local line_end = command.line2
   local offset = 0
   for linenr = line_start, line_end do
     vim.api.nvim_win_set_cursor(0, { linenr + offset, 0 })
@@ -196,10 +198,6 @@ local function filter(line_start,line_end)
     end
   end
   vim.api.nvim_win_set_cursor(0, { line_start, 0 })
-end
-
-vim.api.nvim_create_user_command("Filter", function(command)
-  filter(command.line1, command.line2)
 end, { nargs = 0, range = true })
 
 -- Human-readable stack of syntax items
@@ -224,7 +222,8 @@ vim.go.grepprg = "rg --vimgrep"
 vim.go.grepformat = "%f:%l:%c:%m"
 vim.go.shellpipe = "&>"
 
-local function rg(txt)
+vim.api.nvim_create_user_command("Rg", function(command)
+  local txt = command.args
   local ripgrep = require("lbrayner.ripgrep")
   local success, err = pcall(ripgrep.rg, txt)
 
@@ -244,10 +243,6 @@ local function rg(txt)
     vim.cmd.cclose()
     vim.cmd.echomsg(string.format("'No match found for %s.'", txt))
   end
-end
-
-vim.api.nvim_create_user_command("Rg", function(command)
-  rg(command.args)
 end, { nargs = "*" })
 
 vim.keymap.set("ca", "Rg", "Rg -e")
