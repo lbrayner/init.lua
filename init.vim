@@ -141,7 +141,7 @@ nnoremap ]<Space> <Cmd>exe "put =repeat(nr2char(10), v:count1)\<Bar>silent ']-"<
 
 " }}}
 
-" Subsection: functions & commands
+" Subsection: functions & commands {{{
 
 command! -nargs=0 -bar -range=% DeleteTrailingWhitespace
             \ call util#PreserveViewPort("keeppatterns ".<line1>.",".<line2>.'s/\s\+$//e')
@@ -196,6 +196,18 @@ endfunction
 command! -nargs=0 -range Execute <line1>,<line2>w !$SHELL
 command! -nargs=0 -range Filter call s:Filter(<line1>,<line2>)
 
+function! s:Synstack()
+    echo map(synstack(line("."), col(".")), "synIDattr(v:val, 'name')")
+endfunction
+
+" Human-readable stack of syntax items
+command! -nargs=0 Synstack call s:Synstack()
+
+" Delete file marks
+command! -nargs=0 Delfilemarks lua require("lbrayner.marks").delete_file_marks()
+
+" }}}
+
 " Ripgrep
 
 set grepprg=rg\ --vimgrep
@@ -224,16 +236,6 @@ command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
 cnoreabbrev Rg Rg -e
 cnoreabbrev Rb Rg -s -e'\b''''\b'<Left><Left><Left><Left><Left>
 cnoreabbrev Rw Rg -s -e'\b''<C-R><C-W>''\b'
-
-function! s:Synstack()
-    echo map(synstack(line("."), col(".")), "synIDattr(v:val, 'name')")
-endfunction
-
-" Human-readable stack of syntax items
-command! -nargs=0 Synstack call s:Synstack()
-
-" Delete file marks
-command! -nargs=0 Delfilemarks lua require("lbrayner.marks").delete_file_marks()
 
 " Subsection: autocmds {{{
 
