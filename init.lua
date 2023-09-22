@@ -141,7 +141,7 @@ vim.keymap.set("n", "]<Space>", [[<Cmd>exe "put =repeat(nr2char(10), v:count1)\<
 
 vim.api.nvim_create_user_command("DeleteTrailingWhitespace", function(command)
   require("lbrayner").preserve_view_port(function()
-    vim.cmd(string.format([[keeppatterns %s,%ss/\s\+$//e]], command.line1, command.line2))
+    vim.cmd(string.format([[keeppatterns %d,%ds/\s\+$//e]], command.line1, command.line2))
   end)
 end, { bar = true, nargs = 0, range = "%" })
 vim.keymap.set("ca", "D", "DeleteTrailingWhitespace")
@@ -156,6 +156,33 @@ local function number()
 end
 
 vim.api.nvim_create_user_command("Number", number, { nargs = 0 })
+
+-- https://vi.stackexchange.com/a/36414
+local function source(line_start, line_end, lua)
+  local tempfile = vim.fn.tempname()
+
+  if lua then
+    tempfile = tempfile..".lua"
+  end
+
+  vim.cmd(string.format("silent %d,%dwrite %s", line_start, line_end, vim.fn.fnameescape(tempfile)))
+  vim.cmd.source(vim.fn.fnameescape(tempfile))
+  vim.fn.delete(tempfile)
+
+  if line_start == line_end then
+    vim.cmd.echomsg(string.format("'Sourced line %d.'", line_start))
+    return
+  end
+
+  vim.cmd.echomsg(string.format("'Sourced lines %d to %d.'", line_start, line_end))
+end
+
+vim.api.nvim_create_user_command("LuaSource", function(command)
+  source(command.line1, command.line2, true)
+end, { nargs = 0, range = true })
+vim.api.nvim_create_user_command("Source", function(command)
+  source(command.line1, command.line2)
+end, { nargs = 0, range = true })
 
 -- }}}
 
