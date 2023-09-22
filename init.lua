@@ -184,6 +184,20 @@ vim.api.nvim_create_user_command("Source", function(command)
   source(command.line1, command.line2)
 end, { nargs = 0, range = true })
 
+-- Human-readable stack of syntax items
+vim.api.nvim_create_user_command("Synstack", function()
+  local pos = vim.api.nvim_win_get_cursor(0)
+  local synstack = vim.fn.synstack(pos[1], pos[2] + 1)
+  -- map(synstack(line("."), col(".")), "synIDattr(v:val, 'name')")
+  local syn_id_addrs = vim.tbl_map(function(item)
+    return vim.fn.synIDattr(item, "name")
+  end, synstack)
+  print(vim.inspect(syn_id_addrs))
+end, { nargs = 0 })
+
+-- Delete file marks
+vim.api.nvim_create_user_command("Delfilemarks", require("lbrayner.marks").delete_file_marks, { nargs = 0 })
+
 -- }}}
 
 -- Ripgrep
