@@ -184,6 +184,24 @@ vim.api.nvim_create_user_command("Source", function(command)
   source(command.line1, command.line2)
 end, { nargs = 0, range = true })
 
+local function filter(line_start,line_end)
+  local offset = 0
+  for linenr = line_start, line_end do
+    vim.api.nvim_win_set_cursor(0, { linenr + offset, 0 })
+    local output = vim.fn.systemlist(vim.fn.getline(linenr + offset))
+    vim.cmd.delete()
+    vim.fn.append(linenr + offset - 1, output)
+    if not vim.tbl_isempty(output) then
+      offset = offset + #output - 1
+    end
+  end
+  vim.api.nvim_win_set_cursor(0, { line_start, 0 })
+end
+
+vim.api.nvim_create_user_command("Filter", function(command)
+  filter(command.line1, command.line2)
+end, { nargs = 0, range = true })
+
 -- Human-readable stack of syntax items
 vim.api.nvim_create_user_command("Synstack", function()
   local pos = vim.api.nvim_win_get_cursor(0)
