@@ -186,7 +186,7 @@ function! s:Filter(line_start,line_end)
         let output = systemlist(getline(linenr+offset))
         exe "delete"
         call append(linenr+offset-1,output)
-        if len(offset) > 0
+        if len(output) > 0
             let offset += len(output) - 1
         endif
     endfor
