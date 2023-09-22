@@ -144,6 +144,18 @@ vim.api.nvim_create_user_command("DeleteTrailingWhitespace", function(command)
     vim.cmd(string.format([[keeppatterns %s,%ss/\s\+$//e]], command.line1, command.line2))
   end)
 end, { bar = true, nargs = 0, range = "%" })
+vim.keymap.set("ca", "D", "DeleteTrailingWhitespace")
+
+local function number()
+  vim.wo.number = true
+  vim.wo.relativenumber = true
+  -- setting nonumber if length of line count is greater than 3
+  if #tostring(vim.fn.line("$")) > 3 then
+    vim.wo.number = false
+  end
+end
+
+vim.api.nvim_create_user_command("Number", number, { nargs = 0 })
 
 -- }}}
 
