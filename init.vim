@@ -281,9 +281,6 @@ augroup Aesthetics
     " Aesthetics for help buffers
     autocmd FileType help autocmd! Aesthetics BufEnter <buffer> set relativenumber
 augroup END
-if v:vim_did_enter
-    doautocmd Aesthetics VimEnter
-endif
 
 augroup SetFiletype
     autocmd!
