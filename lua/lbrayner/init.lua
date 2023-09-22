@@ -69,4 +69,20 @@ function M.jump_to_location(filename, pos)
   _jump_to_location(win, bufnr, pos)
 end
 
+function M.preserve_view_port(command)
+  local lazyr = vim.go.lazyredraw
+  local winview = vim.fn.winsaveview()
+  local success, err = pcall(command)
+
+  if success then
+    vim.fn.winrestview(winview)
+  end
+
+  vim.go.lazyredraw = lazyr
+
+  if not success then
+    error(err)
+  end
+end
+
 return M

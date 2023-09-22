@@ -137,17 +137,15 @@ vim.keymap.set("n", "]<Space>", [[<Cmd>exe "put =repeat(nr2char(10), v:count1)\<
 
 -- }}}
 
-local vim_dir = vim.fn.stdpath("config")
+-- Subsection: functions & commands {{{
 
-if vim.env.MYVIMRC == "" then
-  vim_dir = vim.fn.expand("<sfile>:p:h")
-end
+vim.api.nvim_create_user_command("DeleteTrailingWhitespace", function(command)
+  require("lbrayner").preserve_view_port(function()
+    vim.cmd(string.format([[keeppatterns %s,%ss/\s\+$//e]], command.line1, command.line2))
+  end)
+end, { bar = true, nargs = 0, range = "%" })
 
--- Finish here if we haven't initialized the submodules
-
-if vim.fn.glob(vim_dir.."/pack/bundle/start/*/plugin") == "" then
-    return
-end
+-- }}}
 
 -- Ripgrep
 
@@ -184,6 +182,18 @@ end, { nargs = "*" })
 vim.keymap.set("ca", "Rg", "Rg -e")
 vim.keymap.set("ca", "Rb", [[Rg -s -e'\b''''\b'<Left><Left><Left><Left><Left>]])
 vim.keymap.set("ca", "Rw", [[Rg -s -e'\b''<C-R><C-W>''\b']])
+
+local vim_dir = vim.fn.stdpath("config")
+
+if vim.env.MYVIMRC == "" then
+  vim_dir = vim.fn.expand("<sfile>:p:h")
+end
+
+-- Finish here if we haven't initialized the submodules
+
+if vim.fn.glob(vim_dir.."/pack/bundle/start/*/plugin") == "" then
+    return
+end
 
 -- Subsection: package customization {{{
 
