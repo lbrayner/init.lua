@@ -149,6 +149,42 @@ if vim.fn.glob(vim_dir.."/pack/bundle/start/*/plugin") == "" then
     return
 end
 
+-- Ripgrep
+
+vim.go.grepprg = "rg --vimgrep"
+vim.go.grepformat = "%f:%l:%c:%m"
+vim.go.shellpipe = "&>"
+
+local function rg(txt)
+  local ripgrep = require("lbrayner.ripgrep")
+  local success, err = pcall(ripgrep.rg, txt)
+
+  if not success then
+    vim.cmd.cclose()
+    if type(err) == "string" and vim.startswith(err, "Rg") then
+      vim.cmd.echoerr(string.format("'%s'", err))
+      return
+    end
+    vim.cmd.echomsg(string.format("'Error searching for %s. Unmatched quotes? Check your command.'", txt))
+    return
+  end
+
+  if not vim.tbl_isempty(vim.fn.getqflist()) then
+    vim.cmd("botright copen")
+  else
+    vim.cmd.cclose()
+    vim.cmd.echomsg(string.format("'No match found for %s.'", txt))
+  end
+end
+
+vim.api.nvim_create_user_command("Rg", function(command)
+  rg(command.args)
+end, { nargs = "*" })
+
+vim.keymap.set("ca", "Rg", "Rg -e")
+vim.keymap.set("ca", "Rb", [[Rg -s -e'\b''''\b'<Left><Left><Left><Left><Left>]])
+vim.keymap.set("ca", "Rw", [[Rg -s -e'\b''<C-R><C-W>''\b']])
+
 -- Subsection: package customization {{{
 
 -- fzf-lua
