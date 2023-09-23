@@ -416,6 +416,46 @@ vim.api.nvim_create_autocmd("BufRead", {
   end,
 })
 
+local file_type_setup = vim.api.nvim_create_augroup("file_type_setup", { clear = true })
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = file_type_setup,
+  desc = "",
+  callback = function(args)
+    local bufnr = args.buf
+    local filetype = args.match
+
+    if vim.tbl_contains({ "gitcommit", "mail", "markdown", "text" }, filetype) then
+      vim.bo.infercase = true
+    end
+
+    if vim.tbl_contains({ "html", "javascriptreact", "typescriptreact", "xml" }, filetype) then
+      vim.keymap.set("n", "[<", "<Cmd>call xml#NavigateDepthBackward(v:count1)<CR>", {
+        buffer = bufnr, silent = true })
+      vim.keymap.set("n", "]<", "<Cmd>call xml#NavigateDepth(v:count1)<CR>", {
+        buffer = bufnr, silent = true })
+    end
+
+    if vim.bo.filetype == "mail" then
+      vim.cmd("call util#setupMatchit()")
+    end
+
+    if vim.bo.filetype == "markdown" then
+      vim.bo.tabstop = 2
+      vim.bo.textwidth = 80
+    end
+
+    if vim.bo.filetype == "sql" then
+      vim.bo.indentexpr = "indent"
+    end
+
+    if vim.bo.filetype == "text" then
+      vim.bo.textwidth = 80
+    end
+  end,
+})
+
+
 -- }}}
 
 local vim_dir = vim.fn.stdpath("config")
