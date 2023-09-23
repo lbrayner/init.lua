@@ -449,6 +449,14 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  pattern = "COMMIT_EDITMSG",
+  group = file_type_setup,
+  desc = "Start in insert mode",
+  callback = function()
+    vim.cmd.startinsert()
+  end,
+})
 
 -- }}}
 
