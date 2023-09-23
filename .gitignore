@@ -1,15 +1,6 @@
 .netrwhist
-/after/plugin/init.vim
-/backup
-/ctrlp_cache
 /doc/tags
-/ginit.local.vim
-/init.local.vim
 /lua/local
 /pack/local
-/plugin/init.vim
 /sessions
-/spell
-/swap
-/undo
 /vendor
