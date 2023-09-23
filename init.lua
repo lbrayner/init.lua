@@ -326,6 +326,96 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+local set_file_type = vim.api.nvim_create_augroup("set_file_type", { clear = true })
+
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+  pattern = ".ignore",
+  group = set_file_type,
+  desc = "Setting filetype to gitignore for .ignore files",
+  callback = function()
+    vim.bo.filetype = "gitignore"
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+  pattern = "*.redis",
+  group = set_file_type,
+  desc = "Redis filetype",
+  callback = function()
+    vim.bo.filetype = "redis"
+  end,
+})
+
+vim.api.nvim_create_autocmd("TermOpen", {
+  group = set_file_type,
+  desc = "Terminal filetype",
+  callback = function()
+    vim.bo.filetype = "terminal"
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+  pattern = "/tmp/dir*",
+  group = set_file_type,
+  desc = "Vidir filetype",
+  callback = function()
+    if vim.fn.argc() == 1 and string.find(vim.fn.argv(0), "^/tmp/dir%w%w%w%w%w$") then
+      vim.bo.filetype = "vidir"
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+  pattern = "*.wsdl",
+  group = set_file_type,
+  desc = "Web services description language filetype",
+  callback = function()
+    vim.bo.filetype = "xml"
+  end,
+})
+
+-- Simulate Emacs' Fundamental mode
+local default_file_type = vim.api.nvim_create_augroup("default_file_type", { clear = true })
+
+vim.api.nvim_create_autocmd("BufEnter", {
+  group = default_file_type,
+  desc = "Set default filetype",
+  callback = function()
+    if vim.bo.filetype == "" then
+      vim.bo.filetype = "text"
+      vim.b.default_filetype = true
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = default_file_type,
+  desc = "Detect filetype after the first write",
+  callback = function()
+    if vim.b.default_file_type then
+      vim.bo.infercase = true
+      vim.bo.textwidth = nil
+      vim.b.default_filetype = nil
+      vim.cmd("filetype detect")
+    end
+  end,
+})
+
+local large_xml_file = 1024 * 512
+local large_xml = vim.api.nvim_create_augroup("large_xml", { clear = true })
+
+vim.api.nvim_create_autocmd("BufRead", {
+  group = large_xml,
+  desc = "Disable syntax for large XML files",
+  callback = function(args)
+    if vim.bo.filetype == "html" or vim.bo.filetype == "xml" then
+      if vim.fn.getfsize(args.file) > large_xml_file then
+        vim.bo.syntax = "unkown"
+      end
+    end
+  end,
+})
+
 -- }}}
 
 local vim_dir = vim.fn.stdpath("config")
