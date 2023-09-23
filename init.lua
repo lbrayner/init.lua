@@ -420,7 +420,7 @@ local file_type_setup = vim.api.nvim_create_augroup("file_type_setup", { clear =
 
 vim.api.nvim_create_autocmd("FileType", {
   group = file_type_setup,
-  desc = "",
+  desc = "Filetype setup for various patterns",
   callback = function(args)
     local bufnr = args.buf
     local filetype = args.match
