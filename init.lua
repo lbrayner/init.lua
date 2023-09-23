@@ -528,6 +528,10 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end,
 })
 
+if vim.v.vim_did_enter then
+  vim.api.nvim_exec_autocmds("VimEnter", { group = vim_rsi_override })
+end
+
 -- vim-rzip
 vim.g.rzipPlugin_extra_ext = "*.odt"
 
