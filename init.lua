@@ -458,6 +458,71 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end,
 })
 
+local session_load = vim.api.nvim_create_augroup("session_load", { clear = true })
+vim.api.nvim_create_autocmd("SessionLoadPost", {
+  group = session_load,
+  desc = "Wipe buffers without files on session load",
+  callback = function()
+    vim.api.nvim_create_autocmd("VimEnter", {
+      group = session_load,
+      callback = function()
+        vim.cmd("silent BWipeNotReadable!")
+      end,
+    })
+  end,
+})
+
+local terminal_setup = vim.api.nvim_create_augroup("terminal_setup", { clear = true })
+
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  pattern = "term://*",
+  group = terminal_setup,
+  desc = "Line numbers are not helpful in terminal buffers",
+  callback = function()
+    vim.wo.number = false
+  end,
+})
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = terminal_setup,
+  desc = "Start in terminal mode",
+  callback = function()
+    vim.api.nvim_create_autocmd("TermOpen", {
+      group = terminal_setup,
+      callback = function()
+        vim.cmd.startinsert()
+      end,
+    })
+  end,
+})
+
+if vim.v.vim_did_enter then
+  vim.api.nvim_exec_autocmds("VimEnter", { group = terminal_setup })
+end
+
+local tab_events = vim.api.nvim_create_augroup("tab_events", { clear = true })
+vim.api.nvim_create_autocmd("TabClosed", {
+  group = tab_events,
+  desc = "Returning to previous tab instead of next",
+  callback = function(args)
+    local tab = args.file
+
+    if tab > 1 and tab <= vim.fn.tabpagenr("$") then
+      vim.cmd.tabprevious()
+    end
+  end,
+})
+
+local node_js = vim.api.nvim_create_augroup("node_js", { clear = true })
+vim.api.nvim_create_autocmd({ "BufReadPost", "VimEnter" }, {
+  pattern = "**/node_modules/*",
+  group = node_js,
+  desc = "NPM modules should not writeable",
+  callback = function()
+    vim.bo.modifiable = false
+  end,
+})
+
 -- }}}
 
 local vim_dir = vim.fn.stdpath("config")
