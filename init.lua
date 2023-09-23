@@ -288,7 +288,7 @@ vim.api.nvim_create_autocmd("CursorHoldI", {
     if vim.fn.mode() ~= "i" then -- TODO use Neovim API
       return
     end
-    vim.fn.feedkeys([[\<C-G>u]]) -- TODO user Neovim API
+    vim.cmd([[call feedkeys("\<C-G>u")]]) -- TODO use Neovim API
   end,
 })
 
