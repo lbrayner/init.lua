@@ -310,7 +310,7 @@ augroup END
 
 let s:LargeXmlFile = 1024 * 512
 augroup LargeXml
-    autocmd BufRead * if &filetype =~# '\v(xml|html)'
+    autocmd BufRead * if &filetype =~# '\v%(xml|html)'
             \| if getfsize(expand("<afile>")) > s:LargeXmlFile
                 \| setlocal syntax=unknown | endif | endif
 augroup END
