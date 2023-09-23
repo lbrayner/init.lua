@@ -505,7 +505,7 @@ vim.api.nvim_create_autocmd("TabClosed", {
   group = tab_events,
   desc = "Returning to previous tab instead of next",
   callback = function(args)
-    local tab = args.file
+    local tab = tonumber(args.file)
 
     if tab > 1 and tab <= vim.fn.tabpagenr("$") then
       vim.cmd.tabprevious()
