@@ -496,7 +496,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end,
 })
 
-if vim.v.vim_did_enter then
+if vim.v.vim_did_enter == 1 then
   vim.api.nvim_exec_autocmds("VimEnter", { group = terminal_setup })
 end
 
@@ -593,7 +593,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end,
 })
 
-if vim.v.vim_did_enter then
+if vim.v.vim_did_enter == 1 then
   vim.api.nvim_exec_autocmds("VimEnter", { group = vim_rsi_override })
 end
 
