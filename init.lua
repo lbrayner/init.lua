@@ -329,28 +329,23 @@ vim.api.nvim_create_autocmd("FileType", {
 local set_file_type = vim.api.nvim_create_augroup("set_file_type", { clear = true })
 
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-  pattern = ".ignore",
   group = set_file_type,
-  desc = "Setting filetype to gitignore for .ignore files",
-  callback = function()
-    vim.bo.filetype = "gitignore"
-  end,
-})
+  desc = "Setting filetype for various patterns",
+  callback = function(args)
+    local extension = vim.fn.fnamemodify(args.file, ":e")
+    local filename = vim.fn.fnamemodify(args.file, ":t")
 
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-  pattern = "*.redis",
-  group = set_file_type,
-  desc = "Redis filetype",
-  callback = function()
-    vim.bo.filetype = "redis"
-  end,
-})
+    if filename == ".ignore" then
+      vim.bo.filetype = "gitignore"
+    end
 
-vim.api.nvim_create_autocmd("TermOpen", {
-  group = set_file_type,
-  desc = "Terminal filetype",
-  callback = function()
-    vim.bo.filetype = "terminal"
+    if extension == "redis" then
+      vim.bo.filetype = "redis"
+    end
+
+    if extension == "wsdl" then
+      vim.bo.filetype = "xml"
+    end
   end,
 })
 
@@ -365,12 +360,11 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-  pattern = "*.wsdl",
+vim.api.nvim_create_autocmd("TermOpen", {
   group = set_file_type,
-  desc = "Web services description language filetype",
+  desc = "Terminal filetype",
   callback = function()
-    vim.bo.filetype = "xml"
+    vim.bo.filetype = "terminal"
   end,
 })
 
