@@ -127,6 +127,12 @@ vim.keymap.set("n", "<Leader>x", [[:%s/\C\V\<<C-R><C-W>\>//gc<Left><Left><Left>]
 -- Rename visual selection
 vim.keymap.set("v", "<Leader>x", [[y:%s/\C\V<C-R>"//gc<Left><Left><Left>]])
 
+-- https://vim.fandom.com/wiki/Converting_variables_to_or_from_camel_case
+-- Convert from score_case to camelCase
+vim.keymap.set("n", "crc", [[:s#\%\(\<[a-z_]\w\{-}\)\@<=_\(\a\)#\u\1#g]])
+-- Convert from camelCase to score_case
+vim.keymap.set("n", "cr_", [[:s#\(\<\u\l\+\|\l\+\)\(\u\)#\l\1_\l\2#g]])
+
 -- Go to next file mark
 vim.keymap.set("n", "[4", require("lbrayner.marks").go_to_next_file_mark)
 vim.keymap.set("n", "]4", require("lbrayner.marks").go_to_previous_file_mark)
