@@ -36,11 +36,22 @@ require("mini.jump").setup({
   },
 })
 
+local function save_to_jumplist_wrap(jump)
+  if vim.bo.buftype ~= "terminal" then -- TODO debug to find the real cause
+    vim.cmd("normal! m'")
+  end
+  jump()
+end
+
 vim.keymap.set("n", ";", function()
-  MiniJump.jump(nil, false)
+  save_to_jumplist_wrap(function()
+    MiniJump.jump(nil, false)
+  end)
 end)
 vim.keymap.set("n", ",", function()
-  MiniJump.jump(nil, true)
+  save_to_jumplist_wrap(function()
+    MiniJump.jump(nil, true)
+  end)
 end)
 
 --
