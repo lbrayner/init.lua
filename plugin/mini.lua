@@ -18,7 +18,35 @@ require("mini.bracketed").setup({
 -- mini.comment
 --
 
-require("mini.comment").setup()
+require("mini.comment").setup({
+  mappings = {
+    comment = "",
+    comment_line = "",
+    textobject = "",
+  }
+})
+
+function MiniComment.comment_visual()
+  if not vim.bo.modifiable then
+    vim.fn.feedkeys("dd") -- So that E21 is thrown
+    return
+  end
+  MiniComment.operator("visual")
+end
+
+vim.keymap.set("n", "gc", function()
+  if not vim.bo.modifiable then return "d" end -- So that E21 is thrown
+  return MiniComment.operator()
+end, { expr = true, desc = "Comment" })
+vim.keymap.set("x", "gc", [[:<C-U>lua MiniComment.comment_visual()<CR>]], { desc = "Comment selection" })
+vim.keymap.set("n", "gcc", function()
+  if not vim.bo.modifiable then return "d_" end -- So that E21 is thrown
+  return MiniComment.operator() .. "_"
+end, { expr = true, desc = "Comment line" })
+vim.keymap.set("o", "gc", function()
+  if not vim.bo.modifiable then return ".d" end -- So that E21 is thrown
+  MiniComment.textobject()
+end, { expr = true, desc = "Comment textobject" })
 
 --
 -- mini.indentscope
