@@ -60,4 +60,43 @@ function M.version_control()
   return branch
 end
 
+local function get_line_format()
+  if vim.bo.buftype == "terminal" then
+    return "%"..(#tostring(vim.bo.scrollback)+1).."l"
+  end
+  local length = #tostring(vim.fn.line("$"))
+  if length < 5 then
+    length = 5
+  end
+  return "%"..length.."l"
+end
+
+local function get_number_of_lines()
+  if vim.bo.buftype == "terminal" then
+    return "%"..(#tostring(vim.bo.scrollback)+1).."L"
+  end
+  local length = #tostring(vim.fn.line("$"))
+  if length < 5 then
+    length = 5
+  end
+  return "%-"..length.."L"
+end
+
+local function buffer_position()
+  return get_line_format()..",%-3.v %3.P "..get_number_of_lines()
+end
+
+function M.get_status_line_tail()
+  local buffer_position = buffer_position()
+  if vim.bo.buftype ~= "" then
+    return buffer_position .. "%( %6*%{v:lua.require'lbrayner.statusline'.version_control()}%*%) %2*%{&filetype}%* "
+  end
+  return buffer_position ..
+  " %1.1{%v:lua.require'lbrayner.statusline'.diagnostics()%}" ..
+  "%( %6*%{v:lua.require'lbrayner.statusline'.version_control()}%*%)" ..
+  " %4*%{util#Options('&fileencoding','&encoding')}%*" .. -- TODO util#Options is buggy, port it and fix it
+  " %4.(%4*%{&fileformat}%*%)" ..
+  " %2*%{&filetype}%* "
+end
+
 return M
