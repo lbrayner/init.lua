@@ -561,16 +561,13 @@ require("colorizer").setup()
 vim.g.nvim_jdtls = 1
 
 -- reply.vim
-vim.api.nvim_create_user_command("ReplFile", function()
-  vim.cmd([[call reply#command#send(join(getline(1,line("$")),"\n"),0,0)]])
-end, { nargs = 0 })
+vim.api.nvim_create_user_command("ReplFile", [[call reply#command#send(join(getline(1,line("$")),"\n"),0,0)]], {
+  nargs = 0 })
 
 -- vim-characterize
 
 vim.keymap.set("n", "<F13>", "<Plug>(characterize)", { remap = true })
-vim.api.nvim_create_user_command("Characterize", function()
-  vim.cmd([[exe "normal \<F13>"]])
-end, { nargs = 0 })
+vim.api.nvim_create_user_command("Characterize", [[exe "normal \<F13>"]], { nargs = 0 })
 
 -- vim-quickhl
 
