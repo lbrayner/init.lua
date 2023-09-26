@@ -163,10 +163,10 @@ end
 vim.api.nvim_create_user_command("Number", number, { nargs = 0 })
 
 -- https://vi.stackexchange.com/a/36414
-local function source(line_start, line_end, lua)
+local function source(line_start, line_end, vimscript)
   local tempfile = vim.fn.tempname()
 
-  if lua then
+  if not vimscript then
     tempfile = tempfile..".lua"
   end
 
@@ -182,11 +182,11 @@ local function source(line_start, line_end, lua)
   vim.cmd.echomsg(string.format("'Sourced lines %d to %d.'", line_start, line_end))
 end
 
-vim.api.nvim_create_user_command("LuaSource", function(command)
-  source(command.line1, command.line2, true)
-end, { nargs = 0, range = true })
 vim.api.nvim_create_user_command("Source", function(command)
   source(command.line1, command.line2)
+end, { nargs = 0, range = true })
+vim.api.nvim_create_user_command("VimscriptSource", function(command)
+  source(command.line1, command.line2, true)
 end, { nargs = 0, range = true })
 
 vim.api.nvim_create_user_command("Filter", function(command)
