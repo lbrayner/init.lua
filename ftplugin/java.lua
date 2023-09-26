@@ -78,6 +78,9 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
           '%{statusline#StatusFlag()}'
         vim.b[bufnr].Statusline_custom_mod_leftline = '%<%1*%{expand("%:t:r")}' ..
           ' %{statusline#StatusFlag()}%*'
+        if vim.api.nvim_get_current_buf() == bufnr then
+          vim.cmd("silent! doautocmd <nomodeline> User CustomStatusline")
+        end
       end
 
       -- Commands

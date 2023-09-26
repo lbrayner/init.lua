@@ -222,7 +222,7 @@ lsp_set_statusline = function(clients, bufnr)
   vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
   vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. stl_lsp .. '%* '
   if vim.api.nvim_get_current_buf() == bufnr then
-    vim.cmd "silent! doautocmd <nomodeline> User CustomStatusline"
+    vim.cmd("silent! doautocmd <nomodeline> User CustomStatusline")
   end
 end
 
