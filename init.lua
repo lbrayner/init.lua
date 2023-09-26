@@ -234,11 +234,12 @@ vim.api.nvim_create_user_command("Rg", function(command)
 
   if not success then
     vim.cmd.cclose()
-    if type(err) == "string" and vim.startswith(err, "Rg") then
-      vim.cmd.echoerr(string.format("'%s'", err))
+    if type(err) == "string" and string.find(err, " Rg:") then
+      vim.cmd.echoerr(string.format('"%s"', vim.fn.escape(err, '"')))
       return
     end
-    vim.cmd.echomsg(string.format("'Error searching for %s. Unmatched quotes? Check your command.'", txt))
+    vim.cmd.echomsg(string.format('"Error searching for %s. Unmatched quotes? Check your command."',
+      vim.fn.escape(txt, '"')))
     return
   end
 
@@ -246,7 +247,7 @@ vim.api.nvim_create_user_command("Rg", function(command)
     vim.cmd("botright copen")
   else
     vim.cmd.cclose()
-    vim.cmd.echomsg(string.format("'No match found for %s.'", txt))
+    vim.cmd.echomsg(string.format('"No match found for %s."', vim.fn.escape(txt, '"')))
   end
 end, { nargs = "*" })
 
