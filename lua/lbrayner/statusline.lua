@@ -99,4 +99,27 @@ function M.get_status_line_tail()
   " %2*%{&filetype}%* "
 end
 
+function M.filename(full_path)
+  local path = vim.fn.Path()
+
+  if vim.fn.exists("*FugitiveParse") and vim.fn.FObject() ~= "" then -- Fugitive objects
+    path = vim.fn.FObject()
+  elseif string.find(vim.api.nvim_buf_get_name(0), "jdt://", 1) == 1 then -- jdtls
+    path = string.gsub(vim.api.nvim_buf_get_name(0), "%?.*", "")
+  end
+
+  local filename
+  if full_path then -- Full path
+    filename = string.gsub(path, "'", "''")
+  else
+    filename = string.gsub(vim.fn.fnamemodify(path, ":t"), "'", "''")
+  end
+
+  if filename == "" then
+    return "#"..vim.api.nvim_get_current_buf()
+  end
+
+  return filename
+end
+
 return M
