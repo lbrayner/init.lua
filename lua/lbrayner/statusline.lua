@@ -8,7 +8,7 @@ function M.status_flag()
   if vim.bo.modified then
     return "+"
   end
-  if vim.bo.modifiable then
+  if not vim.bo.modifiable then
     return "-"
   end
   if vim.bo.readonly then
@@ -202,6 +202,70 @@ function M.win_bar()
   end
 
   return statusline
+end
+
+function M.define_terminal_status_line()
+  vim.wo.statusline = "%3*%=%*"
+end
+
+-- margins of 1 column (on both sides)
+function M.define_status_line()
+  -- Fugitive blame
+  if vim.fn.exists("*FugitiveResult") then
+    local fugitive_result = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())
+    if fugitive_result.filetype and
+      fugitive_result.blame_file and
+      fugitive_result.filetype == "fugitiveblame" then
+      vim.wo.statusline = " Fugitive blame %<%1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*%="
+      vim.wo.statusline = vim.wo.statusline..buffer_position()
+      return
+    end
+  end
+
+  local rightline = ""
+  if vim.b.Statusline_custom_mod_rightline then
+    rightline = rightline..vim.b.Statusline_custom_mod_rightline
+  end
+  rightline = rightline..M.get_status_line_tail()
+
+  vim.wo.statusline = " "
+  if vim.wo.previewwindow then
+    vim.wo.statusline = vim.wo.statusline.."%5*%w%* "
+  end
+
+  -- Fugitive summary
+  if vim.b.fugitive_type and vim.b.fugitive_type == "index" then
+    -- TODO port util#NPath
+    local dir = vim.fn.pathshorten(string.gsub(vim.fn["util#NPath"](vim.fn.FugitiveGitDir()),"/%.git$",""))
+    vim.wo.statusline = vim.wo.statusline.."%6*"..dir.."$%* %<".."Fugitive summary " ..
+    "%1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
+    -- Fugitive temporary buffers
+  elseif vim.fn.exists("*FugitiveResult") and
+    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then
+    local fugitive_temp_buf = fugitive_temporary_buffer()
+    local dir = vim.fn.pathshorten(string.gsub(vim.fn["util#NPath"](vim.fn.FugitiveGitDir()),"/%.git$",""))
+    vim.wo.statusline = vim.wo.statusline.."%6*"..dir.."$%* %<"..fugitive_temp_buf ..
+    " %1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
+  -- TODO port util#isQuickfixOrLocationList
+  elseif vim.fn["util#isQuickfixOrLocationList"]() == 1 then
+    vim.wo.statusline = vim.wo.statusline.."%<%5*%f%* %{util#getQuickfixOrLocationListTitle()}"
+  elseif vim.fn.getcmdwintype() ~= "" then
+    vim.wo.statusline = vim.wo.statusline.."%<%5*[Command Line]%*"
+  elseif vim.b.Statusline_custom_leftline then
+    vim.wo.statusline = vim.wo.statusline..vim.b.Statusline_custom_leftline
+  else
+    if vim.wo.previewwindow then
+      vim.wo.statusline = vim.wo.statusline.."%<"..vim.fn.pathshorten(M.filename(true))
+    elseif vim.bo.buftype ~= "" then
+      vim.wo.statusline = vim.wo.statusline.."%<%5*"..M.filename(true)
+    else
+      vim.wo.statusline = vim.wo.statusline.."%<"..M.filename()
+    end
+
+    vim.wo.statusline = vim.wo.statusline.." %1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
+  end
+
+  vim.wo.statusline = vim.wo.statusline.." %="..rightline
 end
 
 return M
