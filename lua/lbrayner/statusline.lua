@@ -154,4 +154,54 @@ function M.define_modified_status_line()
   vim.wo.statusline = vim.wo.statusline.." %="..rightline
 end
 
+function M.win_bar()
+  -- Fugitive blame
+  if vim.fn.exists("*FugitiveResult") then
+    local fugitive_result = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())
+    if fugitive_result.filetype and
+      fugitive_result.blame_file and
+      fugitive_result.filetype == "fugitiveblame" then
+      return " Fugitive blame %<%{v:lua.require'lbrayner.statusline'.status_flag()}"
+    end
+  end
+
+  local statusline = " "
+  if vim.wo.previewwindow then
+    statusline = statusline.."%w "
+  end
+
+  -- Fugitive summary
+  if vim.b.fugitive_type and vim.b.fugitive_type == "index" then
+    -- TODO port util#NPath
+    local dir = vim.fn.pathshorten(string.gsub(vim.fn["util#NPath"](vim.fn.FugitiveGitDir()),"/%.git$",""))
+    statusline = statusline..dir.."$ %<".."Fugitive summary " ..
+    "%{v:lua.require'lbrayner.statusline'.status_flag()}"
+    -- Fugitive temporary buffers
+  elseif vim.fn.exists("*FugitiveResult") and
+    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then
+    local fugitive_temp_buf = fugitive_temporary_buffer()
+    local dir = vim.fn.pathshorten(string.gsub(vim.fn["util#NPath"](vim.fn.FugitiveGitDir()),"/%.git$",""))
+    statusline = statusline..dir.."$ %<"..fugitive_temp_buf ..
+    " %{v:lua.require'lbrayner.statusline'.status_flag()}"
+    -- TODO port util#isQuickfixOrLocationList
+  elseif vim.fn["util#isQuickfixOrLocationList"]() == 1 then
+    statusline = statusline.."%<%f %{util#getQuickfixOrLocationListTitle()}"
+  elseif vim.fn.getcmdwintype() ~= "" then
+    statusline = ""
+  else
+    if vim.wo.previewwindow then
+      statusline = statusline.."%<"..vim.fn.pathshorten(M.filename(true))
+    else
+      -- margins of 1 column, space and status flag
+      -- TODO port util#truncateFilename
+      statusline = statusline ..
+      "%<%{util#truncateFilename(v:lua.require'lbrayner.statusline'.filename(true),winwidth('%')-4)}"
+    end
+
+    statusline = statusline.." %{v:lua.require'lbrayner.statusline'.status_flag()}"
+  end
+
+  return statusline
+end
+
 return M
