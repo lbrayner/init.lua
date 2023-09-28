@@ -122,4 +122,36 @@ function M.filename(full_path)
   return filename
 end
 
+local function fugitive_temporary_buffer()
+  return "Git "..table.concat(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf()).args, " ")
+end
+
+-- margins of 1 column (on both sides)
+function M.define_modified_status_line()
+  local rightline = ""
+  if vim.b.Statusline_custom_mod_rightline then
+    rightline = rightline..vim.b.Statusline_custom_mod_rightline
+  end
+  rightline = rightline..M.get_status_line_tail()
+
+  vim.wo.statusline = " "
+  if vim.wo.previewwindow then
+    vim.wo.statusline = vim.wo.statusline.."%5*%w%* "
+  end
+
+  if vim.b.Statusline_custom_mod_leftline then
+    vim.wo.statusline = vim.wo.statusline..vim.b.Statusline_custom_mod_leftline
+  else
+    if vim.wo.previewwindow then
+      vim.wo.statusline = vim.wo.statusline.."%<%1*"..vim.fn.pathshorten(M.filename(true))
+    else
+      vim.wo.statusline = vim.wo.statusline.."%<%1*"..M.filename()
+    end
+
+    vim.wo.statusline = vim.wo.statusline.." %{v:lua.require'lbrayner.statusline'.status_flag()}%*"
+  end
+
+  vim.wo.statusline = vim.wo.statusline.." %="..rightline
+end
+
 return M
