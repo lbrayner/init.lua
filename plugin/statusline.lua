@@ -8,31 +8,26 @@ vim.g.qf_disable_statusline = 1
 
 vim.go.laststatus = 3
 vim.go.statusline = "%{v:lua.require'lbrayner.statusline'.empty()}"
-vim.go.winbar = "%{%v:lua.require'lbrayner.statusline'.win_bar()}"
+vim.go.winbar = "%{%v:lua.require'lbrayner.statusline'.win_bar()%}"
 
 local statusline = vim.api.nvim_create_augroup("statusline", { clear = true })
 
 vim.api.nvim_create_autocmd("CmdlineEnter", {
-  pattern = ":",
+  pattern = { ":", "/", "?" },
   group = statusline,
-  callback = function()
-    require("lbrayner.statusline").highlight_mode("command")
-  end,
-})
-
-vim.api.nvim_create_autocmd("CmdlineEnter", {
-  pattern = { "/", "?" },
-  group = statusline,
-  callback = function()
-    require("lbrayner.statusline").highlight_mode("search")
+  callback = function(args)
+    if args.file == ":" then
+      require("lbrayner.statusline").highlight_mode("command")
+    else
+      require("lbrayner.statusline").highlight_mode("search")
+    end
+    vim.cmd.redraw() -- TODO redrawstatus should work here, create an issue on github
   end,
 })
 
 vim.api.nvim_create_autocmd("ColorScheme", {
   group = statusline,
-  callback = function()
-    require("lbrayner.statusline").initialize()
-  end,
+  callback = require("lbrayner.statusline").initialize,
 })
 
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
@@ -48,7 +43,7 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 })
 
 vim.api.nvim_create_autocmd("ModeChanged", {
-  pattern = "[^vV\x16]:[vV\x16]*",
+  pattern = [[[^vV\x16]:[vV\x16]*]],
   group = statusline,
   callback = function()
     require("lbrayner.statusline").highlight_mode("visual")
@@ -100,3 +95,5 @@ vim.api.nvim_create_autocmd("VimEnter", {
 if vim.v.vim_did_enter == 1 then
   vim.api.nvim_exec_autocmds("VimEnter", { group = statusline })
 end
+
+require("lbrayner.statusline").initialize()

@@ -195,7 +195,7 @@ function M.win_bar()
       -- margins of 1 column, space and status flag
       -- TODO port util#truncateFilename
       statusline = statusline ..
-      "%<%{util#truncateFilename(v:lua.require'lbrayner.statusline'.filename(true),winwidth('%')-4)}"
+      "%<%{util#truncateFilename(v:lua.require'lbrayner.statusline'.filename(v:true),winwidth('%')-4)}"
     end
 
     statusline = statusline.." %{v:lua.require'lbrayner.statusline'.status_flag()}"
@@ -284,6 +284,9 @@ function M.redefine_status_line()
   end
 end
 
+local attr
+local mapping
+
 function M.highlight_mode(mode)
   local attr_map = attr[mode]
   local hl_map_by_group = {
@@ -304,9 +307,6 @@ end
 function M.highlight_status_line_nc()
     vim.api.nvim_set_hl(0, "StatusLineNC", { bg = mapping.not_current_bg, fg = mapping.not_current_fg })
 end
-
-local attr
-local mapping
 
 function M.load_theme(name)
   local theme = require("lbrayner.statusline.themes."..name)
