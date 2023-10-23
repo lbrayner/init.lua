@@ -298,7 +298,7 @@ function M.highlight_mode(mode)
     User5 = { bg = mapping["user5_"..mode.."_bg"], fg = mapping["user5_"..mode.."_fg"] },
     User6 = { bg = mapping["user6_"..mode.."_bg"], fg = mapping["user6_"..mode.."_fg"] },
     User7 = { bg = mapping["diagn_"..mode.."_bg"] },
-    User9 = { bg = mapping["user9_"..mode.."_bg"], fg = mapping["user9_"..mode.."_fg"]}}
+    User9 = { bg = mapping["user9_"..mode.."_bg"], fg = mapping["user9_"..mode.."_fg"] }}
   for group, hl_map in pairs(hl_map_by_group) do
     vim.api.nvim_set_hl(0, group, vim.tbl_deep_extend("error", attr_map, hl_map))
   end

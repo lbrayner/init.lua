@@ -75,9 +75,9 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
       -- Custom statusline
       if string.find(vim.api.nvim_buf_get_name(bufnr), "jdt://", 1) ~= 1 then
         vim.b[bufnr].Statusline_custom_leftline = '%<%{expand("%:t:r")} ' ..
-          '%{statusline#StatusFlag()}'
+          "%{v:lua.require'lbrayner.statusline'.status_flag()}"
         vim.b[bufnr].Statusline_custom_mod_leftline = '%<%1*%{expand("%:t:r")}' ..
-          ' %{statusline#StatusFlag()}%*'
+          " %{v:lua.require'lbrayner.statusline'.status_flag()}%*"
         if vim.api.nvim_get_current_buf() == bufnr then
           vim.cmd("silent! doautocmd <nomodeline> User CustomStatusline")
         end

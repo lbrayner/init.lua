@@ -39,6 +39,7 @@ vim.api.nvim_create_autocmd("InsertEnter", {
   group = statusline,
   callback = function()
     require("lbrayner.statusline").highlight_mode("insert")
+    require("lbrayner.statusline").redefine_status_line()
   end,
 })
 
