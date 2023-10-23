@@ -268,6 +268,22 @@ function M.define_status_line()
   vim.wo.statusline = vim.wo.statusline.." %="..rightline
 end
 
+function M.redefine_status_line()
+  if vim.startswith(vim.fn.mode(), "t") then
+    return
+  end
+  -- This variable is defined by the runtime.
+  -- :h g:actual_curwin
+  if vim.g.actual_curwin and vim.g.actual_curwin ~= vim.api.nvim_get_current_win() then
+    return
+  end
+  if vim.bo.modified then
+    require("lbrayner.statusline").define_modified_status_line()
+  else
+    require("lbrayner.statusline").define_status_line()
+  end
+end
+
 function M.highlight_mode(mode)
   local attr_map = attr[mode]
   local hl_map_by_group = {
@@ -301,6 +317,10 @@ function M.load_theme(name)
   end
   M.highlight_mode("normal")
   M.highlight_status_line_nc()
+end
+
+function M.initialize()
+  M.load_theme("default")
 end
 
 return M
