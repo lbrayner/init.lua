@@ -29,34 +29,34 @@ Packages (`:h packages`) are submodules in `pack/bundle/start`.
 
 ## Normal mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/236511466-fbb19859-0ec8-4733-8cb1-a64974b37c94.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/277468651-b8ec387c-9b0f-464a-a3be-eb9e4c00fcf2.png)
 
 ## Visual mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/236511428-cd4f4471-7263-4f30-af65-0366a87ccdae.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/277468644-6206d0d8-bff0-4d0b-ac4a-09f6562f5128.png)
 
 ## Insert mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/236511440-3778db1e-5735-43c1-adeb-017f26e9cc45.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/277468649-2664962d-8d64-41b9-b35c-9c055e21c196.png)
 
 ## Command-line mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/236511452-b6a4df7c-e49b-4ace-bca7-045b9ace0a8f.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/277468645-26d2ac22-5340-49b2-8c0c-526c9e139f4c.png)
 
 ## Command-line mode (search)
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/236511457-09f978da-4a95-4f15-a66d-50cb8f3e85fb.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/277468641-48804bb7-0e0f-4adc-a051-cd56b9fddc71.png)
 
 ## Terminal-mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/236511434-6a5a53a8-7b44-4dbb-9758-290ca98a7fb4.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/277469194-36532403-e079-416d-b47f-10416a07a6bb.png)
 
 ## Fugitive buffers
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/237135198-09ad0fbc-68fc-4201-b4fc-e6a29a992aec.png)
-![Screenshot](https://user-images.githubusercontent.com/5733531/237135188-bb771185-623d-4c63-a35c-8f6b216dc4b4.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/277468633-516cfd70-f4d5-4dc0-be23-14acb6007fd4.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/277468627-7ed4190e-5cd5-4551-ab4e-7a1cfd492c7d.png)
 
 ## Language Server
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/237135178-ce72ca35-4a64-4abd-a28f-c2597c55ba6a.png)
-![Screenshot](https://user-images.githubusercontent.com/5733531/237135156-0cebcbb3-9c41-4be2-a5e6-d742ceb6c0a8.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/277468624-480d521d-9918-45a4-be85-4e6f3faa9859.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/277468616-44baae72-7f77-4dff-b966-a4a224abb8e2.png)
