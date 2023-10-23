@@ -1,3 +1,4 @@
+-- TODO remove cterm
 -- TODO add the first 16 colors
 -- http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim
 local mapping = {

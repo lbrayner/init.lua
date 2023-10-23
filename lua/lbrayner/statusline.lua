@@ -268,4 +268,42 @@ function M.define_status_line()
   vim.wo.statusline = vim.wo.statusline.." %="..rightline
 end
 
+local attr
+local mapping
+
+function M.load_color_theme(theme)
+  local module = "lbrayner.statusline.themes."..theme
+  attr = require(module).get_attr_map()
+  mapping = require(module).get_color_mapping()
+  -- TODO use pairs
+  for _, key in ipairs(vim.tbl_keys(mapping)) do
+    local color_name = mapping[key]
+    -- print("key "..vim.inspect(key)) -- TODO debug
+    -- print("color_name "..vim.inspect(color_name)) -- TODO debug
+    -- local color_value = require("lbrayner.statusline.themes").get_color(color_name, "gui")
+    -- print("color_value "..vim.inspect(color_value)) -- TODO debug
+    mapping[key] = require("lbrayner.statusline.themes").get_color(color_name, "gui")
+    -- print("value "..vim.inspect(mapping[key])) -- TODO debug
+  end
+end
+
+function M.highlight_mode(mode)
+  local hl_params = {
+    StatusLine = { bg = mapping[mode.."_bg"], fg = mapping[mode.."_fg"] },
+    User1 = { bg = mapping["user1_"..mode.."_bg"], fg = mapping["user1_"..mode.."_fg"] },
+    User2 = { bg = mapping["user2_"..mode.."_bg"], fg = mapping["user2_"..mode.."_fg"] },
+    User3 = { bg = mapping["user3_"..mode.."_bg"], fg = mapping["user3_"..mode.."_fg"] },
+    User4 = { bg = mapping["user4_"..mode.."_bg"], fg = mapping["user4_"..mode.."_fg"] },
+    User5 = { bg = mapping["user5_"..mode.."_bg"], fg = mapping["user5_"..mode.."_fg"] },
+    User6 = { bg = mapping["user6_"..mode.."_bg"], fg = mapping["user6_"..mode.."_fg"] },
+    User7 = { bg = mapping["diagn_"..mode.."_bg"] },
+    User9 = { bg = mapping["user9_"..mode.."_bg"], fg = mapping["user9_"..mode.."_fg"]}}
+  local attr_map = attr[mode]
+  print("mode "..vim.inspect(hl_params)) -- TODO debug
+  for group, hl_map in pairs(hl_params) do
+    print("hl_map "..vim.inspect(hl_map)) -- TODO debug
+    vim.api.nvim_set_hl(0, group, vim.tbl_deep_extend("error", hl_map, attr_map))
+  end
+end
+
 return M

@@ -1,3 +1,4 @@
+-- TODO remove cterm
 local mapping = {
   normal_bg = "x233_Grey7",
   normal_fg = "x069_CornflowerBlue",
@@ -109,17 +110,24 @@ return {
   get_color_mapping = function()
     return vim.deepcopy(mapping)
   end,
-  get_term_attr_list = function()
+  get_attr_map = function()
     return {
-      statuslinenc = "NONE",
-      statusline_modified = "NONE",
-      statusline_nomodified = "NONE",
-      statusline_normal = "bold",
-      statusline_visual = "bold",
-      statusline_insert = "bold",
-      statusline_command = "bold",
-      statusline_terminal = "bold",
-      statusline_search = "bold"
+      -- statuslinenc = "NONE",
+      -- statusline_modified = "NONE",
+      -- statusline_nomodified = "NONE",
+      -- statusline_normal = "bold",
+      -- statusline_visual = "bold",
+      -- statusline_insert = "bold",
+      -- statusline_command = "bold",
+      -- statusline_terminal = "bold",
+      -- statusline_search = "bold"
+      normal = { bold = true },
+      visual = { bold = true },
+      insert = { bold = true },
+      command = { bold = true },
+      terminal = { bold = true },
+      search = { bold = true },
+
     }
   end,
 }
