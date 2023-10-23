@@ -268,18 +268,6 @@ function M.define_status_line()
   vim.wo.statusline = vim.wo.statusline.." %="..rightline
 end
 
-local attr
-local mapping
-
-function M.load_color_theme(name)
-  local theme = require("lbrayner.statusline.themes."..name)
-  attr = theme.get_attr_map()
-  mapping = theme.get_color_mapping()
-  for key, color_name in pairs(mapping) do
-    mapping[key] = require("lbrayner.statusline.themes").get_color(color_name, "gui")
-  end
-end
-
 function M.highlight_mode(mode)
   local attr_map = attr[mode]
   local hl_map_by_group = {
@@ -295,6 +283,24 @@ function M.highlight_mode(mode)
   for group, hl_map in pairs(hl_map_by_group) do
     vim.api.nvim_set_hl(0, group, vim.tbl_deep_extend("error", attr_map, hl_map))
   end
+end
+
+function M.highlight_status_line_nc()
+    vim.api.nvim_set_hl(0, "StatusLineNC", { bg = mapping.not_current_bg, fg = mapping.not_current_fg })
+end
+
+local attr
+local mapping
+
+function M.load_theme(name)
+  local theme = require("lbrayner.statusline.themes."..name)
+  attr = theme.get_attr_map()
+  mapping = theme.get_color_mapping()
+  for key, color_name in pairs(mapping) do
+    mapping[key] = require("lbrayner.statusline.themes").get_color(color_name, "gui")
+  end
+  M.highlight_mode("normal")
+  M.highlight_status_line_nc()
 end
 
 return M
