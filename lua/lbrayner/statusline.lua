@@ -271,17 +271,18 @@ end
 local attr
 local mapping
 
-function M.load_color_theme(theme)
-  local module = "lbrayner.statusline.themes."..theme
-  attr = require(module).get_attr_map()
-  mapping = require(module).get_color_mapping()
+function M.load_color_theme(name)
+  local theme = require("lbrayner.statusline.themes."..name)
+  attr = theme.get_attr_map()
+  mapping = theme.get_color_mapping()
   for key, color_name in pairs(mapping) do
     mapping[key] = require("lbrayner.statusline.themes").get_color(color_name, "gui")
   end
 end
 
 function M.highlight_mode(mode)
-  local hl_params = {
+  local attr_map = attr[mode]
+  local hl_map_by_group = {
     StatusLine = { bg = mapping[mode.."_bg"], fg = mapping[mode.."_fg"] },
     User1 = { bg = mapping["user1_"..mode.."_bg"], fg = mapping["user1_"..mode.."_fg"] },
     User2 = { bg = mapping["user2_"..mode.."_bg"], fg = mapping["user2_"..mode.."_fg"] },
@@ -291,9 +292,8 @@ function M.highlight_mode(mode)
     User6 = { bg = mapping["user6_"..mode.."_bg"], fg = mapping["user6_"..mode.."_fg"] },
     User7 = { bg = mapping["diagn_"..mode.."_bg"] },
     User9 = { bg = mapping["user9_"..mode.."_bg"], fg = mapping["user9_"..mode.."_fg"]}}
-  local attr_map = attr[mode]
-  for group, hl_map in pairs(hl_params) do
-    vim.api.nvim_set_hl(0, group, vim.tbl_deep_extend("error", hl_map, attr_map))
+  for group, hl_map in pairs(hl_map_by_group) do
+    vim.api.nvim_set_hl(0, group, vim.tbl_deep_extend("error", attr_map, hl_map))
   end
 end
 
