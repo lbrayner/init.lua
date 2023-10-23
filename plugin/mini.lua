@@ -86,7 +86,7 @@ end)
 -- mini.files
 --
 
-vim.g.loaded_netrwPlugin = true
+vim.g.loaded_netrwPlugin = 1
 
 require("mini.files").setup({
   -- Module mappings created only inside explorer.
