@@ -32,12 +32,12 @@ end
 function M.highlight_diagnostics()
   local buffer_severity = buffer_severity()
   if not buffer_severity then
-    vim.cmd("highlight! User7 guifg=NONE")
+    vim.cmd("highlight! User7 guifg=NONE") -- Using ex highlight because nvim_set_hl can't update
     return
   end
   local group = "Diagnostic"..string.sub(buffer_severity, 1, 1)..string.lower(string.sub(buffer_severity, 2))
   local guifg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(group)), "fg", "gui")
-  vim.cmd(string.format("highlight! User7 guifg=%s", guifg))
+  vim.cmd(string.format("highlight! User7 guifg=%s", guifg)) -- nvim_set_hl can't update
 end
 
 function M.diagnostics()
