@@ -85,7 +85,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", "TextChanged", "TextChangedI", "WinEnter" }, {
       group = statusline,
-      callback = require("lbrayner.statusline").redefine_status_line,
+      callback = vim.schedule_wrap(require("lbrayner.statusline").redefine_status_line),
     })
   end,
 })

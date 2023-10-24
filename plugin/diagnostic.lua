@@ -1,5 +1,3 @@
-local prefix = require("lbrayner.diagnostic").get_prefix()
-
 local function is_long(bufnr, winid, virt_texts, lnum)
   -- TODO reduce?
   local mess_len = 0
@@ -187,7 +185,7 @@ local function CustomDiagnostics()
   vim.diagnostic.config({
     severity_sort = true,
     virtual_text = {
-      prefix = prefix,
+      prefix = "•",
       spacing = 0,
     },
   })

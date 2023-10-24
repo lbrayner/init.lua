@@ -17,30 +17,36 @@ function M.status_flag()
   return " "
 end
 
--- TODO use Neovim API
--- TODO is require("lbrayner.diagnostic").buffer_severity() necessary?
+local function buffer_severity()
+  if not (vim.tbl_count(vim.diagnostic.get(0)) > 0) then
+    return nil
+  end
+  for _, level in ipairs(vim.diagnostic.severity) do
+    local items =  vim.diagnostic.get(0, { severity = level })
+    if vim.tbl_count(items) > 0 then
+      return level
+    end
+  end
+end
+
 function M.highlight_diagnostics()
-  local buffer_severity = require("lbrayner.diagnostic").buffer_severity()
+  local buffer_severity = buffer_severity()
   if not buffer_severity then
-    vim.cmd("highlight! User7 ctermfg=NONE guifg=NONE")
+    vim.cmd("highlight! User7 guifg=NONE")
     return
   end
   local group = "Diagnostic"..string.sub(buffer_severity, 1, 1)..string.lower(string.sub(buffer_severity, 2))
-  local cterm = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(group)), "fg", "cterm")
-  cterm = cterm == "" and "NONE" or cterm
-  local gui = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(group)), "fg", "gui")
-  vim.cmd(string.format("highlight! User7 ctermfg=%s guifg=%s", cterm, gui))
+  local guifg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(group)), "fg", "gui")
+  vim.cmd(string.format("highlight! User7 guifg=%s", guifg))
 end
 
--- TODO is require("lbrayner.diagnostic").buffer_severity() necessary?
 function M.diagnostics()
-  local buffer_severity = require("lbrayner.diagnostic").buffer_severity()
+  local buffer_severity = buffer_severity()
   if not buffer_severity then
     return " "
   end
   M.highlight_diagnostics()
-  local prefix = require("lbrayner.diagnostic").get_prefix()
-  return "%7*"..prefix.."%*"
+  return "%7*•%*"
 end
 
 function M.version_control()
