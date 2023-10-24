@@ -18,8 +18,10 @@ vim.api.nvim_create_autocmd("CmdlineEnter", {
   callback = function(args)
     if args.file == ":" then
       require("lbrayner.statusline").highlight_mode("command")
-    else
+    elseif vim.tbl_contains({ "/", "?" }, args.file) then
       require("lbrayner.statusline").highlight_mode("search")
+    else
+      return
     end
     vim.cmd.redraw() -- TODO redrawstatus should work here, create an issue on github
   end,
