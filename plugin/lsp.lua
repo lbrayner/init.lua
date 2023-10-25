@@ -65,7 +65,7 @@ local function on_attach(_, bufnr)
   -- Enable completion triggered by <c-x><c-o>
   -- Some filetype plugins define omnifunc and $VIMRUNTIME/lua/vim/lsp.lua
   -- respects that, so we override it.
-  vim.bo[bufnr].omnifunc = "v:lua.require'lbrayner.lsp'.omnifunc"
+  vim.bo[bufnr].omnifunc = "v:lua.require'lbrayner.lsp._completion'.omnifunc"
 
   -- Mappings
   local bufopts = { buffer = bufnr }
