@@ -480,6 +480,31 @@ vim.api.nvim_create_autocmd("SessionLoadPost", {
 
 local terminal_setup = vim.api.nvim_create_augroup("terminal_setup", { clear = true })
 
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "terminal",
+  group = terminal_setup,
+  desc = "Fix terminal title on session load",
+  callback = function(args)
+    vim.api.nvim_create_autocmd("BufEnter", {
+      group = terminal_setup,
+      buffer = args.buf,
+      once = true,
+      callback = function(args)
+        local bufnr = args.buf
+        local name = vim.api.nvim_buf_get_name(bufnr)
+        if not vim.startswith(name, "term://") then
+          return
+        end
+        local pid = vim.b[bufnr].terminal_job_pid
+        local title = string.gsub(name, "//%d+:", "//"..pid..":")
+        vim.schedule(function()
+          vim.cmd.file(vim.fn.fnameescape(title))
+        end)
+      end,
+    })
+  end,
+})
+
 vim.api.nvim_create_autocmd("BufWinEnter", {
   pattern = "term://*",
   group = terminal_setup,
