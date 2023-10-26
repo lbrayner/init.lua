@@ -491,14 +491,8 @@ vim.api.nvim_create_autocmd("FileType", {
       once = true,
       callback = function(args)
         local bufnr = args.buf
-        local name = vim.api.nvim_buf_get_name(bufnr)
-        if not vim.startswith(name, "term://") then
-          return
-        end
-        local pid = vim.b[bufnr].terminal_job_pid
-        local title = string.gsub(name, "//%d+:", "//"..pid..":")
         vim.schedule(function()
-          vim.api.nvim_buf_set_name(bufnr, title)
+          vim.api.nvim_buf_set_name(bufnr, vim.b[bufnr].term_title)
         end)
       end,
     })
