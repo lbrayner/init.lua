@@ -498,7 +498,7 @@ vim.api.nvim_create_autocmd("FileType", {
         local pid = vim.b[bufnr].terminal_job_pid
         local title = string.gsub(name, "//%d+:", "//"..pid..":")
         vim.schedule(function()
-          vim.cmd.file(vim.fn.fnameescape(title))
+          vim.api.nvim_buf_set_name(bufnr, title)
         end)
       end,
     })
