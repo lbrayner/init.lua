@@ -13,14 +13,14 @@ vim.opt.packpath:remove(string.format("%s/nvim/site/after", data))
 
 local vim_dir = vim.fn.expand("<sfile>:p:h")
 
-vim.opt.runtimepath:append(string.format("%s", vim_dir))
+vim.opt.runtimepath:append(vim_dir)
 vim.opt.runtimepath:append(string.format("%s/after", vim_dir))
-vim.opt.packpath:append(string.format("%s", vim_dir))
+vim.opt.packpath:append(vim_dir)
 vim.opt.packpath:append(string.format("%s/after", vim_dir))
 
 -- sourcing init.lua
 
-local init = vim_dir.."/init.lua"
+local init = string.format("%s/init.lua", vim_dir)
 if vim.fn.filereadable(init) then
   vim.cmd.source(vim.fn.fnameescape(init))
 end
