@@ -29,8 +29,10 @@ local function buffer_severity()
   end
 end
 
-function M.highlight_diagnostics()
-  local buffer_severity = buffer_severity()
+function M.highlight_diagnostics(buffer_severity)
+  if not buffer_severity then
+    buffer_severity = buffer_severity()
+  end
   if not buffer_severity then
     vim.cmd("highlight! User7 guifg=NONE") -- Using ex highlight because nvim_set_hl can't update
     return
@@ -45,7 +47,7 @@ function M.diagnostics()
   if not buffer_severity then
     return " "
   end
-  M.highlight_diagnostics()
+  M.highlight_diagnostics(buffer_severity)
   return "%7*•%*"
 end
 
@@ -303,11 +305,11 @@ function M.highlight_mode(mode)
     User4 = { bg = mapping["user4_"..mode.."_bg"], fg = mapping["user4_"..mode.."_fg"] },
     User5 = { bg = mapping["user5_"..mode.."_bg"], fg = mapping["user5_"..mode.."_fg"] },
     User6 = { bg = mapping["user6_"..mode.."_bg"], fg = mapping["user6_"..mode.."_fg"] },
-    User7 = { bg = mapping["diagn_"..mode.."_bg"] },
     User9 = { bg = mapping["user9_"..mode.."_bg"], fg = mapping["user9_"..mode.."_fg"] }}
   for group, hl_map in pairs(hl_map_by_group) do
     vim.api.nvim_set_hl(0, group, vim.tbl_deep_extend("error", attr_map, hl_map))
   end
+  vim.cmd(string.format("highlight! User7 guibg=%s", mapping["diagn_"..mode.."_bg"])) -- nvim_set_hl can't update
 end
 
 function M.highlight_status_line_nc()
