@@ -1,6 +1,4 @@
-**Requires Neovim 0.8.0+.**
-
-`init.vim` is my *vimrc*. That's the default *Neovim* initialization file.
+**Requires Neovim 0.10.0 or greater.**
 
 ```
 $ git clone 'https://github.com/lbrayner/dotvim'
@@ -10,7 +8,7 @@ dotvim$ git submodule update --init
 
 # As a bundle
 
-You can use these configurations (`init.vim` + plugins) without affecting your
+You can use these configurations (`init.lua` + plugins) without affecting your
 setup (`:h -u`).
 
 ```
