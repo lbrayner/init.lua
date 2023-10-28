@@ -12,7 +12,7 @@ You can use these configurations (`init.lua` + plugins) without affecting your
 setup (`:h -u`).
 
 ```
-dotvim$ nvim -u bundle.vim
+dotvim$ nvim -u bundle.lua
 ```
 
 # The regular way
