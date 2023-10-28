@@ -298,18 +298,18 @@ local mapping
 function M.highlight_mode(mode)
   local attr_map = attr[mode]
   local hl_map_by_group = {
-    StatusLine = { bg = mapping[mode.."_bg"], fg = mapping[mode.."_fg"] },
-    User1 = { bg = mapping["user1_"..mode.."_bg"], fg = mapping["user1_"..mode.."_fg"] },
-    User2 = { bg = mapping["user2_"..mode.."_bg"], fg = mapping["user2_"..mode.."_fg"] },
-    User3 = { bg = mapping["user3_"..mode.."_bg"], fg = mapping["user3_"..mode.."_fg"] },
-    User4 = { bg = mapping["user4_"..mode.."_bg"], fg = mapping["user4_"..mode.."_fg"] },
-    User5 = { bg = mapping["user5_"..mode.."_bg"], fg = mapping["user5_"..mode.."_fg"] },
-    User6 = { bg = mapping["user6_"..mode.."_bg"], fg = mapping["user6_"..mode.."_fg"] },
-    User9 = { bg = mapping["user9_"..mode.."_bg"], fg = mapping["user9_"..mode.."_fg"] }}
+    StatusLine = { bg = mapping["bg_"..mode], fg = mapping["fg_"..mode] },
+    User1 = { bg = mapping["user1_bg_"..mode], fg = mapping["user1_fg_"..mode] },
+    User2 = { bg = mapping["user2_bg_"..mode], fg = mapping["user2_fg_"..mode] },
+    User3 = { bg = mapping["user3_bg_"..mode], fg = mapping["user3_fg_"..mode] },
+    User4 = { bg = mapping["user4_bg_"..mode], fg = mapping["user4_fg_"..mode] },
+    User5 = { bg = mapping["user5_bg_"..mode], fg = mapping["user5_fg_"..mode] },
+    User6 = { bg = mapping["user6_bg_"..mode], fg = mapping["user6_fg_"..mode] },
+    User9 = { bg = mapping["user9_bg_"..mode], fg = mapping["user9_fg_"..mode] }}
   for group, hl_map in pairs(hl_map_by_group) do
     vim.api.nvim_set_hl(0, group, vim.tbl_deep_extend("error", attr_map, hl_map))
   end
-  vim.cmd(string.format("highlight! User7 guibg=%s", mapping["diagn_"..mode.."_bg"])) -- nvim_set_hl can't update
+  vim.cmd(string.format("highlight! User7 guibg=%s", mapping["diagn_bg_"..mode])) -- nvim_set_hl can't update
 end
 
 function M.highlight_status_line_nc()
