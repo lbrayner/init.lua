@@ -263,9 +263,9 @@ function M.define_status_line()
     if vim.wo.previewwindow then
       vim.wo.statusline = vim.wo.statusline.."%<"..vim.fn.pathshorten(M.filename(true))
     elseif vim.bo.buftype ~= "" then
-      vim.wo.statusline = vim.wo.statusline.."%<%5*"..M.filename(true)
+      vim.wo.statusline = vim.wo.statusline.."%<%5*"..M.filename().."%*"
     else
-      vim.wo.statusline = vim.wo.statusline.."%<"..M.filename()
+      vim.wo.statusline = vim.wo.statusline.."%<"..M.filename().."%*"
     end
 
     vim.wo.statusline = vim.wo.statusline.." %1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
