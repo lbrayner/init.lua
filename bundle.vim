@@ -23,9 +23,9 @@ exe "set runtimepath+=".s:_vim_dir_."/after"
 exe "set packpath+=".s:_vim_dir_
 exe "set packpath+=".s:_vim_dir_."/after"
 
-" sourcing init.vim
+" sourcing init.lua
 
-let s:init = s:vim_dir . "/init.vim"
+let s:init = s:vim_dir . "/init.lua"
 if filereadable(s:init)
     execute "source " . fnameescape(s:init)
 endif
