@@ -17,7 +17,7 @@ function M.status_flag()
   return " "
 end
 
-local function buffer_severity()
+local function get_buffer_severity()
   if not (vim.tbl_count(vim.diagnostic.get(0)) > 0) then
     return nil
   end
@@ -31,7 +31,7 @@ end
 
 function M.highlight_diagnostics(buffer_severity)
   if not buffer_severity then
-    buffer_severity = buffer_severity()
+    buffer_severity = get_buffer_severity()
   end
   if not buffer_severity then
     vim.cmd("highlight! User7 guifg=NONE") -- Using ex highlight because nvim_set_hl can't update
@@ -43,7 +43,7 @@ function M.highlight_diagnostics(buffer_severity)
 end
 
 function M.diagnostics()
-  local buffer_severity = buffer_severity()
+  local buffer_severity = get_buffer_severity()
   if not buffer_severity then
     return " "
   end
