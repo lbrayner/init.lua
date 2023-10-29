@@ -90,12 +90,12 @@ local function get_number_of_lines()
   return "%-"..length.."L"
 end
 
-local function buffer_position()
+local function get_buffer_position()
   return get_line_format()..",%-3.v %3.P "..get_number_of_lines()
 end
 
 function M.get_status_line_tail()
-  local buffer_position = buffer_position()
+  local buffer_position = get_buffer_position()
   if vim.bo.buftype ~= "" then
     return buffer_position .. "%( %6*%{v:lua.require'lbrayner.statusline'.version_control()}%*%) %2*%{&filetype}%* "
   end
@@ -225,7 +225,7 @@ function M.define_status_line()
       fugitive_result.blame_file and
       fugitive_result.filetype == "fugitiveblame" then
       vim.wo.statusline = " Fugitive blame %<%1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*%="
-      vim.wo.statusline = vim.wo.statusline..buffer_position()
+      vim.wo.statusline = vim.wo.statusline..get_buffer_position()
       return
     end
   end
