@@ -34,7 +34,9 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
   group = statusline,
-  callback = require("lbrayner.statusline").highlight_diagnostics,
+  callback = function()
+    require("lbrayner.statusline").highlight_diagnostics() -- Not sending autocmd args as argument
+  end,
 })
 
 vim.api.nvim_create_autocmd("InsertEnter", {
