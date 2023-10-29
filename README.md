@@ -27,7 +27,7 @@ Packages (`:h packages`) are submodules in `pack/bundle/start`.
 
 ## Normal mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/277468651-b8ec387c-9b0f-464a-a3be-eb9e4c00fcf2.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/278879863-8b28ff16-074f-4a5b-a2cf-d8ffb3f3bb4f.png)
 
 ## Visual mode
 
@@ -51,10 +51,9 @@ Packages (`:h packages`) are submodules in `pack/bundle/start`.
 
 ## Fugitive buffers
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/277468633-516cfd70-f4d5-4dc0-be23-14acb6007fd4.png)
-![Screenshot](https://user-images.githubusercontent.com/5733531/277468627-7ed4190e-5cd5-4551-ab4e-7a1cfd492c7d.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/278879467-9280913e-070c-421f-995d-06af1f8cced0.png)
 
 ## Language Server
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/277468624-480d521d-9918-45a4-be85-4e6f3faa9859.png)
-![Screenshot](https://user-images.githubusercontent.com/5733531/277468616-44baae72-7f77-4dff-b966-a4a224abb8e2.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/278879472-f870d669-7353-4f84-b196-40e16a4462b1.png)
+![Screenshot](https://user-images.githubusercontent.com/5733531/278879470-f1acba2a-1b80-4582-9b5e-ede43ee24772.png)
