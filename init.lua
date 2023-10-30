@@ -249,7 +249,7 @@ vim.api.nvim_create_user_command("Rg", function(command)
     vim.cmd.cclose()
     vim.cmd.echomsg(string.format('"No match found for %s."', vim.fn.escape(txt, '"')))
   end
-end, { nargs = "*" })
+end, { complete = "file", nargs = "*" })
 
 vim.keymap.set("ca", "Rg", "Rg -e")
 vim.keymap.set("ca", "Rb", [[Rg -s -e'\b''''\b'<Left><Left><Left><Left><Left>]])
