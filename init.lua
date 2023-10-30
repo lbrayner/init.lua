@@ -260,8 +260,9 @@ vim.keymap.set("ca", "Rw", [[Rg -s -e'\b''<C-R><C-W>''\b']])
 local cmdwindow = vim.api.nvim_create_augroup("cmdwindow", { clear = true })
 vim.api.nvim_create_autocmd("CmdwinEnter", {
   group = cmdwindow,
-  desc = "Disable spell in Command-line window",
+  desc = "Command-line window configuration",
   callback = function()
+    vim.w.cmdline = true -- Performant way to know if we're in the Cmdline window
     vim.wo.spell = false
   end,
 })

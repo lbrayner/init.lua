@@ -194,7 +194,7 @@ function M.win_bar()
     -- TODO port util#isQuickfixOrLocationList
   elseif vim.fn["util#isQuickfixOrLocationList"]() == 1 then
     statusline = statusline.."%<%f %{util#getQuickfixOrLocationListTitle()}"
-  elseif vim.fn.getcmdwintype() ~= "" then
+  elseif vim.w.cmdline then
     statusline = ""
   else
     if vim.wo.previewwindow then
