@@ -203,12 +203,12 @@ local lsp_setqflist_replace
 
 vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
   group = lsp_setup,
-  callback = function(args)
+  callback = function()
     if not vim.startswith(vim.fn.getqflist({ title = true }).title, "LSP Diagnostics") then return end
 
     if not quickfix_diagnostics_opts.namespace then return end
 
-    lsp_setqflist_replace(args.buf)
+    lsp_setqflist_replace()
   end,
 })
 
@@ -304,7 +304,7 @@ lsp_setqflist = function(opts, bufnr)
   quickfix_diagnostics_opts.title = title
 
   if vim.fn.getqflist({ title = true }).title == quickfix_diagnostics_opts.title then
-    lsp_setqflist_replace(bufnr)
+    lsp_setqflist_replace()
     vim.cmd("botright copen")
     return
   end
@@ -312,8 +312,8 @@ lsp_setqflist = function(opts, bufnr)
   vim.diagnostic.setqflist(quickfix_diagnostics_opts)
 end
 
-lsp_setqflist_replace = function(bufnr)
-  local diagnostics = vim.diagnostic.get(bufnr, quickfix_diagnostics_opts)
+lsp_setqflist_replace = function()
+  local diagnostics = vim.diagnostic.get(nil, quickfix_diagnostics_opts)
   local items = vim.diagnostic.toqflist(diagnostics)
 
   vim.fn.setqflist({}, "r", { title = quickfix_diagnostics_opts.title, items = items })
