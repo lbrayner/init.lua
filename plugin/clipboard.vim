@@ -5,7 +5,7 @@ function! Path()
     if !util#IsInDirectory(getcwd(), expand("%"), 1)
         return FullPath()
     endif
-    return expand("%")
+    return expand("%:.")
 endfunction
 
 function! FullPath()
