@@ -87,3 +87,9 @@
 	url = https://github.com/chrisgrieser/nvim-spider
 [submodule "pack/bundle/start/nvim-dap-ui/"]
 	url = https://github.com/rcarriga/nvim-dap-ui
+[submodule "pack/bundle/start/plenary.nvim"]
+	path = pack/bundle/start/plenary.nvim
+	url = https://github.com/nvim-lua/plenary.nvim
+[submodule "pack/bundle/start/lir.nvim"]
+	path = pack/bundle/start/lir.nvim
+	url = https://github.com/tamago324/lir.nvim
