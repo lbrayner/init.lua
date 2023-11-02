@@ -201,7 +201,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
 
 local lsp_setqflist_replace
 
-vim.api.nvim_create_autocmd({ "DiagnosticChanged" }, {
+vim.api.nvim_create_autocmd("DiagnosticChanged", {
   group = lsp_setup,
   callback = function()
     if not vim.startswith(vim.fn.getqflist({ title = true }).title, "LSP Diagnostics") then return end
