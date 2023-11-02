@@ -117,7 +117,7 @@ endfunction
 " Normalized path
 " Recent versions of getcwd() return paths with backward slashes on win32
 function util#NPath(path)
-    return fnamemodify(a:path,":p:gs?\\?/?:s?/$??:~")
+    return fnamemodify(a:path, ":p:gs?\\?/?:s?/$??:~")
 endfunction
 
 " stridx is more efficient than substitute
@@ -127,5 +127,5 @@ function! util#IsInDirectory(directory, node)
 endfunction
 
 function! util#RelativeNode(directory, node)
-    return substitute(util#NPath(a:node),'\V'.util#NPath(a:directory).'/\?',"","")
+    return substitute(util#NPath(a:node), '\V'.util#NPath(a:directory).'/\?', "", "")
 endfunction
