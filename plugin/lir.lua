@@ -55,11 +55,14 @@ vim.api.nvim_create_autocmd("FileType", {
   end
 })
 
-vim.keymap.set("n", "g-", "<Cmd>e .<CR>") -- Open current directory
+-- :~ does not add a / at the end
+vim.keymap.set("n", "g-", function()
+  vim.cmd(string.format("e %s", vim.fn.fnameescape(vim.fn.fnamemodify(".", ":~"))))
+end) -- Open current directory
 vim.keymap.set("n", "-", function() -- Open buffer's containing directory
   if require("lir.vim").get_context() then
     require("lir.actions").up()
     return
   end
-  vim.cmd(string.format("e %s", vim.fn.fnameescape(vim.fn.expand("%:p:h"))))
+  vim.cmd(string.format("e %s", vim.fn.fnameescape(vim.fn.expand("%:~:h"))))
 end)

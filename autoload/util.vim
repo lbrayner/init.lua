@@ -1,3 +1,4 @@
+" vim: sw=4
 function! util#getSession()
     " vim-obsession
     let this_session=substitute(v:this_session, '\.\d\+\.obsession\~', "", "")
@@ -121,9 +122,15 @@ function util#NPath(path)
 endfunction
 
 " stridx is more efficient than substitute
-function! util#IsInDirectory(directory, node)
+function! util#IsInDirectory(directory, node, ...)
+    let directory = util#NPath(a:directory)
+    let node = util#NPath(a:node)
+    let exclusive = a:0 && a:1
+    if exclusive && node == directory
+        return 0
+    endif
     " Think Java's String.startsWith
-    return stridx(util#NPath(a:node), util#NPath(a:directory)) == 0
+    return stridx(node, directory) == 0
 endfunction
 
 function! util#RelativeNode(directory, node)

@@ -2,14 +2,14 @@ function! Path()
     if len(expand("%")) <= 0
         return ""
     endif
-    if !util#IsInDirectory(getcwd(), expand("%"))
+    if !util#IsInDirectory(getcwd(), expand("%"), 1)
         return FullPath()
     endif
     return expand("%")
 endfunction
 
 function! FullPath()
-    return expand("%:p:~")
+    return expand("%:~")
 endfunction
 
 function! Name()
