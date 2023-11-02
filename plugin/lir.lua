@@ -54,3 +54,12 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.api.nvim_echo({ { vim.fn.expand("%:p"), "Normal" } }, false, {})
   end
 })
+
+vim.keymap.set("n", "g-", "<Cmd>e .<CR>") -- Open current directory
+vim.keymap.set("n", "-", function() -- Open buffer's containing directory
+  if require("lir.vim").get_context() then
+    require("lir.actions").up()
+    return
+  end
+  vim.cmd(string.format("e %s", vim.fn.fnameescape(vim.fn.expand("%:p:h"))))
+end)
