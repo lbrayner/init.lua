@@ -49,9 +49,6 @@ vim.api.nvim_create_autocmd("FileType", {
     ":<C-u>lua require'lir.mark.actions'.toggle_mark('v')<CR>",
     { noremap = true, silent = true }
     )
-
-    -- echo cwd
-    vim.api.nvim_echo({ { vim.fn.expand("%:p"), "Normal" } }, false, {})
   end
 })
 
