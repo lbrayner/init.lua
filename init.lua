@@ -292,10 +292,10 @@ vim.api.nvim_create_autocmd("CursorHoldI", {
   group = insert_mode_undo_point,
   desc = "Insert mode undo point",
   callback = function()
-    if vim.fn.mode() ~= "i" then -- TODO use Neovim API
+    if vim.api.nvim_get_mode()["mode"] ~= "i" then
       return
     end
-    vim.cmd([[call feedkeys("\<C-G>u")]]) -- TODO use Neovim API
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-G>u", true, false, true), "m", false)
   end,
 })
 
