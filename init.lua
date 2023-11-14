@@ -247,7 +247,7 @@ vim.api.nvim_create_user_command("Rg", function(command)
     vim.cmd("botright copen")
   else
     vim.cmd.cclose()
-    vim.cmd.echomsg(string.format('"No match found for %s."', vim.fn.escape(txt, '"')))
+    vim.cmd.echomsg(string.format('"No match found for “%s”."', vim.fn.escape(txt, [["\]])))
   end
 end, { complete = "file", nargs = "*" })
 
