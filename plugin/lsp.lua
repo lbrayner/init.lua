@@ -77,7 +77,7 @@ local function on_attach(_, bufnr)
   vim.keymap.set("n", "gi", implementation, bufopts)
   vim.keymap.set("n", "gr", function()
     -- Exclude test references if not visiting a test file
-    if not is_test_file(vim.api.nvim_buf_get_name(0)) then
+    if is_test_file and not is_test_file(vim.api.nvim_buf_get_name(0)) then
       return references({ no_tests = true })
     end
     references()
@@ -244,14 +244,15 @@ references = function(config)
 
   config = config or {}
 
-  if config.no_tests then
-    return vim.lsp.buf.references(context, { on_list = function(options)
+  if is_test_file and config.no_tests then
+    vim.lsp.buf.references(context, { on_list = function(options)
       options.items = vim.tbl_filter(function(item)
         -- Filter out tests
         return not is_test_file(item.filename)
       end, options.items)
       on_list(options)
     end })
+    return
   end
 
   vim.lsp.buf.references(context, { on_list = on_list })
@@ -260,9 +261,17 @@ type_definition = function()
   vim.lsp.buf.type_definition({ on_list = on_list, reuse_win = true })
 end
 
-is_test_file = function(filename)
-  return string.find(vim.fn.fnamemodify(filename, ":t"), "[tT]est.")
-end
+is_test_file = (function()
+  local success, site = pcall(require, "lbrayner.site.lsp")
+
+  if success then
+    return function(filename)
+      return site.is_test_file(filename)
+    end
+  end
+
+  return nil
+end)()
 
 get_range = function(command)
   -- Visual selection
