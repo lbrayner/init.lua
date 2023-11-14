@@ -1,5 +1,3 @@
--- TODO move to init.lua
-
 local function window_ignore_function(winid)
   local diff = vim.wo[winid].diff
   local preview = vim.wo[winid].previewwindow
