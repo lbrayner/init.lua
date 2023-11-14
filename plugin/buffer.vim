@@ -2,7 +2,7 @@
 command! -nargs=? -complete=filetype -bang BWipeFileType call buffer#BWipeFileType("<bang>", <f-args>)
 command! -nargs=* -complete=file     -bang BWipeHidden   call buffer#BWipeHidden("<bang>", <q-args>)
 command! -nargs=* -complete=file     -bang BWipeUnlisted call buffer#BWipeUnlisted("<bang>", <q-args>)
-command! -nargs=1 -complete=file     -bang BWipe         call buffer#BWipe("<bang>", <q-args>)
+" command! -nargs=1 -complete=file     -bang BWipe         call buffer#BWipe("<bang>", <q-args>)
 
 command! -nargs=0       BWipeNotLoaded   call buffer#BWipeNotLoaded()
 command! -nargs=0 -bang BWipeNotReadable call buffer#BWipeNotReadable("<bang>")
