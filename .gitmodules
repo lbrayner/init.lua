@@ -68,6 +68,7 @@
 [submodule "pack/bundle/start/neosolarized.nvim"]
 	path = pack/bundle/start/neosolarized.nvim
 	url = https://github.com/svrana/neosolarized.nvim
+; "fixes" branch of fork https://github.com/lbrayner/tint.nvim
 [submodule "pack/bundle/start/tint.nvim"]
 	path = pack/bundle/start/tint.nvim
 	url = https://github.com/levouh/tint.nvim
