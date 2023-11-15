@@ -257,7 +257,7 @@ function M.define_status_line()
   -- TODO port util#isQuickfixOrLocationList
   elseif vim.fn["util#isQuickfixOrLocationList"]() == 1 then
     vim.wo.statusline = vim.wo.statusline.."%<%5*%f%* %{util#getQuickfixOrLocationListTitle()}"
-  elseif vim.fn.getcmdwintype() ~= "" then
+  elseif vim.w.cmdline then
     vim.wo.statusline = vim.wo.statusline.."%<%5*[Command Line]%*"
   elseif vim.b.Statusline_custom_leftline then
     vim.wo.statusline = vim.wo.statusline..vim.b.Statusline_custom_leftline
