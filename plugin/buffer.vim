@@ -1,32 +1,3 @@
-" Swap | File changes outside
-" https://github.com/neovim/neovim/issues/2127
-function! s:AS_HandleSwapfile (filename, swapname)
-        " if swapfile is older than file itself, just get rid of it
-        if getftime(v:swapname) < getftime(a:filename)
-                call delete(v:swapname)
-                let v:swapchoice = "e"
-        endif
-endfunction
-
-augroup AutoSwap
-        autocmd!
-        autocmd SwapExists *  call s:AS_HandleSwapfile(expand("<afile>:p"), v:swapname)
-        autocmd CursorHold,BufWritePost,BufReadPost,BufLeave *
-                    \ if &buftype == "" | let &swapfile = &modified | endif
-augroup END
-
-" Check if file was modified outside this instance
-augroup Checktime
-    autocmd!
-    autocmd VimEnter * autocmd! Checktime BufEnter,FocusGained,VimResume *
-                \ if getcmdwintype() == "" | " Not done in the cmdline-window
-                \     checktime |
-                \ endif
-augroup END
-if v:vim_did_enter
-    doautocmd Checktime VimEnter
-endif
-
 " Save any buffer
 
 function! s:SaveAs(name,bang)
