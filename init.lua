@@ -84,6 +84,9 @@ vim.keymap.set("i", "<F12>", "<Cmd>setlocal list!<CR>", { silent = true })
 vim.keymap.set("n", "<Space>l", "<Cmd>lopen<CR>", { silent = true })
 vim.keymap.set("n", "<Space>q", "<Cmd>botright copen<CR>", { silent = true })
 
+-- Close preview window
+vim.keymap.set("n", "<Space>p", "<Cmd>pclose<CR>", { silent = true })
+
 -- force case sensitivity for *-search
 vim.keymap.set("n", "*", [[/\C\V\<<C-R><C-W>\><CR>]])
 
@@ -261,9 +264,12 @@ local cmdwindow = vim.api.nvim_create_augroup("cmdwindow", { clear = true })
 vim.api.nvim_create_autocmd("CmdwinEnter", {
   group = cmdwindow,
   desc = "Command-line window configuration",
-  callback = function()
+  callback = function(args)
     vim.w.cmdline = true -- Performant way to know if we're in the Cmdline window
     vim.wo.spell = false
+    vim.keymap.set("n", "q", function()
+      vim.api.nvim_win_close(0, false)
+    end, { buffer = args.buf, nowait = true })
   end,
 })
 
@@ -300,7 +306,6 @@ vim.api.nvim_create_autocmd("CursorHoldI", {
 })
 
 local aesthetics = vim.api.nvim_create_augroup("aesthetics", { clear = true })
-
 vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
   group = aesthetics,
   desc = "Buffer aesthetics",
@@ -318,16 +323,20 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
   end,
 })
 
+local help_setup = vim.api.nvim_create_augroup("help_setup", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "help",
-  group = aesthetics,
+  group = help_setup,
   callback = function(args)
     vim.api.nvim_create_autocmd("BufEnter", {
-      group = aesthetics,
+      group = help_setup,
       buffer = args.buf,
       desc = "Aesthetics for help buffers",
       callback = function()
         vim.wo.relativenumber = true
+        vim.keymap.set("n", "q", function()
+          vim.api.nvim_win_close(0, false)
+        end, { buffer = args.buf, nowait = true })
       end,
     })
   end,

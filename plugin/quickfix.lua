@@ -33,9 +33,13 @@ vim.api.nvim_create_autocmd("FileType", {
       vim.wo[winid].spell = false
       vim.wo[winid].wrap = false
 
-      vim.keymap.set("n", "o", split_open, { buffer=bufnr })
-      vim.keymap.set("n", "O", vsplit_open, { buffer=bufnr })
-      vim.keymap.set("n", "<Tab>", tab_open, { buffer=bufnr })
+      vim.keymap.set("n", "o", split_open, { buffer = bufnr })
+      vim.keymap.set("n", "O", vsplit_open, { buffer = bufnr })
+      vim.keymap.set("n", "<Tab>", tab_open, { buffer = bufnr })
+
+      vim.keymap.set("n", "q", function()
+        vim.api.nvim_win_close(0, false)
+      end, { buffer = bufnr, nowait = true })
     end
   end,
 })
