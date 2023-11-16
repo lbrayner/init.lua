@@ -220,12 +220,12 @@ function M.omnifunc(findstart, base)
 
   local word_boundary = vim.fn.match(line_to_cursor, "\\k*$") + 1 --[[@as integer]]
   local items = {}
-  local startbyte = nil
 
   local function on_done()
     local mode = vim.api.nvim_get_mode()["mode"]
     if mode == "i" or mode == "ic" then
-      vim.fn.complete(startbyte or word_boundary, items)
+      -- print("word_boundary "..vim.inspect(word_boundary)) -- TODO debug
+      vim.fn.complete(word_boundary, items)
     end
   end
 
@@ -244,33 +244,15 @@ function M.omnifunc(findstart, base)
         log.warn(err.message)
       end
       if result and vim.fn.mode() == "i" then
-        -- Completion response items may be relative to a position different than `textMatch`.
-        -- Concrete example, with sumneko/lua-language-server:
         --
-        -- require("plenary.asy|
-        --         ▲       ▲   ▲
-        --         │       │   └── cursor_pos: 20
-        --         │       └────── textMatch: 17
-        --         └────────────── textEdit.range.start.character: 9
-        --                                 .newText = "plenary.async"
-        --                  ^^^
-        --                  prefix (We"d remove everything not starting with `asy`,
-        --                  so we"d eliminate the `plenary.async` result
-        --
-        -- `adjust_start_col` is used to prefer the language server boundary.
+        -- `adjust_start_col` and the language server boundary won't be used
         --
         local encoding = client.offset_encoding
         local candidates = get_items(result)
-        local curstartbyte = adjust_start_col(pos[1], line, candidates, encoding)
-        if startbyte == nil then
-          startbyte = curstartbyte
-        elseif curstartbyte ~= nil and curstartbyte ~= startbyte then
-          startbyte = word_boundary
-        end
-        local prefix = startbyte and line:sub(startbyte + 1) or line_to_cursor:sub(word_boundary)
+        local prefix = line_to_cursor:sub(word_boundary)
         -- print("line "..vim.inspect(line)) -- TODO debug
-        -- print(string.format("startbyte %s, pos[2] %s, prefix %s ", startbyte, pos[2], prefix)) -- TODO debug
         local matches = M._lsp_to_complete_items(result, prefix)
+        -- print("matches "..vim.inspect(matches)) -- TODO debug
         vim.list_extend(items, matches)
       end
       remaining = remaining - 1
