@@ -25,3 +25,36 @@ vim.api.nvim_create_user_command("TabcloseRange", function(command)
   end
   vim.o.eventignore = ei
 end, { bang = true, nargs = "+" })
+
+vim.api.nvim_create_user_command("TabcloseRight", function(command)
+  local current_tab = vim.fn.tabpagenr()
+  local ei = vim.o.eventignore
+  vim.opt.eventignore:append({ "TabClosed" })
+  while current_tab < vim.fn.tabpagenr("$") do
+    vim.cmd((current_tab + 1) .. "tabclose" .. (command.bang and "!" or ""))
+  end
+  vim.o.eventignore = ei
+end, { bang = true, nargs = 0 })
+
+vim.api.nvim_create_user_command("TabcloseLeft", function(command)
+  local ei = vim.o.eventignore
+  vim.opt.eventignore:append({ "TabClosed" })
+  while vim.fn.tabpagenr() > 1 do
+    vim.cmd("1tabclose" .. (command.bang and "!" or ""))
+  end
+  vim.o.eventignore = ei
+end, { bang = true, nargs = 0 })
+
+vim.api.nvim_create_user_command("Tabonly", function(command)
+  local ei = vim.o.eventignore
+  vim.opt.eventignore:append({ "TabClosed" })
+  vim.cmd("tabonly" .. (command.bang and "!" or ""))
+  vim.o.eventignore = ei
+end, { bang = true, nargs = 0 })
+
+vim.api.nvim_create_user_command("Tabclose", function(command)
+  local ei = vim.o.eventignore
+  vim.opt.eventignore:append({ "TabClosed" })
+  vim.cmd("tabclose" .. (command.bang and "!" or ""))
+  vim.o.eventignore = ei
+end, { bang = true, nargs = 0 })
