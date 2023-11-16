@@ -58,3 +58,11 @@ vim.api.nvim_create_user_command("Tabclose", function(command)
   vim.cmd("tabclose" .. (command.bang and "!" or ""))
   vim.o.eventignore = ei
 end, { bang = true, nargs = 0 })
+
+vim.api.nvim_create_user_command("Tabnew", function()
+  vim.fn["util#PreserveViewPort"]("tabe %")
+end, { nargs = 0 })
+
+vim.api.nvim_create_user_command("Tabedit", function()
+  vim.cmd("Tabnew")
+end, { nargs = 0 })

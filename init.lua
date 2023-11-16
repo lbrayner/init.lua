@@ -558,6 +558,21 @@ vim.api.nvim_create_autocmd({ "BufReadPost", "VimEnter" }, {
   end,
 })
 
+local session_equalize_windows = vim.api.nvim_create_augroup("session_equalize_windows", { clear = true })
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = session_equalize_windows,
+  desc = "Equalize windows on session startup",
+  callback = function()
+    if vim.v.this_session == "" then return end
+    local current_tab = vim.fn.tabpagenr()
+    vim.cmd.exe([["normal! g\<Tab>"]])
+    local previous_tab = vim.fn.tabpagenr()
+    pcall(vim.cmd.exe, [["normal! \<C-W>="]])
+    vim.cmd("tabn" .. previous_tab)
+    vim.cmd("tabn" .. current_tab)
+  end,
+})
+
 -- }}}
 
 local vim_dir = vim.fn.stdpath("config")
