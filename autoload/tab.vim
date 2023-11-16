@@ -45,7 +45,3 @@ function! tab#Tabclose(bang)
     exe "tabclose" . a:bang
     let &eventignore = ei
 endfunction
-
-function! tab#TabcloseRange(bang, from, to)
-    call v:lua.require'lbrayner.tab'.tab_close_range(a:bang, str2nr(a:from), str2nr(a:to))
-endfunction
