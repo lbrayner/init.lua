@@ -215,6 +215,7 @@ function M.omnifunc(findstart, base)
   local win = vim.api.nvim_get_current_win()
   local pos = vim.api.nvim_win_get_cursor(0)
   local line = vim.api.nvim_get_current_line()
+  -- print("line "..vim.inspect(line)) -- TODO debug
   local line_to_cursor = line:sub(1, pos[2])
   log.trace("omnifunc.line", pos, line)
 
@@ -234,7 +235,6 @@ function M.omnifunc(findstart, base)
     local params = util.make_position_params(win, client.offset_encoding)
     client.request(ms.textDocument_completion, params, function(err, result)
       -- print("params "..vim.inspect(params)) -- TODO debug
-      -- print("result "..vim.inspect(result)) -- TODO debug
       -- do -- TODO debug
       --   local fd = assert(vim.uv.fs_open("/var/tmp/textDocument_completion_result.lua", "w", 438))
       --   vim.uv.fs_write(fd, vim.inspect(result))
@@ -250,7 +250,6 @@ function M.omnifunc(findstart, base)
         local encoding = client.offset_encoding
         local candidates = get_items(result)
         local prefix = line_to_cursor:sub(word_boundary)
-        -- print("line "..vim.inspect(line)) -- TODO debug
         local matches = M._lsp_to_complete_items(result, prefix)
         -- print("matches "..vim.inspect(matches)) -- TODO debug
         vim.list_extend(items, matches)
