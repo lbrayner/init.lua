@@ -17,23 +17,23 @@ local function loop_buffers(force, predicate)
     end
   end
   vim.o.eventignore = ei
-  return { buffer_count = buffer_count, error_count = error_count }
+  return buffer_count, error_count
 end
 
 local function wipe_buffers(force, predicate)
-  local count = loop_buffers(bang, predicate)
+  local buffer_count, error_count = loop_buffers(bang, predicate)
   local message = ""
-  if count.buffer_count == 0 then
+  if buffer_count == 0 then
     message = "No buffers wiped"
-  elseif count.buffer_count == 1 then
+  elseif buffer_count == 1 then
     message = message .. "1 buffer wiped"
-  elseif count.buffer_count > 1 then
-    message = message .. count.buffer_count .. " buffers wiped"
+  elseif buffer_count > 1 then
+    message = message .. buffer_count .. " buffers wiped"
   end
-  if count.error_count == 1 then
+  if error_count == 1 then
     message = message .. "; 1 buffer not wiped"
-  elseif count.error_count > 1 then
-    message = message .. "; " .. count.error_count .. " buffers not wiped"
+  elseif error_count > 1 then
+    message = message .. "; " .. error_count .. " buffers not wiped"
   end
   vim.cmd.echom(string.format("'%s'", message))
 end
