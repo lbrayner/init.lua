@@ -34,7 +34,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "VimResume" }, {
       group = checktime,
       callback = function()
-        if vim.fn.getcmdwintype() == "" then
+        if vim.fn.getcmdwintype() == "" then -- E11: Invalid in command line window
           vim.cmd.checktime()
         end
       end,
