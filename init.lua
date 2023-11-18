@@ -212,7 +212,6 @@ end, { nargs = 0, range = true })
 vim.api.nvim_create_user_command("Synstack", function()
   local pos = vim.api.nvim_win_get_cursor(0)
   local synstack = vim.fn.synstack(pos[1], pos[2] + 1)
-  -- map(synstack(line("."), col(".")), "synIDattr(v:val, 'name')")
   local syn_id_addrs = vim.tbl_map(function(item)
     return vim.fn.synIDattr(item, "name")
   end, synstack)
@@ -564,12 +563,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
   desc = "Equalize windows on session startup",
   callback = function()
     if vim.v.this_session == "" then return end
-    local current_tab = vim.fn.tabpagenr()
-    vim.cmd.exe([["normal! g\<Tab>"]])
-    local previous_tab = vim.fn.tabpagenr()
     pcall(vim.cmd.exe, [["normal! \<C-W>="]])
-    vim.cmd("tabn" .. previous_tab)
-    vim.cmd("tabn" .. current_tab)
   end,
 })
 
