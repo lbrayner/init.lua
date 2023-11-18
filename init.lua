@@ -473,17 +473,14 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end,
 })
 
+-- SessionLoadPost happens before VimEnter
 local session_load = vim.api.nvim_create_augroup("session_load", { clear = true })
-vim.api.nvim_create_autocmd("SessionLoadPost", {
+vim.api.nvim_create_autocmd("VimEnter", {
   group = session_load,
   desc = "Wipe buffers without files on session load",
   callback = function()
-    vim.api.nvim_create_autocmd("VimEnter", {
-      group = session_load,
-      callback = function()
-        vim.cmd("silent BWipeNotReadable!")
-      end,
-    })
+    if vim.v.this_session == "" then return end
+    vim.cmd("silent BWipeNotReadable!")
   end,
 })
 
