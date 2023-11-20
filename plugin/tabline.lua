@@ -53,7 +53,7 @@ local function redefine_tabline()
     return
   end
   -- jdtls
-  if string.find(vim.api.nvim_buf_get_name(0), "^jdt://") then -- jdtls
+  if vim.startswith(vim.api.nvim_buf_get_name(0), "jdt://") then -- jdtls
     return
   end
   if vim.bo.buftype == "terminal" then

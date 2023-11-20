@@ -112,7 +112,7 @@ function M.filename(full_path)
 
   if vim.fn.exists("*FugitiveParse") and vim.fn.FObject() ~= "" then -- Fugitive objects
     path = vim.fn.FObject()
-  elseif string.find(vim.api.nvim_buf_get_name(0), "jdt://", 1) == 1 then -- jdtls
+  elseif vim.startswith(vim.api.nvim_buf_get_name(0), "jdt://") then -- jdtls
     path = string.gsub(vim.api.nvim_buf_get_name(0), "%?.*", "")
   end
 
