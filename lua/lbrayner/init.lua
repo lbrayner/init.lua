@@ -38,6 +38,12 @@ local function _jump_to_location(win, bufnr, pos)
   end
 end
 
+function M.is_in_directory(node, directory)
+  local full_directory = vim.fn.fnamemodify(directory, ":p")
+  local full_node = vim.fn.fnamemodify(node, ":p")
+  return vim.startswith(vim.fs.normalize(full_node), vim.fs.normalize(full_directory))
+end
+
 function M.jump_to_location(filename, pos)
   local bufnr = vim.fn.bufadd(filename)
   local win = bufwinid(bufnr)
