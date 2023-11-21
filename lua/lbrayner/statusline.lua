@@ -117,7 +117,7 @@ function M.filename(full_path)
   end
 
   local filename
-  if full_path then -- Full path
+  if full_path then
     filename = string.gsub(path, "'", "''")
   else
     filename = string.gsub(vim.fn.fnamemodify(path, ":t"), "'", "''")
@@ -178,15 +178,13 @@ function M.win_bar()
     statusline = statusline.."%w "
   end
 
-  -- Fugitive summary
-  if vim.b.fugitive_type and vim.b.fugitive_type == "index" then
+  if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
     -- TODO port util#NPath
     local dir = vim.fn.pathshorten(string.gsub(vim.fn["util#NPath"](vim.fn.FugitiveGitDir()),"/%.git$",""))
     statusline = statusline..dir.."$ %<".."Fugitive summary " ..
     "%{v:lua.require'lbrayner.statusline'.status_flag()}"
-    -- Fugitive temporary buffers
   elseif vim.fn.exists("*FugitiveResult") and
-    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then
+    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then  -- Fugitive temporary buffers
     local fugitive_temp_buf = fugitive_temporary_buffer()
     local dir = vim.fn.pathshorten(string.gsub(vim.fn["util#NPath"](vim.fn.FugitiveGitDir()),"/%.git$",""))
     statusline = statusline..dir.."$ %<"..fugitive_temp_buf ..
@@ -218,12 +216,11 @@ end
 
 -- margins of 1 column (on both sides)
 function M.define_status_line()
-  -- Fugitive blame
   if vim.fn.exists("*FugitiveResult") then
     local fugitive_result = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())
     if fugitive_result.filetype and
       fugitive_result.blame_file and
-      fugitive_result.filetype == "fugitiveblame" then
+      fugitive_result.filetype == "fugitiveblame" then -- Fugitive blame
       vim.wo.statusline = " Fugitive blame %<%1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*%="
       vim.wo.statusline = vim.wo.statusline..get_buffer_position()
       return
@@ -241,15 +238,13 @@ function M.define_status_line()
     vim.wo.statusline = vim.wo.statusline.."%5*%w%* "
   end
 
-  -- Fugitive summary
-  if vim.b.fugitive_type and vim.b.fugitive_type == "index" then
+  if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
     -- TODO port util#NPath
     local dir = vim.fn.pathshorten(string.gsub(vim.fn["util#NPath"](vim.fn.FugitiveGitDir()),"/%.git$",""))
     vim.wo.statusline = vim.wo.statusline.."%6*"..dir.."$%* %<".."Fugitive summary " ..
     "%1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
-    -- Fugitive temporary buffers
   elseif vim.fn.exists("*FugitiveResult") and
-    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then
+    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
     local fugitive_temp_buf = fugitive_temporary_buffer()
     local dir = vim.fn.pathshorten(string.gsub(vim.fn["util#NPath"](vim.fn.FugitiveGitDir()),"/%.git$",""))
     vim.wo.statusline = vim.wo.statusline.."%6*"..dir.."$%* %<"..fugitive_temp_buf ..
