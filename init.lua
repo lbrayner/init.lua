@@ -266,7 +266,7 @@ vim.api.nvim_create_autocmd("CmdwinEnter", {
   callback = function(args)
     vim.w.cmdline = true -- Performant way to know if we're in the Cmdline window
     vim.wo.spell = false
-    vim.keymap.set("n", "q", function()
+    vim.keymap.set("n", "gq", function()
       vim.api.nvim_win_close(0, false)
     end, { buffer = args.buf, nowait = true })
   end,
