@@ -31,7 +31,7 @@ local function redefine_tabline()
     tabline = tabline .. " %="
     local fcwd = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf()).cwd
     if not is_in_directory(fcwd, vim.fn.getcwd()) then
-      fcwd = vim.fn.fnamemodify(fcwd, ":~")
+      fcwd = vim.fn.pathshorten(vim.fn.fnamemodify(fcwd, ":~"))
       max_length = max_length - #fcwd
       tabline = tabline .. string.format("%%<%%#WarningMsg#%s ", fcwd)
     end
