@@ -48,9 +48,10 @@ endfunction
 
 augroup FugitiveCustomAutocommands
     autocmd!
-    autocmd FileType fugitive Glcd
     autocmd BufEnter fugitive://*//* setlocal nomodifiable
+    autocmd FileType fugitive Glcd
     autocmd FileType fugitive,gitcommit,git call s:FugitiveMapOverrides()
+    autocmd FileType fugitiveblame nnoremap <buffer> <nowait> q <Cmd>call nvim_win_close(0, 0)<CR>
 augroup END
 
 function! s:GitFileExpr(fname)
