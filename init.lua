@@ -23,9 +23,7 @@ vim.go.splitright = true
 vim.go.switchbuf = "usetab,uselast"
 vim.go.synmaxcol = 500 -- From tpope's vim-sensible (lowering this improves performance in files with long lines)
 vim.go.tabstop = 4 -- show existing tab with 4 spaces width
-if vim.env.TERM == "foot" or string.find(vim.env.TERM, "256color") then
-    vim.go.termguicolors = true
-end
+vim.go.termguicolors = true
 vim.go.title = true
 vim.go.wildmenu = true
 vim.go.wildmode = "longest:full"
