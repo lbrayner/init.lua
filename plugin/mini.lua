@@ -58,29 +58,7 @@ require("mini.indentscope").setup()
 -- mini.jump
 --
 
-require("mini.jump").setup({
-  mappings = {
-    repeat_jump = "",
-  },
-})
-
-local function save_to_jumplist_wrap(jump)
-  if vim.bo.buftype ~= "terminal" then -- TODO debug to find the real cause
-    vim.cmd("normal! m'")
-  end
-  jump()
-end
-
-vim.keymap.set("n", ";", function()
-  save_to_jumplist_wrap(function()
-    MiniJump.jump(nil, false)
-  end)
-end)
-vim.keymap.set("n", ",", function()
-  save_to_jumplist_wrap(function()
-    MiniJump.jump(nil, true)
-  end)
-end)
+require("mini.jump").setup()
 
 --
 -- mini.move

@@ -32,6 +32,9 @@ vim.go.wildmode = "longest:full"
 
 -- Subsection: mappings — pt-BR keyboard {{{
 
+-- remapping leader to comma
+vim.g.mapleader = ","
+
 -- disable Ex mode mapping
 vim.keymap.set("n", "Q", "<Nop>", { remap = true })
 
