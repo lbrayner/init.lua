@@ -48,8 +48,6 @@ vim.keymap.set("n", "qç", "q:")
 vim.keymap.set("v", "qç", "q:")
 vim.keymap.set("v", "¬", "^")
 
--- make the current window the only one on the screen
-vim.keymap.set("n", "<Space>o", "<Cmd>only<CR>")
 -- alternate file
 vim.keymap.set("n", "<Space>a", "<Cmd>b#<CR>")
 
@@ -68,14 +66,14 @@ vim.keymap.set("v", "<C-K>", "<Esc><C-W>k")
 vim.keymap.set("v", "<C-L>", "<Esc><C-W>l")
 
 -- splits
-vim.keymap.set("n", "<Leader>v", "<C-W>v")
-vim.keymap.set("n", "<Leader>h", "<C-W>s")
+vim.keymap.set("n", "<C-X>1", "<C-W>o")
+vim.keymap.set("n", "<C-X>2", "<C-W>s")
+vim.keymap.set("n", "<C-X>3", "<C-W>v")
 
 -- write
 vim.keymap.set("n", "<F6>", "<Cmd>w<CR>")
 vim.keymap.set("i", "<F6>", "<Esc><Cmd>w<CR>")
 vim.keymap.set("v", "<F6>", "<Esc><Cmd>w<CR>")
-vim.keymap.set("n", "<Leader><F6>", "<Cmd>w!<CR>")
 
 -- list mode
 vim.keymap.set("n", "<F12>", "<Cmd>setlocal list!<CR>", { silent = true })

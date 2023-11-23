@@ -1,8 +1,8 @@
 " Backend is vim-dadbod
 
 function! s:DatabaseAccess()
-    nnoremap <buffer> <Leader><Return> <Cmd>'{,'}DB<CR>
-    nnoremap <buffer> <Leader><kEnter> <Cmd>'{,'}DB<CR>
+    nnoremap <buffer> <C-Return> <Cmd>'{,'}DB<CR>
+    nnoremap <buffer> <C-kEnter> <Cmd>'{,'}DB<CR>
 
     if exists("b:db")
         let b:Statusline_custom_rightline = "%9*dadbod%* "
