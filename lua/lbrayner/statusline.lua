@@ -97,7 +97,8 @@ end
 function M.get_status_line_tail()
   local buffer_position = get_buffer_position()
   if vim.bo.buftype ~= "" then
-    return buffer_position .. "%( %6*%{v:lua.require'lbrayner.statusline'.version_control()}%*%) %2*%{&filetype}%* "
+    return buffer_position ..
+    "%( %6*%{v:lua.require'lbrayner.statusline'.version_control()}%*%) %2*%{&filetype}%* "
   end
   return buffer_position ..
   " %1.1{%v:lua.require'lbrayner.statusline'.diagnostics()%}" ..
