@@ -1,7 +1,7 @@
 -- Subsection: settings {{{
 
 vim.go.backspace =  "indent,eol,start"
-vim.go.backupcopy = "yes" -- So that watchprocesses work as expected
+vim.go.backupcopy = "yes"
 vim.go.breakindent = true
 vim.go.clipboard = "unnamed,unnamedplus"
 vim.go.completeopt = "menuone"
@@ -16,14 +16,14 @@ vim.go.listchars = "eol:¬,tab:» ,trail:·"
 vim.go.number = true
 vim.go.relativenumber = true
 vim.go.ruler = false
-vim.go.shiftwidth = 2 -- when indenting with '>', use 2 spaces width
+vim.go.shiftwidth = 2
 vim.go.showmode = false
 vim.go.smartcase = true
 vim.go.splitbelow = true
 vim.go.splitright = true
 vim.go.switchbuf = "usetab,uselast"
 vim.go.synmaxcol = 500 -- From tpope's vim-sensible (lowering this improves performance in files with long lines)
-vim.go.tabstop = 2 -- show existing tab with 4 spaces width
+vim.go.tabstop = 2
 vim.go.termguicolors = true
 vim.go.title = true
 vim.go.wildmenu = true
