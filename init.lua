@@ -249,6 +249,10 @@ vim.keymap.set("ca", "Rg", "Rg -e")
 vim.keymap.set("ca", "Rb", [[Rg -s -e'\b''''\b'<Left><Left><Left><Left><Left>]])
 vim.keymap.set("ca", "Rw", [[Rg -s -e'\b''<C-R><C-W>''\b']])
 
+-- Modules
+
+require("lbrayner.clipboard")
+
 -- Subsection: autocmds {{{
 
 local cmdwindow = vim.api.nvim_create_augroup("cmdwindow", { clear = true })

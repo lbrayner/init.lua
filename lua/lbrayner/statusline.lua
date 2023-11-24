@@ -108,7 +108,7 @@ function M.get_status_line_tail()
 end
 
 function M.filename(full_path)
-  local path = vim.fn.Path()
+  local path = require("lbrayner.clipboard").path()
 
   if vim.fn.exists("*FugitiveParse") and vim.fn.FObject() ~= "" then -- Fugitive objects
     path = vim.fn.FObject()
