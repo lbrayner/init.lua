@@ -28,17 +28,6 @@ function! RelativeDirectory()
     return fnamemodify(expand("%"),":h")
 endfunction
 
-command! Path let @"=Path()
-command! FullPath let @"=FullPath()
-command! Name let @"=Name()
-command! Cwd let @"=Cwd()
-command! Directory let @"=Directory()
-command! RelativeDirectory let @"=RelativeDirectory()
-
-if !has("clipboard")
-    finish
-endif
-
 function! Clip(...)
     if a:0 > 0
         let text = a:1
@@ -48,23 +37,11 @@ function! Clip(...)
         let @"=text
     endif
     let @+=@" | let @*=@"
-    if len(getreg('"',1,1)) == 1 && len(getreg('"',1,1)[0]) <= &columns*0.9
-        echo getreg('"',1,1)[0]
-    elseif len(getreg('"',1,1)) == 1
-        echo "1 line clipped"
-    else
-        echo len(getreg('"',1,1)) . " lines clipped"
-    endif
+    echo getreg('"')
 endfunction
 
 " Copies arg to the system's clipboard
 command! -nargs=? Clip call Clip(<f-args>)
-
-vnoremap <Leader>y y<Cmd>Clip<CR>
-
-nnoremap <Leader>p "+p
-nnoremap <Leader>P "+P
-vnoremap <Leader>p "+p
 
 command! Path call Clip(Path())
 command! FullPath call Clip(FullPath())

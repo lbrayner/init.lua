@@ -3,6 +3,7 @@
 vim.go.backspace =  "indent,eol,start"
 vim.go.backupcopy = "yes" -- So that watchprocesses work as expected
 vim.go.breakindent = true
+vim.go.clipboard = "unnamed,unnamedplus"
 vim.go.completeopt = "menuone"
 vim.go.cursorline = true
 vim.go.expandtab = true
