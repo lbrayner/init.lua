@@ -96,9 +96,6 @@ vim.keymap.set("t", "<A-j>", [[<C-\><C-N><C-W>j]])
 vim.keymap.set("t", "<A-k>", [[<C-\><C-N><C-W>k]])
 vim.keymap.set("t", "<A-l>", [[<C-\><C-N><C-W>l]])
 
--- Search selected file path: based on Nvim builtin vmap *
-vim.keymap.set("v", "<Leader>8", [[y/\V<C-R>=escape("<C-R>"", "/")<CR><CR>]])
-
 -- Command line
 
 -- Emacs-style editing in command-line mode and insert mode
