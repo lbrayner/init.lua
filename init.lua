@@ -566,7 +566,7 @@ end
 
 -- Finish here if we haven't initialized the submodules
 
-if vim.fn.glob(vim_dir.."/pack/bundle/start/*/plugin") == "" then
+if vim.fn.glob(vim.fs.joinpath(vim_dir, "pack/bundle/start/*/plugin")) == "" then
     return
 end
 
