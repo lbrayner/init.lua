@@ -265,22 +265,16 @@ vim.api.nvim_create_autocmd("CmdwinEnter", {
 })
 
 local commentstring = vim.api.nvim_create_augroup("commentstring", { clear = true })
-
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "apache", "crontab", "debsources", "desktop", "fstab", "samba" },
+  pattern = { "apache", "crontab", "debsources", "desktop", "fstab", "samba", "sql" },
   group = commentstring,
-  desc = "Pound comment",
+  desc = "Set commentstring",
   callback = function()
-    vim.bo.commentstring = "# %s"
-  end,
-})
-
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "sql",
-  group = commentstring,
-  desc = "SQL comment",
-  callback = function()
-    vim.bo.commentstring = "-- %s"
+    if vim.bo.filetype == "sql" then
+      vim.bo.commentstring = "-- %s"
+    else
+      vim.bo.commentstring = "# %s"
+    end
   end,
 })
 
@@ -332,6 +326,7 @@ vim.api.nvim_create_autocmd("FileType", {
 local set_file_type = vim.api.nvim_create_augroup("set_file_type", { clear = true })
 
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+  pattern = { ".ignore", "*.redis", "*.wsdl", "/tmp/dir*" },
   group = set_file_type,
   desc = "Setting filetype for various patterns",
   callback = function(args)
@@ -344,16 +339,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
       vim.bo.filetype = "redis"
     elseif extension == "wsdl" then
       vim.bo.filetype = "xml"
-    end
-  end,
-})
-
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-  pattern = "/tmp/dir*",
-  group = set_file_type,
-  desc = "Vidir filetype",
-  callback = function()
-    if vim.fn.argc() == 1 and string.find(vim.fn.argv(0), "^/tmp/dir%w%w%w%w%w$") then
+    elseif vim.fn.argc() == 1 and string.find(vim.fn.argv(0), "^/tmp/dir%w%w%w%w%w$") then
       vim.bo.filetype = "vidir"
     end
   end,
@@ -396,7 +382,6 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
 local large_xml_file = 1024 * 512
 local large_xml = vim.api.nvim_create_augroup("large_xml", { clear = true })
-
 vim.api.nvim_create_autocmd("BufRead", {
   group = large_xml,
   desc = "Disable syntax for large XML files",
@@ -572,7 +557,6 @@ require("colorizer").setup()
 vim.g.nvim_jdtls = 1
 
 -- nvim-spider
-
 vim.keymap.set({"n", "o", "x"}, "<Leader>w", "<cmd>lua require('spider').motion('w')<CR>", { desc = "Spider-w" })
 vim.keymap.set({"n", "o", "x"}, "<Leader>e", "<cmd>lua require('spider').motion('e')<CR>", { desc = "Spider-e" })
 vim.keymap.set({"n", "o", "x"}, "<Leader>b", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-b" })
@@ -584,7 +568,6 @@ vim.api.nvim_create_user_command("ReplFile", [[call reply#command#send(join(getl
   nargs = 0 })
 
 -- vim-characterize
-
 vim.keymap.set("n", "<F13>", "<Plug>(characterize)", { remap = true })
 vim.api.nvim_create_user_command("Characterize", [[exe "normal \<F13>"]], { nargs = 0 })
 
