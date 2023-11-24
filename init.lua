@@ -301,13 +301,9 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
   group = aesthetics,
   desc = "Buffer aesthetics",
   callback = function()
-    if require("lbrayner").window_is_floating() then
-      return
-    end
-    if vim.bo.filetype == "fugitiveblame" then
-      return
-    end
-    if vim.startswith(vim.bo.syntax, "Neogit") then
+    if require("lbrayner").window_is_floating() or
+      vim.bo.filetype == "fugitiveblame" or
+      vim.startswith(vim.bo.syntax, "Neogit") then
       return
     end
     number()
@@ -344,13 +340,9 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 
     if filename == ".ignore" then
       vim.bo.filetype = "gitignore"
-    end
-
-    if extension == "redis" then
+    elseif extension == "redis" then
       vim.bo.filetype = "redis"
-    end
-
-    if extension == "wsdl" then
+    elseif extension == "wsdl" then
       vim.bo.filetype = "xml"
     end
   end,
@@ -428,29 +420,21 @@ vim.api.nvim_create_autocmd("FileType", {
 
     if vim.tbl_contains({ "gitcommit", "mail", "markdown", "text" }, filetype) then
       vim.bo.infercase = true
-    end
-
-    if vim.tbl_contains({ "html", "javascriptreact", "typescriptreact", "xml" }, filetype) then
+    elseif vim.tbl_contains({ "html", "javascriptreact", "typescriptreact", "xml" }, filetype) then
       vim.keymap.set("n", "[<", "<Cmd>call xml#NavigateDepthBackward(v:count1)<CR>", {
-        buffer = bufnr, silent = true })
+        buffer = bufnr, silent = true
+      })
       vim.keymap.set("n", "]<", "<Cmd>call xml#NavigateDepth(v:count1)<CR>", {
-        buffer = bufnr, silent = true })
-    end
-
-    if vim.bo.filetype == "mail" then
+        buffer = bufnr, silent = true
+      })
+    elseif vim.bo.filetype == "mail" then
       vim.cmd("call util#setupMatchit()")
-    end
-
-    if vim.bo.filetype == "markdown" then
+    elseif vim.bo.filetype == "markdown" then
       vim.bo.tabstop = 2
       vim.bo.textwidth = 80
-    end
-
-    if vim.bo.filetype == "sql" then
+    elseif vim.bo.filetype == "sql" then
       vim.bo.indentexpr = "indent"
-    end
-
-    if vim.bo.filetype == "text" then
+    elseif vim.bo.filetype == "text" then
       vim.bo.textwidth = 80
     end
   end,
