@@ -19,15 +19,15 @@ function M.name()
 end
 
 function M.cwd()
-  return vim.fn.fnamemodify(vim.fn.getcwd(),":~")
+  return vim.fn.fnamemodify(vim.fn.getcwd(), ":~")
 end
 
 function M.directory()
-  return vim.fn.fnamemodify(vim.fn.expand("%"),":~:h")
+  return vim.fn.expand("%:~:h")
 end
 
 function M.relative_directory()
-  return vim.fn.fnamemodify(vim.fn.expand("%"),":h")
+  return vim.fn.expand("%:h")
 end
 
 function M.clip(text)
