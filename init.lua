@@ -401,13 +401,17 @@ vim.api.nvim_create_autocmd("BufRead", {
 local file_type_setup = vim.api.nvim_create_augroup("file_type_setup", { clear = true })
 
 vim.api.nvim_create_autocmd("FileType", {
+  pattern = {
+    "gitcommit", "html", "javascriptreact", "mail", "markdown", "sql", "text",
+    "typescriptreact", "xml"
+  },
   group = file_type_setup,
   desc = "Filetype setup for various patterns",
   callback = function(args)
     local bufnr = args.buf
     local filetype = args.match
 
-    if vim.tbl_contains({ "gitcommit", "mail", "markdown", "text" }, filetype) then
+    if filetype == "gitcommit" then
       vim.bo.infercase = true
     elseif vim.tbl_contains({ "html", "javascriptreact", "typescriptreact", "xml" }, filetype) then
       vim.keymap.set("n", "[<", "<Cmd>call xml#NavigateDepthBackward(v:count1)<CR>", {
@@ -416,14 +420,16 @@ vim.api.nvim_create_autocmd("FileType", {
       vim.keymap.set("n", "]<", "<Cmd>call xml#NavigateDepth(v:count1)<CR>", {
         buffer = bufnr, silent = true
       })
-    elseif vim.bo.filetype == "mail" then
+    elseif filetype == "mail" then
+      vim.bo.infercase = true
       vim.cmd("call util#setupMatchit()")
-    elseif vim.bo.filetype == "markdown" then
-      vim.bo.tabstop = 2
+    elseif filetype == "markdown" then
+      vim.bo.infercase = true
       vim.bo.textwidth = 80
-    elseif vim.bo.filetype == "sql" then
+    elseif filetype == "sql" then
       vim.bo.indentexpr = "indent"
-    elseif vim.bo.filetype == "text" then
+    elseif filetype == "text" then
+      vim.bo.infercase = true
       vim.bo.textwidth = 80
     end
   end,
