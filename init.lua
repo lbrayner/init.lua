@@ -66,11 +66,6 @@ vim.keymap.set("v", "<C-J>", "<Esc><C-W>j")
 vim.keymap.set("v", "<C-K>", "<Esc><C-W>k")
 vim.keymap.set("v", "<C-L>", "<Esc><C-W>l")
 
--- splits
-vim.keymap.set("n", "<C-X>1", "<C-W>o")
-vim.keymap.set("n", "<C-X>2", "<C-W>s")
-vim.keymap.set("n", "<C-X>3", "<C-W>v")
-
 -- write
 vim.keymap.set("n", "<F6>", "<Cmd>w<CR>")
 vim.keymap.set("i", "<F6>", "<Esc><Cmd>w<CR>")
