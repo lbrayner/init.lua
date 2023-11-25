@@ -121,6 +121,18 @@ function M.preserve_view_port(command)
   end
 end
 
+function M.setup_matchit()
+  if vim.g.loaded_matchit == 1 then
+    vim.b.match_ignorecase = 0
+    vim.b.match_words = [[<:>,]] ..
+    [[<\@<=!\[CDATA\[:]] .. "]]>," ..
+    [[<\@<=!--:-->,]] ..
+    [[<\@<=?\k\+:?>,]] ..
+    [[<\@<=\([^ \t>/]\+\)\%(\s\+[^>]*\%([^/]>\|$\)\|>\|$\):<\@<=/\1>,]] ..
+    [[<\@<=\%([^ \t>/]\+\)\%(\s\+[^/>]*\|$\):/>]]
+  end
+end
+
 function M.window_is_floating()
   return vim.api.nvim_win_get_config(0).relative ~= ""
 end

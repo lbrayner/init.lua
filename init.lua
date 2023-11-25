@@ -422,7 +422,7 @@ vim.api.nvim_create_autocmd("FileType", {
       })
     elseif filetype == "mail" then
       vim.bo.infercase = true
-      vim.cmd("call util#setupMatchit()")
+      require("lbrayner").setup_matchit()
     elseif filetype == "markdown" then
       vim.bo.infercase = true
       vim.bo.textwidth = 80
