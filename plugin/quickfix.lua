@@ -41,5 +41,21 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.api.nvim_win_close(0, false)
       end, { buffer = bufnr, nowait = true })
     end
+
+    -- https://github.com/wincent/ferret: ferret#private#qargs()
+    if require("lbrayner").is_quickfix_list() then
+      vim.api.nvim_buf_create_user_command(bufnr, "QFYankFileNames", function()
+        local name_by_bufnr = vim.empty_dict()
+        for _, qfitem in ipairs(vim.fn.getqflist()) do
+          if not name_by_bufnr[qfitem.bufnr] then
+            name_by_bufnr[qfitem.bufnr] = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(qfitem.bufnr), ":~")
+          end
+        end
+        local names = vim.tbl_values(name_by_bufnr)
+        vim.fn.setreg('"', names)
+        vim.fn.setreg("+", names)
+        vim.fn.setreg("*", names)
+      end, { nargs = 0 })
+    end
   end,
 })

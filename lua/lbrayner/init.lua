@@ -95,4 +95,19 @@ function M.window_is_floating()
   return vim.api.nvim_win_get_config(0).relative ~= ""
 end
 
+function M.is_location_list(winid)
+  winid = winid or vim.api.nvim_get_current_win()
+  return vim.fn.getwininfo(winid)[1]["loclist"] == 1
+end
+
+function M.is_quickfix_list(winid)
+  winid = winid or vim.api.nvim_get_current_win()
+  return vim.fn.getwininfo(winid)[1]["quickfix"] == 1 and vim.fn.getwininfo(winid)[1]["loclist"] == 0
+end
+
+function M.is_quickfix_or_location_list(winid)
+  winid = winid or vim.api.nvim_get_current_win()
+  return vim.fn.getwininfo(winid)[1]["quickfix"] == 1
+end
+
 return M
