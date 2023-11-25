@@ -1,17 +1,4 @@
 " vim: sw=4
-function! util#truncateFilename(filename, maxlength)
-    if len(a:filename) <= a:maxlength
-        return a:filename
-    endif
-    let head = fnamemodify(a:filename, ":h")
-    let tail = fnamemodify(a:filename, ":t")
-    if head != "." && len(tail) < a:maxlength
-        " -1 (forward slash), -1 (horizontal ellipsis …)
-        return head[0:(a:maxlength - len(tail) - 1 - 1 - 1)]."…/".tail
-    endif
-    return tail[0:(a:maxlength/2 - 1)]."…".tail[(-(a:maxlength/2 - 1)):]
-endfunction
-
 " a string or a 0-arg funcref
 function! util#PreserveViewPort(command)
     let lazyr = &lazyredraw

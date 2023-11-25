@@ -133,6 +133,20 @@ function M.setup_matchit()
   end
 end
 
+function M.truncate_filename(filename, maxlength)
+  if string.len(filename) <= maxlength then
+    return filename
+  end
+  local head = vim.fn.fnamemodify(filename, ":h")
+  local tail = vim.fn.fnamemodify(filename, ":t")
+  if head ~= "." and string.len(tail) < maxlength then
+    -- -1 (horizontal ellipsis …), -1 (forward slash)
+    return string.sub(head, 1, maxlength - string.len(tail) - 1 -1) .. "…/" .. tail
+  end
+  local cut = maxlength / 2
+  return string.sub(tail, 1, cut - 1) .. "…" .. string.sub(tail, cut)
+end
+
 function M.window_is_floating()
   return vim.api.nvim_win_get_config(0).relative ~= ""
 end

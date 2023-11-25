@@ -198,9 +198,9 @@ function M.win_bar()
       statusline = statusline.."%<"..vim.fn.pathshorten(M.filename(true))
     else
       -- margins of 1 column, space and status flag
-      -- TODO port util#truncateFilename
       statusline = statusline ..
-      "%<%{util#truncateFilename(v:lua.require'lbrayner.statusline'.filename(v:true),winwidth('%')-4)}"
+      "%<%{v:lua.require'lbrayner'.truncate_filename(" ..
+      "v:lua.require'lbrayner.statusline'.filename(v:true),winwidth('%')-4)}"
     end
 
     statusline = statusline.." %{v:lua.require'lbrayner.statusline'.status_flag()}"
