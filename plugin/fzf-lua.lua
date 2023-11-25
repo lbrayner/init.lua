@@ -99,6 +99,7 @@ local function files_clear_cache()
   end
 
   fzf.files({ cmd = "find_file_cache -C", fzf_opts = { ["--history"] = history_file() } })
+  vim.cmd.echo("'Cleared FZF cache.'")
 end
 
 local function file_marks()
