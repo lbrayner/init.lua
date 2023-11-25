@@ -4,7 +4,7 @@ local is_in_directory = require("lbrayner").is_in_directory
 
 local function redefine_tabline()
   -- Is this a session?
-  local session_name = vim.fn["util#getSession"]() -- TODO port
+  local session_name = require("lbrayner").get_session()
   local session = session_name == "" and "" or string.format("%%#Question#(%s)%%#Normal# ", session_name)
   -- To be displayed on the left side
   local cwd = vim.fn.fnamemodify(vim.fn.getcwd(), ":~")
