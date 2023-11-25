@@ -17,6 +17,7 @@ function M.get_session()
   if session ~= "" then
     return vim.fn.fnamemodify(session, ":t:r")
   end
+  return ""
 end
 
 -- From vim.lsp.util.bufwinid
