@@ -4,8 +4,8 @@ function M.path()
   if vim.api.nvim_buf_get_name(0) == "" then
     return ""
   end
-  if vim.fn["util#IsInDirectory"](vim.fn.getcwd(), vim.api.nvim_buf_get_name(0), 1) == 0 then
-    return M.full_path()
+  if not require("lbrayner").is_in_directory(vim.api.nvim_buf_get_name(0), vim.fn.getcwd(), true) then
+    return M.full_path() -- In case buffer represents a directory
   end
   return vim.fn.expand("%:.")
 end

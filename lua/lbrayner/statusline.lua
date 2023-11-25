@@ -180,14 +180,13 @@ function M.win_bar()
   end
 
   if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
-    -- TODO port util#NPath
-    local dir = vim.fn.pathshorten(string.gsub(vim.fn["util#NPath"](vim.fn.FugitiveGitDir()),"/%.git$",""))
+    local dir = vim.fn.pathshorten(string.gsub(vim.fn.fnamemodify(vim.fn.FugitiveGitDir(), ":~"),"/%.git$",""))
     statusline = statusline..dir.."$ %<".."Fugitive summary " ..
     "%{v:lua.require'lbrayner.statusline'.status_flag()}"
   elseif vim.fn.exists("*FugitiveResult") and
     not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then  -- Fugitive temporary buffers
     local fugitive_temp_buf = fugitive_temporary_buffer()
-    local dir = vim.fn.pathshorten(string.gsub(vim.fn["util#NPath"](vim.fn.FugitiveGitDir()),"/%.git$",""))
+    local dir = vim.fn.pathshorten(string.gsub(vim.fn.fnamemodify(vim.fn.FugitiveGitDir(), ":~"),"/%.git$",""))
     statusline = statusline..dir.."$ %<"..fugitive_temp_buf ..
     " %{v:lua.require'lbrayner.statusline'.status_flag()}"
   elseif require("lbrayner").is_quickfix_or_location_list() then
@@ -239,14 +238,13 @@ function M.define_status_line()
   end
 
   if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
-    -- TODO port util#NPath
-    local dir = vim.fn.pathshorten(string.gsub(vim.fn["util#NPath"](vim.fn.FugitiveGitDir()),"/%.git$",""))
+    local dir = vim.fn.pathshorten(string.gsub(vim.fn.fnamemodify(vim.fn.FugitiveGitDir(), ":~"),"/%.git$",""))
     vim.wo.statusline = vim.wo.statusline.."%6*"..dir.."$%* %<".."Fugitive summary " ..
     "%1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
   elseif vim.fn.exists("*FugitiveResult") and
     not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
     local fugitive_temp_buf = fugitive_temporary_buffer()
-    local dir = vim.fn.pathshorten(string.gsub(vim.fn["util#NPath"](vim.fn.FugitiveGitDir()),"/%.git$",""))
+    local dir = vim.fn.pathshorten(string.gsub(vim.fn.fnamemodify(vim.fn.FugitiveGitDir(), ":~"),"/%.git$",""))
     vim.wo.statusline = vim.wo.statusline.."%6*"..dir.."$%* %<"..fugitive_temp_buf ..
     " %1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
   elseif require("lbrayner").is_quickfix_or_location_list() then

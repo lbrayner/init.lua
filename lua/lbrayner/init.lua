@@ -1,5 +1,16 @@
 local M = {}
 
+function M.get_quickfix_or_location_list_title(winid)
+  winid = winid or vim.api.nvim_get_current_win()
+  if not M.is_quickfix_or_location_list(winid) then
+    return ""
+  end
+  if M.is_location_list() then
+    return vim.fn.getloclist(winid, { title = 1 }).title
+  end
+  return vim.fn.getqflist({ title = 1 }).title
+end
+
 function M.get_session()
   -- vim-obsession
   local session = string.gsub(vim.v.this_session, "%.%d+%.obsession~?", "")
@@ -38,10 +49,28 @@ local function _jump_to_location(win, bufnr, pos)
   end
 end
 
-function M.is_in_directory(node, directory)
-  local full_directory = vim.fn.fnamemodify(directory, ":p")
-  local full_node = vim.fn.fnamemodify(node, ":p")
-  return vim.startswith(vim.fs.normalize(full_node), vim.fs.normalize(full_directory))
+function M.is_in_directory(node, directory, exclusive)
+  local full_node = vim.fs.normalize(vim.fn.fnamemodify(node, ":p"))
+  local full_directory = vim.fs.normalize(vim.fn.fnamemodify(directory, ":p"))
+  if exclusive and full_node == full_directory  then
+    return false
+  end
+  return vim.startswith(full_node, full_directory)
+end
+
+function M.is_location_list(winid)
+  winid = winid or vim.api.nvim_get_current_win()
+  return vim.fn.getwininfo(winid)[1]["loclist"] == 1
+end
+
+function M.is_quickfix_list(winid)
+  winid = winid or vim.api.nvim_get_current_win()
+  return vim.fn.getwininfo(winid)[1]["quickfix"] == 1 and vim.fn.getwininfo(winid)[1]["loclist"] == 0
+end
+
+function M.is_quickfix_or_location_list(winid)
+  winid = winid or vim.api.nvim_get_current_win()
+  return vim.fn.getwininfo(winid)[1]["quickfix"] == 1
 end
 
 function M.jump_to_location(filename, pos)
@@ -93,32 +122,6 @@ end
 
 function M.window_is_floating()
   return vim.api.nvim_win_get_config(0).relative ~= ""
-end
-
-function M.is_location_list(winid)
-  winid = winid or vim.api.nvim_get_current_win()
-  return vim.fn.getwininfo(winid)[1]["loclist"] == 1
-end
-
-function M.is_quickfix_list(winid)
-  winid = winid or vim.api.nvim_get_current_win()
-  return vim.fn.getwininfo(winid)[1]["quickfix"] == 1 and vim.fn.getwininfo(winid)[1]["loclist"] == 0
-end
-
-function M.is_quickfix_or_location_list(winid)
-  winid = winid or vim.api.nvim_get_current_win()
-  return vim.fn.getwininfo(winid)[1]["quickfix"] == 1
-end
-
-function M.get_quickfix_or_location_list_title(winid)
-  winid = winid or vim.api.nvim_get_current_win()
-  if not M.is_quickfix_or_location_list(winid) then
-    return ""
-  end
-  if M.is_location_list() then
-    return vim.fn.getloclist(winid, { title = 1 }).title
-  end
-  return vim.fn.getqflist({ title = 1 }).title
 end
 
 return M

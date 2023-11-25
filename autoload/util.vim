@@ -50,10 +50,6 @@ function! util#PreserveViewPort(command)
     endtry
 endfunction
 
-function! util#WindowIsFloating()
-    return nvim_win_get_config(0).relative != ""
-endfunction
-
 function! util#Options(...)
     if a:0 == 1
         if exists(a:1)
@@ -82,26 +78,4 @@ function! util#Options(...)
         endif
         return a:000[a:0-1]
     endif
-endfunction
-
-" Normalized path
-" Recent versions of getcwd() return paths with backward slashes on win32
-function util#NPath(path)
-    return fnamemodify(a:path, ":p:gs?\\?/?:s?/$??:~")
-endfunction
-
-" stridx is more efficient than substitute
-function! util#IsInDirectory(directory, node, ...)
-    let directory = util#NPath(a:directory)
-    let node = util#NPath(a:node)
-    let exclusive = a:0 && a:1
-    if exclusive && node == directory
-        return 0
-    endif
-    " Think Java's String.startsWith
-    return stridx(node, directory) == 0
-endfunction
-
-function! util#RelativeNode(directory, node)
-    return substitute(util#NPath(a:node), '\V'.util#NPath(a:directory).'/\?', "", "")
 endfunction
