@@ -50,37 +50,6 @@ function! util#PreserveViewPort(command)
     endtry
 endfunction
 
-function! util#isLocationList(...)
-    let winid = win_getid()
-    if a:0 && a:1
-        let winid = a:1
-    endif
-    return getwininfo(winid)[0]["loclist"]
-endfunction
-
-function! util#isQuickfixList(...)
-    let winid = win_getid()
-    if a:0 && a:1
-        let winid = a:1
-    endif
-    return getwininfo(winid)[0]["quickfix"] && !util#isLocationList(winid)
-endfunction
-
-function! util#isQuickfixOrLocationList(...)
-    let winid = win_getid()
-    if a:0 && a:1
-        let winid = a:1
-    endif
-    return getwininfo(winid)[0]["quickfix"]
-endfunction
-
-function! util#getQuickfixOrLocationListTitle()
-    if util#isLocationList()
-        return getloclist(0, {"title": 1}).title
-    endif
-    return getqflist({"title": 1}).title
-endfunction
-
 function! util#WindowIsFloating()
     return nvim_win_get_config(0).relative != ""
 endfunction

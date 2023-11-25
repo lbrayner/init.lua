@@ -190,9 +190,8 @@ function M.win_bar()
     local dir = vim.fn.pathshorten(string.gsub(vim.fn["util#NPath"](vim.fn.FugitiveGitDir()),"/%.git$",""))
     statusline = statusline..dir.."$ %<"..fugitive_temp_buf ..
     " %{v:lua.require'lbrayner.statusline'.status_flag()}"
-    -- TODO port util#isQuickfixOrLocationList
-  elseif vim.fn["util#isQuickfixOrLocationList"]() == 1 then
-    statusline = statusline.."%<%f %{util#getQuickfixOrLocationListTitle()}"
+  elseif require("lbrayner").is_quickfix_or_location_list() then
+    statusline = statusline.."%<%f %{v:lua.require'lbrayner'.get_quickfix_or_location_list_title()}"
   elseif vim.w.cmdline then
     statusline = ""
   else
@@ -250,9 +249,9 @@ function M.define_status_line()
     local dir = vim.fn.pathshorten(string.gsub(vim.fn["util#NPath"](vim.fn.FugitiveGitDir()),"/%.git$",""))
     vim.wo.statusline = vim.wo.statusline.."%6*"..dir.."$%* %<"..fugitive_temp_buf ..
     " %1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
-  -- TODO port util#isQuickfixOrLocationList
-  elseif vim.fn["util#isQuickfixOrLocationList"]() == 1 then
-    vim.wo.statusline = vim.wo.statusline.."%<%5*%f%* %{util#getQuickfixOrLocationListTitle()}"
+  elseif require("lbrayner").is_quickfix_or_location_list() then
+    vim.wo.statusline = vim.wo.statusline ..
+    "%<%5*%f%* %{v:lua.require'lbrayner'.get_quickfix_or_location_list_title()}"
   elseif vim.w.cmdline then
     vim.wo.statusline = vim.wo.statusline.."%<%5*[Command Line]%*"
   elseif vim.b.Statusline_custom_leftline then

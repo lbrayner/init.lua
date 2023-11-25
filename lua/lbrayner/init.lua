@@ -110,4 +110,15 @@ function M.is_quickfix_or_location_list(winid)
   return vim.fn.getwininfo(winid)[1]["quickfix"] == 1
 end
 
+function M.get_quickfix_or_location_list_title(winid)
+  winid = winid or vim.api.nvim_get_current_win()
+  if not M.is_quickfix_or_location_list(winid) then
+    return ""
+  end
+  if M.is_location_list() then
+    return vim.fn.getloclist(winid, { title = 1 }).title
+  end
+  return vim.fn.getqflist({ title = 1 }).title
+end
+
 return M
