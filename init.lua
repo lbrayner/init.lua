@@ -415,12 +415,12 @@ vim.api.nvim_create_autocmd("FileType", {
     if filetype == "gitcommit" then
       vim.bo.infercase = true
     elseif vim.tbl_contains({ "html", "javascriptreact", "typescriptreact", "xml" }, filetype) then
-      vim.keymap.set("n", "[<", "<Cmd>call xml#NavigateDepthBackward(v:count1)<CR>", {
-        buffer = bufnr, silent = true
-      })
-      vim.keymap.set("n", "]<", "<Cmd>call xml#NavigateDepth(v:count1)<CR>", {
-        buffer = bufnr, silent = true
-      })
+      vim.keymap.set("n", "[<", function()
+        require("lbrayner").navigate_depth_backward(vim.v.count1)
+      end, { buffer = bufnr, silent = true })
+      vim.keymap.set("n", "]<", function()
+        require("lbrayner").navigate_depth(vim.v.count1)
+      end, { buffer = bufnr, silent = true })
     elseif filetype == "mail" then
       vim.bo.infercase = true
       require("lbrayner").setup_matchit()

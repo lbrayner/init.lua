@@ -105,6 +105,28 @@ function M.jump_to_location(filename, pos)
   _jump_to_location(win, bufnr, pos)
 end
 
+local function navigate_depth_parent(n)
+  vim.cmd("silent normal! v"..(n+1).."atb")
+  vim.cmd([[exec "silent normal! \<Esc>"]])
+end
+
+function M.navigate_depth(depth) -- TODO not working
+  if depth < 0 then
+    M.navigate_depth_backward(-depth)
+    return
+  end
+  navigate_depth_parent(depth)
+end
+
+function M.navigate_depth_backward(depth)
+  if depth < 0 then
+    M.navigate_depth(-depth)
+    return
+  end
+  M.navigate_depth(depth)
+  vim.fn["matchit#Match_wrapper"]("", 1, "n")
+end
+
 function M.options(...)
   local arg = { ... }
   for _, value in pairs(arg) do
