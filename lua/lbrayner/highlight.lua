@@ -1,8 +1,8 @@
 local M = {}
 
 vim.api.nvim_create_user_command("OverlengthToggle", function()
-  if not vim.w.Overlength then
-    vim.w.Overlength = 90
+  if not vim.w.overlength then
+    vim.w.overlength = 90
   end
   local matches = vim.tbl_filter(function(hi)
     return hi.group == "Overlength"
@@ -14,13 +14,13 @@ vim.api.nvim_create_user_command("OverlengthToggle", function()
     vim.cmd.echo("'Overlength highlight cleared.'")
     return
   end
-  vim.cmd("highlight Overlength ctermbg=red ctermfg=white guibg=#592929")
-  vim.fn.matchadd("Overlength", [[\%]]..vim.w.Overlength..[[v.\+]])
+  vim.api.nvim_set_hl(0, "Overlength", { bg = "#592929" })
+  vim.fn.matchadd("Overlength", string.format([[\%%%dv.\+]], vim.w.overlength))
   vim.cmd.echo("'Overlength highlighted.'")
 end, { nargs = 0 })
 
 function M.trailing_whitespace_group()
-  vim.cmd("highlight TrailingWhitespace ctermbg=red ctermfg=white guibg=#ff0000")
+  vim.api.nvim_set_hl(0, "TrailingWhitespace", { bg = "#ff0000" })
 end
 
 M.trailing_whitespace_group()
