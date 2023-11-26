@@ -252,6 +252,7 @@ vim.keymap.set("ca", "Rw", [[Rg -s -e'\b''<C-R><C-W>''\b']])
 -- Modules
 
 require("lbrayner.clipboard")
+require("lbrayner.highlight")
 
 -- Subsection: autocmds {{{
 
