@@ -60,7 +60,9 @@ vim.api.nvim_create_user_command("Tabclose", function(command)
 end, { bang = true, nargs = 0 })
 
 vim.api.nvim_create_user_command("Tabnew", function()
-  vim.fn["util#PreserveViewPort"]("tabe %")
+  require("lbrayner").preserve_view_port(function()
+    vim.cmd("tabedit %")
+  end)
 end, { nargs = 0 })
 
 vim.api.nvim_create_user_command("Tabedit", function()
