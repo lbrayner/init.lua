@@ -103,7 +103,7 @@ function M.get_status_line_tail()
   return buffer_position ..
   " %1.1{%v:lua.require'lbrayner.statusline'.diagnostics()%}" ..
   "%( %6*%{v:lua.require'lbrayner.statusline'.version_control()}%*%)" ..
-  " %4*%{util#Options('&fileencoding','&encoding')}%*" .. -- TODO util#Options is buggy, port it and fix it
+  " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*" ..
   " %4.(%4*%{&fileformat}%*%)" ..
   " %2*%{&filetype}%* "
 end

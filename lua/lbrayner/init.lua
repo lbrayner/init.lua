@@ -105,6 +105,15 @@ function M.jump_to_location(filename, pos)
   _jump_to_location(win, bufnr, pos)
 end
 
+function M.options(...)
+  local arg = { ... }
+  for _, value in pairs(arg) do
+    if value then
+      return value
+    end
+  end
+end
+
 function M.preserve_view_port(command)
   local lazyr = vim.go.lazyredraw
   local winview = vim.fn.winsaveview()
