@@ -156,7 +156,6 @@ function M.define_modified_status_line()
     else
       vim.wo.statusline = vim.wo.statusline.."%<%1*"..M.filename()
     end
-
     vim.wo.statusline = vim.wo.statusline.." %{v:lua.require'lbrayner.statusline'.status_flag()}%*"
   end
 
@@ -202,7 +201,6 @@ function M.win_bar()
       "%<%{v:lua.require'lbrayner'.truncate_filename(" ..
       "v:lua.require'lbrayner.statusline'.filename(v:true),winwidth('%')-4)}"
     end
-
     statusline = statusline.." %{v:lua.require'lbrayner.statusline'.status_flag()}"
   end
 
@@ -262,10 +260,8 @@ function M.define_status_line()
     else
       vim.wo.statusline = vim.wo.statusline.."%<"..M.filename().."%*"
     end
-
     vim.wo.statusline = vim.wo.statusline.." %1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
   end
-
   vim.wo.statusline = vim.wo.statusline.." %="..rightline
 end
 
@@ -306,7 +302,7 @@ function M.highlight_mode(mode)
 end
 
 function M.highlight_status_line_nc()
-    vim.api.nvim_set_hl(0, "StatusLineNC", { bg = mapping.not_current_bg, fg = mapping.not_current_fg })
+  vim.api.nvim_set_hl(0, "StatusLineNC", { bg = mapping.not_current_bg, fg = mapping.not_current_fg })
 end
 
 function M.load_theme(name)
