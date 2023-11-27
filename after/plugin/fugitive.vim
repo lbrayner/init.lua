@@ -2,22 +2,22 @@ if !exists("*FugitiveParse")
     finish
 endif
 
-command! -bar -bang -nargs=* -complete=customlist,fugitive#EditComplete Gdi
-            \ exe fugitive#Diffsplit(1, <bang>0, "leftabove <mods>", <q-args>)
-function! FObject()
-    return FugitiveParse(expand("%"))[0]
-endfunction
-function! FPath()
-    return fnamemodify(FugitiveReal(expand("%")),":~:.")
-endfunction
+" " command! -bar -bang -nargs=* -complete=customlist,fugitive#EditComplete Gdi
+" "             \ exe fugitive#Diffsplit(1, <bang>0, "leftabove <mods>", <q-args>)
+" function! FObject()
+"     return FugitiveParse(expand("%"))[0]
+" endfunction
+" function! FPath()
+"     return fnamemodify(FugitiveReal(expand("%")),":~:.")
+" endfunction
 
-command! -nargs=0 FObject :let @"=FObject()
-command! -nargs=0 FPath :let @"=FPath()
+" command! -nargs=0 FObject :let @"=FObject()
+" command! -nargs=0 FPath :let @"=FPath()
 
-if exists("*Clip")
-    command! -nargs=0 FObject call Clip(FObject())
-    command! -nargs=0 FPath call Clip(FPath())
-endif
+" if exists("*Clip")
+"     command! -nargs=0 FObject call Clip(FObject())
+"     command! -nargs=0 FPath call Clip(FPath())
+" endif
 
 cnoreabbrev Gb Git blame --abbrev=6
 cnoreabbrev Gc Git checkout
