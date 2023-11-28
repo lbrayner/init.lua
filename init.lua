@@ -210,6 +210,15 @@ vim.api.nvim_create_user_command("Synstack", function()
   print(vim.inspect(syn_id_addrs))
 end, { nargs = 0 })
 
+-- https://stackoverflow.com/a/2573758
+-- Inspired by the TabMessage function/command combo found at <http://www.jukie.net/~bart/conf/vimrc>.
+vim.api.nvim_create_user_command("RedirMessages", function(command)
+  vim.cmd("redir => message")
+  vim.cmd(string.format("silent %s", command.args))
+  vim.cmd("redir END")
+  vim.cmd("silent put=message")
+end, { complete = "command", nargs = "+" })
+
 -- Delete file marks
 vim.api.nvim_create_user_command("Delfilemarks", require("lbrayner.marks").delete_file_marks, { nargs = 0 })
 
