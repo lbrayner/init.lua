@@ -1,4 +1,5 @@
-vim.keymap.set("n", "<Leader>di", function() -- toggle iwhite
+vim.keymap.set("n", "<Leader>di", "<Cmd>windo diffthis<CR>")
+vim.keymap.set("n", "<Leader>dw", function() -- toggle iwhite
   if string.find(vim.go.diffopt, "iwhite") then
     vim.opt.diffopt:remove({ "iwhite" })
     vim.cmd.echo("'-iwhite'")
