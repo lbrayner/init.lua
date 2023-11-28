@@ -12,11 +12,10 @@ function M.get_config()
     },
   }, require("lbrayner.lsp").default_capabilities())
 
-  local java_debug_jar_pattern = string.format(
-    "%s/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar",
-    vim.fn.stdpath("data"))
+  local java_debug_jar_pattern = vim.fs.joinpath(vim.fn.stdpath("data"),
+    "java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar")
 
-  local vscode_java_test_jar_pattern = string.format("%s/vscode-java-test/server/*.jar", vim.fn.stdpath("data"))
+  local vscode_java_test_jar_pattern = vim.fs.joinpath(vim.fn.stdpath("data"), "vscode-java-test/server/*.jar")
 
   return {
     capabilities = capabilities,
