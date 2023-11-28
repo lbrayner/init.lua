@@ -35,9 +35,9 @@ function M.clip(text)
     text = tostring(text)
     vim.fn.setreg('"', text)
   end
-  vim.fn.setreg("+", text)
-  vim.fn.setreg("*", text)
-  vim.cmd.echo(string.format("'%s'", text))
+  vim.fn.setreg("+", vim.fn.getreg('"'))
+  vim.fn.setreg("*", vim.fn.getreg('"'))
+  vim.cmd.echo(string.format("'%s'", vim.fn.getreg('"')))
 end
 
 vim.api.nvim_create_user_command("Clip", function(command)
