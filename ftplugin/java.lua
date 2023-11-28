@@ -95,6 +95,9 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
         vim.api.nvim_del_augroup_by_name("jdtls_setup")
         vim.lsp.stop_client(client.id)
       end, { nargs = 0 })
+      vim.api.nvim_buf_create_user_command(bufnr, "JdtTestClass", require("jdtls").test_class, { nargs = 0 })
+      vim.api.nvim_buf_create_user_command(bufnr, "JdtTestNearestMethod", require("jdtls").test_nearest_method, {
+        nargs = 0 })
       vim.api.nvim_buf_create_user_command(bufnr, "JdtTypeHierarchy", java_type_hierarchy, {
         nargs = 0
       })
