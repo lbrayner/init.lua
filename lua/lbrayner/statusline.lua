@@ -52,7 +52,7 @@ function M.diagnostics()
 end
 
 function M.version_control()
-  if not vim.fn.exists("*FugitiveHead") then
+  if vim.fn.exists("*FugitiveHead") == 0 then
     return ""
   end
   local branch = vim.fn.FugitiveHead()
@@ -111,7 +111,7 @@ end
 function M.filename(full_path)
   local path = require("lbrayner.clipboard").path()
 
-  if vim.fn.exists("*FugitiveParse") and
+  if vim.fn.exists("*FugitiveParse") == 1 and
     require("lbrayner.fugitive").fugitive_object() ~= "" then -- Fugitive objects
     path = require("lbrayner.fugitive").fugitive_object()
   elseif vim.startswith(vim.api.nvim_buf_get_name(0), "jdt://") then -- jdtls
@@ -165,7 +165,7 @@ end
 
 function M.win_bar()
   -- Fugitive blame
-  if vim.fn.exists("*FugitiveResult") then
+  if vim.fn.exists("*FugitiveResult") == 1 then
     local fugitive_result = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())
     if fugitive_result.filetype and
       fugitive_result.blame_file and
@@ -183,7 +183,7 @@ function M.win_bar()
     local dir = vim.fn.pathshorten(string.gsub(vim.fn.fnamemodify(vim.fn.FugitiveGitDir(), ":~"),"/%.git$",""))
     statusline = statusline..dir.."$ %<".."Fugitive summary " ..
     "%{v:lua.require'lbrayner.statusline'.status_flag()}"
-  elseif vim.fn.exists("*FugitiveResult") and
+  elseif vim.fn.exists("*FugitiveResult") == 1 and
     not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then  -- Fugitive temporary buffers
     local fugitive_temp_buf = fugitive_temporary_buffer()
     local dir = vim.fn.pathshorten(string.gsub(vim.fn.fnamemodify(vim.fn.FugitiveGitDir(), ":~"),"/%.git$",""))
@@ -214,7 +214,7 @@ end
 
 -- margins of 1 column (on both sides)
 function M.define_status_line()
-  if vim.fn.exists("*FugitiveResult") then
+  if vim.fn.exists("*FugitiveResult") == 1 then
     local fugitive_result = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())
     if fugitive_result.filetype and
       fugitive_result.blame_file and
@@ -240,7 +240,7 @@ function M.define_status_line()
     local dir = vim.fn.pathshorten(string.gsub(vim.fn.fnamemodify(vim.fn.FugitiveGitDir(), ":~"),"/%.git$",""))
     vim.wo.statusline = vim.wo.statusline.."%6*"..dir.."$%* %<".."Fugitive summary " ..
     "%1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
-  elseif vim.fn.exists("*FugitiveResult") and
+  elseif vim.fn.exists("*FugitiveResult") == 1 and
     not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
     local fugitive_temp_buf = fugitive_temporary_buffer()
     local dir = vim.fn.pathshorten(string.gsub(vim.fn.fnamemodify(vim.fn.FugitiveGitDir(), ":~"),"/%.git$",""))

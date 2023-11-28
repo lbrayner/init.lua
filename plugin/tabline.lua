@@ -13,7 +13,7 @@ local function redefine_tabline()
   local max_length = vim.go.columns - 1 - 3 - 1 -
   (session_name == "" and 0 or 1 + #session_name + 1 + 1) - #cwd - 1
 
-  if vim.fn.exists("*FugitiveResult") then
+  if vim.fn.exists("*FugitiveResult") == 1 then
     local fugitive_result = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())
     if fugitive_result.filetype and
       fugitive_result.blame_file and
@@ -27,7 +27,7 @@ local function redefine_tabline()
     end
   end
 
-  if vim.fn.exists("*FugitiveResult") and
+  if vim.fn.exists("*FugitiveResult") == 1 and
     not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then  -- Fugitive temporary buffers
     tabline = tabline .. " %="
     local fcwd = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf()).cwd
@@ -38,7 +38,8 @@ local function redefine_tabline()
     end
     local truncated_filename = require("lbrayner").truncate_filename(vim.api.nvim_buf_get_name(0), max_length)
     tabline = tabline .. string.format("%%#Normal#%s ", truncated_filename)
-  elseif vim.fn.exists("*FugitiveParse") and require("lbrayner.fugitive").fugitive_object() ~= "" then -- Fugitive objects
+  elseif vim.fn.exists("*FugitiveParse") == 1 and
+    require("lbrayner.fugitive").fugitive_object() ~= "" then -- Fugitive objects
     local name_dir = vim.fn.FugitiveParse(vim.api.nvim_buf_get_name(0))
     local dir = name_dir[2]
     dir = string.gsub(dir, "/%.git$", "") -- Fugitive summary

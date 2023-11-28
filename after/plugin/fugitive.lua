@@ -1,4 +1,4 @@
-if not vim.fn.exists("*FugitiveParse") then
+if not vim.fn.exists("*FugitiveParse") == 1 then
   return
 end
 
