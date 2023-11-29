@@ -40,7 +40,7 @@ end
 
 vim.api.nvim_create_user_command("BWipe", function(command)
   wipe_buffers(command.bang, function(buf)
-    return buf.listed == 1 and string.find(buf.name, command.args)
+    return buf.listed == 1 and string.find(buf.name, command.args, 1, true)
   end)
 end, { bang = true, complete = "file", nargs = 1 })
 
@@ -56,13 +56,13 @@ end, { bang = true, complete = "filetype", nargs = "?" })
 
 vim.api.nvim_create_user_command("BWipeHidden", function(command)
   wipe_buffers(command.bang, function(buf)
-    return buf.hidden == 1 and string.find(buf.name, command.args)
+    return buf.hidden == 1 and string.find(buf.name, command.args, 1, true)
   end)
 end, { bang = true, complete = "file", nargs = "*" })
 
 vim.api.nvim_create_user_command("BWipeUnlisted", function(command)
   wipe_buffers(command.bang, function(buf)
-    return buf.listed == 0 and string.find(buf.name, command.args)
+    return buf.listed == 0 and string.find(buf.name, command.args, 1, true)
   end)
 end, { bang = true, complete = "file", nargs = "*" })
 
