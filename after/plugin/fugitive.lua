@@ -20,7 +20,7 @@ vim.keymap.set("ca", "Gtm", "Git tag --merged")
 
 vim.api.nvim_create_user_command("Gdi", function(command)
   vim.fn["fugitive#Diffsplit"](1, command.bang and 0 or 1, "leftabove <mods>", command.args)
-end, { bang = true, bar = true,  nargs = "*" })
+end, { bang = true, bar = true, complete = "customlist,fugitive#EditComplete", nargs = "*" })
 vim.api.nvim_create_user_command("FObject", function()
   require("lbrayner.clipboard").clip(require("lbrayner.fugitive").fugitive_object())
 end, { nargs = 0 })
