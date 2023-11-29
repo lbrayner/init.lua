@@ -18,7 +18,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
 
   vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
     group = jdtls_setup,
-    pattern = config.root_dir .. "/*.java",
+    pattern = vim.fs.joinpath(config.root_dir, "*.java"),
     desc = "New Java buffers attach to jdtls",
     callback = function()
       require("jdtls").start_or_attach(config)
@@ -62,7 +62,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
 
   vim.api.nvim_create_autocmd("LspAttach", {
     group = jdtls_setup,
-    pattern = { config.root_dir .. "/*.java", "jdt://*", "*.class" },
+    pattern = { vim.fs.joinpath(config.root_dir, "*.java"), "jdt://*", "*.class" },
     desc = "jdtls buffer setup",
     callback = function(args)
       local bufnr = args.buf
@@ -108,7 +108,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
 
   vim.api.nvim_create_autocmd("LspDetach", {
     group = jdtls_undo,
-    pattern = config.root_dir .. "/*.java",
+    pattern = vim.fs.joinpath(config.root_dir, "*.java"),
     desc = "Undo jdtls buffer setup",
     callback = function(args)
       local bufnr = args.buf
