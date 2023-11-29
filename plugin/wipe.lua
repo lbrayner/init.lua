@@ -21,7 +21,7 @@ local function loop_buffers(force, predicate)
 end
 
 local function wipe_buffers(force, predicate)
-  local buffer_count, error_count = loop_buffers(bang, predicate)
+  local buffer_count, error_count = loop_buffers(force, predicate)
   local message = ""
   if buffer_count == 0 then
     message = "No buffers wiped"
