@@ -14,7 +14,6 @@ function M.get_config()
 
   local java_debug_jar_pattern = vim.fs.joinpath(vim.fn.stdpath("data"),
     "java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar")
-
   local vscode_java_test_jar_pattern = vim.fs.joinpath(vim.fn.stdpath("data"), "vscode-java-test/server/*.jar")
 
   return {
@@ -150,7 +149,8 @@ function M.java_type_hierarchy(opts)
 
       vim.list_extend(hierarchy, parents)
 
-      return require("jdtls.util").execute_command(resolve_command(parent), resolve_handler)
+      require("jdtls.util").execute_command(resolve_command(parent), resolve_handler)
+      return
     end
 
     if #hierarchy > 0 then
@@ -182,11 +182,13 @@ function M.java_type_hierarchy(opts)
 
     if opts.on_list then
       assert(type(opts.on_list) == "function", "on_list is not a function")
-      return opts.on_list({ title = title, items = items, context = ctx })
+      opts.on_list({ title = title, items = items, context = ctx })
+      return
     end
 
     if #locations == 1  then
-      return vim.lsp.util.jump_to_location(locations[1], offset_encoding, opts.reuse_win)
+      vim.lsp.util.jump_to_location(locations[1], offset_encoding, opts.reuse_win)
+      return
     end
 
     vim.fn.setqflist({}, " ", { title = title, items = items, context = ctx })
@@ -194,6 +196,7 @@ function M.java_type_hierarchy(opts)
   end
 
   opts = opts or {}
+
   local position = vim.lsp.util.make_position_params(0, offset_encoding)
   local command = {
     command = "java.navigate.openTypeHierarchy",
@@ -203,11 +206,12 @@ function M.java_type_hierarchy(opts)
       "0", -- resolveDepth
     },
   }
+
   require("jdtls.util").execute_command(command, function(err, result)
     assert(not err, vim.inspect(err))
     if not result then
-      return vim.notify("Type hierarchy: openTypeHierarchy returned no results",
-        vim.log.levels.ERROR)
+      vim.notify("Type hierarchy: openTypeHierarchy returned no results", vim.log.levels.ERROR)
+      return
     end
     open_type_hierarchy = result
     require("jdtls.util").execute_command(resolve_command(result), resolve_handler)

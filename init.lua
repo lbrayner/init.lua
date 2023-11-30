@@ -559,7 +559,7 @@ if vim.fn.glob(vim.fs.joinpath(vim_dir, "pack/bundle/start/*/plugin")) == "" the
     return
 end
 
--- Subsection: package customization {{{
+-- Subsection: packages {{{
 
 -- fzf-lua
 

@@ -11,7 +11,8 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
   local client = vim.lsp.get_clients({ name = "jdtls" })[1]
 
   if not command.bang and client then
-    return require("jdtls").start_or_attach(config)
+    require("jdtls").start_or_attach(config)
+    return
   end
 
   local jdtls_setup = vim.api.nvim_create_augroup("jdtls_setup", { clear = true })

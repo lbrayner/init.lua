@@ -7,22 +7,6 @@ require("fidget").setup({
   },
 })
 
-local capabilities = require("lbrayner.lsp").default_capabilities()
-
--- Typescript, Javascript
-require("typescript").setup({
-  server = {
-    autostart = false,
-    capabilities = capabilities,
-  },
-})
-
--- Python
-require("lspconfig").pyright.setup {
-  autostart = false,
-  capabilities = capabilities,
-}
-
 -- Lua
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#lua_ls
 require("lspconfig").lua_ls.setup {
@@ -49,6 +33,22 @@ require("lspconfig").lua_ls.setup {
       },
     },
   },
+}
+
+local capabilities = require("lbrayner.lsp").default_capabilities()
+
+-- Typescript, Javascript
+require("typescript").setup({
+  server = {
+    autostart = false,
+    capabilities = capabilities,
+  },
+})
+
+-- Python
+require("lspconfig").pyright.setup {
+  autostart = false,
+  capabilities = capabilities,
 }
 
 local declaration
