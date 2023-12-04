@@ -10,6 +10,19 @@ vim.keymap.set("n", "<Leader>dw", function() -- toggle iwhite
 end)
 vim.keymap.set("n", "<Leader>do", "<Cmd>diffoff!<CR>")
 
+-- TODO for tackling a vim-fugitive bug, reproduce and submit a bug report
+local diffupdate = vim.api.nvim_create_augroup("diffupdate", { clear = false })
+vim.api.nvim_create_autocmd("TabEnter" , {
+  group = diffupdate,
+  callback = function(args)
+    local winid = vim.fn.bufwinid(args.buf)
+    if not winid then return end
+    if vim.wo[winid].diff then
+      vim.cmd.diffupdate()
+    end
+  end,
+})
+
 local function update_conflict_markers(bufnr)
   require("lbrayner.ripgrep").lrg([["^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)" ]] ..
   vim.fn.shellescape(vim.api.nvim_buf_get_name(0)))
