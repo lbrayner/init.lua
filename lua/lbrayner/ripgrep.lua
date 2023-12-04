@@ -41,4 +41,35 @@ function M.rg(txt)
   rg(txt)
 end
 
+vim.go.grepprg = "rg --vimgrep"
+vim.go.grepformat = "%f:%l:%c:%m"
+vim.go.shellpipe = "&>"
+
+vim.api.nvim_create_user_command("Rg", function(command)
+  local txt = command.args
+  local success, err = pcall(M.rg, txt)
+
+  if not success then
+    vim.cmd.cclose()
+    if type(err) == "string" and string.find(err, " Rg:") then
+      vim.cmd.echoerr(string.format('"%s"', vim.fn.escape(err, '"')))
+      return
+    end
+    vim.cmd.echomsg(string.format('"Error searching for %s. Unmatched quotes? Check your command."',
+      vim.fn.escape(txt, '"')))
+    return
+  end
+
+  if not vim.tbl_isempty(vim.fn.getqflist()) then
+    vim.cmd("botright copen")
+  else
+    vim.cmd.cclose()
+    vim.cmd.echomsg(string.format('"No match found for “%s”."', vim.fn.escape(txt, [["\]])))
+  end
+end, { complete = "file", nargs = "*" })
+
+vim.keymap.set("ca", "Rg", "Rg -e")
+vim.keymap.set("ca", "Rb", [[Rg -s -e'\b''''\b'<Left><Left><Left><Left><Left>]])
+vim.keymap.set("ca", "Rw", [[Rg -s -e'\b''<C-R><C-W>''\b']])
+
 return M
