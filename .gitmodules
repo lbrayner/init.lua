@@ -1,3 +1,4 @@
+# vim: noexpandtab
 [submodule "pack/bundle/start/linediff.vim"]
 	path = pack/bundle/start/linediff.vim
 	url = https://github.com/AndrewRadev/linediff.vim.git
@@ -34,7 +35,7 @@
 [submodule "pack/bundle/opt/fzf-lua"]
 	path = pack/bundle/start/fzf-lua
 	url = https://github.com/ibhagwan/fzf-lua
-    branch = main
+	branch = main
 [submodule "pack/bundle/opt/nvim-jdtls"]
 	path = pack/bundle/start/nvim-jdtls
 	url = https://github.com/mfussenegger/nvim-jdtls
@@ -44,7 +45,7 @@
 [submodule "pack/bundle/start/typescript.nvim"]
 	path = pack/bundle/start/typescript.nvim
 	url = https://github.com/jose-elias-alvarez/typescript.nvim
-    branch = main
+	branch = main
 [submodule "pack/bundle/start/nvim-snippy"]
 	path = pack/bundle/start/nvim-snippy
 	url = https://github.com/dcampos/nvim-snippy
@@ -54,7 +55,7 @@
 [submodule "pack/bundle/start/fidget.nvim"]
 	path = pack/bundle/start/fidget.nvim
 	url = https://github.com/j-hui/fidget.nvim
-    branch = main
+	branch = main
 [submodule "pack/bundle/start/nvim-dap-ui"]
 	path = pack/bundle/start/nvim-dap-ui
 	url = https://github.com/lbrayner/nvim-dap-ui
