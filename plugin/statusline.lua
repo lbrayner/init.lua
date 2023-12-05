@@ -8,7 +8,7 @@ vim.g.qf_disable_statusline = 1
 
 vim.go.laststatus = 3
 vim.go.statusline = "%{v:lua.require'lbrayner.statusline'.empty()}"
-vim.go.winbar = "%{%v:lua.require'lbrayner.statusline'.win_bar()%}"
+vim.go.winbar = "%{%v:lua.require'lbrayner.statusline'.winbar()%}"
 
 local statusline = vim.api.nvim_create_augroup("statusline", { clear = true })
 

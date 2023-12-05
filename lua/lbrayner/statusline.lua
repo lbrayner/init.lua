@@ -163,7 +163,7 @@ function M.define_modified_status_line()
   vim.wo.statusline = vim.wo.statusline.." %="..rightline
 end
 
-function M.win_bar()
+function M.winbar()
   -- Fugitive blame
   if vim.fn.exists("*FugitiveResult") == 1 then
     local fugitive_result = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())
@@ -306,6 +306,12 @@ function M.highlight_status_line_nc()
   vim.api.nvim_set_hl(0, "StatusLineNC", { bg = mapping.not_current_bg, fg = mapping.not_current_fg })
 end
 
+function M.highlight_winbar()
+  local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
+  vim.api.nvim_set_hl(0, "WinBar", { bold = true, fg = normal.fg })
+  vim.api.nvim_set_hl(0, "WinBarNC", { bold = true, fg = normal.fg })
+end
+
 function M.load_theme(name)
   local theme = require("lbrayner.statusline.themes."..name)
   attr = theme.get_attr_map()
@@ -315,6 +321,7 @@ function M.load_theme(name)
   end
   M.highlight_mode("normal")
   M.highlight_status_line_nc()
+  M.highlight_winbar()
 end
 
 function M.initialize()
