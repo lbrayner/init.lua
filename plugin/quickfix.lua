@@ -1,6 +1,6 @@
 local function display_error_switchbuf(swb)
   local command = "cc"
-  if vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].loclist == 1 then
+  if require("lbrayner").is_location_list() then
     command = "ll"
   end
   local switchbuf = vim.go.switchbuf
@@ -13,7 +13,7 @@ end
 
 local function display_error_cmd(cmd)
   local command = "cc"
-  if vim.fn.getwininfo(vim.api.nvim_get_current_win())[1].loclist == 1 then
+  if require("lbrayner").is_location_list() then
     command = "ll"
   end
   local linenr = vim.api.nvim_win_get_cursor(0)[1]
