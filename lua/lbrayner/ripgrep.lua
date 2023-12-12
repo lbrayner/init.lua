@@ -53,6 +53,7 @@ vim.api.nvim_create_user_command("Rg", function(command)
       return
     end
     txt = vim.api.nvim_buf_get_text(0, pos_start[1] - 1, pos_start[2], pos_end[1] - 1, pos_end[2] + 1, {})[1]
+    txt = string.format("-s -F -e %s", vim.fn.shellescape(txt))
   end
 
   local success, err = pcall(M.rg, txt)
