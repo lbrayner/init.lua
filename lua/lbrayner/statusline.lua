@@ -164,12 +164,11 @@ function M.define_modified_status_line()
 end
 
 function M.winbar()
-  -- Fugitive blame
   if vim.fn.exists("*FugitiveResult") == 1 then
     local fugitive_result = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())
     if fugitive_result.filetype and
       fugitive_result.blame_file and
-      fugitive_result.filetype == "fugitiveblame" then
+      fugitive_result.filetype == "fugitiveblame" then -- Fugitive blame
       return " Fugitive blame %<%{v:lua.require'lbrayner.statusline'.status_flag()}"
     end
   end
