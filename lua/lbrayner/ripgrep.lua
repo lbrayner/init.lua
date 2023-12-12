@@ -38,6 +38,23 @@ vim.go.shellpipe = "&>"
 
 vim.api.nvim_create_user_command("Rg", function(command)
   local txt = command.args
+
+  if txt == "" then
+    -- https://neovim.discourse.group/t/function-that-return-visually-selected-text/1601
+    local pos_start = vim.api.nvim_buf_get_mark(0, "<")
+    local pos_end = vim.api.nvim_buf_get_mark(0, ">")
+    if command.line1 ~= pos_start[1] or
+      command.line2 ~= pos_end[1] then
+      vim.cmd.echomsg("'Line range not allowed, only visual selection.'")
+      return
+    end
+    if pos_start[1] ~= pos_end[1] then
+      vim.cmd.echomsg("'Visual selection pattern cannot span multiple lines.'")
+      return
+    end
+    txt = vim.api.nvim_buf_get_text(0, pos_start[1] - 1, pos_start[2], pos_end[1] - 1, pos_end[2] + 1, {})[1]
+  end
+
   local success, err = pcall(M.rg, txt)
 
   if not success then
@@ -57,7 +74,7 @@ vim.api.nvim_create_user_command("Rg", function(command)
     vim.cmd.cclose()
     vim.cmd.echomsg(string.format('"No match found for “%s”."', vim.fn.escape(txt, [["\]])))
   end
-end, { complete = "file", nargs = "*" })
+end, { complete = "file", nargs = "*", range = true })
 
 vim.keymap.set("ca", "Rg", "Rg -e")
 vim.keymap.set("ca", "Rb", [[Rg -s -e'\b''''\b'<Left><Left><Left><Left><Left>]])
