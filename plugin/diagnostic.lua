@@ -159,10 +159,10 @@ if not _G.default_virtual_text_handler then
 end
 
 local function DefaultDiagnostics()
-  vim.cmd "highlight DiagnosticError ctermfg=1 guifg=Red"
-  vim.cmd "highlight DiagnosticWarn  ctermfg=3 guifg=Orange"
-  vim.cmd "highlight DiagnosticInfo  ctermfg=4 guifg=LightBlue"
-  vim.cmd "highlight DiagnosticHint  ctermfg=7 guifg=LightGrey"
+  vim.cmd "highlight DiagnosticError guifg=Red"
+  vim.cmd "highlight DiagnosticWarn  guifg=Orange"
+  vim.cmd "highlight DiagnosticInfo  guifg=LightBlue"
+  vim.cmd "highlight DiagnosticHint  guifg=LightGrey"
 
   vim.fn.sign_define(err, { text="E", texthl=err, linehl="", numhl="" })
   vim.fn.sign_define(war, { text="W", texthl=war, linehl="", numhl="" })
