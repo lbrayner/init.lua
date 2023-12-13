@@ -36,16 +36,20 @@ vim.go.grepprg = "rg --vimgrep"
 vim.go.grepformat = "%f:%l:%c:%m"
 vim.go.shellpipe = "&>"
 
-local function ripgrep(txt, line1, line2)
+vim.api.nvim_create_user_command("Rg", function(command)
+  local txt = command.args
+  local line1 = command.line1
+  local line2 = command.line2
+
   if line1 == 0 and line2 == 0 then
     local context = vim.fn.getqflist({ context = 1 }).context
     if vim.tbl_get(context, "ripgrep", "txt") then
       -- :0Rg performs a search with the last text juxtaposed with the new text
-      ripgrep(vim.trim(table.concat({ context.ripgrep.txt, txt }, " ")))
+      txt = vim.trim(table.concat({ context.ripgrep.txt, txt }, " "))
     else
       print("Could not find a ripgrep search context.")
+      return
     end
-    return
   end
 
   if txt == "" then
@@ -84,10 +88,6 @@ local function ripgrep(txt, line1, line2)
     vim.cmd.cclose()
     print(string.format("No match found for “%s”.", txt))
   end
-end
-
-vim.api.nvim_create_user_command("Rg", function(command)
-  ripgrep(command.args, command.line1, command.line2)
 end, { complete = "file", nargs = "*", range = 0 })
 
 vim.keymap.set("ca", "Rg", "Rg -e")
