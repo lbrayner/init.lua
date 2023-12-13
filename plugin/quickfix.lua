@@ -22,7 +22,7 @@ local function display_error_cmd(cmd)
   vim.cmd(linenr .. command)
 end
 
-local qf_setup = vim.api.nvim_create_augroup("qf_setup", { clear=true })
+local qf_setup = vim.api.nvim_create_augroup("qf_setup", { clear = true })
 
 vim.api.nvim_create_autocmd("FileType", {
   group = qf_setup,
