@@ -37,6 +37,16 @@ vim.go.grepformat = "%f:%l:%c:%m"
 vim.go.shellpipe = "&>"
 
 local function ripgrep(txt, line1, line2)
+  if line1 == 0 and line2 == 0 then
+    local context = vim.fn.getqflist({ context = 1 }).context
+    if vim.tbl_get(context, "ripgrep", "txt") then
+      ripgrep(context.ripgrep.txt)
+    else
+      print("Could not find a ripgrep search context.")
+    end
+    return
+  end
+
   if txt == "" then
     -- https://neovim.discourse.group/t/function-that-return-visually-selected-text/1601
     local pos_start = vim.api.nvim_buf_get_mark(0, "<")
@@ -77,16 +87,7 @@ end
 
 vim.api.nvim_create_user_command("Rg", function(command)
   ripgrep(command.args, command.line1, command.line2)
-end, { complete = "file", nargs = "*", range = true })
-
-vim.api.nvim_create_user_command("RgAgain", function()
-  local context = vim.fn.getqflist({ context = 1 }).context
-  if vim.tbl_get(context, "ripgrep", "txt") then
-    ripgrep(context.ripgrep.txt)
-  else
-    print("Cannot perform a ripgrep search without context.")
-  end
-end, { nargs = 0 })
+end, { complete = "file", nargs = "*", range = 0 })
 
 vim.keymap.set("ca", "Rg", "Rg -e")
 vim.keymap.set("ca", "Rb", [[Rg -s -e'\b''''\b'<Left><Left><Left><Left><Left>]])
