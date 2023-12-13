@@ -40,7 +40,8 @@ local function ripgrep(txt, line1, line2)
   if line1 == 0 and line2 == 0 then
     local context = vim.fn.getqflist({ context = 1 }).context
     if vim.tbl_get(context, "ripgrep", "txt") then
-      ripgrep(context.ripgrep.txt)
+      -- :0Rg performs a search with the last text juxtaposed with the new text
+      ripgrep(vim.trim(table.concat({ context.ripgrep.txt, txt }, " ")))
     else
       print("Could not find a ripgrep search context.")
     end
