@@ -38,10 +38,11 @@ vim.go.shellpipe = "&>"
 
 vim.api.nvim_create_user_command("Rg", function(command)
   local txt = command.args
+  local count = command.count
   local line1 = command.line1
   local line2 = command.line2
 
-  if line1 == 0 and line2 == 0 then
+  if count == 0 then -- :0Rg
     local context = vim.fn.getqflist({ context = 1 }).context
     if vim.tbl_get(context, "ripgrep", "txt") then
       -- :0Rg performs a search with the last text juxtaposed with the new text
@@ -50,14 +51,11 @@ vim.api.nvim_create_user_command("Rg", function(command)
       print("Could not find a ripgrep search context.")
       return
     end
-  end
-
-  if txt == "" then
+  elseif count > 0 then -- :'<,'>Rg
     -- https://neovim.discourse.group/t/function-that-return-visually-selected-text/1601
     local pos_start = vim.api.nvim_buf_get_mark(0, "<")
     local pos_end = vim.api.nvim_buf_get_mark(0, ">")
-    if line1 ~= pos_start[1] or
-      line2 ~= pos_end[1] then
+    if line1 ~= pos_start[1] or line2 ~= pos_end[1] then
       print("Line range not allowed, only visual selection.")
       return
     end
@@ -65,8 +63,14 @@ vim.api.nvim_create_user_command("Rg", function(command)
       print("Visual selection pattern cannot span multiple lines.")
       return
     end
-    txt = vim.api.nvim_buf_get_text(0, pos_start[1] - 1, pos_start[2], pos_end[1] - 1, pos_end[2] + 1, {})[1]
-    txt = string.format("-s -F -e %s", vim.fn.shellescape(txt))
+    local start_row = pos_start[1] - 1
+    local start_col = pos_start[2]
+    local end_row = pos_end[1] - 1
+    local end_col = pos_end[2] + 1
+    local visual_selection = vim.api.nvim_buf_get_text(0, start_row, start_col, end_row, end_col, {})[1]
+    txt = vim.trim(table.concat({
+      string.format("-s -F -e %s", vim.fn.shellescape(visual_selection)),
+      txt }, " "))
   end
 
   local success, err = pcall(M.rg, txt)
@@ -88,7 +92,7 @@ vim.api.nvim_create_user_command("Rg", function(command)
     vim.cmd.cclose()
     print(string.format("No match found for “%s”.", txt))
   end
-end, { complete = "file", nargs = "*", range = 0 })
+end, { complete = "file", nargs = "*", range = -1 })
 
 vim.keymap.set("ca", "Rg", "Rg -e")
 vim.keymap.set("ca", "Rb", [[Rg -s -e'\b''''\b'<Left><Left><Left><Left><Left>]])
