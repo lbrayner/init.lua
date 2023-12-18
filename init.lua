@@ -418,6 +418,8 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   desc = "Start in insert mode",
   callback = function()
     vim.cmd.startinsert()
+    vim.bo.spelllang = "en"
+    vim.wo.spell = true
   end,
 })
 
