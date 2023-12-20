@@ -8,6 +8,9 @@ function M.status_flag()
   if vim.bo.modified then
     return "+"
   end
+  if vim.bo.buftype == "help" then
+    return "H"
+  end
   if not vim.bo.modifiable then
     return "-"
   end
