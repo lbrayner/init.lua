@@ -11,7 +11,7 @@ function M.fugitive_object()
 end
 
 function M.fugitive_path()
-  return vim.fn.fnamemodify(vim.fn.FugitiveReal(vim.api.nvim_buf_get_name(0)),":~:.")
+  return vim.fn.fnamemodify(vim.fn.FugitiveReal(vim.api.nvim_buf_get_name(0)), ":~:.")
 end
 
 return M
