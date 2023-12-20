@@ -86,18 +86,35 @@ local function on_attach(_, bufnr)
   vim.keymap.set("n", "gy", type_definition, bufopts)
 
   -- Commands
+  vim.api.nvim_buf_create_user_command(bufnr, "LspAddWorkspaceFolder", function(command)
+    local dir = command.args
+    if dir == "" then
+      dir = vim.fn.getcwd()
+    end
+    vim.lsp.buf.add_workspace_folder(dir)
+  end, { complete = "file", nargs = "?" })
   vim.api.nvim_buf_create_user_command(bufnr, "LspCodeAction", function(command)
     vim.lsp.buf.code_action({ range = get_range(command) })
   end, { nargs = 0, range = true })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDeclaration", declaration, { nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDocumentSymbol", vim.lsp.buf.document_symbol, {
-    nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDefinition", definition, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDetach", function()
     for _, client in ipairs(vim.lsp.get_clients()) do
       vim.lsp.buf_detach_client(0, client.id)
     end
   end, { nargs = 0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixAll", function()
+    quickfix_diagnostics_opts.severity = nil
+    lsp_setqflist({}, bufnr)
+  end, { nargs = 0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixError", function()
+    lsp_setqflist({ severity = vim.diagnostic.severity.ERROR }, bufnr)
+  end, { nargs = 0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixWarn", function()
+    lsp_setqflist({ severity = { min = vim.diagnostic.severity.WARN } }, bufnr)
+  end, { nargs = 0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspDocumentSymbol", vim.lsp.buf.document_symbol, {
+    nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspFormat", function(command)
     vim.lsp.buf.format({ async = true, range = get_range(command) })
   end, { nargs = 0, range = "%" })
@@ -119,18 +136,6 @@ local function on_attach(_, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, "LspTypeDefinition", type_definition, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceFolders", function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end, { nargs = 0 })
-
-  -- Diagnostic on quickfix
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixAll", function()
-    quickfix_diagnostics_opts.severity = nil
-    lsp_setqflist({}, bufnr)
-  end, { nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixError", function()
-    lsp_setqflist({ severity = vim.diagnostic.severity.ERROR }, bufnr)
-  end, { nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixWarn", function()
-    lsp_setqflist({ severity = { min = vim.diagnostic.severity.WARN } }, bufnr)
   end, { nargs = 0 })
 end
 
@@ -179,11 +184,15 @@ vim.api.nvim_create_autocmd("LspDetach", {
 
     -- Delete user commands
     for _, command in ipairs({
+      "LspAddWorkspaceFolder",
       "LspCodeAction",
       "LspDeclaration",
-      "LspDocumentSymbol",
       "LspDefinition",
       "LspDetach",
+      "LspDiagnosticQuickFixAll",
+      "LspDiagnosticQuickFixError",
+      "LspDiagnosticQuickFixWarn",
+      "LspDocumentSymbol",
       "LspFormat",
       "LspHover",
       "LspImplementation",
@@ -192,9 +201,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
       "LspSignatureHelp",
       "LspTypeDefinition",
       "LspWorkspaceFolders",
-      "LspDiagnosticQuickFixAll",
-      "LspDiagnosticQuickFixError",
-      "LspDiagnosticQuickFixWarn" }) do
+    }) do
       pcall(vim.api.nvim_buf_del_user_command, bufnr, command) -- Ignore error if command doesn't exist
     end
   end,
