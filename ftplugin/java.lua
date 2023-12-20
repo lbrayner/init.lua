@@ -19,9 +19,15 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
 
   vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
     group = jdtls_setup,
-    pattern = vim.fs.joinpath(config.root_dir, "*.java"),
+    pattern = "*.java",
     desc = "New Java buffers attach to jdtls",
-    callback = function()
+    callback = function(args)
+      local bufname = args.match
+
+      if vim.fn.filereadable(bufname) == 0 then
+        return
+      end
+
       require("jdtls").start_or_attach(config)
     end,
   })
@@ -40,7 +46,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
     if vim.api.nvim_get_current_buf() ~= bufnr and
       vim.api.nvim_buf_is_loaded(bufnr) and
       vim.bo[bufnr].ft == "java" and
-      vim.startswith(vim.api.nvim_buf_get_name(bufnr), config.root_dir) and
+      vim.fn.filereadable(vim.api.nvim_buf_get_name(bufnr)) == 1 and
       (not client or not vim.lsp.buf_is_attached(bufnr, client.id)) then
       vim.api.nvim_create_autocmd({ "BufEnter" }, {
         group = jdtls_setup,
@@ -63,10 +69,15 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
 
   vim.api.nvim_create_autocmd("LspAttach", {
     group = jdtls_setup,
-    pattern = { vim.fs.joinpath(config.root_dir, "*.java"), "jdt://*", "*.class" },
+    pattern = { "*.java", "jdt://*", "*.class" },
     desc = "jdtls buffer setup",
     callback = function(args)
       local bufnr = args.buf
+      local bufname = args.match
+
+      if vim.fn.filereadable(bufname) == 0 and not vim.startswith(bufname, "jdt://") then
+        return
+      end
 
       -- Mappings
       local bufopts = { buffer = bufnr }
@@ -74,7 +85,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
       vim.keymap.set("n", "gY", java_type_hierarchy, bufopts)
 
       -- Custom statusline
-      if not vim.startswith(vim.api.nvim_buf_get_name(bufnr), "jdt://") then -- jdtls
+      if vim.endswith(bufname, ".java") then
         vim.b[bufnr].Statusline_custom_leftline = '%<%{expand("%:t:r")} ' ..
           "%{v:lua.require'lbrayner.statusline'.status_flag()}"
         vim.b[bufnr].Statusline_custom_mod_leftline = '%<%1*%{expand("%:t:r")}' ..
@@ -109,7 +120,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
 
   vim.api.nvim_create_autocmd("LspDetach", {
     group = jdtls_undo,
-    pattern = vim.fs.joinpath(config.root_dir, "*.java"),
+    pattern = "*.java",
     desc = "Undo jdtls buffer setup",
     callback = function(args)
       local bufnr = args.buf
