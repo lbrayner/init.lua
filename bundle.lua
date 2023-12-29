@@ -1,5 +1,5 @@
-local config = vim.fs.normalize(vim.fn.fnamemodify(vim.fn.stdpath("config"), ":p")) -- ~/.config/nvim
-local data = vim.fs.normalize(vim.fn.fnamemodify(vim.fn.stdpath("data"), ":p")) -- ~/.local/share/nvim
+local config = vim.fn.stdpath("config") -- ~/.config/nvim
+local data = vim.fn.stdpath("data") -- ~/.local/share/nvim
 
 vim.opt.runtimepath:remove(config)
 vim.opt.runtimepath:remove(vim.fs.joinpath(config, "after"))
