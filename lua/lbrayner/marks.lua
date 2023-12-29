@@ -8,11 +8,9 @@ function M.delete_file_marks()
 end
 
 local function get_file_marks()
-  local all_marks = vim.fn.getmarklist()
-
   local file_marks = vim.tbl_filter(function(mark)
-    return mark.mark:match("'".."%u") -- Uppercase letters
-  end, all_marks)
+    return mark.mark:match("'%u") -- Uppercase letters
+  end, vim.fn.getmarklist())
 
   return file_marks
 end
@@ -78,17 +76,22 @@ local function file_mark_next_mark()
   return file_mark_by_mark[current_mark]
 end
 
-local function go_to_file_mark(mark)
-  if not mark then return end
-  local filename = mark.file
-  -- Full path because tilde is not expanded in lua
-  filename = vim.fn.fnamemodify(filename, ":p")
+function M.get_current_mark()
+  return current_mark
+end
+
+local function go_to_file_mark(file_mark)
+  print(string.format("Jumped to %s: %s.", file_mark.mark, file_mark.file))
+  if not file_mark then return end
+  local file = file_mark.file
+  -- Normalized path because tilde is not expanded in lua
+  file = vim.fs.normalize(file)
   local pos
-  local bufnr = vim.fn.bufadd(filename)
+  local bufnr = vim.fn.bufadd(file)
   if not vim.api.nvim_buf_is_loaded(bufnr) then
-    pos = { mark.pos[2], (mark.pos[3] - 1) }
+    pos = { file_mark.pos[2], (file_mark.pos[3] - 1) }
   end
-  require("lbrayner").jump_to_location(filename, pos)
+  require("lbrayner").jump_to_location(file, pos)
 end
 
 function M.go_to_previous_file_mark()
@@ -115,12 +118,47 @@ function M.go_to_next_file_mark()
   end
 end
 
+-- Autocmds
+
+local function maybe_set_current_mark()
+  if current_mark then return true end
+  local tabnr = vim.api.nvim_get_current_tabpage()
+  local tabinfo = vim.fn.gettabinfo(tabnr)[1]
+  local file_mark_by_mark, _ = M.file_mark_navigator()
+  for _, win in ipairs(tabinfo.windows) do
+    local bufnr = vim.api.nvim_win_get_buf(win)
+    for _, file_mark in pairs(file_mark_by_mark) do
+      if vim.fs.normalize(file_mark.file) == vim.api.nvim_buf_get_name(bufnr) then
+        current_mark = file_mark.mark
+        return true
+      end
+    end
+  end
+end
+
+local marks = vim.api.nvim_create_augroup("marks", { clear = true })
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = marks,
+  desc = "Maybe set current file mark's initial value (file mark navigator)",
+  callback = function()
+    vim.api.nvim_create_autocmd("TabEnter", {
+      group = marks,
+      callback = maybe_set_current_mark,
+    })
+    return maybe_set_current_mark()
+  end,
+})
+
+if vim.v.vim_did_enter == 1 then
+  vim.api.nvim_exec_autocmds("VimEnter", { group = marks })
+end
+
 -- Commands
--- Delete file marks
 vim.api.nvim_create_user_command("Delfilemarks", M.delete_file_marks, { nargs = 0 })
 
 -- Mappings
-vim.keymap.set("n", "[4", M.go_to_next_file_mark)
-vim.keymap.set("n", "]4", M.go_to_previous_file_mark)
+vim.keymap.set("n", "]4", M.go_to_next_file_mark)
+vim.keymap.set("n", "[4", M.go_to_previous_file_mark)
 
 return M
