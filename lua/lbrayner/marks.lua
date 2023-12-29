@@ -135,33 +135,24 @@ end
 
 -- Autocmds
 
-local function maybe_set_current_mark()
-  if current_mark then return true end
-  local tabnr = vim.api.nvim_get_current_tabpage()
-  local tabinfo = vim.fn.gettabinfo(tabnr)[1]
-  local file_mark_info_by_mark, _ = M.file_mark_navigator()
-  for _, win in ipairs(tabinfo.windows) do
-    local bufnr = vim.api.nvim_win_get_buf(win)
-    for _, file_mark_info in pairs(file_mark_info_by_mark) do
-      if vim.fs.normalize(file_mark_info.file) == vim.api.nvim_buf_get_name(bufnr) then
-        current_mark = file_mark_info.mark
-        return true
-      end
-    end
-  end
-end
-
 local marks = vim.api.nvim_create_augroup("marks", { clear = true })
 
 vim.api.nvim_create_autocmd("VimEnter", {
   group = marks,
   desc = "Maybe set current file mark's initial value (file mark navigator)",
   callback = function()
-    vim.api.nvim_create_autocmd("TabEnter", {
-      group = marks,
-      callback = maybe_set_current_mark,
-    })
-    return maybe_set_current_mark()
+    local tabnr = vim.api.nvim_get_current_tabpage()
+    local tabinfo = vim.fn.gettabinfo(tabnr)[1]
+    local file_mark_info_by_mark, _ = M.file_mark_navigator()
+    for _, win in ipairs(tabinfo.windows) do
+      local bufnr = vim.api.nvim_win_get_buf(win)
+      for _, file_mark_info in pairs(file_mark_info_by_mark) do
+        if vim.fs.normalize(file_mark_info.file) == vim.api.nvim_buf_get_name(bufnr) then
+          current_mark = file_mark_info.mark
+          return
+        end
+      end
+    end
   end,
 })
 
