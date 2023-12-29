@@ -115,4 +115,12 @@ function M.go_to_next_file_mark()
   end
 end
 
+-- Commands
+-- Delete file marks
+vim.api.nvim_create_user_command("Delfilemarks", M.delete_file_marks, { nargs = 0 })
+
+-- Mappings
+vim.keymap.set("n", "[4", M.go_to_next_file_mark)
+vim.keymap.set("n", "]4", M.go_to_previous_file_mark)
+
 return M

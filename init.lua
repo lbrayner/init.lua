@@ -127,10 +127,6 @@ vim.keymap.set("n", "crc", [[:s#\%\(\<[a-z_]\w\{-}\)\@<=_\(\a\)#\u\1#g]])
 -- Convert from camelCase to score_case
 vim.keymap.set("n", "cr_", [[:s#\(\<\u\l\+\|\l\+\)\(\u\)#\l\1_\l\2#g]])
 
--- Go to next file mark
-vim.keymap.set("n", "[4", require("lbrayner.marks").go_to_next_file_mark)
-vim.keymap.set("n", "]4", require("lbrayner.marks").go_to_previous_file_mark)
-
 -- From vim-unimpaired: insert blank lines above and below
 vim.keymap.set("n", "[<Space>", [[<Cmd>exe "put!=repeat(nr2char(10), v:count1)\<Bar>silent ']+"<CR>]])
 vim.keymap.set("n", "]<Space>", [[<Cmd>exe "put =repeat(nr2char(10), v:count1)\<Bar>silent ']-"<CR>]])
@@ -219,15 +215,13 @@ vim.api.nvim_create_user_command("RedirMessages", function(command)
   vim.cmd("silent put=message")
 end, { complete = "command", nargs = "+" })
 
--- Delete file marks
-vim.api.nvim_create_user_command("Delfilemarks", require("lbrayner.marks").delete_file_marks, { nargs = 0 })
-
 -- }}}
 
 -- Modules
 
 require("lbrayner.clipboard")
 require("lbrayner.highlight")
+require("lbrayner.marks")
 require("lbrayner.ripgrep")
 
 -- Subsection: autocmds {{{
