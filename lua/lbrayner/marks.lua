@@ -94,9 +94,9 @@ end
 
 function M.go_to_file_by_file_mark(mark)
   assert(type(mark) == "string", "Bad argument; 'mark' must be a string.")
-  assert(mark:match("^'%u$"), "Bad argument; 'mark' must be a file mark.")
+  assert(mark:match("^%u$"), "Bad argument; 'mark' must be a file mark.")
   local file_mark_info_by_mark, _ = M.file_mark_navigator()
-  local file_mark_info = file_mark_info_by_mark[mark]
+  local file_mark_info = file_mark_info_by_mark["'"..mark]
   if not file_mark_info then
     print(string.format("“%s” is not set."))
     return
