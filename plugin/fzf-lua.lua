@@ -73,13 +73,7 @@ fzf.setup({
 local function file_mark_jump_to_location(selected, _)
   local mark = selected[1]
   mark = "'" .. mark:match("%u") -- Uppercase letters
-  local file_mark_by_mark, _ = require("lbrayner.marks").file_mark_navigator()
-  local file_mark = file_mark_by_mark[mark]
-  local filename = file_mark.file
-  -- Full path because tilde is not expanded in lua
-  filename = vim.fn.fnamemodify(filename, ":p")
-  local pos = { file_mark.pos[2], (file_mark.pos[3] - 1) }
-  require("lbrayner").jump_to_location(filename, pos)
+  require("lbrayner.marks").go_to_file_by_file_mark(mark)
 end
 
 local function history_file()

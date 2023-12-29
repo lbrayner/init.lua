@@ -46,13 +46,14 @@ local function file_mark_previous_mark()
     idx = indexed_marks[current_mark]
   end
 
+  local previous_mark
   if idx == 1 then
-    current_mark = indexed_marks[#indexed_marks]
+    previous_mark = indexed_marks[#indexed_marks]
   else
-    current_mark = indexed_marks[idx-1]
+    previous_mark = indexed_marks[idx-1]
   end
 
-  return file_mark_by_mark[current_mark]
+  return file_mark_by_mark[previous_mark]
 end
 
 local function file_mark_next_mark()
@@ -67,22 +68,29 @@ local function file_mark_next_mark()
     idx = indexed_marks[current_mark]
   end
 
+  local next_mark
   if idx == #indexed_marks then
-    current_mark = indexed_marks[1]
+    next_mark = indexed_marks[1]
   else
-    current_mark = indexed_marks[idx+1]
+    next_mark = indexed_marks[idx+1]
   end
 
-  return file_mark_by_mark[current_mark]
+  return file_mark_by_mark[next_mark]
 end
 
 function M.get_current_mark()
   return current_mark
 end
 
-local function go_to_file_mark(file_mark)
+function M.go_to_file_by_file_mark(mark)
+  local file_mark_by_mark, _ = M.file_mark_navigator()
+  M.go_to_file_by_file_mark_info(file_mark_by_mark[mark])
+end
+
+function M.go_to_file_by_file_mark_info(file_mark)
   print(string.format("Jumped to %s: %s.", file_mark.mark, file_mark.file))
   if not file_mark then return end
+  current_mark = file_mark.mark
   local file = file_mark.file
   -- Normalized path because tilde is not expanded in lua
   file = vim.fs.normalize(file)
@@ -101,7 +109,7 @@ function M.go_to_previous_file_mark()
     if not previous_mark then return end
     local previous_mark_bufnr = previous_mark.pos[1]
     if previous_mark_bufnr ~= vim.api.nvim_get_current_buf() then
-      return go_to_file_mark(previous_mark)
+      return M.go_to_file_by_file_mark_info(previous_mark)
     end
   end
 end
@@ -113,7 +121,7 @@ function M.go_to_next_file_mark()
     if not next_mark then return end
     local next_mark_bufnr = next_mark.pos[1]
     if next_mark_bufnr ~= vim.api.nvim_get_current_buf() then
-      return go_to_file_mark(next_mark)
+      return M.go_to_file_by_file_mark_info(next_mark)
     end
   end
 end
