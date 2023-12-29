@@ -2,7 +2,7 @@ if vim.fn.executable("fzf") == 0 then
   return
 end
 
-if vim.fn.isdirectory(vim.fn.fnamemodify("~/.fzf", ":p")) then
+if vim.fn.isdirectory(vim.fs.normalize("~/.fzf")) then
   vim.cmd "set rtp+=~/.fzf"
 elseif vim.fn.isdirectory("/usr/share/doc/fzf/examples") then -- Linux
   vim.cmd "set rtp+=/usr/share/doc/fzf/examples"

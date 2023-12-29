@@ -41,7 +41,7 @@ function M.get_config()
       java = {
         settings = {
           url = (function()
-            local prefs = vim.fn.fnamemodify("~/.config/nvim/config/jdtls/settings.prefs", ":p")
+            local prefs = vim.fs.normalize("~/.config/nvim/config/jdtls/settings.prefs")
             if vim.fn.filereadable(prefs) == 1 then
               return prefs
             end
