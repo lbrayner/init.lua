@@ -3,9 +3,9 @@ if vim.fn.executable("fzf") == 0 then
 end
 
 if vim.fn.isdirectory(vim.fs.normalize("~/.fzf")) then
-  vim.cmd "set rtp+=~/.fzf"
+  vim.opt.runtimepath:append(vim.fs.normalize("~/.fzf"))
 elseif vim.fn.isdirectory("/usr/share/doc/fzf/examples") then -- Linux
-  vim.cmd "set rtp+=/usr/share/doc/fzf/examples"
+  vim.opt.runtimepath:append("/usr/share/doc/fzf/examples")
 else
   return
 end
