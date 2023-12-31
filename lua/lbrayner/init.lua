@@ -31,7 +31,7 @@ local function bufwinid(bufnr)
   end
 end
 
-local function _jump_to_location(win, bufnr, pos)
+local function _jump_to_location(win, bufnr, pos, flash)
   -- From vim.lsp.util.show_document
   -- Save position in jumplist
   if vim.bo.buftype ~= "terminal" then -- TODO debug to find the real cause
@@ -47,6 +47,10 @@ local function _jump_to_location(win, bufnr, pos)
       -- Open folds under the cursor
       vim.cmd("normal! zv")
     end)
+  end
+
+  if flash and not require("lbrayner.flash").is_flash_window_mode() then
+    require("lbrayner.flash").flash_window()
   end
 end
 
@@ -74,7 +78,7 @@ function M.is_quickfix_or_location_list(winid)
   return vim.fn.getwininfo(winid)[1]["quickfix"] == 1
 end
 
-function M.jump_to_location(filename, pos)
+function M.jump_to_location(filename, pos, flash)
   local bufnr = vim.fn.bufadd(filename)
   local win = bufwinid(bufnr)
 
@@ -97,12 +101,12 @@ function M.jump_to_location(filename, pos)
       win = vim.api.nvim_get_current_win()
       vim.api.nvim_set_current_win(prev)
 
-      _jump_to_location(win, bufnr, pos)
+      _jump_to_location(win, bufnr, pos, flash)
     end)
     return
   end
 
-  _jump_to_location(win, bufnr, pos)
+  _jump_to_location(win, bufnr, pos, flash)
 end
 
 local function navigate_depth_parent(n)

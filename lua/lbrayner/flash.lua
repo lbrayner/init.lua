@@ -56,6 +56,10 @@ end
 
 local flash_window_mode
 
+function M.is_flash_window_mode()
+  return flash_window_mode
+end
+
 vim.api.nvim_create_user_command("FlashWindowMode", function()
   if flash_window_mode then
     vim.api.nvim_del_augroup_by_id(flash_window_mode)
