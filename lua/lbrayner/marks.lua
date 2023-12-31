@@ -88,7 +88,7 @@ local function file_mark_info_jump_to_location(file_mark_info)
   if not vim.api.nvim_buf_is_loaded(bufnr) then
     pos = { file_mark_info.pos[2], (file_mark_info.pos[3] - 1) }
   end
-  require("lbrayner").jump_to_location(file, pos)
+  require("lbrayner").jump_to_location(file, pos, true)
 end
 
 function M.file_mark_jump_to_location(mark)
@@ -103,10 +103,6 @@ function M.file_mark_jump_to_location(mark)
   file_mark_info_jump_to_location(file_mark_info)
 end
 
-local function message(file_mark_info)
- print(string.format("Jumped to %s: %s.", file_mark_info.mark, file_mark_info.file))
-end
-
 local function file_mark_jump_to_previous()
   -- Try to get a different buffer
   local mark = current_mark
@@ -117,7 +113,6 @@ local function file_mark_jump_to_previous()
     local previous_mark_bufnr = previous_mark_info.pos[1]
     if previous_mark_bufnr ~= vim.api.nvim_get_current_buf() then
       file_mark_info_jump_to_location(previous_mark_info)
-      message(previous_mark_info)
       return
     end
   end
@@ -133,7 +128,6 @@ local function file_mark_jump_to_next()
     local next_mark_bufnr = next_mark_info.pos[1]
     if next_mark_bufnr ~= vim.api.nvim_get_current_buf() then
       file_mark_info_jump_to_location(next_mark_info)
-      message(next_mark_info)
       return
     end
   end
