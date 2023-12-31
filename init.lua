@@ -220,6 +220,7 @@ end, { complete = "command", nargs = "+" })
 -- Modules
 
 require("lbrayner.clipboard")
+require("lbrayner.flash")
 require("lbrayner.highlight")
 require("lbrayner.marks")
 require("lbrayner.ripgrep")
