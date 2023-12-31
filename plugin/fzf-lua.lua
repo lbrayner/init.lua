@@ -73,7 +73,7 @@ fzf.setup({
 local function file_mark_jump_to_location(selected, _)
   local mark = selected[1]
   mark = mark:match("%u") -- Uppercase letters
-  require("lbrayner.marks").go_to_file_by_file_mark(mark)
+  require("lbrayner.marks").file_mark_jump_to_location(mark)
 end
 
 local function history_file()

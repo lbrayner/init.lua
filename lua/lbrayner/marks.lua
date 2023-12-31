@@ -10,7 +10,7 @@ local function get_file_mark_info_list()
   return file_mark_info_list
 end
 
-function M.file_mark_navigator()
+local function get_file_mark_navigator()
   local file_mark_info_list = get_file_mark_info_list()
 
   if vim.tbl_isempty(file_mark_info_list) then return end
@@ -29,9 +29,9 @@ function M.file_mark_navigator()
   return file_mark_info_by_mark, indexed_marks
 end
 
-local function get_previous_file_mark_info(mark)
+local function file_mark_info_get_previous(mark)
   local idx
-  local file_mark_info_by_mark, indexed_marks = M.file_mark_navigator()
+  local file_mark_info_by_mark, indexed_marks = get_file_mark_navigator()
 
   if not indexed_marks then return end
 
@@ -51,9 +51,9 @@ local function get_previous_file_mark_info(mark)
   return file_mark_info_by_mark[previous_mark]
 end
 
-local function get_next_file_mark_info(mark)
+local function file_mark_info_get_next(mark)
   local idx
-  local file_mark_info_by_mark, indexed_marks = M.file_mark_navigator()
+  local file_mark_info_by_mark, indexed_marks = get_file_mark_navigator()
 
   if not indexed_marks then return end
 
@@ -77,8 +77,7 @@ function M.get_current_mark()
   return current_mark
 end
 
-local function go_to_file_by_file_mark_info(file_mark_info)
-  print(string.format("Jumped to %s: %s.", file_mark_info.mark, file_mark_info.file))
+local function file_mark_info_jump_to_location(file_mark_info)
   if not file_mark_info then return end
   current_mark = file_mark_info.mark
   local file = file_mark_info.file
@@ -92,42 +91,50 @@ local function go_to_file_by_file_mark_info(file_mark_info)
   require("lbrayner").jump_to_location(file, pos)
 end
 
-function M.go_to_file_by_file_mark(mark)
+function M.file_mark_jump_to_location(mark)
   assert(type(mark) == "string", "Bad argument; 'mark' must be a string.")
   assert(mark:match("^%u$"), "Bad argument; 'mark' must be a file mark.")
-  local file_mark_info_by_mark, _ = M.file_mark_navigator()
+  local file_mark_info_by_mark, _ = get_file_mark_navigator()
   local file_mark_info = file_mark_info_by_mark["'"..mark]
   if not file_mark_info then
-    print(string.format("“%s” is not set."))
+    print(string.format("“%s” is not set.", mark))
     return
   end
-  go_to_file_by_file_mark_info(file_mark_info)
+  file_mark_info_jump_to_location(file_mark_info)
 end
 
-function M.go_to_previous_file_mark()
+local function message(file_mark_info)
+ print(string.format("Jumped to %s: %s.", file_mark_info.mark, file_mark_info.file))
+end
+
+local function file_mark_jump_to_previous()
   -- Try to get a different buffer
   local mark = current_mark
   for _ = 1, #get_file_mark_info_list() do
-    local previous_mark_info = get_previous_file_mark_info(mark)
+    local previous_mark_info = file_mark_info_get_previous(mark)
     mark = previous_mark_info.mark
     if not previous_mark_info then return end
     local previous_mark_bufnr = previous_mark_info.pos[1]
     if previous_mark_bufnr ~= vim.api.nvim_get_current_buf() then
-      return go_to_file_by_file_mark_info(previous_mark_info)
+      file_mark_info_jump_to_location(previous_mark_info)
+      message(previous_mark_info)
+      return
     end
   end
 end
 
-function M.go_to_next_file_mark()
+local function file_mark_jump_to_next()
   -- Try to get a different buffer
   local mark = current_mark
   for _ = 1, #get_file_mark_info_list() do
-    local next_mark_info = get_next_file_mark_info(mark)
+    local next_mark_info = file_mark_info_get_next(mark)
     mark = next_mark_info.mark
     if not next_mark_info then return end
     local next_mark_bufnr = next_mark_info.pos[1]
     if next_mark_bufnr ~= vim.api.nvim_get_current_buf() then
-      return go_to_file_by_file_mark_info(next_mark_info)
+      file_mark_info_jump_to_location(next_mark_info)
+      message(next_mark_info)
+      return
     end
   end
 end
@@ -139,7 +146,7 @@ vim.api.nvim_create_user_command("Delfilemarks", function()
  end, { nargs = 0 })
 
 -- Mappings
-vim.keymap.set("n", "]4", M.go_to_next_file_mark)
-vim.keymap.set("n", "[4", M.go_to_previous_file_mark)
+vim.keymap.set("n", "]4", file_mark_jump_to_next)
+vim.keymap.set("n", "[4", file_mark_jump_to_previous)
 
 return M
