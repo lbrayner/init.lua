@@ -79,7 +79,7 @@ end
 local function history_file()
   local session = require("lbrayner").get_session()
   if session then
-    return string.format("%s/fzf_history_%s", vim.fn.stdpath("cache"), session)
+    return vim.fs.joinpath(vim.fn.stdpath("cache"), "fzf_history_" .. session)
   end
 end
 
