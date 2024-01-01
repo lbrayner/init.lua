@@ -89,12 +89,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
       group = statusline,
       callback = vim.schedule_wrap(require("lbrayner.statusline").redefine_status_line),
     })
+    vim.schedule(require("lbrayner.statusline").redefine_status_line)
   end,
-})
-
-vim.api.nvim_create_autocmd("VimEnter", {
-  group = statusline,
-  callback = vim.schedule_wrap(require("lbrayner.statusline").redefine_status_line),
 })
 
 if vim.v.vim_did_enter == 1 then

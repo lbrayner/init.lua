@@ -43,7 +43,7 @@ end
 
 local trunc_virt_text = vim.api.nvim_create_augroup("trunc_virt_text", { clear = true })
 
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
+vim.api.nvim_create_autocmd("VimEnter", {
   group = trunc_virt_text,
   callback = function()
     vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
@@ -56,13 +56,8 @@ vim.api.nvim_create_autocmd({ "VimEnter" }, {
         end
       end,
     })
-  end,
-})
 
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
-  group = trunc_virt_text,
-  callback = function()
-    vim.api.nvim_create_autocmd({ "WinResized" }, {
+    vim.api.nvim_create_autocmd("WinResized", {
       group = trunc_virt_text,
       callback = function(args)
         local winids = vim.v.event.windows
@@ -209,7 +204,7 @@ end
 
 vim.api.nvim_create_user_command("CustomDiagnostics", CustomDiagnostics, { nargs = 0 })
 
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
+vim.api.nvim_create_autocmd("VimEnter", {
   group = custom_diagnostics,
   callback = CustomDiagnostics,
 })

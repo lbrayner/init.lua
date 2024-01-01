@@ -15,7 +15,7 @@ require("tint").setup({
 
 local tint_custom = vim.api.nvim_create_augroup("tint_custom", { clear = true })
 
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
+vim.api.nvim_create_autocmd("VimEnter", {
   group = tint_custom,
   callback = function()
     vim.api.nvim_create_autocmd("WinEnter", {

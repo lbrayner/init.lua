@@ -48,7 +48,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
       vim.bo[bufnr].ft == "java" and
       vim.fn.filereadable(vim.api.nvim_buf_get_name(bufnr)) == 1 and
       (not client or not vim.lsp.buf_is_attached(bufnr, client.id)) then
-      vim.api.nvim_create_autocmd({ "BufEnter" }, {
+      vim.api.nvim_create_autocmd("BufEnter", {
         group = jdtls_setup,
         buffer = bufnr,
         desc = "This Java buffer will attach to jdtls once focused",
