@@ -4,6 +4,7 @@ function M.empty()
   return ""
 end
 
+-- A Nerd Font is required
 function M.status_flag()
   if vim.bo.modified then
     if vim.bo.readonly then
@@ -27,12 +28,12 @@ function M.status_flag()
 end
 
 local function get_buffer_severity()
-  if not (vim.tbl_count(vim.diagnostic.get(0)) > 0) then
+  if vim.tbl_isempty(vim.diagnostic.get(0)) then
     return nil
   end
   for _, level in ipairs(vim.diagnostic.severity) do
     local items =  vim.diagnostic.get(0, { severity = level })
-    if vim.tbl_count(items) > 0 then
+    if not vim.tbl_isempty(items) then
       return level
     end
   end
