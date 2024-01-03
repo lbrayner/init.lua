@@ -160,7 +160,10 @@ function M.java_type_hierarchy(opts)
       end
     end
 
-    if #hierarchy == 0 then return print("Type hierarchy: no results.") end
+    if #hierarchy == 0 then
+      print("Type hierarchy: no results.")
+      return
+    end
 
     local locations = vim.tbl_map(function(parent)
       return { uri = parent.uri, range = parent.selectionRange }
