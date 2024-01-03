@@ -6,16 +6,22 @@ end
 
 function M.status_flag()
   if vim.bo.modified then
-    return "+"
+    if vim.bo.readonly then
+      return "󰷢"
+    end
+    return "󱦹"
   end
   if vim.bo.buftype == "help" then
-    return "H"
+    return ""
+  end
+  if vim.bo.buftype == "terminal" then
+    return ""
   end
   if not vim.bo.modifiable then
-    return "-"
+    return "󰷤"
   end
   if vim.bo.readonly then
-    return "R"
+    return "󰌾"
   end
   return " "
 end
