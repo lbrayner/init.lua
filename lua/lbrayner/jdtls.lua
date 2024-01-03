@@ -71,6 +71,11 @@ function M.java_go_to_top_level_declaration()
   client.request("textDocument/documentSymbol", params, function(err, result, ctx)
     assert(not err, vim.inspect(err))
 
+    if vim.tbl_isempty(result) then
+      vim.notify("Go to top level declaration: no document symbols found", vim.log.levels.ERROR)
+      return
+    end
+
     local top_level_symbols = vim.tbl_filter(function(symbol)
       return vim.tbl_contains({
         SymbolKind.Class,
