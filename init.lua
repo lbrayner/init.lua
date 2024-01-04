@@ -372,7 +372,7 @@ vim.api.nvim_create_autocmd("FileType", {
     "typescriptreact", "xml"
   },
   group = file_type_setup,
-  desc = "Filetype setup for various patterns",
+  desc = "Filetype setup",
   callback = function(args)
     local bufnr = args.buf
     local filetype = args.match
