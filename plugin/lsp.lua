@@ -236,7 +236,8 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
           local bufname = vim.api.nvim_buf_get_name(bufnr)
           if vim.startswith(bufname, folder_name) then
             if vim.fn.exists("#lspconfig#BufReadPost#" .. folder_name .. "/*") == 1 then
-              return vim.cmd("doautocmd lspconfig BufReadPost " .. bufname)
+              vim.cmd("doautocmd lspconfig BufReadPost " .. bufname)
+              return
             end
           end
         end
@@ -253,7 +254,7 @@ vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.buf.on_hover, {
   close_events = require("lbrayner").get_close_events(),
 })
 
--- Definitions
+-- Definitions {{{
 
 lsp_set_statusline = function(clients, bufnr)
   local names = vim.tbl_map(function (client)
@@ -370,3 +371,7 @@ lsp_setqflist_replace = function()
 
   vim.fn.setqflist({}, "r", { title = quickfix_diagnostics_opts.title, items = items })
 end
+
+-- }}}
+
+-- vim: fdm=marker
