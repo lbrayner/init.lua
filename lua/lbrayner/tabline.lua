@@ -1,8 +1,10 @@
+local M = {}
+
 vim.go.showtabline = 2
 
 local is_in_directory = require("lbrayner").is_in_directory
 
-local function redefine_tabline()
+function M.redefine_tabline()
   -- Is this a session?
   local session_name = require("lbrayner").get_session()
   local session = session_name == "" and "" or string.format("%%#Question#(%s)%%#Normal# ", session_name)
@@ -27,6 +29,8 @@ local function redefine_tabline()
     end
   end
 
+  local bufname = vim.api.nvim_buf_get_name(0)
+
   if vim.fn.exists("*FugitiveResult") == 1 and
     not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then  -- Fugitive temporary buffers
     tabline = tabline .. " %="
@@ -36,31 +40,33 @@ local function redefine_tabline()
       max_length = max_length - #fcwd
       tabline = tabline .. string.format("%%<%%#WarningMsg#%s ", fcwd)
     end
-    local truncated_filename = require("lbrayner").truncate_filename(vim.api.nvim_buf_get_name(0), max_length)
+    local truncated_filename = require("lbrayner").truncate_filename(bufname, max_length)
     tabline = tabline .. string.format("%%#Normal#%s ", truncated_filename)
   elseif vim.fn.exists("*FugitiveParse") == 1 and
     require("lbrayner.fugitive").fugitive_object() ~= "" then -- Fugitive objects
-    local name_dir = vim.fn.FugitiveParse(vim.api.nvim_buf_get_name(0))
+    local name_dir = vim.fn.FugitiveParse(bufname)
     local dir = name_dir[2]
     dir = string.gsub(dir, "/%.git$", "") -- Fugitive summary
     if not is_in_directory(dir, vim.fn.getcwd()) then
       local truncated_dirname = require("lbrayner").truncate_filename(vim.fn.fnamemodify(dir, ":~"), max_length)
       tabline = tabline .. string.format(" %%=%%#WarningMsg#%s ", truncated_dirname)
     end
-  elseif not vim.startswith(vim.api.nvim_buf_get_name(0), "jdt://") and -- jdtls
-    vim.bo.buftype ~= "terminal" then
-    local name = vim.api.nvim_buf_get_name(0)
-    if name ~= "" and not is_in_directory(name, vim.fn.getcwd()) then -- It's an absolute path
-      name = vim.fn.fnamemodify(name, ":~")
+  elseif not vim.startswith(bufname, "jdt://") and -- jdtls
+    not vim.startswith(bufname, "term://") then -- buftype set to "terminal" too late, check bufname
+    -- vim.bo.buftype ~= "terminal" then
+    if bufname ~= "" and not is_in_directory(bufname, vim.fn.getcwd()) then -- It's an absolute path
+      bufname = vim.fn.fnamemodify(bufname, ":~")
       -- a space
       max_length = max_length - 1
-      local absolute_path = require("lbrayner").truncate_filename(name, max_length)
+      local absolute_path = require("lbrayner").truncate_filename(bufname, max_length)
       tabline = tabline .. string.format(" %%=%%#WarningMsg#%s ", absolute_path)
     end
   end
 
   vim.go.tabline = tabline
 end
+
+vim.api.nvim_create_user_command("RedefineTabline", M.redefine_tabline, { nargs = 0 })
 
 local tabline = vim.api.nvim_create_augroup("tabline", { clear = true })
 
@@ -71,12 +77,12 @@ vim.api.nvim_create_autocmd("VimEnter", {
       group = tabline,
       callback = function()
         if not require("lbrayner").window_is_floating() then
-          redefine_tabline()
+          M.redefine_tabline()
         end
       end,
     })
     if not require("lbrayner").window_is_floating() then
-      redefine_tabline()
+      M.redefine_tabline()
     end
   end,
 })
@@ -84,3 +90,5 @@ vim.api.nvim_create_autocmd("VimEnter", {
 if vim.v.vim_did_enter == 1 then
   vim.api.nvim_exec_autocmds("VimEnter", { group = tabline })
 end
+
+return M

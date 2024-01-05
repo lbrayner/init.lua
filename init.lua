@@ -218,6 +218,7 @@ require("lbrayner.flash")
 require("lbrayner.highlight")
 require("lbrayner.marks")
 require("lbrayner.ripgrep")
+require("lbrayner.tabline")
 
 -- Subsection: autocmds {{{
 
