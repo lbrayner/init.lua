@@ -220,6 +220,41 @@ vim.api.nvim_create_autocmd("DiagnosticChanged", {
   end,
 })
 
+local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear = true })
+
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+  group = lspconfig_custom,
+  desc = "New buffers attach to language servers managed by lspconfig even when autostart is false",
+  callback = function(args)
+    local bufnr = args.buf
+    for _, client in ipairs(vim.lsp.get_clients()) do
+      if vim.tbl_get(client, "config", "workspace_folders") then
+        local folder_names = vim.tbl_map(function (workspace_folder)
+          return workspace_folder.name
+        end, client.config.workspace_folders)
+        for _, folder_name in ipairs(folder_names) do
+          local bufname = vim.api.nvim_buf_get_name(bufnr)
+          if vim.startswith(bufname, folder_name) then
+            if vim.fn.exists("#lspconfig#BufReadPost#" .. folder_name .. "/*") == 1 then
+              return vim.cmd("doautocmd lspconfig BufReadPost " .. bufname)
+            end
+          end
+        end
+      end
+    end
+  end,
+})
+
+-- Handler configuration
+
+vim.lsp.buf.on_hover = vim.lsp.handlers["textDocument/hover"]
+
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.buf.on_hover, {
+  close_events = require("lbrayner").get_close_events(),
+})
+
+-- Definitions
+
 lsp_set_statusline = function(clients, bufnr)
   local names = vim.tbl_map(function (client)
     return client.name
@@ -335,28 +370,3 @@ lsp_setqflist_replace = function()
 
   vim.fn.setqflist({}, "r", { title = quickfix_diagnostics_opts.title, items = items })
 end
-
-local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear = true })
-
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-  group = lspconfig_custom,
-  desc = "New buffers attach to language servers managed by lspconfig even when autostart is false",
-  callback = function(args)
-    local bufnr = args.buf
-    for _, client in ipairs(vim.lsp.get_clients()) do
-      if vim.tbl_get(client, "config", "workspace_folders") then
-        local folder_names = vim.tbl_map(function (workspace_folder)
-          return workspace_folder.name
-        end, client.config.workspace_folders)
-        for _, folder_name in ipairs(folder_names) do
-          local bufname = vim.api.nvim_buf_get_name(bufnr)
-          if vim.startswith(bufname, folder_name) then
-            if vim.fn.exists("#lspconfig#BufReadPost#" .. folder_name .. "/*") == 1 then
-              return vim.cmd("doautocmd lspconfig BufReadPost " .. bufname)
-            end
-          end
-        end
-      end
-    end
-  end,
-})

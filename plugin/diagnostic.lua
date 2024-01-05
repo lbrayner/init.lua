@@ -84,7 +84,7 @@ local function get_cursor()
   return vim.api.nvim_win_get_cursor(0)
 end
 
-local close_events = { "CursorMoved", "CursorMovedI", "InsertCharPre", "WinScrolled" }
+local close_events = require("lbrayner").get_close_events()
 
 local function open_float()
   return vim.diagnostic.open_float({ close_events = close_events })

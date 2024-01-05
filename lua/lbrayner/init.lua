@@ -1,5 +1,9 @@
 local M = {}
 
+function M.get_close_events()
+  return { "CursorMoved", "CursorMovedI", "InsertCharPre", "WinScrolled" }
+end
+
 function M.get_quickfix_or_location_list_title(winid)
   winid = winid or vim.api.nvim_get_current_win()
   if not M.is_quickfix_or_location_list(winid) then
