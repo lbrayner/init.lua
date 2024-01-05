@@ -1,5 +1,17 @@
 local M = {}
 
+-- From :h qf.vim:
+
+-- The quickfix filetype plugin includes configuration for displaying the command
+-- that produced the quickfix list in the status-line. To disable this setting,
+-- configure as follows:
+
+vim.g.qf_disable_statusline = 1
+
+vim.go.laststatus = 3
+vim.go.statusline = "%{v:lua.require'lbrayner.statusline'.empty()}"
+vim.go.winbar = "%{%v:lua.require'lbrayner.statusline'.winbar()%}"
+
 function M.empty()
   return ""
 end
@@ -285,9 +297,9 @@ function M.redefine_status_line()
     return
   end
   if vim.bo.modified then
-    require("lbrayner.statusline").define_modified_status_line()
+    M.define_modified_status_line()
   else
-    require("lbrayner.statusline").define_status_line()
+    M.define_status_line()
   end
 end
 
@@ -336,5 +348,96 @@ end
 function M.initialize()
   M.load_theme("default")
 end
+
+-- Autocmds
+
+local statusline = vim.api.nvim_create_augroup("statusline", { clear = true })
+
+vim.api.nvim_create_autocmd("CmdlineEnter", {
+  pattern = { ":", "/", "?" },
+  group = statusline,
+  callback = function(args)
+    if args.file == ":" then
+      M.highlight_mode("command")
+    elseif vim.tbl_contains({ "/", "?" }, args.file) then
+      M.highlight_mode("search")
+    else
+      return
+    end
+    vim.cmd.redraw() -- TODO redrawstatus should work here, create an issue on github
+  end,
+})
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = statusline,
+  callback = M.initialize,
+})
+
+vim.api.nvim_create_autocmd("DiagnosticChanged", {
+  group = statusline,
+  callback = function()
+    M.highlight_diagnostics() -- Not sending autocmd args as argument
+  end,
+})
+
+vim.api.nvim_create_autocmd("InsertEnter", {
+  group = statusline,
+  callback = function()
+    M.highlight_mode("insert")
+    M.redefine_status_line()
+  end,
+})
+
+vim.api.nvim_create_autocmd("ModeChanged", {
+  pattern = [[[^vV\x16]:[vV\x16]*]],
+  group = statusline,
+  callback = function()
+    M.highlight_mode("visual")
+  end,
+})
+
+vim.api.nvim_create_autocmd("ModeChanged", {
+  pattern = "[^n]*:n*",
+  group = statusline,
+  callback = function()
+    M.highlight_mode("normal")
+  end,
+})
+
+vim.api.nvim_create_autocmd("TermEnter", {
+  group = statusline,
+  callback = function()
+    M.highlight_mode("terminal")
+    M.define_terminal_status_line()
+  end,
+})
+
+vim.api.nvim_create_autocmd("TermLeave", {
+  group = statusline,
+  callback = M.redefine_status_line,
+})
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "CustomStatusline",
+  group = statusline,
+  callback = M.redefine_status_line,
+})
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = statusline,
+  callback = function()
+    vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", "TextChanged", "TextChangedI", "WinEnter" }, {
+      group = statusline,
+      callback = vim.schedule_wrap(M.redefine_status_line),
+    })
+    vim.schedule(M.redefine_status_line)
+  end,
+})
+
+if vim.v.vim_did_enter == 1 then
+  vim.api.nvim_exec_autocmds("VimEnter", { group = statusline })
+end
+
+M.initialize()
 
 return M
