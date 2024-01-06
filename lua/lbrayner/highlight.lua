@@ -26,9 +26,9 @@ end
 M.trailing_whitespace_group()
 
 function M.highlight_trailing_whitespace()
-  if vim.bo.buftype == "terminal" then
+  if vim.tbl_contains({ "help", "terminal" }, vim.bo.buftype) then
     M.clear_trailing_whitespace()
-  elseif vim.tbl_contains({ "help", "lspinfo", "netrw" }, vim.bo.syntax)  then
+  elseif vim.tbl_contains({ "lspinfo" }, vim.bo.syntax)  then
     M.clear_trailing_whitespace()
   elseif vim.tbl_contains({ "mail", "markdown" }, vim.bo.syntax) then
     M.clear_trailing_whitespace()
