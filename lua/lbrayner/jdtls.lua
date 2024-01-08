@@ -24,7 +24,7 @@ function M.get_config()
         local bundles = {}
 
         local java_debug_jars = vim.fn.glob(java_debug_jar_pattern, 1, 1)
-        if #java_debug_jars == 1 then
+        if vim.tbl_count(java_debug_jars) == 1 then
           table.insert(bundles, java_debug_jars[1])
         end
 
@@ -84,7 +84,7 @@ function M.java_go_to_top_level_declaration()
       }, symbol.kind)
     end, result)
 
-    if #top_level_symbols > 1 then
+    if vim.tbl_count(top_level_symbols) > 1 then
       -- Removing children
       top_level_symbols = vim.tbl_map(function(symbol)
         symbol.children = nil
@@ -134,19 +134,20 @@ function M.java_type_hierarchy(opts)
       return parent.kind ~= SymbolKind.Null
     end, result.parents)
 
-    if #parents > 0 and depth > maximum_resolve_depth then
+    if not vim.tbl_isempty(parents) and depth > maximum_resolve_depth then
       vim.notify(string.format("Type hierarchy: maximum resolve depth is %d.", maximum_resolve_depth),
         vim.log.levels.WARN)
-    elseif #parents > 0 then
+    elseif not vim.tbl_isempty(parents) then
       local parent_classes = vim.tbl_filter(function(parent)
         return parent.kind == SymbolKind.Class
       end, parents)
 
-      assert(#parent_classes <= 1, "Type hierarchy: more than one parent class")
+      assert(vim.tbl_count(parent_classes) <= 1, "Type hierarchy: more than one parent class")
 
       local parent = parent_classes[1]
       if not parent then
-        assert(#parents == 1, string.format("Type hierarchy: could not determine parent with result %s",
+        assert(vim.tbl_count(parents) == 1,
+          string.format("Type hierarchy: could not determine parent with result %s",
           vim.inspect(result)))
         -- Symbol at point is a SymbolKind.Method, parent is a SymbolKind.Interface
         parent = parents[1]
@@ -158,14 +159,14 @@ function M.java_type_hierarchy(opts)
       return
     end
 
-    if #hierarchy > 0 then
+    if not vim.tbl_isempty(hierarchy) then
       local root = hierarchy[#hierarchy]
       if root.detail.."."..root.name == "java.lang.Object" then
         table.remove(hierarchy) -- Pop the top
       end
     end
 
-    if #hierarchy == 0 then
+    if vim.tbl_isempty(hierarchy) then
       print("Type hierarchy: no results.")
       return
     end
@@ -194,7 +195,7 @@ function M.java_type_hierarchy(opts)
       return
     end
 
-    if #locations == 1  then
+    if vim.tbl_count(locations) == 1  then
       vim.lsp.util.jump_to_location(locations[1], offset_encoding, opts.reuse_win)
       return
     end
