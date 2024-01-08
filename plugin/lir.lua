@@ -13,9 +13,9 @@ require("lir").setup {
   mappings = {
     ["l"]     = actions.edit,
     ["<CR>"]  = actions.edit,
-    ["<C-s>"] = actions.split,
-    ["<C-v>"] = actions.vsplit,
-    ["<C-t>"] = actions.tabedit,
+    ["o"]     = actions.split,
+    ["O"]     = actions.vsplit,
+    ["<Tab>"] = actions.tabedit,
 
     ["h"]     = actions.up,
     ["q"]     = actions.quit,
@@ -39,8 +39,11 @@ require("lir").setup {
   hide_cursor = true
 }
 
+local lir = vim.api.nvim_create_augroup("lir", { clear = true })
+
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "lir",
+  group = lir,
   callback = function()
     -- use visual mode
     vim.api.nvim_buf_set_keymap(
