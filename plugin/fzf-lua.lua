@@ -2,9 +2,9 @@ if vim.fn.executable("fzf") == 0 then
   return
 end
 
-if vim.fn.isdirectory(vim.fs.normalize("~/.fzf")) then
+if vim.fn.isdirectory(vim.fs.normalize("~/.fzf")) == 1 then
   vim.opt.runtimepath:append(vim.fs.normalize("~/.fzf"))
-elseif vim.fn.isdirectory("/usr/share/doc/fzf/examples") then -- Linux
+elseif vim.fn.isdirectory("/usr/share/doc/fzf/examples") == 1 then -- Linux
   vim.opt.runtimepath:append("/usr/share/doc/fzf/examples")
 else
   return
