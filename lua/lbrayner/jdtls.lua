@@ -28,7 +28,10 @@ function M.get_config()
           table.insert(bundles, java_debug_jars[1])
         end
 
-        local vscode_java_test_jars = vim.fn.glob(vscode_java_test_jar_pattern, 1, 1)
+        local vscode_java_test_jars = vim.tbl_filter(function(jar)
+          return not vim.endswith(jar, "com.microsoft.java.test.runner-jar-with-dependencies.jar")
+        end, vim.fn.glob(vscode_java_test_jar_pattern, 1, 1))
+
         vim.list_extend(bundles, vscode_java_test_jars)
 
         if not vim.tbl_isempty(bundles) then
