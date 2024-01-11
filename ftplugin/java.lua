@@ -22,9 +22,10 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
     pattern = "*.java",
     desc = "New Java buffers attach to jdtls",
     callback = function(args)
-      local bufname = args.match
+      local bufnr = args.buf
 
-      if vim.fn.filereadable(bufname) == 0 then
+      if not vim.startswith(vim.uri_from_bufnr(bufnr), "file://") then
+        -- Don't try to attach to buffers such as Fugitive objects
         return
       end
 
@@ -46,7 +47,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
     if vim.api.nvim_get_current_buf() ~= bufnr and
       vim.api.nvim_buf_is_loaded(bufnr) and
       vim.bo[bufnr].ft == "java" and
-      vim.fn.filereadable(vim.api.nvim_buf_get_name(bufnr)) == 1 and
+      vim.startswith(vim.uri_from_bufnr(bufnr), "file://") and
       (not client or not vim.lsp.buf_is_attached(bufnr, client.id)) then
       vim.api.nvim_create_autocmd("BufEnter", {
         group = jdtls_setup,
@@ -75,7 +76,8 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
       local bufnr = args.buf
       local bufname = args.match
 
-      if vim.fn.filereadable(bufname) == 0 and not vim.startswith(bufname, "jdt://") then
+      local uri = vim.uri_from_bufnr(bufnr)
+      if not vim.startswith(uri, "file://") and not vim.startswith(uri, "jdt://") then
         return
       end
 
