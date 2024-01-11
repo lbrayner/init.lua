@@ -118,7 +118,7 @@ local function files()
 end
 
 local function tabs()
-  fzf.tabs({ fzf_opts = { ["--history"] = history_file() }, show_unlisted = true })
+  fzf.tabs({ fzf_opts = { ["--history"] = history_file() }, show_quickfix = true, show_unlisted = true })
 end
 
 nvim_create_user_command("Buffers", buffers, { nargs = 0 })
