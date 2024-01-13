@@ -25,7 +25,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
       local bufnr = args.buf
 
       if not vim.startswith(vim.uri_from_bufnr(bufnr), "file://") then
-        -- Don't try to attach to buffers such as Fugitive objects
+        -- Don't attach to buffers such as Fugitive objects
         return
       end
 
@@ -78,6 +78,7 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
 
       local uri = vim.uri_from_bufnr(bufnr)
       if not vim.startswith(uri, "file://") and not vim.startswith(uri, "jdt://") then
+        -- Don't attach to buffers such as Fugitive objects
         return
       end
 

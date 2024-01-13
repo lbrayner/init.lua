@@ -29,6 +29,9 @@ function M.get_config()
         end
 
         local vscode_java_test_jars = vim.tbl_filter(function(jar)
+          -- https://github.com/eclipse-jdtls/eclipse.jdt.ls/issues/2761#issuecomment-1638311201.
+          -- vscode-java-test's com.microsoft.java.test.runner-jar-with-dependencies.jar
+          -- shouldn't be passed into the bundles setting.
           return not vim.endswith(jar, "com.microsoft.java.test.runner-jar-with-dependencies.jar")
         end, vim.fn.glob(vscode_java_test_jar_pattern, 1, 1))
 
