@@ -11,12 +11,12 @@ vim.api.nvim_create_user_command("OverlengthToggle", function()
     for _, matchd in ipairs(matches) do
       vim.fn.matchdelete(matchd.id)
     end
-    vim.cmd.echo("'Overlength highlight cleared.'")
+    vim.notify("Overlength highlight cleared.")
     return
   end
   vim.api.nvim_set_hl(0, "Overlength", { bg = "#592929" })
   vim.fn.matchadd("Overlength", string.format([[\%%%dv.\+]], vim.w.overlength))
-  vim.cmd.echo("'Overlength highlighted.'")
+  vim.notify("Overlength highlighted.")
 end, { nargs = 0 })
 
 function M.trailing_whitespace_group()

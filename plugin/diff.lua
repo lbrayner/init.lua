@@ -2,11 +2,11 @@ vim.keymap.set("n", "<Leader>di", "<Cmd>windo diffthis<CR>")
 vim.keymap.set("n", "<Leader>dw", function() -- toggle iwhite
   if string.find(vim.go.diffopt, "iwhite") then
     vim.opt.diffopt:remove({ "iwhite" })
-    vim.cmd.echo("'-iwhite'")
+    vim.notify("-iwhite")
     return
   end
   vim.opt.diffopt:append({ "iwhite" })
-  vim.cmd.echo("'+iwhite'")
+  vim.notify("+iwhite")
 end)
 vim.keymap.set("n", "<Leader>do", "<Cmd>diffoff!<CR>")
 
@@ -69,6 +69,6 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
     vim.cmd.lopen()
     vim.b.conflict_marker_tick = changedtick
   else
-    vim.cmd.echo("'No conflict markers found.'")
+    vim.notify("No conflict markers found.")
   end
 end, { nargs = 0 })

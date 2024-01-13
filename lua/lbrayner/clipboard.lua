@@ -7,7 +7,7 @@ function M.clip(text)
   end
   vim.fn.setreg("+", vim.fn.getreg('"'))
   vim.fn.setreg("*", vim.fn.getreg('"'))
-  vim.cmd.echo(string.format("'%s'", vim.fn.getreg('"')))
+  vim.notify(vim.fn.getreg('"'))
 end
 
 function M.cwd()
