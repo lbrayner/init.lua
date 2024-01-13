@@ -87,13 +87,27 @@ local function buffers()
   fzf.buffers({ fzf_opts = { ["--history"] = history_file() } })
 end
 
+local function fzf_files(options)
+  options = vim.tbl_deep_extend("keep", {
+    -- https://github.com/ibhagwan/fzf-lua/issues/996
+    -- actions.files refers to all pickers that deal with files which also
+    -- includes grep, etc. Toggle ignore action is defined specifically for
+    -- files
+    actions = { ["ctrl-g"] = false },
+    fzf_opts = { ["--history"] = history_file() }
+  }, options)
+
+  fzf.files(options)
+end
+
 local function files_clear_cache()
   if vim.fn.executable("find_file_cache") == 0 then
-    return vim.cmd.echoerr("'find_file_cache not executable.'")
+    vim.notify("find_file_cache not executable.", vim.log.levels.ERROR)
+    return
   end
 
-  fzf.files({ cmd = "find_file_cache -C", fzf_opts = { ["--history"] = history_file() } })
-  vim.cmd.echo("'Cleared FZF cache.'")
+  fzf_files({ cmd = "find_file_cache -C" })
+  vim.notify("Cleared FZF cache.")
 end
 
 local function file_marks()
@@ -110,11 +124,11 @@ end
 local function files()
   local cmd
 
-  if vim.fn.executable("find_file_cache") > 0 then
+  if vim.fn.executable("find_file_cache") == 1 then
     cmd = "find_file_cache"
   end
 
-  fzf.files({ cmd = cmd, fzf_opts = { ["--history"] = history_file() } })
+  fzf_files({ cmd = cmd })
 end
 
 local function tabs()
