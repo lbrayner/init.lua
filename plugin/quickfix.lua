@@ -16,10 +16,13 @@ local function display_error_cmd(cmd)
   if require("lbrayner").is_location_list() then
     command = "ll"
   end
+  local switchbuf = vim.go.switchbuf
+  vim.go.switchbuf = "uselast"
   local linenr = vim.api.nvim_win_get_cursor(0)[1]
   vim.cmd.wincmd("p")
   vim.cmd(cmd)
   vim.cmd(linenr .. command)
+  vim.go.switchbuf = switchbuf
 end
 
 local qf_setup = vim.api.nvim_create_augroup("qf_setup", { clear = true })
