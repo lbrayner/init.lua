@@ -132,7 +132,15 @@ local function files()
 end
 
 local function tabs()
-  fzf.tabs({ fzf_opts = { ["--history"] = history_file() }, show_quickfix = true, show_unlisted = true })
+  fzf.tabs({
+    fzf_opts = {
+      ["--history"] = history_file(),
+      ["--preview"] = [['echo "Tab #"{1}": $(echo {2} | base64 -d -)"']],
+      ["--preview-window"] = "nohidden:up,1",
+    },
+    show_quickfix = true,
+    show_unlisted = true
+  })
 end
 
 nvim_create_user_command("Buffers", buffers, { nargs = 0 })
