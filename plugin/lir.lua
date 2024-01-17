@@ -39,11 +39,11 @@ require("lir").setup {
   hide_cursor = true
 }
 
-local lir = vim.api.nvim_create_augroup("lir", { clear = true })
+local lir_custom = vim.api.nvim_create_augroup("lir_custom", { clear = true })
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "lir",
-  group = lir,
+  group = lir_custom,
   callback = function()
     -- use visual mode
     vim.api.nvim_buf_set_keymap(
