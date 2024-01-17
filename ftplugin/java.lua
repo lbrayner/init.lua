@@ -134,19 +134,20 @@ vim.api.nvim_buf_create_user_command(0, "JdtStart", function(command)
 
       -- Delete user commands
       for _, command in ipairs({
+        "JdtBytecode",
+        "JdtCompile",
         "JdtGoToTopLevelDeclaration",
+        "JdtJol",
+        "JdtJshell",
         "JdtOrganizeImports",
+        "JdtRestart",
+        "JdtSetRuntime",
         "JdtStop",
         "JdtTypeHierarchy",
-        "JdtCompile",
-        "JdtSetRuntime",
         "JdtUpdateConfig",
-        "JdtJol",
-        "JdtBytecode",
-        "JdtJshell",
-        "JdtRestart",
         "JdtUpdateDebugConfig",
-        "JdtUpdateHotcode" }) do
+        "JdtUpdateHotcode",
+      }) do
         pcall(vim.api.nvim_buf_del_user_command, bufnr, command) -- Ignore error if command doesn't exist
       end
     end,
