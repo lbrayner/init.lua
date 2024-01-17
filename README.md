@@ -1,9 +1,9 @@
 **Requires Neovim 0.10.0 or greater.**
 
 ```
-$ git clone 'https://github.com/lbrayner/dotvim'
-$ cd dotvim
-dotvim$ git submodule update --init
+$ git clone 'https://github.com/lbrayner/init.lua'
+$ cd init.lua
+init.lua$ git submodule update --init
 ```
 
 # As a bundle
@@ -12,13 +12,13 @@ You can use these configurations (`init.lua` + plugins) without affecting your
 setup (`:h -u`).
 
 ```
-dotvim$ nvim -u bundle.lua
+init.lua$ nvim -u bundle.lua
 ```
 
 # The regular way
 
 ```
-dotvim$ ln -s "$(readlink -f ..)"/dotvim ~/.config/nvim
+init.lua$ ln -s "$(readlink -f ..)"/init.lua ~/.config/nvim
 ```
 
 Packages (`:h packages`) are submodules in `pack/bundle/start`.
