@@ -7,10 +7,13 @@ require("fidget").setup({
   },
 })
 
+local capabilities = require("lbrayner.lsp").default_capabilities()
+
 -- Lua
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#lua_ls
-require("lspconfig").lua_ls.setup {
+require("lspconfig").lua_ls.setup({
   autostart = false,
+  capabilities = capabilities,
   settings = {
     Lua = {
       runtime = {
@@ -33,9 +36,13 @@ require("lspconfig").lua_ls.setup {
       },
     },
   },
-}
+})
 
-local capabilities = require("lbrayner.lsp").default_capabilities()
+-- Python
+require("lspconfig").pyright.setup {
+  autostart = false,
+  capabilities = capabilities,
+}
 
 -- Typescript, Javascript
 require("typescript").setup({
@@ -44,12 +51,6 @@ require("typescript").setup({
     capabilities = capabilities,
   },
 })
-
--- Python
-require("lspconfig").pyright.setup {
-  autostart = false,
-  capabilities = capabilities,
-}
 
 local declaration
 local definition
