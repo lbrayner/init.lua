@@ -76,3 +76,4 @@ end
 
 vim.keymap.set("n", "-", open_containing_dir)
 vim.keymap.set("n", "g-", open_cwd)
+vim.keymap.set("n", "g~", "<Cmd>tcd %<CR>")
