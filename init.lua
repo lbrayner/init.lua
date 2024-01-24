@@ -211,6 +211,11 @@ end, { complete = "command", nargs = "+" })
 
 -- }}}
 
+-- Variables
+
+-- See $VIMRUNTIME/ftplugin/markdown.vim
+vim.g.markdown_recommended_style = 0
+
 -- Modules
 
 require("lbrayner.clipboard")
