@@ -38,6 +38,10 @@ local function clear_conflict_markers_autocmd(bufnr)
 end
 
 vim.api.nvim_create_user_command("ConflictMarkers", function()
+  local function update_context()
+    vim.fn.setloclist(0, {}, "a", { context = { conflict_markers = { changedtick = vim.b.changedtick } } })
+  end
+
   local bufnr = vim.api.nvim_get_current_buf()
   if update_conflict_markers(bufnr) then
     clear_conflict_markers_autocmd(bufnr)
@@ -51,23 +55,22 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
           -- After a buf_write_post, do nothing if bufnr is not current
           return
         end
-        if vim.fn.getloclist(vim.api.nvim_get_current_win(), { title = 1 }).title == "Conflict markers" then
-          local qfbufnr = vim.fn.getloclist(0, { qfbufnr = 1 }).qfbufnr
-          if vim.fn.getbufvar(qfbufnr, "conflict_marker_tick") < vim.b.changedtick then
+        if vim.fn.getloclist(0, { title = 1 }).title == "Conflict markers" then
+          local context = vim.fn.getloclist(0, { context = 1 }).context
+          if context.conflict_markers.changedtick < vim.b.changedtick then
             if not update_conflict_markers(bufnr) then
               vim.cmd.lclose()
               clear_conflict_markers_autocmd(bufnr)
               return
             end
-            vim.b[bufnr].conflict_marker_tick = vim.b.changedtick
+            update_context()
           end
         end
       end,
     })
 
-    local changedtick = vim.b.changedtick
+    update_context()
     vim.cmd.lopen()
-    vim.b.conflict_marker_tick = changedtick
   else
     vim.notify("No conflict markers found.")
   end
