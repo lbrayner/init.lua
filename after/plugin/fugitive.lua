@@ -28,7 +28,7 @@ vim.api.nvim_create_user_command("FObject", function()
   require("lbrayner.clipboard").clip(require("lbrayner.fugitive").fugitive_object())
 end, { nargs = 0 })
 vim.api.nvim_create_user_command("FPath", function()
-  require("lbrayner.clipboard").clip(require("lbrayner.fugitive").fugitive_path())
+  require("lbrayner.clipboard").clip(require("lbrayner.fugitive").fugitive_full_path())
 end, { nargs = 0 })
 
 local function fugitive_map_overrides(bufnr)
