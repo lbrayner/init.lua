@@ -18,6 +18,7 @@ vim.keymap.set("ca", "Gr", "Git rebase -i")
 vim.keymap.set("ca", "Gs", "Git stash")
 -- git bash and zsh autocomplete should complete --keep-index
 vim.keymap.set("ca", "Gsk", "Git stash --keep-index")
+vim.keymap.set("ca", "Gt", "Git! ls-tree -r --name-only")
 -- Only list tags whose tips are reachable from the specified commit
 vim.keymap.set("ca", "Gtm", "Git tag --merged")
 
