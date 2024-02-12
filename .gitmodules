@@ -32,13 +32,17 @@
 [submodule "pack/bundle/start/reply.vim"]
 	path = pack/bundle/start/reply.vim
 	url = https://github.com/rhysd/reply.vim
+; "load-pos" branch of fork https://github.com/lbrayner/fzf-lua
 [submodule "pack/bundle/opt/fzf-lua"]
 	path = pack/bundle/start/fzf-lua
 	url = https://github.com/ibhagwan/fzf-lua
 	branch = main
+	update = none
+; "lbrayner" branch of fork https://github.com/lbrayner/nvim-jdtls
 [submodule "pack/bundle/opt/nvim-jdtls"]
 	path = pack/bundle/start/nvim-jdtls
 	url = https://github.com/mfussenegger/nvim-jdtls
+	update = none
 [submodule "pack/bundle/start/vim-dadbod"]
 	path = pack/bundle/start/vim-dadbod
 	url = https://github.com/tpope/vim-dadbod
