@@ -133,8 +133,7 @@ end
 function M.filename(full_path)
   local path = require("lbrayner.clipboard").path()
 
-  if vim.fn.exists("*FugitiveParse") == 1 and
-    require("lbrayner.fugitive").fugitive_object() ~= "" then -- Fugitive objects
+  if require("lbrayner.fugitive").fugitive_object() then
     path = require("lbrayner.fugitive").fugitive_object()
   elseif vim.startswith(vim.api.nvim_buf_get_name(0), "jdt://") then -- jdtls
     path = string.gsub(vim.api.nvim_buf_get_name(0), "%?.*", "")

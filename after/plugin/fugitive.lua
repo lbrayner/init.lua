@@ -22,15 +22,25 @@ vim.keymap.set("ca", "Gt", "Git! ls-tree -r --name-only")
 -- Only list tags whose tips are reachable from the specified commit
 vim.keymap.set("ca", "Gtm", "Git tag --merged")
 
+vim.api.nvim_create_user_command("FugitiveObject", function()
+  local fugitive_object = require("lbrayner.fugitive").fugitive_object()
+  if fugitive_object then
+    require("lbrayner.clipboard").clip(fugitive_object)
+    return
+  end
+  vim.notify("This buffer is not Fugitive object.")
+end, { nargs = 0 })
+vim.api.nvim_create_user_command("FugitiveUrl", function()
+  local fugitive_object = require("lbrayner.fugitive").fugitive_object()
+  if fugitive_object then
+    require("lbrayner.clipboard").clip(vim.api.nvim_buf_get_name(0))
+    return
+  end
+  vim.notify("This buffer is not Fugitive object.")
+end, { nargs = 0 })
 vim.api.nvim_create_user_command("Gdi", function(command)
   vim.fn["fugitive#Diffsplit"](1, command.bang and 0 or 1, "leftabove <mods>", command.args)
 end, { bang = true, bar = true, complete = "customlist,fugitive#EditComplete", nargs = "*" })
-vim.api.nvim_create_user_command("FObject", function()
-  require("lbrayner.clipboard").clip(require("lbrayner.fugitive").fugitive_object())
-end, { nargs = 0 })
-vim.api.nvim_create_user_command("FPath", function()
-  require("lbrayner.clipboard").clip(require("lbrayner.fugitive").fugitive_full_path())
-end, { nargs = 0 })
 
 local function fugitive_map_overrides(bufnr)
   local bufopts = { buffer = bufnr }
