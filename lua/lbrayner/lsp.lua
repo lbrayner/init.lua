@@ -32,6 +32,11 @@ function M.default_capabilities()
         dynamicRegistration = false,
         insertTextMode = 1
       }
+    },
+    workspace = { -- TODO disable until #26520 is resolved
+      didChangeWatchedFiles = {
+        dynamicRegistration = false
+      }
     }
   }
 end
