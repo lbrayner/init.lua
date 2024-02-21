@@ -76,15 +76,19 @@ local function file_mark_jump_to_location(selected, _)
   require("lbrayner.marks").file_mark_jump_to_location(mark)
 end
 
-local function history_file()
+local function get_history_file(suffix)
   local session = require("lbrayner").get_session()
   if session then
-    return vim.fs.joinpath(vim.fn.stdpath("cache"), "fzf_history_" .. session)
+    local history_file = "fzf_history_" .. session
+    if suffix then
+      history_file = history_file .. "_" .. suffix
+    end
+    return vim.fs.joinpath(vim.fn.stdpath("cache"), history_file)
   end
 end
 
 local function buffers()
-  fzf.buffers({ fzf_opts = { ["--history"] = history_file() } })
+  fzf.buffers({ fzf_opts = { ["--history"] = get_history_file() } })
 end
 
 local function fzf_files(options)
@@ -94,7 +98,7 @@ local function fzf_files(options)
     -- includes grep, etc. Toggle ignore action is defined specifically for
     -- files
     actions = { ["ctrl-g"] = false },
-    fzf_opts = { ["--history"] = history_file() }
+    fzf_opts = { ["--history"] = get_history_file() }
   }, options)
 
   fzf.files(options)
@@ -134,7 +138,7 @@ end
 local function tabs()
   fzf.tabs({
     fzf_opts = {
-      ["--history"] = history_file(),
+      ["--history"] = get_history_file(),
       ["--preview"] = [['echo "Tab #"{1}": $(echo {2} | base64 -d -)"']],
       ["--preview-window"] = "nohidden:up,1",
     },
@@ -147,7 +151,7 @@ nvim_create_user_command("Buffers", buffers, { nargs = 0 })
 nvim_create_user_command("FilesClearCache", files_clear_cache, { nargs = 0 })
 nvim_create_user_command("Files", files, { nargs = 0 })
 nvim_create_user_command("HelpTags", function()
-  fzf.help_tags({ fzf_opts = { ["--history"] = history_file() } })
+  fzf.help_tags({ fzf_opts = { ["--history"] = get_history_file("help_tags") } })
 end, { nargs = 0 })
 nvim_create_user_command("Marks", file_marks, { nargs = 0 })
 nvim_create_user_command("Tabs", tabs, { nargs = 0 })
