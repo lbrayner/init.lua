@@ -445,6 +445,10 @@ vim.api.nvim_create_autocmd("FileType", {
         local bufnr = args.buf
         vim.schedule(function()
           vim.api.nvim_buf_set_name(bufnr, vim.b[bufnr].term_title)
+          vim.keymap.set("n", "<A-h>", [[<C-\><C-N><C-W>h]], { buffer = bufnr })
+          vim.keymap.set("n", "<A-j>", [[<C-\><C-N><C-W>j]], { buffer = bufnr })
+          vim.keymap.set("n", "<A-k>", [[<C-\><C-N><C-W>k]], { buffer = bufnr })
+          vim.keymap.set("n", "<A-l>", [[<C-\><C-N><C-W>l]], { buffer = bufnr })
         end)
       end,
     })
@@ -468,6 +472,21 @@ vim.api.nvim_create_autocmd("VimEnter", {
       group = terminal_setup,
       callback = function()
         vim.cmd.startinsert()
+      end,
+    })
+    vim.api.nvim_create_autocmd("TermEnter", {
+      group = terminal_setup,
+      callback = function()
+        if not require("lbrayner").window_is_floating() and
+          vim.tbl_count(vim.api.nvim_tabpage_list_wins(0)) > 1 then
+          vim.opt.winhighlight:append({ Normal = "CursorLine" })
+        end
+      end,
+    })
+    vim.api.nvim_create_autocmd("TermLeave", {
+      group = terminal_setup,
+      callback = function()
+        vim.opt.winhighlight:remove({ "Normal" })
       end,
     })
   end,
