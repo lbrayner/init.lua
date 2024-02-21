@@ -32,7 +32,7 @@ function M.rg(txt)
   rg(txt)
 end
 
-vim.go.grepprg = "rg --vimgrep"
+vim.go.grepprg = "rg --vimgrep --sort path"
 vim.go.grepformat = "%f:%l:%c:%m"
 vim.go.shellpipe = "&>"
 
