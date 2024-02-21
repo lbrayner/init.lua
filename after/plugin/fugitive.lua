@@ -5,6 +5,7 @@ end
 vim.keymap.set("ca", "Gb", "Git blame --abbrev=6")
 vim.keymap.set("ca", "Gc", "Git checkout")
 vim.keymap.set("ca", "Gd", "Git difftool -y")
+vim.keymap.set("ca", "Gdd", "Git difftool -y  -- :^package-lock.json<S-Left><S-Left><Left>")
 -- To list files modified by a range of commits
 vim.keymap.set("ca", "Gdn", "Git diff --name-only --stat")
 vim.keymap.set("ca", "Gf", "Git! fetch upstream")
