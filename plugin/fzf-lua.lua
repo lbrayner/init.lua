@@ -146,6 +146,9 @@ end
 nvim_create_user_command("Buffers", buffers, { nargs = 0 })
 nvim_create_user_command("FilesClearCache", files_clear_cache, { nargs = 0 })
 nvim_create_user_command("Files", files, { nargs = 0 })
+nvim_create_user_command("HelpTags", function()
+  fzf.help_tags({ fzf_opts = { ["--history"] = history_file() } })
+end, { nargs = 0 })
 nvim_create_user_command("Marks", file_marks, { nargs = 0 })
 nvim_create_user_command("Tabs", tabs, { nargs = 0 })
 
