@@ -125,6 +125,13 @@ local function on_attach(_, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, "LspReferencesNoTests", function()
     references({ no_tests = true })
   end, { nargs = 0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspRemoveWorkspaceFolder", function(command)
+    local dir = command.args
+    if dir == "" then
+      dir = vim.fn.getcwd()
+    end
+    vim.lsp.buf.remove_workspace_folder(dir)
+  end, { complete = "file", nargs = "?" })
   vim.api.nvim_buf_create_user_command(bufnr, "LspRename", function(command)
     local name = command.args
     if name and name ~= "" then
@@ -198,6 +205,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
       "LspHover",
       "LspImplementation",
       "LspReferences",
+      "LspRemoveWorkspaceFolder",
       "LspRename",
       "LspSignatureHelp",
       "LspTypeDefinition",
