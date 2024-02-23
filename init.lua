@@ -509,11 +509,11 @@ vim.api.nvim_create_autocmd("TabClosed", {
   end,
 })
 
-local node_js = vim.api.nvim_create_augroup("node_js", { clear = true })
-vim.api.nvim_create_autocmd({ "BufRead", "VimEnter" }, {
-  pattern = "**/node_modules/*",
-  group = node_js,
-  desc = "NPM modules should not writeable",
+local package_manager = vim.api.nvim_create_augroup("package_manager", { clear = true })
+vim.api.nvim_create_autocmd("BufRead", {
+  pattern = { "**/node_modules/*", vim.fs.joinpath(vim.fs.normalize("~/.m2/repository"), "*") },
+  group = package_manager,
+  desc = "Package manager controlled files should not writeable",
   callback = function()
     vim.bo.modifiable = false
   end,
