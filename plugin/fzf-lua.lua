@@ -10,7 +10,6 @@ else
   return
 end
 
-local nvim_create_user_command = vim.api.nvim_create_user_command
 local fzf = require("fzf-lua")
 local actions = require("fzf-lua.actions")
 
@@ -147,14 +146,14 @@ local function tabs()
   })
 end
 
-nvim_create_user_command("Buffers", buffers, { nargs = 0 })
-nvim_create_user_command("FilesClearCache", files_clear_cache, { nargs = 0 })
-nvim_create_user_command("Files", files, { nargs = 0 })
-nvim_create_user_command("HelpTags", function()
+vim.api.nvim_create_user_command("Buffers", buffers, { nargs = 0 })
+vim.api.nvim_create_user_command("FilesClearCache", files_clear_cache, { nargs = 0 })
+vim.api.nvim_create_user_command("Files", files, { nargs = 0 })
+vim.api.nvim_create_user_command("HelpTags", function()
   fzf.help_tags({ fzf_opts = { ["--history"] = get_history_file("help_tags") } })
 end, { nargs = 0 })
-nvim_create_user_command("Marks", file_marks, { nargs = 0 })
-nvim_create_user_command("Tabs", tabs, { nargs = 0 })
+vim.api.nvim_create_user_command("Marks", file_marks, { nargs = 0 })
+vim.api.nvim_create_user_command("Tabs", tabs, { nargs = 0 })
 
 local opts = { silent = true }
 
