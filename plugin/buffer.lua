@@ -2,7 +2,7 @@
 -- https://github.com/neovim/neovim/issues/2127
 local buffer_optimization = vim.api.nvim_create_augroup("buffer_optimization", { clear = true })
 
-vim.api.nvim_create_autocmd({ "CursorHold", "BufWritePost", "BufReadPost", "BufLeave" }, {
+vim.api.nvim_create_autocmd({ "CursorHold", "BufWritePost", "BufRead", "BufLeave" }, {
   group = buffer_optimization,
   desc = "Setting swapfile flag to trigger SwapExists",
   callback = function(args)

@@ -510,7 +510,7 @@ vim.api.nvim_create_autocmd("TabClosed", {
 })
 
 local node_js = vim.api.nvim_create_augroup("node_js", { clear = true })
-vim.api.nvim_create_autocmd({ "BufReadPost", "VimEnter" }, {
+vim.api.nvim_create_autocmd({ "BufRead", "VimEnter" }, {
   pattern = "**/node_modules/*",
   group = node_js,
   desc = "NPM modules should not writeable",
