@@ -25,19 +25,19 @@ vim.keymap.set("ca", "Gtm", "Git tag --merged")
 
 vim.api.nvim_create_user_command("FugitiveObject", function()
   local fugitive_object = require("lbrayner.fugitive").fugitive_object()
-  if fugitive_object then
-    require("lbrayner.clipboard").clip(fugitive_object)
+  if not fugitive_object then
+    vim.notify("This buffer is not a Fugitive object.")
     return
   end
-  vim.notify("This buffer is not Fugitive object.")
+  require("lbrayner.clipboard").clip(fugitive_object)
 end, { nargs = 0 })
 vim.api.nvim_create_user_command("FugitiveUrl", function()
   local fugitive_object = require("lbrayner.fugitive").fugitive_object()
-  if fugitive_object then
-    require("lbrayner.clipboard").clip(vim.api.nvim_buf_get_name(0))
+  if not fugitive_object then
+    vim.notify("This buffer is not a Fugitive object.")
     return
   end
-  vim.notify("This buffer is not Fugitive object.")
+  require("lbrayner.clipboard").clip(vim.api.nvim_buf_get_name(0))
 end, { nargs = 0 })
 vim.api.nvim_create_user_command("Gdi", function(command)
   vim.fn["fugitive#Diffsplit"](1, command.bang and 0 or 1, "leftabove <mods>", command.args)
