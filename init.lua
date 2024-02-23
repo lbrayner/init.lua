@@ -286,17 +286,12 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "help",
   group = help_setup,
   callback = function(args)
-    vim.api.nvim_create_autocmd("BufEnter", {
-      group = help_setup,
-      buffer = args.buf,
-      desc = "Aesthetics for help buffers",
-      callback = function()
-        vim.wo.relativenumber = true
-        vim.keymap.set("n", "q", function()
-          vim.api.nvim_win_close(0, false)
-        end, { buffer = args.buf, nowait = true })
-      end,
-    })
+    vim.schedule(function()
+      vim.wo.relativenumber = true
+      vim.keymap.set("n", "q", function()
+        vim.api.nvim_win_close(0, false)
+      end, { buffer = args.buf, nowait = true })
+    end)
   end,
 })
 
@@ -437,21 +432,14 @@ vim.api.nvim_create_autocmd("FileType", {
   group = terminal_setup,
   desc = "Fix terminal title on session load",
   callback = function(args)
-    vim.api.nvim_create_autocmd("BufEnter", {
-      group = terminal_setup,
-      buffer = args.buf,
-      once = true,
-      callback = function(args)
-        local bufnr = args.buf
-        vim.schedule(function()
-          vim.api.nvim_buf_set_name(bufnr, vim.b[bufnr].term_title)
-          vim.keymap.set("n", "<A-h>", [[<C-\><C-N><C-W>h]], { buffer = bufnr })
-          vim.keymap.set("n", "<A-j>", [[<C-\><C-N><C-W>j]], { buffer = bufnr })
-          vim.keymap.set("n", "<A-k>", [[<C-\><C-N><C-W>k]], { buffer = bufnr })
-          vim.keymap.set("n", "<A-l>", [[<C-\><C-N><C-W>l]], { buffer = bufnr })
-        end)
-      end,
-    })
+    local bufnr = args.buf
+    vim.schedule(function()
+      vim.api.nvim_buf_set_name(bufnr, vim.b[bufnr].term_title)
+      vim.keymap.set("n", "<A-h>", [[<C-\><C-N><C-W>h]], { buffer = bufnr })
+      vim.keymap.set("n", "<A-j>", [[<C-\><C-N><C-W>j]], { buffer = bufnr })
+      vim.keymap.set("n", "<A-k>", [[<C-\><C-N><C-W>k]], { buffer = bufnr })
+      vim.keymap.set("n", "<A-l>", [[<C-\><C-N><C-W>l]], { buffer = bufnr })
+    end)
   end,
 })
 
