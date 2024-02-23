@@ -326,10 +326,10 @@ vim.api.nvim_create_autocmd("TermOpen", {
 })
 
 -- Simulate Emacs' Fundamental mode
-local default_file_type = vim.api.nvim_create_augroup("default_file_type", { clear = true })
+local default_filetype = vim.api.nvim_create_augroup("default_filetype", { clear = true })
 
 vim.api.nvim_create_autocmd("BufEnter", {
-  group = default_file_type,
+  group = default_filetype,
   desc = "Set default filetype",
   callback = function()
     if vim.bo.filetype == "" then
@@ -340,10 +340,10 @@ vim.api.nvim_create_autocmd("BufEnter", {
 })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
-  group = default_file_type,
+  group = default_filetype,
   desc = "Detect filetype after the first write",
-  callback = function()
-    if vim.b.default_file_type then
+  callback = function(args)
+    if vim.b.default_filetype then
       vim.bo.infercase = true
       vim.bo.textwidth = nil
       vim.b.default_filetype = nil
