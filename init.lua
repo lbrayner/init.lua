@@ -228,6 +228,20 @@ require("lbrayner.tabline")
 
 -- Subsection: autocmds {{{
 
+local aesthetics = vim.api.nvim_create_augroup("aesthetics", { clear = true })
+vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
+  group = aesthetics,
+  desc = "Buffer aesthetics",
+  callback = function()
+    if require("lbrayner").window_is_floating() or
+      vim.bo.filetype == "fugitiveblame" or
+      vim.startswith(vim.bo.syntax, "Neogit") then
+      return
+    end
+    number()
+  end,
+})
+
 local cmdwindow = vim.api.nvim_create_augroup("cmdwindow", { clear = true })
 vim.api.nvim_create_autocmd("CmdwinEnter", {
   group = cmdwindow,
@@ -252,76 +266,6 @@ vim.api.nvim_create_autocmd("FileType", {
     else
       vim.bo.commentstring = "# %s"
     end
-  end,
-})
-
-local insert_mode_undo_point = vim.api.nvim_create_augroup("insert_mode_undo_point", { clear = true })
-vim.api.nvim_create_autocmd("CursorHoldI", {
-  group = insert_mode_undo_point,
-  desc = "Insert mode undo point",
-  callback = function()
-    if vim.api.nvim_get_mode()["mode"] ~= "i" then
-      return
-    end
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-G>u", true, false, true), "m", false)
-  end,
-})
-
-local aesthetics = vim.api.nvim_create_augroup("aesthetics", { clear = true })
-vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
-  group = aesthetics,
-  desc = "Buffer aesthetics",
-  callback = function()
-    if require("lbrayner").window_is_floating() or
-      vim.bo.filetype == "fugitiveblame" or
-      vim.startswith(vim.bo.syntax, "Neogit") then
-      return
-    end
-    number()
-  end,
-})
-
-local help_setup = vim.api.nvim_create_augroup("help_setup", { clear = true })
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "help",
-  group = help_setup,
-  callback = function(args)
-    vim.schedule(function()
-      vim.wo.relativenumber = true
-      vim.keymap.set("n", "q", function()
-        vim.api.nvim_win_close(0, false)
-      end, { buffer = args.buf, nowait = true })
-    end)
-  end,
-})
-
-local set_file_type = vim.api.nvim_create_augroup("set_file_type", { clear = true })
-
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-  pattern = { ".ignore", "*.redis", "*.wsdl", "/tmp/dir*" },
-  group = set_file_type,
-  desc = "Setting filetype for various patterns",
-  callback = function(args)
-    local extension = vim.fn.fnamemodify(args.file, ":e")
-    local filename = vim.fn.fnamemodify(args.file, ":t")
-
-    if filename == ".ignore" then
-      vim.bo.filetype = "gitignore"
-    elseif extension == "redis" then
-      vim.bo.filetype = "redis"
-    elseif extension == "wsdl" then
-      vim.bo.filetype = "xml"
-    elseif vim.fn.argc() == 1 and string.find(vim.fn.argv(0), "^/tmp/dir%w%w%w%w%w$") then
-      vim.bo.filetype = "vidir"
-    end
-  end,
-})
-
-vim.api.nvim_create_autocmd("TermOpen", {
-  group = set_file_type,
-  desc = "Terminal filetype",
-  callback = function()
-    vim.bo.filetype = "terminal"
   end,
 })
 
@@ -362,17 +306,29 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
-local large_xml_file = 1024 * 512
-local large_xml = vim.api.nvim_create_augroup("large_xml", { clear = true })
-vim.api.nvim_create_autocmd("BufRead", {
-  group = large_xml,
-  desc = "Disable syntax for large XML files",
+local help_setup = vim.api.nvim_create_augroup("help_setup", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "help",
+  group = help_setup,
   callback = function(args)
-    if vim.bo.filetype == "html" or vim.bo.filetype == "xml" then
-      if vim.fn.getfsize(args.file) > large_xml_file then
-        vim.bo.syntax = "unkown"
-      end
+    vim.schedule(function()
+      vim.wo.relativenumber = true
+      vim.keymap.set("n", "q", function()
+        vim.api.nvim_win_close(0, false)
+      end, { buffer = args.buf, nowait = true })
+    end)
+  end,
+})
+
+local insert_mode_undo_point = vim.api.nvim_create_augroup("insert_mode_undo_point", { clear = true })
+vim.api.nvim_create_autocmd("CursorHoldI", {
+  group = insert_mode_undo_point,
+  desc = "Insert mode undo point",
+  callback = function()
+    if vim.api.nvim_get_mode()["mode"] ~= "i" then
+      return
     end
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-G>u", true, false, true), "m", false)
   end,
 })
 
@@ -426,6 +382,40 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end,
 })
 
+local large_xml_file = 1024 * 512
+local large_xml = vim.api.nvim_create_augroup("large_xml", { clear = true })
+vim.api.nvim_create_autocmd("BufRead", {
+  group = large_xml,
+  desc = "Disable syntax for large XML files",
+  callback = function(args)
+    if vim.bo.filetype == "html" or vim.bo.filetype == "xml" then
+      if vim.fn.getfsize(args.file) > large_xml_file then
+        vim.bo.syntax = "unkown"
+      end
+    end
+  end,
+})
+
+local package_manager = vim.api.nvim_create_augroup("package_manager", { clear = true })
+vim.api.nvim_create_autocmd("BufRead", {
+  pattern = { "**/node_modules/*", vim.fs.joinpath(vim.fs.normalize("~/.m2/repository"), "*") },
+  group = package_manager,
+  desc = "Package manager controlled files should not writeable",
+  callback = function()
+    vim.bo.modifiable = false
+  end,
+})
+
+local session_equalize_windows = vim.api.nvim_create_augroup("session_equalize_windows", { clear = true })
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = session_equalize_windows,
+  desc = "Equalize windows on session startup",
+  callback = function()
+    if vim.v.this_session == "" then return end
+    pcall(vim.cmd.exe, [["normal! \<C-W>="]])
+  end,
+})
+
 -- SessionLoadPost happens before VimEnter
 local session_load = vim.api.nvim_create_augroup("session_load", { clear = true })
 vim.api.nvim_create_autocmd("VimEnter", {
@@ -434,6 +424,49 @@ vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     if vim.v.this_session == "" then return end
     vim.cmd("silent BWipeNotReadable!")
+  end,
+})
+
+local set_file_type = vim.api.nvim_create_augroup("set_file_type", { clear = true })
+
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+  pattern = { ".ignore", "*.redis", "*.wsdl", "/tmp/dir*" },
+  group = set_file_type,
+  desc = "Setting filetype for various patterns",
+  callback = function(args)
+    local extension = vim.fn.fnamemodify(args.file, ":e")
+    local filename = vim.fn.fnamemodify(args.file, ":t")
+
+    if filename == ".ignore" then
+      vim.bo.filetype = "gitignore"
+    elseif extension == "redis" then
+      vim.bo.filetype = "redis"
+    elseif extension == "wsdl" then
+      vim.bo.filetype = "xml"
+    elseif vim.fn.argc() == 1 and string.find(vim.fn.argv(0), "^/tmp/dir%w%w%w%w%w$") then
+      vim.bo.filetype = "vidir"
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("TermOpen", {
+  group = set_file_type,
+  desc = "Terminal filetype",
+  callback = function()
+    vim.bo.filetype = "terminal"
+  end,
+})
+
+local tab_events = vim.api.nvim_create_augroup("tab_events", { clear = true })
+vim.api.nvim_create_autocmd("TabClosed", {
+  group = tab_events,
+  desc = "Returning to previous tab instead of next",
+  callback = function(args)
+    local tab = tonumber(args.file)
+
+    if tab > 1 and tab <= vim.fn.tabpagenr("$") then
+      vim.cmd.tabprevious()
+    end
   end,
 })
 
@@ -495,39 +528,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
 if vim.v.vim_did_enter == 1 then
   vim.api.nvim_exec_autocmds("VimEnter", { group = terminal_setup })
 end
-
-local tab_events = vim.api.nvim_create_augroup("tab_events", { clear = true })
-vim.api.nvim_create_autocmd("TabClosed", {
-  group = tab_events,
-  desc = "Returning to previous tab instead of next",
-  callback = function(args)
-    local tab = tonumber(args.file)
-
-    if tab > 1 and tab <= vim.fn.tabpagenr("$") then
-      vim.cmd.tabprevious()
-    end
-  end,
-})
-
-local package_manager = vim.api.nvim_create_augroup("package_manager", { clear = true })
-vim.api.nvim_create_autocmd("BufRead", {
-  pattern = { "**/node_modules/*", vim.fs.joinpath(vim.fs.normalize("~/.m2/repository"), "*") },
-  group = package_manager,
-  desc = "Package manager controlled files should not writeable",
-  callback = function()
-    vim.bo.modifiable = false
-  end,
-})
-
-local session_equalize_windows = vim.api.nvim_create_augroup("session_equalize_windows", { clear = true })
-vim.api.nvim_create_autocmd("VimEnter", {
-  group = session_equalize_windows,
-  desc = "Equalize windows on session startup",
-  callback = function()
-    if vim.v.this_session == "" then return end
-    pcall(vim.cmd.exe, [["normal! \<C-W>="]])
-  end,
-})
 
 -- }}}
 
