@@ -94,6 +94,11 @@ function M.is_quickfix_or_location_list(winid)
   return vim.fn.getwininfo(winid)[1]["quickfix"] == 1
 end
 
+function M.jump_to_buffer(bufnr, pos, flash)
+  local win = bufwinid(bufnr)
+  _jump_to_location(win, bufnr, pos, flash)
+end
+
 function M.jump_to_location(filename, pos, flash)
   local bufnr = vim.fn.bufadd(filename)
   local win = bufwinid(bufnr)
