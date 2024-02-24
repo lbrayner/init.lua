@@ -1,5 +1,17 @@
 local M = {}
 
+function M.diff_include_expression(fname)
+  fname = vim.fn.tr(fname, ".", "/")
+  if vim.fn.isdirectory("lua") == 1 then
+    local init = vim.fs.joinpath("lua", fname, "init.lua")
+    if vim.fn.filereadable(init) == 1 then
+      return init
+    end
+    return vim.fs.joinpath("lua", fname)
+  end
+  return fname
+end
+
 function M.get_close_events()
   return { "CursorMoved", "CursorMovedI", "InsertCharPre", "WinScrolled" }
 end
