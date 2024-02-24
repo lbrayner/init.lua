@@ -145,6 +145,13 @@ local function on_attach(_, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceFolders", function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, { nargs = 0 })
+  vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceSymbol", function(command)
+    local name = command.args
+    if name and name ~= "" then
+      return vim.lsp.buf.workspace_symbol(name)
+    end
+    vim.lsp.buf.workspace_symbol()
+  end, { nargs = "?" })
 end
 
 local lsp_set_statusline
@@ -210,6 +217,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
       "LspSignatureHelp",
       "LspTypeDefinition",
       "LspWorkspaceFolders",
+      "LspWorkspaceSymbol",
     }) do
       pcall(vim.api.nvim_buf_del_user_command, bufnr, command) -- Ignore error if command doesn't exist
     end
