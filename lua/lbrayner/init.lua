@@ -156,7 +156,13 @@ function M.options(...)
   local arg = { ... }
   for _, value in pairs(arg) do
     if value then
-      return value
+      if type(value) == "string" then
+        if value ~= "" then
+          return value
+        end
+      else
+        return value
+      end
     end
   end
 end
