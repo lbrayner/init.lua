@@ -542,10 +542,34 @@ end
 -- Finish here if we haven't initialized the submodules
 
 if vim.fn.glob(vim.fs.joinpath(vim_dir, "pack/bundle/start/*/plugin")) == "" then
-    return
+  return
 end
 
 -- Subsection: packages {{{
+
+-- fidget.nvim
+
+-- Standalone UI for nvim-lsp progress. Eye candy for the impatient.
+require("fidget").setup({
+  notification = {
+    window = {
+      winblend = 0, -- to fix the interaction with transparent backgrounds
+    },
+  },
+})
+
+-- Improved alternate file mapping
+vim.keymap.set("n", "<Space>a", function()
+  local alternate = vim.fn.bufnr("#")
+  if alternate > 0 and vim.api.nvim_buf_is_valid(alternate) then
+    local name = vim.fn.pathshorten(vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":~:."))
+    vim.api.nvim_set_current_buf(alternate)
+    require("lbrayner.flash").flash_window()
+    require("fidget").notify(string.format("Switched to alternate buffer. Previous buffer was %s.", name))
+  else
+    vim.notify("Alternate buffer is not valid.")
+  end
+end)
 
 -- fzf-lua
 

@@ -1,12 +1,3 @@
--- Standalone UI for nvim-lsp progress. Eye candy for the impatient.
-require("fidget").setup({
-  notification = {
-    window = {
-      winblend = 0, -- to fix the interaction with transparent backgrounds
-    },
-  },
-})
-
 local capabilities = require("lbrayner.lsp").default_capabilities()
 
 -- Lua
