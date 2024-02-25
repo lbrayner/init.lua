@@ -512,9 +512,14 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.api.nvim_create_autocmd("TermEnter", {
       group = terminal_setup,
       callback = function()
-        if not require("lbrayner").window_is_floating() and
-          vim.tbl_count(vim.api.nvim_tabpage_list_wins(0)) > 1 then
-          vim.opt.winhighlight:append({ Normal = "CursorLine" })
+        if not require("lbrayner").window_is_floating() then
+          local terminals = vim.tbl_filter(function(win)
+            local bufnr = vim.api.nvim_win_get_buf(win)
+            return vim.bo[bufnr].buftype == "terminal"
+          end, vim.api.nvim_tabpage_list_wins(0))
+          if vim.tbl_count(terminals) > 1 then
+            vim.opt.winhighlight:append({ Normal = "CursorLine" })
+          end
         end
       end,
     })
@@ -562,7 +567,7 @@ require("fidget").setup({
 vim.keymap.set("n", "<Space>a", function()
   local alternate = vim.fn.bufnr("#")
   if alternate > 0 and vim.api.nvim_buf_is_valid(alternate) then
-    local name = vim.fn.pathshorten(vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":~:."))
+    local name = vim.fn.pathshorten(require("lbrayner.statusline").filename(true))
     vim.api.nvim_set_current_buf(alternate)
     require("lbrayner.flash").flash_window()
     require("fidget").notify(string.format("Switched to alternate buffer. Previous buffer was %s.", name))
