@@ -134,6 +134,13 @@ local function files()
   fzf_files({ cmd = cmd })
 end
 
+local function help_tags()
+  fzf.help_tags({
+    actions = { ["alt-s"] = actions.help_vert },
+    fzf_opts = { ["--history"] = get_history_file("help_tags") },
+  })
+end
+
 local function tabs()
   fzf.tabs({
     fzf_opts = {
@@ -149,9 +156,7 @@ end
 vim.api.nvim_create_user_command("Buffers", buffers, { nargs = 0 })
 vim.api.nvim_create_user_command("FilesClearCache", files_clear_cache, { nargs = 0 })
 vim.api.nvim_create_user_command("Files", files, { nargs = 0 })
-vim.api.nvim_create_user_command("HelpTags", function()
-  fzf.help_tags({ fzf_opts = { ["--history"] = get_history_file("help_tags") } })
-end, { nargs = 0 })
+vim.api.nvim_create_user_command("HelpTags", help_tags, { nargs = 0 })
 vim.api.nvim_create_user_command("Marks", file_marks, { nargs = 0 })
 vim.api.nvim_create_user_command("Tabs", tabs, { nargs = 0 })
 
