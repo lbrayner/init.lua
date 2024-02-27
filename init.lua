@@ -432,12 +432,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
 local set_file_type = vim.api.nvim_create_augroup("set_file_type", { clear = true })
 
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-  pattern = { ".ignore", "*.redis", "*.wsdl", "/tmp/dir*" },
+  pattern = { "**/host_vars/*", "*.redis", "*.wsdl", ".ignore", "/tmp/dir*" },
   group = set_file_type,
   desc = "Setting filetype for various patterns",
   callback = function(args)
-    local extension = vim.fn.fnamemodify(args.file, ":e")
-    local filename = vim.fn.fnamemodify(args.file, ":t")
+    local file = args.file
+    local extension = vim.fn.fnamemodify(file, ":e")
+    local filename = vim.fn.fnamemodify(file, ":t")
 
     if filename == ".ignore" then
       vim.bo.filetype = "gitignore"
@@ -447,6 +448,8 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
       vim.bo.filetype = "xml"
     elseif vim.fn.argc() == 1 and string.find(vim.fn.argv(0), "^/tmp/dir%w%w%w%w%w$") then
       vim.bo.filetype = "vidir"
+    elseif require("lbrayner").contains(file, "/host_vars/") then
+      vim.bo.filetype = "yaml"
     end
   end,
 })

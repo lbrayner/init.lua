@@ -77,7 +77,7 @@ vim.api.nvim_create_user_command("Rg", function(command)
 
   if not success then
     vim.cmd.cclose()
-    if type(err) == "string" and string.find(err, " Rg:") then
+    if type(err) == "string" and require("lbrayner").contains(err, " Rg:") then
       error(err)
     end
     print(string.format("Error searching for “%s”. Unmatched quotes? Check your command.", txt))

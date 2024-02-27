@@ -1,6 +1,6 @@
 vim.keymap.set("n", "<Leader>di", "<Cmd>windo diffthis<CR>")
 vim.keymap.set("n", "<Leader>dw", function() -- toggle iwhite
-  if string.find(vim.go.diffopt, "iwhite") then
+  if require("lbrayner").contains(vim.go.diffopt, "iwhite") then
     vim.opt.diffopt:remove({ "iwhite" })
     vim.notify("-iwhite")
     return

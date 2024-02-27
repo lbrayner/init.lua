@@ -1,5 +1,10 @@
 local M = {}
 
+function M.contains(s, text)
+  vim.validate({ s = { s, 's' }, text = { text, 's' } })
+  return string.find(s, text, 1, true)
+end
+
 function M.diff_include_expression(fname)
   fname = vim.fn.tr(fname, ".", "/")
   if vim.fn.isdirectory("lua") == 1 then
