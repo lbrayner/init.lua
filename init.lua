@@ -391,7 +391,7 @@ vim.api.nvim_create_autocmd("BufRead", {
   desc = "Disable syntax for large XML files",
   callback = function(args)
     if vim.bo.filetype == "html" or vim.bo.filetype == "xml" then
-      if vim.fn.getfsize(args.file) > large_xml_file then
+      if vim.fn.getfsize(args.match) > large_xml_file then
         vim.bo.syntax = "unkown"
       end
     end
@@ -436,7 +436,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   group = set_file_type,
   desc = "Setting filetype for various patterns",
   callback = function(args)
-    local file = args.file
+    local file = args.match
     local extension = vim.fn.fnamemodify(file, ":e")
     local filename = vim.fn.fnamemodify(file, ":t")
 
