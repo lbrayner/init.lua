@@ -385,38 +385,6 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end,
 })
 
-local large_file = vim.api.nvim_create_augroup("large_file", { clear = true })
-vim.api.nvim_create_autocmd("Syntax", {
-  pattern = { "json", "html", "xml" },
-  group = large_file,
-  desc = "Disable syntax for large files",
-  callback = function(args)
-    local bufnr = args.buf
-    local syntax = args.match
-
-    local size = tonumber(vim.fn.wordcount()["bytes"])
-
-    if size > 1024 * 512 then
-      vim.schedule(function()
-        if vim.api.nvim_buf_is_valid(bufnr) then
-          vim.bo[bufnr].syntax = "large_file"
-        end
-      end)
-
-      -- Folds are slow
-      vim.api.nvim_create_autocmd("WinEnter", {
-        buffer = bufnr,
-        once = true,
-        callback = function()
-          vim.schedule(function()
-            vim.cmd("normal! zR") -- Open all folds
-          end)
-        end,
-      })
-    end
-  end,
-})
-
 local package_manager = vim.api.nvim_create_augroup("package_manager", { clear = true })
 vim.api.nvim_create_autocmd("BufRead", {
   pattern = { "**/node_modules/*", vim.fs.normalize("~/.m2/repository") .. "/*" },
