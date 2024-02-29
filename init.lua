@@ -392,22 +392,27 @@ vim.api.nvim_create_autocmd("Syntax", {
   desc = "Disable syntax for large files",
   callback = function(args)
     local bufnr = args.buf
-    local file = args.file
     local syntax = args.match
 
-    local disable_syntax = vim.schedule_wrap(function(bufnr)
-      if vim.api.nvim_buf_is_valid(bufnr) then
-        vim.bo[bufnr].syntax = "large_file"
-      end
-    end)
-
-    local size = vim.fn.getfsize(file)
-    if require("lbrayner.fugitive").fugitive_object() then
-      size = tonumber(vim.fn.wordcount()["bytes"])
-    end
+    local size = tonumber(vim.fn.wordcount()["bytes"])
 
     if size > 1024 * 512 then
-      disable_syntax(bufnr)
+      vim.schedule(function()
+        if vim.api.nvim_buf_is_valid(bufnr) then
+          vim.bo[bufnr].syntax = "large_file"
+        end
+      end)
+
+      -- Folds are slow
+      vim.api.nvim_create_autocmd("WinEnter", {
+        buffer = bufnr,
+        once = true,
+        callback = function()
+          vim.schedule(function()
+            vim.cmd("normal! zR") -- Open all folds
+          end)
+        end,
+      })
     end
   end,
 })
