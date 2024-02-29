@@ -386,14 +386,15 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 
 local large_xml_file = 1024 * 512
 local large_xml = vim.api.nvim_create_augroup("large_xml", { clear = true })
-vim.api.nvim_create_autocmd("BufRead", {
+vim.api.nvim_create_autocmd("Syntax", {
+  pattern = { "html", "xml" },
   group = large_xml,
   desc = "Disable syntax for large XML files",
   callback = function(args)
-    if vim.bo.filetype == "html" or vim.bo.filetype == "xml" then
-      if vim.fn.getfsize(args.match) > large_xml_file then
-        vim.bo.syntax = "unkown"
-      end
+    if vim.fn.getfsize(args.file) > large_xml_file then
+      vim.schedule(function()
+        vim.bo.syntax = "large_file"
+      end)
     end
   end,
 })
