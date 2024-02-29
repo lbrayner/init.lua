@@ -145,7 +145,7 @@ local function tabs()
   fzf.tabs({
     fzf_opts = {
       ["--history"] = get_history_file(),
-      ["--preview"] = [['echo "Tab #"{1}": $(echo {2} | base64 -d -)"']],
+      ["--preview"] = [['echo "Tab #"{2}": $(echo {1} | base64 -d -)"']],
       ["--preview-window"] = "nohidden:up,1",
     },
     show_quickfix = true,
