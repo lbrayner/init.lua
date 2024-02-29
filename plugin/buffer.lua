@@ -59,12 +59,14 @@ vim.api.nvim_create_autocmd("Syntax", {
 
     if size > 1024 * 512 then
       vim.schedule(function()
+        -- Buffer might be gone
         if vim.api.nvim_buf_is_valid(bufnr) then
           vim.bo[bufnr].syntax = "large_file"
         end
       end)
 
       -- Folds are slow
+      -- There are vim-fugitive mappings the open windows and tabs
       vim.api.nvim_create_autocmd("WinEnter", {
         buffer = bufnr,
         once = true,
