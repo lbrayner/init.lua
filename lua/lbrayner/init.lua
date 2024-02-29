@@ -99,6 +99,19 @@ function M.is_quickfix_or_location_list(winid)
   return vim.fn.getwininfo(winid)[1]["quickfix"] == 1
 end
 
+-- TODO from tint.nvim, still not used
+function M.iterate_all_windows(func)
+  for _, tabpage in ipairs(vim.api.nvim_list_tabpages()) do
+    if vim.api.nvim_tabpage_is_valid(tabpage) then
+      for _, winid in ipairs(vim.api.nvim_tabpage_list_wins(tabpage)) do
+        if vim.api.nvim_win_is_valid(winid) then
+          func(winid, tabpage)
+        end
+      end
+    end
+  end
+end
+
 function M.jump_to_buffer(bufnr, pos, flash)
   local win = bufwinid(bufnr)
   _jump_to_location(win, bufnr, pos, flash)
