@@ -385,17 +385,29 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end,
 })
 
-local large_xml_file = 1024 * 512
-local large_xml = vim.api.nvim_create_augroup("large_xml", { clear = true })
+local large_file = vim.api.nvim_create_augroup("large_file", { clear = true })
 vim.api.nvim_create_autocmd("Syntax", {
-  pattern = { "html", "xml" },
-  group = large_xml,
-  desc = "Disable syntax for large XML files",
+  pattern = { "json", "html", "xml" },
+  group = large_file,
+  desc = "Disable syntax for large files",
   callback = function(args)
-    if vim.fn.getfsize(args.file) > large_xml_file then
-      vim.schedule(function()
-        vim.bo.syntax = "large_file"
-      end)
+    local bufnr = args.buf
+    local file = args.file
+    local syntax = args.match
+
+    local disable_syntax = vim.schedule_wrap(function(bufnr)
+      if vim.api.nvim_buf_is_valid(bufnr) then
+        vim.bo[bufnr].syntax = "large_file"
+      end
+    end)
+
+    local size = vim.fn.getfsize(file)
+    if require("lbrayner.fugitive").fugitive_object() then
+      size = tonumber(vim.fn.wordcount()["bytes"])
+    end
+
+    if size > 1024 * 512 then
+      disable_syntax(bufnr)
     end
   end,
 })
