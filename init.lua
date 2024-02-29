@@ -260,8 +260,9 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = { "apache", "crontab", "debsources", "desktop", "fstab", "samba", "sql" },
   group = commentstring,
   desc = "Set commentstring",
-  callback = function()
-    if vim.bo.filetype == "sql" then
+  callback = function(args)
+    local filetype = args.match
+    if filetype == "sql" then
       vim.bo.commentstring = "-- %s"
     else
       vim.bo.commentstring = "# %s"
@@ -401,7 +402,7 @@ vim.api.nvim_create_autocmd("Syntax", {
 
 local package_manager = vim.api.nvim_create_augroup("package_manager", { clear = true })
 vim.api.nvim_create_autocmd("BufRead", {
-  pattern = { "**/node_modules/*", vim.fs.joinpath(vim.fs.normalize("~/.m2/repository"), "*") },
+  pattern = { "**/node_modules/*", vim.fs.normalize("~/.m2/repository") .. "/*" },
   group = package_manager,
   desc = "Package manager controlled files should not writeable",
   callback = function()
