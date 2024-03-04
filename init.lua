@@ -389,7 +389,7 @@ local package_manager = vim.api.nvim_create_augroup("package_manager", { clear =
 vim.api.nvim_create_autocmd("BufRead", {
   pattern = { "**/node_modules/*", vim.fs.normalize("~/.m2/repository") .. "/*" },
   group = package_manager,
-  desc = "Package manager controlled files should not writeable",
+  desc = "Package manager controlled files should not be writeable",
   callback = function()
     vim.bo.modifiable = false
   end,
@@ -489,6 +489,28 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end,
 })
 
+vim.api.nvim_create_autocmd("TermEnter", {
+  group = terminal_setup,
+  callback = function()
+    if not require("lbrayner").window_is_floating() then
+      local terminals = vim.tbl_filter(function(win)
+        local bufnr = vim.api.nvim_win_get_buf(win)
+        return vim.bo[bufnr].buftype == "terminal"
+      end, vim.api.nvim_tabpage_list_wins(0))
+      if vim.tbl_count(terminals) > 1 then
+        vim.opt.winhighlight:append({ Normal = "CursorLine" })
+      end
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("TermLeave", {
+  group = terminal_setup,
+  callback = function()
+    vim.opt.winhighlight:remove({ "Normal" })
+  end,
+})
+
 vim.api.nvim_create_autocmd("VimEnter", {
   group = terminal_setup,
   desc = "Start in terminal mode",
@@ -497,26 +519,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
       group = terminal_setup,
       callback = function()
         vim.cmd.startinsert()
-      end,
-    })
-    vim.api.nvim_create_autocmd("TermEnter", {
-      group = terminal_setup,
-      callback = function()
-        if not require("lbrayner").window_is_floating() then
-          local terminals = vim.tbl_filter(function(win)
-            local bufnr = vim.api.nvim_win_get_buf(win)
-            return vim.bo[bufnr].buftype == "terminal"
-          end, vim.api.nvim_tabpage_list_wins(0))
-          if vim.tbl_count(terminals) > 1 then
-            vim.opt.winhighlight:append({ Normal = "CursorLine" })
-          end
-        end
-      end,
-    })
-    vim.api.nvim_create_autocmd("TermLeave", {
-      group = terminal_setup,
-      callback = function()
-        vim.opt.winhighlight:remove({ "Normal" })
       end,
     })
   end,
