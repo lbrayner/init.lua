@@ -1,3 +1,5 @@
+local M = {}
+
 local contains = require("lbrayner").contains
 
 local function loop_buffers(force, predicate)
@@ -22,7 +24,7 @@ local function loop_buffers(force, predicate)
   return buffer_count, error_count
 end
 
-local function wipe_buffers(force, predicate)
+function M.wipe_buffers(force, predicate)
   local buffer_count, error_count = loop_buffers(force, predicate)
   local message = ""
   if buffer_count == 0 then
@@ -41,19 +43,19 @@ local function wipe_buffers(force, predicate)
 end
 
 vim.api.nvim_create_user_command("BWipe", function(command)
-  wipe_buffers(command.bang, function(buf)
+  M.wipe_buffers(command.bang, function(buf)
     return buf.listed == 1 and contains(buf.name, command.args)
   end)
 end, { bang = true, complete = "file", nargs = 1 })
 
 vim.api.nvim_create_user_command("BWipeLuaPattern", function(command)
-  wipe_buffers(command.bang, function(buf)
+  M.wipe_buffers(command.bang, function(buf)
     return buf.listed == 1 and string.find(buf.name, command.args)
   end)
 end, { bang = true, complete = "file", nargs = 1 })
 
 vim.api.nvim_create_user_command("BWipeFileType", function(command)
-  wipe_buffers(command.bang, function(buf)
+  M.wipe_buffers(command.bang, function(buf)
     local filetype = command.args
     if filetype == "" then
       filetype = vim.bo.filetype -- Current buffer
@@ -63,25 +65,27 @@ vim.api.nvim_create_user_command("BWipeFileType", function(command)
 end, { bang = true, complete = "filetype", nargs = "?" })
 
 vim.api.nvim_create_user_command("BWipeHidden", function(command)
-  wipe_buffers(command.bang, function(buf)
+  M.wipe_buffers(command.bang, function(buf)
     return buf.hidden == 1 and contains(buf.name, command.args)
   end)
 end, { bang = true, complete = "file", nargs = "*" })
 
 vim.api.nvim_create_user_command("BWipeUnlisted", function(command)
-  wipe_buffers(command.bang, function(buf)
+  M.wipe_buffers(command.bang, function(buf)
     return buf.listed == 0 and contains(buf.name, command.args)
   end)
 end, { bang = true, complete = "file", nargs = "*" })
 
 vim.api.nvim_create_user_command("BWipeNotLoaded", function(command)
-  wipe_buffers(command.bang, function(buf)
+  M.wipe_buffers(command.bang, function(buf)
     return buf.listed == 1 and buf.loaded == 0
   end)
 end, { nargs = 0 })
 
 vim.api.nvim_create_user_command("BWipeNotReadable", function(command)
-  wipe_buffers(command.bang, function(buf)
+  M.wipe_buffers(command.bang, function(buf)
     return buf.listed == 1 and vim.fn.filereadable(buf.name) == 0
   end)
 end, { bang = true, nargs = 0 })
+
+return M
