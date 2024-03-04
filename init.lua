@@ -413,7 +413,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
   desc = "Wipe buffers without files on session load",
   callback = function()
     if vim.v.this_session == "" then return end
-    require("lbrayner.wipe").wipe_buffers(true, function(buf) -- BWipeNotReadable!
+    require("lbrayner.wipe").loop_buffers(true, function(buf) -- BWipeNotReadable!
       return buf.listed == 1 and vim.fn.filereadable(buf.name) == 0
     end)
   end,
