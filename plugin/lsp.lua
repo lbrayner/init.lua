@@ -70,7 +70,8 @@ local function on_attach(_, bufnr)
   vim.keymap.set("n", "gr", function()
     -- Exclude test references if not visiting a test file
     if is_test_file and not is_test_file(vim.api.nvim_buf_get_name(0)) then
-      return references({ no_tests = true })
+      references({ no_tests = true })
+      return
     end
     references()
   end, bufopts)
@@ -126,7 +127,8 @@ local function on_attach(_, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, "LspRename", function(command)
     local name = command.args
     if name and name ~= "" then
-      return vim.lsp.buf.rename(name)
+      vim.lsp.buf.rename(name)
+      return
     end
     vim.lsp.buf.rename()
   end, { nargs = "?" })
@@ -139,7 +141,8 @@ local function on_attach(_, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceSymbol", function(command)
     local name = command.args
     if name and name ~= "" then
-      return vim.lsp.buf.workspace_symbol(name)
+      vim.lsp.buf.workspace_symbol(name)
+      return
     end
     vim.lsp.buf.workspace_symbol()
   end, { nargs = "?" })
