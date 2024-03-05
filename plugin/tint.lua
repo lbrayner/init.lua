@@ -30,3 +30,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
     })
   end,
 })
+
+if vim.v.vim_did_enter == 1 then
+  vim.api.nvim_exec_autocmds("VimEnter", { group = tint_custom })
+end
