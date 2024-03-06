@@ -1,6 +1,7 @@
 -- Backend is vim-dadbod
 
 local database_access = vim.api.nvim_create_augroup("database_access", { clear = true })
+
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "redis", "sql" },
   group = database_access,
@@ -30,6 +31,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 local sql_database_access = vim.api.nvim_create_augroup("sql_database_access", { clear = true })
+
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "sql",
   group = sql_database_access,

@@ -27,6 +27,7 @@ vim.api.nvim_create_autocmd("SwapExists", {
 
 -- Check if file was modified outside this instance
 local checktime = vim.api.nvim_create_augroup("checktime", { clear = true })
+
 vim.api.nvim_create_autocmd("VimEnter", {
   group = checktime,
   desc = "Wipe buffers without files on session load",
@@ -47,6 +48,7 @@ if vim.v.vim_did_enter == 1 then
 end
 
 local large_file = vim.api.nvim_create_augroup("large_file", { clear = true })
+
 vim.api.nvim_create_autocmd("Syntax", {
   pattern = { "json", "html", "xml" },
   group = large_file,

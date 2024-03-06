@@ -12,6 +12,7 @@ vim.keymap.set("n", "<Leader>do", "<Cmd>diffoff!<CR>")
 
 -- TODO for tackling a vim-fugitive bug, reproduce and submit a bug report
 local diffupdate = vim.api.nvim_create_augroup("diffupdate", { clear = false })
+
 vim.api.nvim_create_autocmd("TabEnter" , {
   group = diffupdate,
   callback = function(args)
@@ -45,7 +46,9 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
   local bufnr = vim.api.nvim_get_current_buf()
   if update_conflict_markers(bufnr) then
     clear_conflict_markers_autocmd(bufnr)
+
     local conflict_markers = vim.api.nvim_create_augroup("conflict_markers", { clear = false })
+
     vim.b[bufnr].conflict_marker_autocmd = vim.api.nvim_create_autocmd({ "BufWritePost", "WinEnter" }, {
       group = conflict_markers,
       buffer = bufnr,

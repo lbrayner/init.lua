@@ -230,6 +230,7 @@ require("lbrayner.wipe")
 -- Subsection: autocmds {{{
 
 local aesthetics = vim.api.nvim_create_augroup("aesthetics", { clear = true })
+
 vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
   group = aesthetics,
   desc = "Buffer aesthetics",
@@ -244,6 +245,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
 })
 
 local cmdwindow = vim.api.nvim_create_augroup("cmdwindow", { clear = true })
+
 vim.api.nvim_create_autocmd("CmdwinEnter", {
   group = cmdwindow,
   desc = "Command-line window configuration",
@@ -257,6 +259,7 @@ vim.api.nvim_create_autocmd("CmdwinEnter", {
 })
 
 local commentstring = vim.api.nvim_create_augroup("commentstring", { clear = true })
+
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "apache", "crontab", "debsources", "desktop", "fstab", "samba", "sql" },
   group = commentstring,
@@ -309,6 +312,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 local help_setup = vim.api.nvim_create_augroup("help_setup", { clear = true })
+
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "help",
   group = help_setup,
@@ -323,6 +327,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 local insert_mode_undo_point = vim.api.nvim_create_augroup("insert_mode_undo_point", { clear = true })
+
 vim.api.nvim_create_autocmd("CursorHoldI", {
   group = insert_mode_undo_point,
   desc = "Insert mode undo point",
@@ -387,6 +392,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 })
 
 local package_manager = vim.api.nvim_create_augroup("package_manager", { clear = true })
+
 vim.api.nvim_create_autocmd("BufRead", {
   pattern = { "**/node_modules/*", vim.fs.normalize("~/.m2/repository") .. "/*" },
   group = package_manager,
@@ -397,6 +403,7 @@ vim.api.nvim_create_autocmd("BufRead", {
 })
 
 local session_equalize_windows = vim.api.nvim_create_augroup("session_equalize_windows", { clear = true })
+
 vim.api.nvim_create_autocmd("VimEnter", {
   group = session_equalize_windows,
   desc = "Equalize windows on session startup",
@@ -408,6 +415,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
 -- SessionLoadPost happens before VimEnter
 local session_load = vim.api.nvim_create_augroup("session_load", { clear = true })
+
 vim.api.nvim_create_autocmd("VimEnter", {
   group = session_load,
   desc = "Wipe buffers without files on session load",
@@ -445,6 +453,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 })
 
 local tab_events = vim.api.nvim_create_augroup("tab_events", { clear = true })
+
 vim.api.nvim_create_autocmd("TabClosed", {
   group = tab_events,
   desc = "Returning to previous tab instead of next",
@@ -500,6 +509,7 @@ end)
 -- fzf-lua
 
 local fzf_lua_highlights = vim.api.nvim_create_augroup("fzf_lua_highlights", { clear = true })
+
 vim.api.nvim_create_autocmd("ColorScheme", {
   group = fzf_lua_highlights,
   desc = "Setup fzf-lua highlights after a colorscheme change",
@@ -546,6 +556,7 @@ vim.keymap.set("v", "<Space>c", "<Plug>(quickhl-manual-clear)", { remap = true }
 -- Case matters for keys after alt or meta
 
 local vim_rsi_override = vim.api.nvim_create_augroup("vim_rsi_override", { clear = true })
+
 vim.api.nvim_create_autocmd("VimEnter", {
   group = vim_rsi_override,
   desc = "Override vim-rsi mappings",

@@ -67,12 +67,15 @@ vim.api.nvim_create_user_command("FlashWindowMode", function()
     print("Flash window mode disabled.")
     return
   end
+
   flash_window_mode = vim.api.nvim_create_augroup("flash_window_mode", { clear = true })
+
   vim.api.nvim_create_autocmd("WinEnter", {
     group = flash_window_mode,
     desc = "Flash window mode",
     callback = M.flash_window,
   })
+
   M.flash_window()
   print("Flash window mode enabled.")
 end, { nargs = 0 })
