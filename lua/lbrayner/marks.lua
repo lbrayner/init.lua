@@ -102,7 +102,7 @@ function M.file_mark_jump_to_location(mark)
   local file_mark_info_by_mark, _ = get_file_mark_navigator()
   local file_mark_info = file_mark_info_by_mark["'"..mark]
   if not file_mark_info then
-    print(string.format("“%s” is not set.", mark))
+    vim.notify(string.format("“%s” is not set.", mark))
     return
   end
   file_mark_info_jump_to_location(file_mark_info)

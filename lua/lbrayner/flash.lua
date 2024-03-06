@@ -64,7 +64,7 @@ vim.api.nvim_create_user_command("FlashWindowMode", function()
   if flash_window_mode then
     vim.api.nvim_del_augroup_by_id(flash_window_mode)
     flash_window_mode = nil
-    print("Flash window mode disabled.")
+    vim.notify("Flash window mode disabled.")
     return
   end
 
@@ -77,7 +77,7 @@ vim.api.nvim_create_user_command("FlashWindowMode", function()
   })
 
   M.flash_window()
-  print("Flash window mode enabled.")
+  vim.notify("Flash window mode enabled.") -- TODO use vim.notify
 end, { nargs = 0 })
 
 vim.keymap.set({

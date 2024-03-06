@@ -48,7 +48,7 @@ vim.api.nvim_create_user_command("Rg", function(command)
       -- :0Rg performs a search with the last text juxtaposed with the new text
       txt = vim.trim(table.concat({ context.ripgrep.txt, txt }, " "))
     else
-      print("Could not find a ripgrep search context.")
+      vim.notify("Could not find a ripgrep search context.")
       return
     end
   elseif count > 0 then -- :'<,'>Rg
@@ -56,11 +56,11 @@ vim.api.nvim_create_user_command("Rg", function(command)
     local pos_start = vim.api.nvim_buf_get_mark(0, "<")
     local pos_end = vim.api.nvim_buf_get_mark(0, ">")
     if line1 ~= pos_start[1] or line2 ~= pos_end[1] then
-      print("Line range not allowed, only visual selection.")
+      vim.notify("Line range not allowed, only visual selection.")
       return
     end
     if pos_start[1] ~= pos_end[1] then
-      print("Visual selection pattern cannot span multiple lines.")
+      vim.notify("Visual selection pattern cannot span multiple lines.")
       return
     end
     local start_row = pos_start[1] - 1
@@ -80,7 +80,7 @@ vim.api.nvim_create_user_command("Rg", function(command)
     if type(err) == "string" and require("lbrayner").contains(err, " Rg:") then
       error(err)
     end
-    print(string.format("Error searching for “%s”. Unmatched quotes? Check your command.", txt))
+    vim.notify(string.format("Error searching for “%s”. Unmatched quotes? Check your command.", txt))
     return
   end
 
@@ -90,7 +90,7 @@ vim.api.nvim_create_user_command("Rg", function(command)
     vim.cmd("botright copen")
   else
     vim.cmd.cclose()
-    print(string.format("No match found for “%s”.", txt))
+    vim.notify(string.format("No match found for “%s”.", txt))
   end
 end, { complete = "file", nargs = "*", range = -1 })
 

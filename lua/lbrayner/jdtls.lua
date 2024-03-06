@@ -173,7 +173,7 @@ function M.java_type_hierarchy(opts)
     end
 
     if vim.tbl_isempty(hierarchy) then
-      print("Type hierarchy: no results.")
+      vim.notify("Type hierarchy: no results.")
       return
     end
 

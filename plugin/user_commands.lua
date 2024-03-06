@@ -7,5 +7,5 @@ vim.api.nvim_create_user_command("LuaModuleReload", function(command)
   end
   package.loaded[module] = nil
   require(module)
-  print(string.format("Reloaded '%s'.", module))
+  vim.notify(string.format("Reloaded '%s'.", module))
 end, { bar=true, nargs=1 })

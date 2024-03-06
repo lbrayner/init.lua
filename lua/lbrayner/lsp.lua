@@ -43,7 +43,7 @@ end
 
 function M.on_list(options)
   if vim.tbl_isempty(options.items) then
-    print("Empty list.")
+    vim.notify("Empty list.")
     return
   end
 
