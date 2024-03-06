@@ -115,32 +115,6 @@ vim.keymap.set("n", "<Leader>x", [[:keepp %s/\C\V\<<C-R><C-W>\>//gc<Left><Left><
 -- Rename visual selection
 vim.keymap.set("v", "<Leader>x", [[""y:keepp %s/\C\V<C-R>"//gc<Left><Left><Left>]])
 
--- https://vim.fandom.com/wiki/Converting_variables_to_or_from_camel_case
--- Convert from score_case to camelCase
-vim.keymap.set("n", "crc", function()
-  -- From $VIMRUNTIME/lua/vim/lsp/_completion.lua, vim.lsp._completion.omnifunc
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local lnum = cursor[1] - 1
-  local line = vim.api.nvim_get_current_line()
-  local line_to_cursor = line:sub(1, cursor[2])
-  local cword_start = vim.fn.match(line_to_cursor, "\\k*$")
-  local cursor_til_end = line:sub(cword_start + 1)
-  print("cursor_til_end", cursor_til_end) -- TODO debug
-  local cword_end = cword_start + vim.fn.match(cursor_til_end, "[^[:keyword:]]") - 1
-  cword_end = cword_end < cword_start and vim.fn.col("$") - 1 or cword_end
-  print("cursor", vim.inspect(cursor), "cword_start", cword_start, "cword_end", cword_end) -- TODO debug
-  -- local word = vim.fn.expand("<cword>")
-  local word = vim.api.nvim_buf_get_text(0, lnum, cword_start, lnum, cword_end, {})[1]
-  print("word", word) -- TODO debug
-  word = string.gsub(word, "-", "_")
-  -- From tpope's vim-abolish
-  word = vim.fn.substitute(word, [[\C\(_\)\=\(.\)]],
-  [[\=submatch(1)==""?tolower(submatch(2)) : toupper(submatch(2))]], "g")
-  vim.api.nvim_buf_set_text(0, lnum, cword_start, lnum, cword_end, { word })
-end)
--- Convert from camelCase to score_case
-vim.keymap.set("n", "cr_", [[:keepp s#\(\<\u\l\+\|\l\+\)\(\u\)#\l\1_\l\2#g]])
-
 -- From vim-unimpaired: insert blank lines above and below
 vim.keymap.set("n", "[<Space>", [[<Cmd>exe "put!=repeat(nr2char(10), v:count1)\<Bar>silent ']+"<CR>]])
 vim.keymap.set("n", "]<Space>", [[<Cmd>exe "put =repeat(nr2char(10), v:count1)\<Bar>silent ']-"<CR>]])
