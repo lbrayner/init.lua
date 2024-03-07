@@ -26,5 +26,15 @@ vim.keymap.set("n", "crc", function()
   end)
 end)
 
--- Convert from camelCase to score_case
-vim.keymap.set("n", "cr_", [[:keepp s#\(\<\u\l\+\|\l\+\)\(\u\)#\l\1_\l\2#g]])
+-- Coerce keyword to snake_case
+vim.keymap.set("n", "cr_", function()
+  replace_keyword_under_cursor(function(word)
+    -- From tpope's vim-abolish
+    word = string.gsub(word, "::", "/")
+    word = string.gsub(word, "(%u+)(%u%l)", "%1_%2")
+    word = string.gsub(word, "([%l%d])(%u)", "%1_%2")
+    word = string.gsub(word, "[.-]", "_")
+    word = word:lower()
+    return word
+  end)
+end)
