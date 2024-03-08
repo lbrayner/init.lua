@@ -213,6 +213,7 @@ vim.g.markdown_recommended_style = 0
 -- Modules
 
 require("lbrayner.clipboard")
+require("lbrayner.coerce")
 require("lbrayner.flash")
 require("lbrayner.highlight")
 require("lbrayner.marks")
