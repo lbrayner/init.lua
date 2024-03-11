@@ -15,7 +15,13 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function(args)
     local bufnr = args.buf
     vim.schedule(function()
-      vim.api.nvim_buf_set_name(bufnr, vim.b[bufnr].term_title)
+      if vim.api.nvim_buf_get_name(bufnr) ~= vim.b[bufnr].term_title then
+        local wrong_title = vim.api.nvim_buf_get_name(bufnr)
+        vim.api.nvim_buf_set_name(bufnr, vim.b[bufnr].term_title)
+        local wrong_title_bufnr = vim.fn.bufnr(wrong_title)
+        vim.api.nvim_buf_delete(wrong_title_bufnr, { force = true })
+      end
+
       vim.keymap.set("n", "<A-h>", [[<C-\><C-N><C-W>h]], { buffer = bufnr })
       vim.keymap.set("n", "<A-j>", [[<C-\><C-N><C-W>j]], { buffer = bufnr })
       vim.keymap.set("n", "<A-k>", [[<C-\><C-N><C-W>k]], { buffer = bufnr })
