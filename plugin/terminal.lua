@@ -15,6 +15,10 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function(args)
     local bufnr = args.buf
     vim.schedule(function()
+      if not vim.api.nvim_buf_is_valid(bufnr) then
+        return
+      end
+
       if vim.api.nvim_buf_get_name(bufnr) ~= vim.b[bufnr].term_title then
         local wrong_title = vim.api.nvim_buf_get_name(bufnr)
         vim.api.nvim_buf_set_name(bufnr, vim.b[bufnr].term_title)

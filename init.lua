@@ -325,11 +325,16 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "help",
   group = help_setup,
   callback = function(args)
+    local bufnr = args.buf
+
     vim.schedule(function()
       vim.wo.relativenumber = true
-      vim.keymap.set("n", "q", function()
-        vim.api.nvim_win_close(0, false)
-      end, { buffer = args.buf, nowait = true })
+
+      if vim.api.nvim_buf_is_valid(bufnr) then
+        vim.keymap.set("n", "q", function()
+          vim.api.nvim_win_close(0, false)
+        end, { buffer = bufnr, nowait = true })
+      end
     end)
   end,
 })

@@ -8,6 +8,10 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function(args)
     local bufnr = args.buf
     vim.schedule(function()
+      if not vim.api.nvim_buf_is_valid(bufnr) then
+        return
+      end
+
       local bufopts = { buffer = bufnr }
       vim.keymap.set("n", "<C-Return>", "<Cmd>'{,'}DB<CR>", bufopts)
       vim.keymap.set("n", "<C-kEnter>", "<Cmd>'{,'}DB<CR>", bufopts)
@@ -38,6 +42,10 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function(args)
     local bufnr = args.buf
     vim.schedule(function()
+      if not vim.api.nvim_buf_is_valid(bufnr) then
+        return
+      end
+
       if vim.b[bufnr].db and vim.startswith(vim.b[bufnr].db, "postgresql") then
         -- Describe this object
         vim.keymap.set("n", "<Leader>dt", [[<Cmd>exe 'DB \d ' . expand("<cWORD>")<CR>]], { buffer = bufnr })
