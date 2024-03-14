@@ -49,7 +49,6 @@ vim.api.nvim_create_autocmd("FileType", {
       if vim.b[bufnr].db and vim.startswith(vim.b[bufnr].db, "postgresql") then
         -- Describe this object
         vim.keymap.set("n", "<Leader>dt", [[<Cmd>exe 'DB \d ' . expand("<cWORD>")<CR>]], { buffer = bufnr })
-        return -- only one database
       end
     end)
   end,
