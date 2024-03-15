@@ -247,7 +247,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
           local bufname = vim.api.nvim_buf_get_name(bufnr)
           if vim.startswith(bufname, folder_name) then
             if vim.fn.exists("#lspconfig#BufRead#" .. folder_name .. "/*") == 1 then
-              vim.cmd("doautocmd lspconfig BufRead " .. bufname)
+              vim.cmd("doautocmd lspconfig BufRead " .. vim.fn.fnameescape(bufname))
               return
             end
           end
