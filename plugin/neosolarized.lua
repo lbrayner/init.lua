@@ -11,7 +11,6 @@ vim.api.nvim_create_autocmd("ColorScheme", {
   callback = function()
     vim.cmd("hi QuickFixLine guibg=#002b36 guifg=#6c71c4 gui=NONE")
     vim.cmd("hi! link NormalNC Normal")
-    vim.wo.cursorline = true
   end,
 })
 
