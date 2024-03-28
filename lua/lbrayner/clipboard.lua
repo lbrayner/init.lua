@@ -11,15 +11,15 @@ function M.clip(text)
 end
 
 function M.cwd()
-  return vim.fn.fnamemodify(vim.fn.getcwd(), ":~")
+  return vim.fn.fnamemodify(vim.fn.getcwd(), ":p:~")
 end
 
 function M.directory()
-  return vim.fn.expand("%:~:h")
+  return vim.fn.expand("%:p:~:h")
 end
 
 function M.full_path()
-  return vim.fn.expand("%:~")
+  return vim.fn.expand("%:p:~")
 end
 
 function M.name()
@@ -52,7 +52,7 @@ end, { nargs = 0 })
 vim.api.nvim_create_user_command("FullPath", function()
   local fugitive_path = require("lbrayner.fugitive").fugitive_path()
   if fugitive_path then
-    M.clip(vim.fn.fnamemodify(fugitive_path, ":~"))
+    M.clip(vim.fn.fnamemodify(fugitive_path, ":p:~"))
     return
   end
   M.clip(M.full_path())
