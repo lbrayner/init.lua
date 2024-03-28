@@ -1,33 +1,33 @@
 -- Subsection: settings {{{
 
-vim.go.backspace =  "indent,eol,start"
-vim.go.backupcopy = "yes"
-vim.go.breakindent = true
-vim.go.clipboard = "unnamed,unnamedplus"
-vim.go.completeopt = "menuone"
-vim.go.cursorline = true
-vim.go.expandtab = true
-vim.go.fileformat = "unix"
-vim.go.fileformats = "unix,dos"
-vim.go.ignorecase = true
-vim.go.lazyredraw = true
-vim.go.linebreak = true
-vim.go.listchars = "eol:¬,tab:» ,trail:·"
-vim.go.number = true
-vim.go.relativenumber = true
-vim.go.ruler = false
-vim.go.shiftwidth = 2
-vim.go.showmode = false
-vim.go.smartcase = true
-vim.go.splitbelow = true
-vim.go.splitright = true
-vim.go.switchbuf = "usetab,uselast"
-vim.go.synmaxcol = 500 -- From tpope's vim-sensible (lowering this improves performance in files with long lines)
-vim.go.tabstop = 2
-vim.go.termguicolors = true
-vim.go.title = true
-vim.go.wildmenu = true
-vim.go.wildmode = "longest:full"
+vim.o.backspace =  "indent,eol,start"
+vim.o.backupcopy = "yes"
+vim.o.breakindent = true
+vim.o.clipboard = "unnamed,unnamedplus"
+vim.o.completeopt = "menuone"
+vim.o.cursorline = true
+vim.o.expandtab = true
+vim.o.fileformat = "unix"
+vim.o.fileformats = "unix,dos"
+vim.o.ignorecase = true
+vim.o.lazyredraw = true
+vim.o.linebreak = true
+vim.o.listchars = "eol:¬,tab:» ,trail:·"
+vim.o.number = true
+vim.o.relativenumber = true
+vim.o.ruler = false
+vim.o.shiftwidth = 2
+vim.o.showmode = false
+vim.o.smartcase = true
+vim.o.splitbelow = true
+vim.o.splitright = true
+vim.o.switchbuf = "usetab,uselast"
+vim.o.synmaxcol = 500 -- From tpope's vim-sensible (lowering this improves performance in files with long lines)
+vim.o.tabstop = 2
+vim.o.termguicolors = true
+vim.o.title = true
+vim.o.wildmenu = true
+vim.o.wildmode = "longest:full"
 
 -- }}}
 
