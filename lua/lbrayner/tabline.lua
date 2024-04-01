@@ -52,11 +52,9 @@ function M.redefine_tabline()
     end
   elseif not vim.startswith(bufname, "jdt://") and -- jdtls
     not vim.startswith(bufname, "term://") then -- buftype set to "terminal" too late, check bufname
-    -- vim.bo.buftype ~= "terminal" then
     if bufname ~= "" and not is_in_directory(bufname, vim.fn.getcwd()) then -- It's an absolute path
       bufname = vim.fn.fnamemodify(bufname, ":~")
-      -- a space
-      max_length = max_length - 1
+      max_length = max_length - 1 -- a space
       local absolute_path = require("lbrayner").truncate_filename(bufname, max_length)
       tabline = tabline .. string.format(" %%=%%#WarningMsg#%s ", absolute_path)
     end
