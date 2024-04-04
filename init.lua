@@ -393,8 +393,13 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   pattern = "COMMIT_EDITMSG",
   group = file_type_setup,
   desc = "Start in insert mode",
-  callback = function()
-    vim.cmd.startinsert()
+  callback = function(args)
+    local bufnr = args.buf
+    vim.schedule(function()
+      vim.api.nvim_buf_call(bufnr, function()
+        vim.cmd.startinsert()
+      end)
+    end)
     vim.bo.spelllang = "en"
     vim.wo.spell = true
   end,
