@@ -11,7 +11,7 @@ function M.clip(text)
 end
 
 function M.cwd()
-  return vim.fn.fnamemodify(vim.fn.getcwd(), ":p:~")
+  return vim.fn.fnamemodify(vim.fn.getcwd(), ":~")
 end
 
 function M.directory()
@@ -19,7 +19,9 @@ function M.directory()
 end
 
 function M.full_path()
-  return vim.fn.expand("%:p:~")
+  -- Normalized (remove trailing /) in case buffer represents a directory
+  local fp = vim.fs.normalize(vim.fn.expand("%:p"))
+  return vim.fn.fnamemodify(fp, ":~")
 end
 
 function M.name()
