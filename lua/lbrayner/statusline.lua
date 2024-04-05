@@ -200,13 +200,13 @@ function M.winbar()
   end
 
   if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
-    local dir = vim.fn.pathshorten(string.gsub(vim.fn.fnamemodify(vim.fn.FugitiveGitDir(), ":~"),"/%.git$",""))
+    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").fugitive_git_dir())
     statusline = statusline..dir.."$ %<".."Fugitive summary " ..
     "%{v:lua.require'lbrayner.statusline'.status_flag()}"
   elseif vim.fn.exists("*FugitiveResult") == 1 and
     not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then  -- Fugitive temporary buffers
     local fugitive_temp_buf = fugitive_temporary_buffer()
-    local dir = vim.fn.pathshorten(string.gsub(vim.fn.fnamemodify(vim.fn.FugitiveGitDir(), ":~"),"/%.git$",""))
+    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").fugitive_git_dir())
     statusline = statusline..dir.."$ %<"..fugitive_temp_buf ..
     " %{v:lua.require'lbrayner.statusline'.status_flag()}"
   elseif require("lbrayner").is_quickfix_or_location_list() then
@@ -257,13 +257,13 @@ function M.define_status_line()
   end
 
   if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
-    local dir = vim.fn.pathshorten(string.gsub(vim.fn.fnamemodify(vim.fn.FugitiveGitDir(), ":~"),"/%.git$",""))
+    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").fugitive_git_dir())
     vim.wo.statusline = vim.wo.statusline.."%6*"..dir.."$%* %<".."Fugitive summary " ..
     "%1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
   elseif vim.fn.exists("*FugitiveResult") == 1 and
     not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
     local fugitive_temp_buf = fugitive_temporary_buffer()
-    local dir = vim.fn.pathshorten(string.gsub(vim.fn.fnamemodify(vim.fn.FugitiveGitDir(), ":~"),"/%.git$",""))
+    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").fugitive_git_dir())
     vim.wo.statusline = vim.wo.statusline.."%6*"..dir.."$%* %<"..fugitive_temp_buf ..
     " %1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
   elseif require("lbrayner").is_quickfix_or_location_list() then
