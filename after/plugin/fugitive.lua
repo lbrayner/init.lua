@@ -29,7 +29,7 @@ vim.api.nvim_create_user_command("FugitiveObject", function()
     vim.notify("This buffer is not a Fugitive object.")
     return
   end
-  require("lbrayner.clipboard").clip(fugitive_object)
+  require("lbrayner.path").clip(fugitive_object)
 end, { nargs = 0 })
 vim.api.nvim_create_user_command("FugitiveUrl", function()
   local fugitive_object = require("lbrayner.fugitive").fugitive_object()
@@ -37,7 +37,7 @@ vim.api.nvim_create_user_command("FugitiveUrl", function()
     vim.notify("This buffer is not a Fugitive object.")
     return
   end
-  require("lbrayner.clipboard").clip(vim.api.nvim_buf_get_name(0))
+  require("lbrayner.path").clip(vim.api.nvim_buf_get_name(0))
 end, { nargs = 0 })
 vim.api.nvim_create_user_command("Gdi", function(command)
   vim.fn["fugitive#Diffsplit"](1, command.bang and 0 or 1, "leftabove <mods>", command.args)

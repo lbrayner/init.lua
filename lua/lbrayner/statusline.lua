@@ -131,7 +131,7 @@ function M.get_status_line_tail()
 end
 
 function M.filename(full_path)
-  local path = require("lbrayner.clipboard").path()
+  local path = require("lbrayner.path").path()
 
   if require("lbrayner.fugitive").fugitive_object() then
     path = require("lbrayner.fugitive").fugitive_object()
