@@ -115,8 +115,9 @@ M.with_config_path("Rg")
 M.with_config_path("RgNoTests", ".ripgreprc-no-tests")
 M.with_config_path("RgTests", ".ripgreprc-tests")
 
-vim.keymap.set("ca", "Rg", "Rg -e")
 vim.keymap.set("ca", "Rb", [[Rg -s -e'\b''\b'<Left><Left><Left><Left>]])
+vim.keymap.set("ca", "Rg", "Rg -e")
+vim.keymap.set("ca", "Rt", [[RgNoTests -s -e'\b''\b'<Left><Left><Left><Left>]])
 vim.keymap.set("ca", "Rw", [[Rg -s -e'\b'<C-R><C-W>'\b']])
 
 
