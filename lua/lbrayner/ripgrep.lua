@@ -21,11 +21,17 @@ local function rg(txt, config_path, loclist)
   if not vim.fn.executable("rg") then
     error("Rg: 'rg' not executable.")
   end
-  if config_path then
-    vim.bo.grepprg = "RIPGREP_CONFIG_PATH=" .. config_path .. " " .. vim.go.grepprg
-  end
+
   -- Escaping Command-line special characters '#', '%' (:h :_%), and '|' (:h :bar)
-  vim.cmd("silent "..command.." "..rgopts..vim.fn.escape(txt, "#%|"))
+  local grep = "silent "..command.." "..rgopts..vim.fn.escape(txt, "#%|")
+
+  if vim.bo.grepprg == "" and config_path and vim.fn.filereadable(config_path) == 1 then
+    vim.bo.grepprg = "RIPGREP_CONFIG_PATH=" .. config_path .. " " .. vim.go.grepprg
+    vim.cmd(grep)
+    vim.bo.grepprg = ""
+    return
+  end
+  vim.cmd(grep)
 end
 
 function M.lrg(txt, config_path)
@@ -36,7 +42,12 @@ function M.rg(txt, config_path)
   rg(txt, config_path)
 end
 
-function M.user_command(txt, count, line1, line2, config_path)
+function M.user_command(command, config_path)
+  local txt = command.args
+  local count = command.count
+  local line1 = command.line1
+  local line2 = command.line2
+
   if count == 0 then -- :0Rg
     local context = vim.fn.getqflist({ context = 1 }).context
     if vim.tbl_get(context, "ripgrep", "txt") then
@@ -90,6 +101,12 @@ function M.user_command(txt, count, line1, line2, config_path)
   end
 end
 
+function M.with_config_path(command_name, config_path)
+  vim.api.nvim_create_user_command(command_name, function(command)
+    M.user_command(command, config_path)
+  end, { complete = "file", nargs = "*", range = -1 })
+end
+
 -- local ripgrep = vim.api.nvim_create_augroup("ripgrep", { clear = true })
 --
 -- vim.api.nvim_create_autocmd("User", {
@@ -109,12 +126,7 @@ vim.go.grepformat = "%f:%l:%c:%m"
 vim.go.shellpipe = "&>"
 
 vim.api.nvim_create_user_command("Rg", function(command)
-  local txt = command.args
-  local count = command.count
-  local line1 = command.line1
-  local line2 = command.line2
-
-  M.user_command(txt, count, line1, line2)
+  M.user_command(command)
 end, { complete = "file", nargs = "*", range = -1 })
 
 vim.keymap.set("ca", "Rg", "Rg -e")
