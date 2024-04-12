@@ -139,11 +139,10 @@ function M.filename(full_path)
     path = string.gsub(vim.api.nvim_buf_get_name(0), "%?.*", "")
   end
 
-  local filename
-  if full_path then
-    filename = string.gsub(path, "'", "''")
-  else
-    filename = string.gsub(vim.fn.fnamemodify(path, ":t"), "'", "''")
+  local filename = path
+
+  if not full_path then
+    filename = vim.fn.fnamemodify(path, ":t")
   end
 
   if filename == "" then
