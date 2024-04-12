@@ -107,30 +107,17 @@ function M.with_config_path(command_name, config_path)
   end, { complete = "file", nargs = "*", range = -1 })
 end
 
--- local ripgrep = vim.api.nvim_create_augroup("ripgrep", { clear = true })
---
--- vim.api.nvim_create_autocmd("User", {
---   pattern = "RipgrepConfigPath",
---   group = ripgrep,
---   callback = function()
---     -- print("bo.grepprg", vim.bo.grepprg) -- TODO debug
---     -- print("RIPGREP_CONFIG_PATH", vim.env.RIPGREP_CONFIG_PATH) -- TODO debug
---     if vim.bo.grepprg == "" and vim.env.RIPGREP_CONFIG_PATH and vim.env.RIPGREP_CONFIG_PATH ~= "" then
---       vim.bo.grepprg = "RIPGREP_CONFIG_PATH=" .. vim.env.RIPGREP_CONFIG_PATH .. " " .. vim.go.grepprg
---     end
---   end,
--- })
-
 vim.go.grepprg = "rg --vimgrep --sort path"
 vim.go.grepformat = "%f:%l:%c:%m"
 vim.go.shellpipe = "&>"
 
-vim.api.nvim_create_user_command("Rg", function(command)
-  M.user_command(command)
-end, { complete = "file", nargs = "*", range = -1 })
+M.with_config_path("Rg")
+M.with_config_path("RgNoTests", ".ripgreprc-no-tests")
+M.with_config_path("RgTests", ".ripgreprc-tests")
 
 vim.keymap.set("ca", "Rg", "Rg -e")
 vim.keymap.set("ca", "Rb", [[Rg -s -e'\b''\b'<Left><Left><Left><Left>]])
 vim.keymap.set("ca", "Rw", [[Rg -s -e'\b'<C-R><C-W>'\b']])
+
 
 return M
