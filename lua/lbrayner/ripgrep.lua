@@ -43,7 +43,7 @@ function M.rg(txt, config_path)
   rg(txt, config_path)
 end
 
-function M.with_config_path(command_name, config_path)
+function M.user_command_with_config_path(command_name, config_path)
   vim.api.nvim_create_user_command(command_name, function(command)
     local txt = command.args
     local count = command.count
@@ -108,9 +108,9 @@ vim.go.grepprg = "rg --vimgrep --sort path"
 vim.go.grepformat = "%f:%l:%c:%m"
 vim.go.shellpipe = "&>"
 
-M.with_config_path("Rg")
-M.with_config_path("RgNoTests", ".ripgreprc-no-tests")
-M.with_config_path("RgTests", ".ripgreprc-tests")
+M.user_command_with_config_path("Rg")
+M.user_command_with_config_path("RgNoTests", ".ripgreprc-no-tests")
+M.user_command_with_config_path("RgTests", ".ripgreprc-tests")
 
 vim.keymap.set("ca", "Rb", [[Rg -s -e'\b''\b'<Left><Left><Left><Left>]])
 vim.keymap.set("ca", "Rg", "Rg -e")
