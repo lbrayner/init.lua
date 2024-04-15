@@ -25,11 +25,15 @@ local function rg(txt, config_path, loclist)
   -- Escaping Command-line special characters '#', '%' (:h :_%), and '|' (:h :bar)
   local grep = "silent "..command.." "..rgopts..vim.fn.escape(txt, "#%|")
 
-  if vim.bo.grepprg == "" and config_path and vim.fn.filereadable(config_path) == 1 then
-    vim.bo.grepprg = "RIPGREP_CONFIG_PATH=" .. config_path .. " " .. vim.go.grepprg
-    vim.cmd(grep)
-    vim.bo.grepprg = ""
-    return
+  if config_path and vim.fn.filereadable(config_path) == 1 then
+    if vim.bo.grepprg == "" then
+      vim.bo.grepprg = "RIPGREP_CONFIG_PATH=" .. config_path .. " " .. vim.go.grepprg
+      vim.cmd(grep)
+      vim.bo.grepprg = ""
+      return
+    else
+      error("Rg: local 'grepprg' is set.")
+    end
   end
 
   vim.cmd(grep)
