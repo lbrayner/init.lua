@@ -14,17 +14,13 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
   group = lsp_completion,
   desc = "LSP completion",
   callback = function(args)
-    -- print("complete_info "..vim.inspect(vim.fn.complete_info({
-    --   "mode", "pum_visible", "selected" }))) -- TODO debug
     local completed_item = vim.v.completed_item
-    -- print("completed_item "..vim.inspect(completed_item)) -- TODO debug
     local completion_item = vim.tbl_get(completed_item, "user_data", "nvim", "lsp", "completion_item")
 
     if not completion_item then
       return
     end
 
-    -- print("completion_item "..vim.inspect(completion_item)) -- TODO debug
     local clients = vim.lsp.get_clients()
     if #clients ~= 1 then
       return
@@ -35,10 +31,11 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
 
     -- From cmp_nvim_lsp
     if vim.tbl_get(client.server_capabilities, "completionProvider", "resolveProvider") then
+      local line_before = vim.api.nvim_get_current_line()
+
       client.request("completionItem/resolve", completion_item, function(_, result)
-        -- print("resolve " .. vim.inspect(result)) -- TODO debug
         completion_item = result or completion_item
-        complete(client, bufnr, completed_item, completion_item)
+        complete(client, bufnr, completed_item, completion_item, line_before)
       end)
       return
     end
@@ -47,9 +44,15 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
   end
 })
 
-complete = function(client, bufnr, completed_item, completion_item)
-  -- print("completed_item " .. vim.inspect(completed_item)) -- TODO debug
-  -- print("completion_item " .. vim.inspect(completion_item)) -- TODO debug
+complete = function(client, bufnr, completed_item, completion_item, line_before)
+  if line_before then
+    local current_line = vim.api.nvim_get_current_line()
+    if line_before ~= vim.api.nvim_get_current_line() then
+      -- Consider a typed character as a cancellation
+      return
+    end
+  end
+
   local is_snippet = completion_item.insertTextFormat == vim.lsp.protocol.InsertTextFormat.Snippet
   local new_text
   local word
@@ -69,7 +72,6 @@ complete = function(client, bufnr, completed_item, completion_item)
       text_edit.range = text_edit.replace
     end
 
-    -- print("new_text "..vim.inspect(new_text)) -- TODO debug
     local text_edits = { text_edit }
 
     if completion_item.additionalTextEdits then
