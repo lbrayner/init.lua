@@ -40,6 +40,14 @@ require("typescript").setup({
   server = {
     autostart = false,
     capabilities = capabilities,
+    init_options = {
+      logDirectory = (function()
+        local logdir = vim.fs.normalize("~/.local/share/typescript-language-server/log")
+        if vim.fn.isdirectory(logdir) == 1 then
+          return logdir
+        end
+      end)()
+    },
   },
 })
 
