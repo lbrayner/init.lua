@@ -6,6 +6,45 @@ vim.keymap.set({ "i", "s" }, "<S-Tab>", mappings.previous())
 -- vim.keymap.set("x", "<Tab>", mappings.cut_text, { remap = true })
 -- vim.keymap.set("n", "g<Tab>", mappings.cut_text, { remap = true })
 
+local completion_stopped
+
+local vim_rsi_lsp_completion_override = vim.api.nvim_create_augroup("vim_rsi_lsp_completion_override", {
+  clear = true })
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = vim_rsi_lsp_completion_override,
+  desc = "Override vim-rsi mappings (LSP Completion)",
+  callback = function()
+    vim.keymap.set("i", "<C-E>", function()
+      if vim.fn.pumvisible() == 1 then
+        completion_stopped = true
+        return "<C-E>"
+      end
+
+      if not vim_rsi then
+        return "<C-E>"
+      end
+
+      local win = vim.api.nvim_get_current_win()
+      local col = vim.api.nvim_win_get_cursor(win)[2]
+      local line = vim.api.nvim_get_current_line()
+
+      if col < string.len(line) then
+        return "<End>"
+      end
+
+      return "<C-E>"
+    end, { expr = true })
+  end,
+})
+
+vim.keymap.set("i", "<C-Y>", function()
+  if vim.fn.pumvisible() == 1 then
+    completion_stopped = true
+  end
+  return "<C-Y>"
+end, { expr = true })
+
 local complete
 
 local lsp_completion = vim.api.nvim_create_augroup("lsp_completion", { clear = true })
@@ -14,6 +53,12 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
   group = lsp_completion,
   desc = "LSP completion",
   callback = function(args)
+    if completion_stopped then
+      completion_stopped = nil
+    else
+      return
+    end
+
     local completed_item = vim.v.completed_item
     local completion_item = vim.tbl_get(completed_item, "user_data", "nvim", "lsp", "completion_item")
 
@@ -32,11 +77,9 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
     -- From cmp_nvim_lsp
     if vim.tbl_get(client.capabilities, "textDocument", "completion", "resolveSupport") and
       vim.tbl_get(client.server_capabilities, "completionProvider", "resolveProvider") then
-      local line_before = vim.api.nvim_get_current_line()
-
       client.request("completionItem/resolve", completion_item, function(_, result)
         completion_item = result or completion_item
-        complete(client, bufnr, completed_item, completion_item, line_before)
+        complete(client, bufnr, completed_item, completion_item)
       end)
       return
     end
@@ -45,15 +88,7 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
   end
 })
 
-complete = function(client, bufnr, completed_item, completion_item, line_before)
-  if line_before then
-    local current_line = vim.api.nvim_get_current_line()
-    if line_before ~= vim.api.nvim_get_current_line() then
-      -- Consider a typed character as a cancellation
-      return
-    end
-  end
-
+complete = function(client, bufnr, completed_item, completion_item)
   local is_snippet = completion_item.insertTextFormat == vim.lsp.protocol.InsertTextFormat.Snippet
   local new_text
   local word
