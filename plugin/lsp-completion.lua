@@ -6,41 +6,11 @@ vim.keymap.set({ "i", "s" }, "<S-Tab>", mappings.previous())
 -- vim.keymap.set("x", "<Tab>", mappings.cut_text, { remap = true })
 -- vim.keymap.set("n", "g<Tab>", mappings.cut_text, { remap = true })
 
-local completion_stopped
-
-local vim_rsi_lsp_completion_override = vim.api.nvim_create_augroup("vim_rsi_lsp_completion_override", {
-  clear = true })
-
-vim.api.nvim_create_autocmd("VimEnter", {
-  group = vim_rsi_lsp_completion_override,
-  desc = "Override vim-rsi mappings (LSP Completion)",
-  callback = function()
-    vim.keymap.set("i", "<C-E>", function()
-      if vim.fn.pumvisible() == 1 then
-        completion_stopped = true
-        return "<C-E>"
-      end
-
-      if not vim_rsi then
-        return "<C-E>"
-      end
-
-      local win = vim.api.nvim_get_current_win()
-      local col = vim.api.nvim_win_get_cursor(win)[2]
-      local line = vim.api.nvim_get_current_line()
-
-      if col < string.len(line) then
-        return "<End>"
-      end
-
-      return "<C-E>"
-    end, { expr = true })
-  end,
-})
+local completion_accepted
 
 vim.keymap.set("i", "<C-Y>", function()
   if vim.fn.pumvisible() == 1 then
-    completion_stopped = true
+    completion_accepted = true
   end
   return "<C-Y>"
 end, { expr = true })
@@ -53,8 +23,8 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
   group = lsp_completion,
   desc = "LSP completion",
   callback = function(args)
-    if completion_stopped then
-      completion_stopped = nil
+    if completion_accepted then
+      completion_accepted = nil
     else
       return
     end
