@@ -30,7 +30,8 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
     local bufnr = args.buf
 
     -- From cmp_nvim_lsp
-    if vim.tbl_get(client.server_capabilities, "completionProvider", "resolveProvider") then
+    if vim.tbl_get(client.capabilities, "textDocument", "completion", "resolveSupport") and
+      vim.tbl_get(client.server_capabilities, "completionProvider", "resolveProvider") then
       local line_before = vim.api.nvim_get_current_line()
 
       client.request("completionItem/resolve", completion_item, function(_, result)
