@@ -60,7 +60,7 @@ end
 ---@param prefix string prefix to filter the completion items
 ---@return table[]
 ---@see complete-items
-function M._lsp_to_complete_items(result, prefix)
+function M._lsp_to_complete_items(result, prefix, client_id)
   local items = get_items(result)
   if vim.tbl_isempty(items) then
     return {}
@@ -143,6 +143,7 @@ function M._lsp_to_complete_items(result, prefix)
       user_data = {
         nvim = {
           lsp = {
+            client_id = client_id,
             completion_item = completion_item,
           },
         },
@@ -157,14 +158,15 @@ function M._convert_results(
   line,
   cursor_col,
   client_start_boundary,
-  result
+  result,
+  client_id
 )
   --
   -- `adjust_start_col` and the language server boundary won't be used
   --
   local candidates = get_items(result)
   local prefix = line:sub(client_start_boundary + 1, cursor_col)
-  local matches = M._lsp_to_complete_items(result, prefix)
+  local matches = M._lsp_to_complete_items(result, prefix, client_id)
   return matches
 end
 
@@ -219,7 +221,8 @@ function M.omnifunc(findstart, base)
           line,
           cursor_col,
           client_start_boundary,
-          result
+          result,
+          client.id
         )
         -- print('matches', vim.inspect(matches)) -- TODO debug
         vim.list_extend(items, matches)

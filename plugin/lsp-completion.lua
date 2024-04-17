@@ -30,19 +30,15 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
     end
 
     local completed_item = vim.v.completed_item
-    local completion_item = vim.tbl_get(completed_item, "user_data", "nvim", "lsp", "completion_item")
+    local lsp = vim.tbl_get(completed_item, "user_data", "nvim", "lsp")
 
-    if not completion_item then
+    if not lsp then
       return
     end
 
-    local clients = vim.lsp.get_clients()
-    if #clients ~= 1 then
-      return
-    end -- TODO request ctx to be in user_data
-
-    local client = clients[1]
     local bufnr = args.buf
+    local client = vim.lsp.get_client_by_id(lsp.client_id)
+    local completion_item = lsp.completion_item
 
     -- From cmp_nvim_lsp
     if vim.tbl_get(client.capabilities, "textDocument", "completion", "resolveSupport") and
