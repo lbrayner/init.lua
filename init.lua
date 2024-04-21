@@ -444,7 +444,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
 local set_file_type = vim.api.nvim_create_augroup("set_file_type", { clear = true })
 
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-  pattern = { "**/host_vars/*", "*.redis", "*.wsdl", ".ignore", "/tmp/dir*" },
+  pattern = {
+    "**/host_vars/*", "*.redis", "*.wsdl", ".ignore", ".ripgreprc*", "/tmp/dir*", "ignore", "ripgreprc*"
+  },
   group = set_file_type,
   desc = "Setting filetype for various patterns",
   callback = function(args)
@@ -452,8 +454,10 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
     local extension = vim.fn.fnamemodify(file, ":e")
     local filename = vim.fn.fnamemodify(file, ":t")
 
-    if filename == ".ignore" then
+    if filename == ".ignore" or filename == "ignore" then
       vim.bo.filetype = "gitignore"
+    elseif string.find(filename, "^%.?ripgreprc") then
+      vim.bo.filetype = "shell"
     elseif extension == "redis" then
       vim.bo.filetype = "redis"
     elseif extension == "wsdl" then
