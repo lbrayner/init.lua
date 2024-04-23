@@ -19,20 +19,24 @@ vim.api.nvim_create_user_command("OverlengthToggle", function()
   vim.notify("Overlength highlighted.")
 end, { nargs = 0 })
 
-function M.trailing_whitespace_group()
+function M.trailing_whitespace_hl_group()
   vim.api.nvim_set_hl(0, "TrailingWhitespace", { bg = "#ff0000" })
 end
 
-M.trailing_whitespace_group()
+M.trailing_whitespace_hl_group()
 
 function M.highlight_trailing_whitespace()
-  if vim.tbl_contains({ "help", "terminal" }, vim.bo.buftype) then
+  if require("lbrayner").buffer_is_scratch() then
+    M.clear_trailing_whitespace()
+  elseif vim.tbl_contains({ "help", "terminal" }, vim.bo.buftype) then
     M.clear_trailing_whitespace()
   elseif vim.tbl_contains({ "lspinfo" }, vim.bo.syntax)  then
     M.clear_trailing_whitespace()
   elseif vim.tbl_contains({ "mail", "markdown" }, vim.bo.syntax) then
     M.clear_trailing_whitespace()
     vim.fn.matchadd("TrailingWhitespace", [[^\s\+$]])
+  elseif vim.tbl_contains({ "TelescopePrompt", "TelescopeResults" }, vim.bo.syntax) then -- Telescope
+    M.clear_trailing_whitespace()
   elseif vim.bo.syntax == "git" then
     M.clear_trailing_whitespace()
     -- Commit message paragraphs
@@ -41,9 +45,6 @@ function M.highlight_trailing_whitespace()
     vim.fn.matchadd("TrailingWhitespace", [[^\%( \{4}\zs\s\+\|[| ]\+| \{5}\zs\s\+\|[+-].*[^ 	]\+\zs\s\+\)$]])
     -- Neogit
   elseif vim.startswith(vim.bo.syntax, "Neogit") then
-    M.clear_trailing_whitespace()
-    -- Telescope
-  elseif vim.tbl_contains({ "TelescopePrompt", "TelescopeResults" }, vim.bo.syntax) then
     M.clear_trailing_whitespace()
   else
     M.clear_trailing_whitespace()
@@ -67,7 +68,7 @@ local highlight_trailing_white_space = vim.api.nvim_create_augroup("highlight_tr
 
 vim.api.nvim_create_autocmd("ColorScheme", {
   group = highlight_trailing_white_space,
-  callback = M.trailing_whitespace_group,
+  callback = M.trailing_whitespace_hl_group,
 })
 
 vim.api.nvim_create_autocmd("BufWinEnter", {

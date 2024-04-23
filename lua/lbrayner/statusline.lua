@@ -275,6 +275,8 @@ function M.define_status_line()
   else
     if vim.wo.previewwindow then
       vim.wo.statusline = vim.wo.statusline.."%<"..vim.fn.pathshorten(M.filename(true))
+    elseif require("lbrayner").buffer_is_scratch() then
+      vim.wo.statusline = vim.wo.statusline.."%<%5*%f%*"
     elseif vim.bo.buftype ~= "" then
       vim.wo.statusline = vim.wo.statusline.."%<%5*"..M.filename().."%*"
     else

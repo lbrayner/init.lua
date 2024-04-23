@@ -1,5 +1,10 @@
 local M = {}
 
+function M.buffer_is_scratch(bufnr)
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+  return vim.bo[bufnr].buftype == "nofile" and vim.bo[bufnr].swapfile == false
+end
+
 function M.contains(s, text)
   vim.validate({ s = { s, 's' }, text = { text, 's' } })
   return string.find(s, text, 1, true)
