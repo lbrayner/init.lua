@@ -30,8 +30,6 @@ function M.highlight_trailing_whitespace()
     M.clear_trailing_whitespace()
   elseif vim.tbl_contains({ "help", "terminal" }, vim.bo.buftype) then
     M.clear_trailing_whitespace()
-  elseif vim.tbl_contains({ "lspinfo" }, vim.bo.syntax)  then
-    M.clear_trailing_whitespace()
   elseif vim.tbl_contains({ "mail", "markdown" }, vim.bo.syntax) then
     M.clear_trailing_whitespace()
     vim.fn.matchadd("TrailingWhitespace", [[^\s\+$]])
