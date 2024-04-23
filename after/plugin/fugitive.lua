@@ -40,7 +40,12 @@ vim.api.nvim_create_user_command("FugitiveUrl", function()
   require("lbrayner.path").clip(vim.api.nvim_buf_get_name(0))
 end, { nargs = 0 })
 vim.api.nvim_create_user_command("Gdi", function(command)
-  vim.fn["fugitive#Diffsplit"](1, command.bang and 0 or 1, "leftabove <mods>", command.args)
+  local args = command.args
+  if args == "" then
+    local relative = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":.")
+    args = ":0:./" .. relative
+  end
+  vim.fn["fugitive#Diffsplit"](1, command.bang and 0 or 1, "leftabove <mods>", args)
 end, { bang = true, bar = true, complete = "customlist,fugitive#EditComplete", nargs = "*" })
 
 local function fugitive_map_overrides(bufnr)
