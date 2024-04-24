@@ -1,4 +1,4 @@
--- Subsection: settings {{{
+-- Subsection: options {{{
 
 vim.o.backspace =  "indent,eol,start"
 vim.o.backupcopy = "yes"
