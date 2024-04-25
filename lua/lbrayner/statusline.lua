@@ -130,7 +130,7 @@ function M.get_status_line_tail()
   " %2*%{&filetype}%* "
 end
 
-function M.filename(full_path)
+function M.get_buffer_name(relative)
   local path = require("lbrayner.path").path()
 
   if require("lbrayner.fugitive").fugitive_object() then
@@ -139,17 +139,17 @@ function M.filename(full_path)
     path = string.gsub(vim.api.nvim_buf_get_name(0), "%?.*", "")
   end
 
-  local filename = path
+  local buffer_name = path
 
-  if not full_path then
-    filename = vim.fn.fnamemodify(path, ":t")
+  if not relative then
+    buffer_name = vim.fn.fnamemodify(path, ":t")
   end
 
-  if filename == "" then
+  if buffer_name == "" then
     return "#"..vim.api.nvim_get_current_buf()
   end
 
-  return filename
+  return buffer_name
 end
 
 local function fugitive_temporary_buffer()
@@ -174,9 +174,9 @@ function M.define_modified_status_line()
   else
     vim.wo.statusline = vim.wo.statusline.."%1*"
     if vim.wo.previewwindow then
-      vim.wo.statusline = vim.wo.statusline.."%<"..vim.fn.pathshorten(M.filename(true))
+      vim.wo.statusline = vim.wo.statusline.."%<"..vim.fn.pathshorten(require("lbrayner.path").full_path())
     else
-      vim.wo.statusline = vim.wo.statusline.."%<"..M.filename()
+      vim.wo.statusline = vim.wo.statusline.."%<"..M.get_buffer_name()
     end
     vim.wo.statusline = vim.wo.statusline.." %{v:lua.require'lbrayner.statusline'.status_flag()}%*"
   end
@@ -215,12 +215,12 @@ function M.winbar()
     statusline = ""
   else
     if vim.wo.previewwindow then
-      statusline = statusline.."%<"..vim.fn.pathshorten(M.filename(true))
+      statusline = statusline.."%<"..vim.fn.pathshorten(require("lbrayner.path").full_path())
     else
       -- margins of 1 column, space and status flag
       statusline = statusline ..
       "%<%{v:lua.require'lbrayner'.truncate_filename(" ..
-      "v:lua.require'lbrayner.statusline'.filename(v:true),winwidth('%')-4)}"
+      "v:lua.require'lbrayner.statusline'.get_buffer_name(v:true),winwidth('%')-4)}"
     end
     statusline = statusline.." %{v:lua.require'lbrayner.statusline'.status_flag()}"
   end
@@ -275,13 +275,14 @@ function M.define_status_line()
     vim.wo.statusline = vim.wo.statusline..vim.b.Statusline_custom_leftline
   else
     if vim.wo.previewwindow then
-      vim.wo.statusline = vim.wo.statusline.."%<"..vim.fn.pathshorten(M.filename(true))
-    elseif require("lbrayner").buffer_is_scratch() then
+      vim.wo.statusline = vim.wo.statusline.."%<"..vim.fn.pathshorten(require("lbrayner.path").full_path())
+    elseif require("lbrayner").buffer_is_scratch() and
+      vim.api.nvim_buf_get_name(0) == "" then
       vim.wo.statusline = vim.wo.statusline.."%<%5*%f%*"
     elseif vim.bo.buftype ~= "" then
-      vim.wo.statusline = vim.wo.statusline.."%<%5*"..M.filename().."%*"
+      vim.wo.statusline = vim.wo.statusline.."%<%5*"..M.get_buffer_name().."%*"
     else
-      vim.wo.statusline = vim.wo.statusline.."%<"..M.filename().."%*"
+      vim.wo.statusline = vim.wo.statusline.."%<"..M.get_buffer_name().."%*"
     end
     vim.wo.statusline = vim.wo.statusline.." %1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
   end

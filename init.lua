@@ -515,7 +515,7 @@ require("fidget").setup({
 vim.keymap.set("n", "<Space>a", function()
   local alternate = vim.fn.bufnr("#")
   if alternate > 0 and vim.api.nvim_buf_is_valid(alternate) then
-    local name = vim.fn.pathshorten(require("lbrayner.statusline").filename(true))
+    local name = vim.fn.pathshorten(require("lbrayner.path").full_path())
     vim.api.nvim_set_current_buf(alternate)
     require("lbrayner.flash").flash_window()
     require("fidget").notify(string.format("Switched to alternate buffer. Previous buffer was %s.", name))
