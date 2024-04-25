@@ -172,10 +172,11 @@ function M.define_modified_status_line()
   if vim.b.Statusline_custom_mod_leftline then
     vim.wo.statusline = vim.wo.statusline..vim.b.Statusline_custom_mod_leftline
   else
+    vim.wo.statusline = vim.wo.statusline.."%1*"
     if vim.wo.previewwindow then
-      vim.wo.statusline = vim.wo.statusline.."%<%1*"..vim.fn.pathshorten(M.filename(true))
+      vim.wo.statusline = vim.wo.statusline.."%<"..vim.fn.pathshorten(M.filename(true))
     else
-      vim.wo.statusline = vim.wo.statusline.."%<%1*"..M.filename()
+      vim.wo.statusline = vim.wo.statusline.."%<"..M.filename()
     end
     vim.wo.statusline = vim.wo.statusline.." %{v:lua.require'lbrayner.statusline'.status_flag()}%*"
   end
