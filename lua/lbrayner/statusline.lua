@@ -158,30 +158,31 @@ end
 
 -- margins of 1 column (on both sides)
 function M.define_modified_status_line()
+  local leftline = " "
+
+  if vim.wo.previewwindow then
+    leftline = leftline.."%5*%w%* "
+  end
+
+  if vim.b.Statusline_custom_mod_leftline then
+    leftline = leftline..vim.b.Statusline_custom_mod_leftline
+  else
+    leftline = leftline.."%1*"
+    if vim.wo.previewwindow then
+      leftline = leftline.."%<"..vim.fn.pathshorten(require("lbrayner.path").full_path())
+    else
+      leftline = leftline.."%<"..M.get_buffer_name()
+    end
+    leftline = leftline.." %{v:lua.require'lbrayner.statusline'.status_flag()}%*"
+  end
+
   local rightline = ""
   if vim.b.Statusline_custom_mod_rightline then
     rightline = rightline..vim.b.Statusline_custom_mod_rightline
   end
   rightline = rightline..M.get_status_line_tail()
 
-  vim.wo.statusline = " "
-  if vim.wo.previewwindow then
-    vim.wo.statusline = vim.wo.statusline.."%5*%w%* "
-  end
-
-  if vim.b.Statusline_custom_mod_leftline then
-    vim.wo.statusline = vim.wo.statusline..vim.b.Statusline_custom_mod_leftline
-  else
-    vim.wo.statusline = vim.wo.statusline.."%1*"
-    if vim.wo.previewwindow then
-      vim.wo.statusline = vim.wo.statusline.."%<"..vim.fn.pathshorten(require("lbrayner.path").full_path())
-    else
-      vim.wo.statusline = vim.wo.statusline.."%<"..M.get_buffer_name()
-    end
-    vim.wo.statusline = vim.wo.statusline.." %{v:lua.require'lbrayner.statusline'.status_flag()}%*"
-  end
-
-  vim.wo.statusline = vim.wo.statusline.." %="..rightline
+  vim.wo.statusline = leftline.." %="..rightline
 end
 
 function M.winbar()
@@ -239,10 +240,46 @@ function M.define_status_line()
     if fugitive_result.filetype and
       fugitive_result.blame_file and
       fugitive_result.filetype == "fugitiveblame" then -- Fugitive blame
-      vim.wo.statusline = " Fugitive blame %<%1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*%="
-      vim.wo.statusline = vim.wo.statusline..get_buffer_position()
+      vim.wo.statusline =
+      " Fugitive blame %<%1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*%="..get_buffer_position()
       return
     end
+  end
+
+  local leftline = " "
+  if vim.wo.previewwindow then
+    leftline = leftline.."%5*%w%* "
+  end
+
+  if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
+    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").fugitive_git_dir())
+    leftline = leftline.."%6*"..dir.."$%* %<".."Fugitive summary " ..
+    "%1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
+  elseif vim.fn.exists("*FugitiveResult") == 1 and
+    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
+    local fugitive_temp_buf = fugitive_temporary_buffer()
+    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").fugitive_git_dir())
+    leftline = leftline.."%6*"..dir.."$%* %<"..fugitive_temp_buf ..
+    " %1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
+  elseif require("lbrayner").is_quickfix_or_location_list() then
+    leftline = leftline ..
+    "%<%5*%f%* %{v:lua.require'lbrayner'.get_quickfix_or_location_list_title()}"
+  elseif vim.w.cmdline then
+    leftline = leftline.."%<%5*[Command Line]%*"
+  elseif vim.b.Statusline_custom_leftline then
+    leftline = leftline..vim.b.Statusline_custom_leftline
+  else
+    if vim.wo.previewwindow then
+      leftline = leftline.."%<"..vim.fn.pathshorten(require("lbrayner.path").full_path())
+    elseif require("lbrayner").buffer_is_scratch() and
+      vim.api.nvim_buf_get_name(0) == "" then
+      leftline = leftline.."%<%5*%f%*"
+    elseif vim.bo.buftype ~= "" then
+      leftline = leftline.."%<%5*"..M.get_buffer_name().."%*"
+    else
+      leftline = leftline.."%<"..M.get_buffer_name().."%*"
+    end
+    leftline = leftline.." %1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
   end
 
   local rightline = ""
@@ -251,42 +288,7 @@ function M.define_status_line()
   end
   rightline = rightline..M.get_status_line_tail()
 
-  vim.wo.statusline = " "
-  if vim.wo.previewwindow then
-    vim.wo.statusline = vim.wo.statusline.."%5*%w%* "
-  end
-
-  if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
-    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").fugitive_git_dir())
-    vim.wo.statusline = vim.wo.statusline.."%6*"..dir.."$%* %<".."Fugitive summary " ..
-    "%1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
-  elseif vim.fn.exists("*FugitiveResult") == 1 and
-    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
-    local fugitive_temp_buf = fugitive_temporary_buffer()
-    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").fugitive_git_dir())
-    vim.wo.statusline = vim.wo.statusline.."%6*"..dir.."$%* %<"..fugitive_temp_buf ..
-    " %1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
-  elseif require("lbrayner").is_quickfix_or_location_list() then
-    vim.wo.statusline = vim.wo.statusline ..
-    "%<%5*%f%* %{v:lua.require'lbrayner'.get_quickfix_or_location_list_title()}"
-  elseif vim.w.cmdline then
-    vim.wo.statusline = vim.wo.statusline.."%<%5*[Command Line]%*"
-  elseif vim.b.Statusline_custom_leftline then
-    vim.wo.statusline = vim.wo.statusline..vim.b.Statusline_custom_leftline
-  else
-    if vim.wo.previewwindow then
-      vim.wo.statusline = vim.wo.statusline.."%<"..vim.fn.pathshorten(require("lbrayner.path").full_path())
-    elseif require("lbrayner").buffer_is_scratch() and
-      vim.api.nvim_buf_get_name(0) == "" then
-      vim.wo.statusline = vim.wo.statusline.."%<%5*%f%*"
-    elseif vim.bo.buftype ~= "" then
-      vim.wo.statusline = vim.wo.statusline.."%<%5*"..M.get_buffer_name().."%*"
-    else
-      vim.wo.statusline = vim.wo.statusline.."%<"..M.get_buffer_name().."%*"
-    end
-    vim.wo.statusline = vim.wo.statusline.." %1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
-  end
-  vim.wo.statusline = vim.wo.statusline.." %="..rightline
+  vim.wo.statusline = leftline.." %="..rightline
 end
 
 function M.redefine_status_line()
