@@ -39,8 +39,8 @@ function M.status_flag()
   return " "
 end
 
-local function get_buffer_severity()
-  if vim.tbl_isempty(vim.diagnostic.get(0)) then
+local function get_buffer_severity(bufnr)
+  if vim.tbl_isempty(vim.diagnostic.get(bufnr)) then
     return nil
   end
   for _, level in ipairs(vim.diagnostic.severity) do
@@ -51,25 +51,30 @@ local function get_buffer_severity()
   end
 end
 
-function M.highlight_diagnostics(buffer_severity)
+function M.highlight_diagnostics(opts)
+  opts = opts or {}
+  local buffer_severity = opts.buffer_severity
+
   if not buffer_severity then
-    buffer_severity = get_buffer_severity()
+    buffer_severity = get_buffer_severity(opts.buf or 0)
   end
+
   if not buffer_severity then
     vim.cmd("highlight! User7 guifg=NONE") -- Using ex highlight because nvim_set_hl can't update
     return
   end
+
   local group = "Diagnostic"..string.sub(buffer_severity, 1, 1)..string.lower(string.sub(buffer_severity, 2))
   local guifg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(group)), "fg", "gui")
   vim.cmd(string.format("highlight! User7 guifg=%s", guifg)) -- nvim_set_hl can't update
 end
 
 function M.diagnostics()
-  local buffer_severity = get_buffer_severity()
+  local buffer_severity = get_buffer_severity(0)
   if not buffer_severity then
     return " "
   end
-  M.highlight_diagnostics(buffer_severity)
+  M.highlight_diagnostics({ buffer_severity = buffer_severity })
   return "%7*•%*"
 end
 
@@ -379,9 +384,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
   group = statusline,
-  callback = function()
-    M.highlight_diagnostics() -- Not sending autocmd args as argument
-  end,
+  callback = M.highlight_diagnostics,
 })
 
 vim.api.nvim_create_autocmd("InsertEnter", {
