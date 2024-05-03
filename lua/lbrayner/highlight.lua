@@ -77,7 +77,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 vim.api.nvim_create_autocmd("VimEnter", {
   group = highlight_trailing_white_space,
   callback = function()
-    vim.api.nvim_create_autocmd({ "Syntax", "TermOpen", "WinEnter" }, {
+    vim.api.nvim_create_autocmd({ "Syntax", "WinEnter" }, {
       group = highlight_trailing_white_space,
       callback = M.highlight_trailing_whitespace,
     })
