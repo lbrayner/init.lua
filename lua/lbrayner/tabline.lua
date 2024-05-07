@@ -4,6 +4,7 @@ vim.go.showtabline = 2
 
 local is_in_directory = require("lbrayner").is_in_directory
 local len = string.len
+local truncate_filename = require("lbrayner").truncate_filename
 
 function M.redefine_tabline()
   -- Is this a session?
@@ -24,7 +25,7 @@ function M.redefine_tabline()
       local blame = "Fugitive blame: "
       max_length = max_length - len(blame)
       local filename = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf()).blame_file
-      filename = require("lbrayner").truncate_filename(filename, max_length)
+      filename = truncate_filename(filename, max_length)
       vim.go.tabline = tabline .. string.format(" %%=%%#WarningMsg#%s%%#Normal#%s ", blame, filename)
       return
     end
@@ -33,7 +34,7 @@ function M.redefine_tabline()
   local bufname = vim.api.nvim_buf_get_name(0)
 
   if vim.fn.exists("*FugitiveResult") == 1 and
-    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then  -- Fugitive temporary buffers
+    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
     tabline = tabline .. " %="
     local fcwd = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf()).cwd
     if not is_in_directory(fcwd, vim.fn.getcwd()) then
@@ -41,7 +42,7 @@ function M.redefine_tabline()
       max_length = max_length - len(fcwd)
       tabline = tabline .. string.format("%%<%%#WarningMsg#%s ", fcwd)
     end
-    local truncated_filename = require("lbrayner").truncate_filename(bufname, max_length)
+    local truncated_filename = truncate_filename(bufname, max_length)
     tabline = tabline .. string.format("%%#Normal#%s ", truncated_filename)
   elseif require("lbrayner.fugitive").fugitive_object() then
     local name_dir = vim.fn.FugitiveParse(bufname)
@@ -49,15 +50,15 @@ function M.redefine_tabline()
     dir = string.gsub(dir, "/%.git$", "") -- Fugitive summary
     if not is_in_directory(dir, vim.fn.getcwd()) then
       dir = vim.fs.normalize(vim.fn.fnamemodify(dir, ":p")) -- Remove trailing /
-      local truncated_dirname = require("lbrayner").truncate_filename(vim.fn.fnamemodify(dir, ":~"), max_length)
-      tabline = tabline .. string.format(" %%=%%#WarningMsg#%s ", truncated_dirname)
+      local trunc_dir = truncate_filename(vim.fn.fnamemodify(dir, ":~"), max_length)
+      tabline = tabline .. string.format(" %%=%%#WarningMsg#%s ", trunc_dir)
     end
   elseif not vim.startswith(bufname, "jdt://") and -- jdtls
     not vim.startswith(bufname, "term://") then -- buftype set to "terminal" too late, check bufname
     if bufname ~= "" and not is_in_directory(bufname, vim.fn.getcwd()) then -- It's an absolute path
       bufname = require("lbrayner.path").full_path()
       max_length = max_length - 1 -- a space
-      local absolute_path = require("lbrayner").truncate_filename(bufname, max_length)
+      local absolute_path = truncate_filename(bufname, max_length)
       tabline = tabline .. string.format(" %%=%%#WarningMsg#%s ", absolute_path)
     end
   end

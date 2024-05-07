@@ -210,7 +210,7 @@ function M.winbar()
     statusline = statusline..dir.."$ %<".."Fugitive summary " ..
     "%{v:lua.require'lbrayner.statusline'.status_flag()}"
   elseif vim.fn.exists("*FugitiveResult") == 1 and
-    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then  -- Fugitive temporary buffers
+    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
     local fugitive_temp_buf = fugitive_temporary_buffer()
     local dir = vim.fn.pathshorten(require("lbrayner.fugitive").fugitive_git_dir())
     statusline = statusline..dir.."$ %<"..fugitive_temp_buf ..
