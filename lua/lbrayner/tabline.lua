@@ -37,7 +37,7 @@ function M.redefine_tabline()
     tabline = tabline .. " %="
     local fcwd = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf()).cwd
     if not is_in_directory(fcwd, vim.fn.getcwd()) then
-      fcwd = vim.fn.pathshorten(vim.fn.fnamemodify(fcwd, ":p:~"))
+      fcwd = vim.fn.pathshorten(vim.fn.fnamemodify(fcwd, ":~"))
       max_length = max_length - len(fcwd)
       tabline = tabline .. string.format("%%<%%#WarningMsg#%s ", fcwd)
     end
@@ -48,7 +48,8 @@ function M.redefine_tabline()
     local dir = name_dir[2]
     dir = string.gsub(dir, "/%.git$", "") -- Fugitive summary
     if not is_in_directory(dir, vim.fn.getcwd()) then
-      local truncated_dirname = require("lbrayner").truncate_filename(vim.fn.fnamemodify(dir, ":p:~"), max_length)
+      dir = vim.fs.normalize(vim.fn.fnamemodify(dir, ":p")) -- Remove trailing /
+      local truncated_dirname = require("lbrayner").truncate_filename(vim.fn.fnamemodify(dir, ":~"), max_length)
       tabline = tabline .. string.format(" %%=%%#WarningMsg#%s ", truncated_dirname)
     end
   elseif not vim.startswith(bufname, "jdt://") and -- jdtls
