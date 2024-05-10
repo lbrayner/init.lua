@@ -119,7 +119,7 @@ local function file_marks()
     actions = {
       ["default"] = file_mark_jump_to_location,
     },
-    marks = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    marks = "[A-Z]",
     prompt = "File marks> "
   })
 end
