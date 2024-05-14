@@ -111,9 +111,11 @@ vim.keymap.set("c", "<C-R><C-N>", [[<C-R>=line(".")<CR>]])
 vim.keymap.set("i", "<F3>", [[<C-R>=strftime("%Y-%m-%d %a %0H:%M")<CR>]])
 
 -- Rename word
-vim.keymap.set("n", "<Leader>x", [[:keepp %s/\C\V\<<C-R><C-W>\>//gc<Left><Left><Left>]])
+vim.keymap.set("n", "<Leader>a", [[:keepp %s/\C\V\<<C-R><C-W>\>//gc<Left><Left><Left>]])
+vim.keymap.set("n", "<Leader>x", [[:keepp .,$s/\C\V\<<C-R><C-W>\>//gc<Left><Left><Left>]])
 -- Rename visual selection
-vim.keymap.set("v", "<Leader>x", [[""y:keepp %s/\C\V<C-R>"//gc<Left><Left><Left>]])
+vim.keymap.set("v", "<Leader>a", [[""y:keepp %s/\C\V<C-R>"//gc<Left><Left><Left>]])
+vim.keymap.set("v", "<Leader>x", [[""y:keepp .,$s/\C\V<C-R>"//gc<Left><Left><Left>]])
 
 -- From vim-unimpaired: insert blank lines above and below
 vim.keymap.set("n", "[<Space>", [[<Cmd>exe "put!=repeat(nr2char(10), v:count1)\<Bar>silent ']+"<CR>]])
