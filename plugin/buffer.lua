@@ -68,7 +68,7 @@ vim.api.nvim_create_autocmd("Syntax", {
       end)
 
       -- Folds are slow
-      -- There are vim-fugitive mappings the open windows and tabs
+      -- There are vim-fugitive mappings that open windows and tabs
       vim.api.nvim_create_autocmd("WinEnter", {
         buffer = bufnr,
         once = true,
