@@ -94,3 +94,6 @@
 [submodule "pack/bundle/start/lir.nvim"]
 	path = pack/bundle/start/lir.nvim
 	url = https://github.com/tamago324/lir.nvim
+[submodule "pack/bundle/start/typescript-tools.nvim"]
+	path = pack/bundle/start/typescript-tools.nvim
+	url = https://github.com/pmizio/typescript-tools.nvim
