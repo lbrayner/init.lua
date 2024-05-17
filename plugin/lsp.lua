@@ -77,10 +77,12 @@ local function on_attach(_, bufnr)
   vim.keymap.set("n", "gy", type_definition, bufopts)
 
   -- Commands
-  vim.api.nvim_buf_create_user_command(bufnr, "LspAddWorkspaceFolder", function(command)
+  vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceAddFolder", function(command)
     local dir = command.args
     if dir == "" then
       dir = vim.fn.getcwd()
+    else
+      dir = vim.fn.fnamemodify(dir, ":p") -- In case ".", "..", etc. are supplied
     end
     vim.lsp.buf.add_workspace_folder(dir)
   end, { complete = "file", nargs = "?" })
