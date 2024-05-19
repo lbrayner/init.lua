@@ -71,7 +71,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     vim.api.nvim_create_autocmd("TermOpen", {
       group = terminal_setup,
-      callback = function()
+      callback = function(args)
+        local bufnr = args.buf
+        local file = vim.api.nvim_buf_get_name(bufnr)
+        local filename = vim.fn.fnamemodify(file, ":t")
+        if vim.startswith(filename, "Neogit") then
+          return
+        end
         vim.cmd.startinsert()
       end,
     })
