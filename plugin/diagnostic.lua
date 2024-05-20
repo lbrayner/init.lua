@@ -149,6 +149,11 @@ local war = "DiagnosticSignWarn"
 local inf = "DiagnosticSignInfo"
 local hin = "DiagnosticSignHint"
 
+local ERR = vim.diagnostic.severity.ERROR
+local WAR = vim.diagnostic.severity.WARN
+local INF = vim.diagnostic.severity.INFO
+local HIN = vim.diagnostic.severity.HINT
+
 if not _G.default_virtual_text_handler then
   _G.default_virtual_text_handler = vim.diagnostic.handlers.virtual_text
 end
@@ -159,12 +164,36 @@ local function DefaultDiagnostics()
   vim.cmd "highlight DiagnosticInfo  guifg=LightBlue"
   vim.cmd "highlight DiagnosticHint  guifg=LightGrey"
 
-  vim.fn.sign_define(err, { text="E", texthl=err, linehl="", numhl="" })
-  vim.fn.sign_define(war, { text="W", texthl=war, linehl="", numhl="" })
-  vim.fn.sign_define(inf, { text="I", texthl=inf, linehl="", numhl="" })
-  vim.fn.sign_define(hin, { text="H", texthl=hin, linehl="", numhl="" })
-
-  vim.diagnostic.config({ severity_sort = false, virtual_text = true })
+  vim.diagnostic.config({
+    signs = {
+      text = {
+        [ERR] = "E",
+        [WAR] = "W",
+        [INF] = "I",
+        [HIN] = "H",
+      },
+      texthl = {
+        [ERR] = err,
+        [WAR] = war,
+        [INF] = inf,
+        [HIN] = hin,
+      },
+      linehl = {
+        [ERR] = "",
+        [WAR] = "",
+        [INF] = "",
+        [HIN] = "",
+      },
+      numhl = {
+        [ERR] = "",
+        [WAR] = "",
+        [INF] = "",
+        [HIN] = "",
+      },
+    },
+    severity_sort = false,
+    virtual_text = true
+  })
 
   vim.diagnostic.handlers.virtual_text = _G.default_virtual_text_handler
 end
@@ -172,12 +201,33 @@ end
 vim.api.nvim_create_user_command("DefaultDiagnostics", DefaultDiagnostics, { nargs = 0 })
 
 local function CustomDiagnostics()
-  vim.fn.sign_define(err, { text="", texthl=err, linehl="", numhl=err })
-  vim.fn.sign_define(war, { text="", texthl=war, linehl="", numhl=war })
-  vim.fn.sign_define(inf, { text="", texthl=inf, linehl="", numhl=inf })
-  vim.fn.sign_define(hin, { text="", texthl=hin, linehl="", numhl=hin })
-
   vim.diagnostic.config({
+    signs = {
+      text = {
+        [ERR] = "",
+        [WAR] = "",
+        [INF] = "",
+        [HIN] = "",
+      },
+      texthl = {
+        [ERR] = err,
+        [WAR] = war,
+        [INF] = inf,
+        [HIN] = hin,
+      },
+      linehl = {
+        [ERR] = "",
+        [WAR] = "",
+        [INF] = "",
+        [HIN] = "",
+      },
+      numhl = {
+        [ERR] = err,
+        [WAR] = war,
+        [INF] = inf,
+        [HIN] = hin,
+      },
+    },
     severity_sort = true,
     virtual_text = {
       prefix = "•",
