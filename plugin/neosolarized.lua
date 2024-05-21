@@ -1,7 +1,4 @@
-require("neosolarized").setup({
-  background_set = false,
-  comment_italics = false,
-})
+vim.g.default_colorscheme = "neosolarized"
 
 local neosolarized = vim.api.nvim_create_augroup("neosolarized", { clear = true })
 
@@ -14,4 +11,19 @@ vim.api.nvim_create_autocmd("ColorScheme", {
   end,
 })
 
-vim.cmd("colorscheme neosolarized")
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = neosolarized,
+  desc = "Set colorscheme to neosolarized by default",
+  callback = function()
+    if vim.g.default_colorscheme == "neosolarized" then
+      vim.schedule(function()
+        require("neosolarized").setup({
+          background_set = false,
+          comment_italics = false,
+        })
+
+        vim.cmd("doautocmd ColorScheme neosolarized")
+      end)
+    end
+  end,
+})
