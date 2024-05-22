@@ -12,7 +12,7 @@ function M.redefine_tabline()
   local session = session_name == "" and "" or string.format("%%#Question#(%s)%%#Normal# ", session_name)
   -- To be displayed on the left side
   local cwd = require("lbrayner.path").cwd()
-  local tabline = string.format("%%#Title#%%4.{tabpagenr()} %s%%#NonText#%s", session, cwd)
+  local tabline = string.format("%%#Title#%%4.{tabpagenr()} %s%%#Directory#%s", session, cwd)
   -- 1 column margins, 3 columns for tab number, spaces between tab, session, cwd etc.
   local max_length = vim.go.columns - 1 - 3 - 1 -
   (session_name == "" and 0 or 1 + len(session_name) + 1 + 1) - len(cwd) - 1
