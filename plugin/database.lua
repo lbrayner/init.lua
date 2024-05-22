@@ -28,7 +28,7 @@ vim.api.nvim_create_autocmd("FileType", {
         -- statusline
         vim.b[bufnr].Statusline_custom_rightline = nil
         vim.b[bufnr].Statusline_custom_mod_rightline = nil
-        vim.cmd("silent! doautocmd <nomodeline> User CustomStatusline")
+        vim.api.nvim_exec_autocmds("User", { modeline = false, pattern = "CustomStatusline" })
       end, { nargs = 0 })
     end)
   end,

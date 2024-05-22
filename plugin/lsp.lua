@@ -247,7 +247,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
           local bufname = vim.api.nvim_buf_get_name(bufnr)
           if vim.startswith(bufname, folder_name) then
             if vim.fn.exists("#lspconfig#BufRead#" .. folder_name .. "/*") == 1 then
-              vim.cmd("doautocmd lspconfig BufRead " .. vim.fn.fnameescape(bufname))
+              vim.api.nvim_exec_autocmds("BufRead", { group = "lspconfig", pattern = bufname })
               return
             end
           end
@@ -277,7 +277,7 @@ lsp_set_statusline = function(clients, bufnr)
   vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
   vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. stl_lsp .. '%* '
   if vim.api.nvim_get_current_buf() == bufnr then
-    vim.cmd("silent! doautocmd <nomodeline> User CustomStatusline")
+    vim.api.nvim_exec_autocmds("User", { modeline = false, pattern = "CustomStatusline" })
   end
 end
 

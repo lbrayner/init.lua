@@ -22,7 +22,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
           comment_italics = false,
         })
 
-        vim.cmd("doautocmd ColorScheme neosolarized")
+        vim.api.nvim_exec_autocmds("ColorScheme", { pattern = "neosolarized" })
       end)
     end
   end,
