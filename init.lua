@@ -409,7 +409,12 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 local package_manager = vim.api.nvim_create_augroup("package_manager", { clear = true })
 
 vim.api.nvim_create_autocmd("BufRead", {
-  pattern = { "**/node_modules/*", vim.fs.normalize("~/.m2/repository") .. "/*" },
+  pattern = {
+    "**/node_modules/*",
+    vim.fs.normalize("~/.local/share/virtualenvs") .. "/*",
+    vim.fs.normalize("~/.m2/repository") .. "/*",
+    vim.fs.normalize("~/.pyenv/versions") .. "/*/lib/*",
+  },
   group = package_manager,
   desc = "Package manager controlled files should not be writeable",
   callback = function()
