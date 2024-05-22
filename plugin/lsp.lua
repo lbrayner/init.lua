@@ -191,6 +191,10 @@ vim.api.nvim_create_autocmd("LspDetach", {
     vim.b[bufnr].Statusline_custom_rightline = nil
     vim.b[bufnr].Statusline_custom_mod_rightline = nil
 
+    if vim.api.nvim_get_current_buf() == bufnr then
+      vim.api.nvim_exec_autocmds("User", { modeline = false, pattern = "CustomStatusline" })
+    end
+
     -- Delete user commands
     for _, command in ipairs({
       "LspAddWorkspaceFolder",
