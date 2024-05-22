@@ -294,7 +294,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.api.nvim_create_autocmd("BufEnter", {
       group = default_filetype,
       callback = function(args)
-        local bufnr = args.buf
         if vim.bo.filetype == "" then
           vim.b.default_filetype = true
           vim.bo.filetype = "text"
