@@ -54,7 +54,7 @@ end
 function M.highlight_diagnostics(opts)
   opts = opts or {}
 
-  if not opts.buf or opts.buf ~= vim.api.nvim_get_current_buf() then
+  if vim.api.nvim_get_current_buf() ~= opts.buf then
     return
   end
 
