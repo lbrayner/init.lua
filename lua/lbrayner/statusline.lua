@@ -44,7 +44,7 @@ local function get_buffer_severity(bufnr)
     return nil
   end
   for _, level in ipairs(vim.diagnostic.severity) do
-    local items =  vim.diagnostic.get(0, { severity = level })
+    local items =  vim.diagnostic.get(bufnr, { severity = level })
     if not vim.tbl_isempty(items) then
       return level
     end
@@ -53,10 +53,15 @@ end
 
 function M.highlight_diagnostics(opts)
   opts = opts or {}
+
+  if not opts.buf or opts.buf ~= vim.api.nvim_get_current_buf() then
+    return
+  end
+
   local buffer_severity = opts.buffer_severity
 
   if not buffer_severity then
-    buffer_severity = get_buffer_severity(opts.buf or 0)
+    buffer_severity = get_buffer_severity(opts.buf)
   end
 
   if not buffer_severity then
@@ -70,11 +75,12 @@ function M.highlight_diagnostics(opts)
 end
 
 function M.diagnostics()
-  local buffer_severity = get_buffer_severity(0)
+  local bufnr = vim.api.nvim_get_current_buf()
+  local buffer_severity = get_buffer_severity(bufnr)
   if not buffer_severity then
     return " "
   end
-  M.highlight_diagnostics({ buffer_severity = buffer_severity })
+  M.highlight_diagnostics({ buf = bufnr, buffer_severity = buffer_severity })
   return "%7*•%*"
 end
 
