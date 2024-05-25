@@ -156,13 +156,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
   desc = "LSP buffer setup",
   callback = function(args)
     local bufnr = args.buf
-    local clients = {}
-
-    if vim.tbl_get(args, "data") then
-      clients = { vim.lsp.get_client_by_id(args.data.client_id) }
-    else
-      clients = vim.lsp.get_clients({ bufnr = bufnr })
-    end
+    local clients = vim.lsp.get_clients({ bufnr = bufnr })
 
     if #clients == 0 then return end
 
@@ -272,10 +266,12 @@ vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.buf.on_hover, {
 -- Definitions {{{
 
 lsp_set_statusline = function(clients, bufnr)
+  print("clients", #clients) -- TODO debug
   local names = vim.tbl_map(function (client)
     return client.name
   end, clients)
   local stl_lsp = table.concat(names, ",") -- joining items with a separator
+  print("names", vim.inspect(names)) -- TODO debug
 
   -- Custom statusline
   vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
