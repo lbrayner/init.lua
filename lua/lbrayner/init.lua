@@ -208,6 +208,17 @@ function M.preserve_view_port(command)
   end
 end
 
+-- From fzf-lua utils
+function M.read_file(filepath)
+  local fd = vim.uv.fs_open(filepath, "r", 438)
+  if fd == nil then return "" end
+  local stat = assert(vim.uv.fs_fstat(fd))
+  if stat.type ~= "file" then return "" end
+  local data = assert(vim.uv.fs_read(fd, stat.size, 0))
+  assert(vim.uv.fs_close(fd))
+  return data
+end
+
 function M.setup_matchit()
   if vim.g.loaded_matchit == 1 then
     vim.b.match_ignorecase = 0
