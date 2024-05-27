@@ -266,12 +266,10 @@ vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.buf.on_hover, {
 -- Definitions {{{
 
 lsp_set_statusline = function(clients, bufnr)
-  print("clients", #clients) -- TODO debug
   local names = vim.tbl_map(function (client)
     return client.name
   end, clients)
   local stl_lsp = table.concat(names, ",") -- joining items with a separator
-  print("names", vim.inspect(names)) -- TODO debug
 
   -- Custom statusline
   vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
