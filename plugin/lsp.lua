@@ -269,6 +269,7 @@ lsp_set_statusline = function(clients, bufnr)
   local names = vim.tbl_map(function (client)
     return client.name
   end, clients)
+  table.sort(names)
   local stl_lsp = table.concat(names, ",") -- joining items with a separator
 
   -- Custom statusline
