@@ -30,10 +30,10 @@ require("lspconfig").lua_ls.setup({
 })
 
 -- Python
-require("lspconfig").pyright.setup {
+require("lspconfig").pyright.setup({
   autostart = false,
   capabilities = capabilities,
-}
+})
 
 -- Typescript, Javascript
 require("typescript-tools").setup({
