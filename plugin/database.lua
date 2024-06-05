@@ -56,7 +56,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 local database_connection = vim.api.nvim_create_augroup("database_connection", { clear = true })
 
-vim.api.nvim_create_autocmd("BufRead", {
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   pattern = "postgresql:*@*:*.sql",
   group = database_connection,
   desc = "Set up buffer SQL database connection parameters",
@@ -66,7 +66,7 @@ vim.api.nvim_create_autocmd("BufRead", {
   end,
 })
 
-vim.api.nvim_create_autocmd("BufRead", {
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   pattern = "redis:*:*.redis",
   group = database_connection,
   desc = "Set up buffer Redis database connection parameters",
