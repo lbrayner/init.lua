@@ -55,8 +55,6 @@ vim.api.nvim_create_autocmd("Syntax", {
   desc = "Disable syntax for large files",
   callback = function(args)
     local bufnr = args.buf
-    local syntax = args.match
-
     local size = tonumber(vim.fn.wordcount()["bytes"])
 
     if size > 1024 * 512 then
