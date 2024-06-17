@@ -6,8 +6,8 @@ vim.api.nvim_create_autocmd("ColorScheme", {
   group = neosolarized,
   pattern = "neosolarized",
   callback = function()
-    vim.cmd("hi QuickFixLine guibg=#002b36 guifg=#6c71c4 gui=NONE")
-    vim.cmd("hi! link NormalNC Normal")
+    vim.api.nvim_set_hl(0, "NormalNC", { force = true, link = "Normal" })
+    vim.api.nvim_set_hl(0, "QuickFixLine", { bg = "#002b36", fg = "#6c71c4" })
   end,
 })
 
