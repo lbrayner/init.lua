@@ -28,8 +28,15 @@ local function rg(txt, config_path, loclist)
   if config_path and vim.fn.filereadable(config_path) == 1 then
     if vim.bo.grepprg == "" then
       vim.bo.grepprg = "RIPGREP_CONFIG_PATH=" .. config_path .. " " .. vim.go.grepprg
-      vim.cmd(grep)
+
+      local success, err = pcall(vim.cmd, grep)
+
       vim.bo.grepprg = ""
+
+      if not success then
+        error(err)
+      end
+
       return
     else
       error("Rg: local 'grepprg' is set.")
@@ -89,7 +96,6 @@ function M.user_command_with_config_path(command_name, config_path)
 
     if not success then
       vim.cmd.cclose()
-      print(vim.inspect(err)) -- TODO debug
       if type(err) == "string" and require("lbrayner").contains(err, " Rg:") then
         error(err)
       end
