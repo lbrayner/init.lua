@@ -9,6 +9,14 @@ function M.directory()
 end
 
 function M.full_path()
+  local bufnr = 0
+  local bufname = vim.api.nvim_buf_get_name(bufnr)
+  if bufname == "" then
+    return ""
+  end
+  if not vim.startswith(vim.uri_from_bufnr(bufnr), "file://") then
+    return bufname
+  end
   -- Normalized (remove trailing /) in case buffer represents a directory
   local fp = vim.fs.normalize(vim.fn.expand("%:p"))
   return vim.fn.fnamemodify(fp, ":~")
@@ -19,10 +27,15 @@ function M.name()
 end
 
 function M.path()
-  if vim.api.nvim_buf_get_name(0) == "" then
+  local bufnr = 0
+  local bufname = vim.api.nvim_buf_get_name(bufnr)
+  if bufname == "" then
     return ""
   end
-  if not require("lbrayner").is_in_directory(vim.api.nvim_buf_get_name(0), vim.fn.getcwd(), true) then
+  if not vim.startswith(vim.uri_from_bufnr(bufnr), "file://") then
+    return bufname
+  end
+  if not require("lbrayner").is_in_directory(bufname, vim.fn.getcwd(), true) then
     return M.full_path() -- In case buffer represents a directory
   end
   return vim.fn.expand("%:.")
