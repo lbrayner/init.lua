@@ -14,14 +14,19 @@ vim.api.nvim_create_autocmd("FileType", {
   desc = "Fix terminal title on session load",
   callback = function(args)
     local bufnr = args.buf
+
     vim.schedule(function()
       if not vim.api.nvim_buf_is_valid(bufnr) then
         return
       end
 
       if vim.api.nvim_buf_get_name(bufnr) ~= vim.b[bufnr].term_title then
+        local title = vim.b[bufnr].term_title
         local wrong_title = vim.api.nvim_buf_get_name(bufnr)
-        vim.api.nvim_buf_set_name(bufnr, vim.b[bufnr].term_title)
+        if not vim.startswith(title, "term://") then
+          title = string.format("%s (%d)", vim.b[bufnr].term_title, vim.fn.jobpid(vim.bo[bufnr].channel))
+        end
+        vim.api.nvim_buf_set_name(bufnr, title)
         local wrong_title_bufnr = vim.fn.bufnr(wrong_title)
         vim.api.nvim_buf_delete(wrong_title_bufnr, { force = true })
       end
