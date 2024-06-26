@@ -41,8 +41,9 @@ vim.api.nvim_create_user_command("FugitiveUrl", function()
 end, { nargs = 0 })
 vim.api.nvim_create_user_command("Gdi", function(command)
   local args = command.args
-  if args == "" then
-    local relative = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":.")
+  local bufname = vim.api.nvim_buf_get_name(0)
+  if args == "" and require("lbrayner").is_in_directory(bufname, vim.fn.getcwd()) then
+    local relative = vim.fn.fnamemodify(bufname, ":.")
     args = ":0:./" .. relative
   end
   vim.fn["fugitive#Diffsplit"](1, command.bang and 0 or 1, "leftabove <mods>", args)
