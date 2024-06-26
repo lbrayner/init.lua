@@ -82,10 +82,11 @@ local function _jump_to_location(win, bufnr, pos, flash)
   end
 end
 
-function M.is_in_directory(node, directory, exclusive)
+function M.is_in_directory(node, directory, opts)
+  opts = opts or {}
   local full_node = vim.fs.normalize(vim.fn.fnamemodify(node, ":p"))
   local full_directory = vim.fs.normalize(vim.fn.fnamemodify(directory, ":p"))
-  if exclusive and full_node == full_directory  then
+  if opts.exclusive and full_node == full_directory  then
     return false
   end
   return vim.startswith(full_node, full_directory)

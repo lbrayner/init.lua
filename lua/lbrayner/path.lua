@@ -35,7 +35,7 @@ function M.path()
   if not vim.startswith(vim.uri_from_bufnr(bufnr), "file://") then
     return bufname
   end
-  if not require("lbrayner").is_in_directory(bufname, vim.fn.getcwd(), true) then
+  if not require("lbrayner").is_in_directory(bufname, vim.fn.getcwd(), { exclusive = true }) then
     return M.full_path() -- In case buffer represents a directory
   end
   return vim.fn.expand("%:.")
