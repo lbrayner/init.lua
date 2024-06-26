@@ -11,7 +11,7 @@ vim.api.nvim_create_autocmd("TermOpen", {
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "terminal",
   group = terminal_setup,
-  desc = "Fix terminal title on session load",
+  desc = "Fix terminal title and set keymaps",
   callback = function(args)
     local bufnr = args.buf
 
