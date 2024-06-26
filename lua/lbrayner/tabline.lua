@@ -2,7 +2,7 @@ local M = {}
 
 vim.go.showtabline = 2
 
-local is_in_directory = require("lbrayner").is_in_directory
+local is_in_directory = require("lbrayner.path").is_in_directory
 local len = string.len
 local truncate_filename = require("lbrayner").truncate_filename
 

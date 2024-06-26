@@ -42,7 +42,7 @@ end, { nargs = 0 })
 vim.api.nvim_create_user_command("Gdi", function(command)
   local args = command.args
   local bufname = vim.api.nvim_buf_get_name(0)
-  if args == "" and require("lbrayner").is_in_directory(bufname, vim.fn.getcwd()) then
+  if args == "" and require("lbrayner.path").is_in_directory(bufname, vim.fn.getcwd()) then
     local relative = vim.fn.fnamemodify(bufname, ":.")
     args = ":0:./" .. relative
   end

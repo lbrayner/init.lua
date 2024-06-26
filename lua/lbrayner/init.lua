@@ -82,16 +82,6 @@ local function _jump_to_location(win, bufnr, pos, flash)
   end
 end
 
-function M.is_in_directory(node, directory, opts)
-  opts = opts or {}
-  local full_node = vim.fs.normalize(vim.fn.fnamemodify(node, ":p"))
-  local full_directory = vim.fs.normalize(vim.fn.fnamemodify(directory, ":p"))
-  if opts.exclusive and full_node == full_directory  then
-    return false
-  end
-  return vim.startswith(full_node, full_directory)
-end
-
 function M.is_location_list(winid)
   winid = winid or vim.api.nvim_get_current_win()
   return vim.fn.getwininfo(winid)[1]["loclist"] == 1
