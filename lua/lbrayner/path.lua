@@ -46,7 +46,7 @@ function M.path()
   if not M.is_in_directory(bufname, vim.fn.getcwd(), { exclusive = true }) then
     return M.full_path() -- In case buffer represents a directory
   end
-  return vim.fn.expand("%:.")
+  return vim.fn.fnamemodify(bufname, ":.")
 end
 
 function M.relative_directory()
