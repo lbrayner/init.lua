@@ -17,8 +17,6 @@ function M.full_path()
   if not vim.startswith(vim.uri_from_bufnr(bufnr), "file://") then
     return bufname
   end
-  -- Normalized (remove trailing /) in case buffer represents a directory
-  bufname = vim.fs.normalize(vim.fn.fnamemodify(bufname, ":p"))
   return vim.fn.fnamemodify(bufname, ":~")
 end
 
