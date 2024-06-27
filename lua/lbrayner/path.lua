@@ -14,6 +14,11 @@ function M.full_path()
   if bufname == "" then
     return ""
   end
+  if vim.startswith(vim.uri_from_bufnr(bufnr), "fugitive://") then
+    local fugitive_path = require("lbrayner.fugitive").fugitive_path()
+    fugitive_path = vim.fs.normalize(vim.fn.fnamemodify(fugitive_path, ":p"))
+    return vim.fn.fnamemodify(fugitive_path, ":~")
+  end
   if not vim.startswith(vim.uri_from_bufnr(bufnr), "file://") then
     return bufname
   end
@@ -39,6 +44,9 @@ function M.path()
   local bufname = vim.api.nvim_buf_get_name(bufnr)
   if bufname == "" then
     return ""
+  end
+  if vim.startswith(vim.uri_from_bufnr(bufnr), "fugitive://") then
+    return require("lbrayner.fugitive").fugitive_path()
   end
   if not vim.startswith(vim.uri_from_bufnr(bufnr), "file://") then
     return bufname

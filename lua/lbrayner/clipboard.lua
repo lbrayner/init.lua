@@ -20,23 +20,12 @@ vim.api.nvim_create_user_command("Directory", function()
   M.clip(require("lbrayner.path").directory())
 end, { nargs = 0 })
 vim.api.nvim_create_user_command("FullPath", function()
-  local fugitive_path = require("lbrayner.fugitive").fugitive_path()
-  if fugitive_path then
-    fugitive_path = vim.fs.normalize(vim.fn.fnamemodify(fugitive_path, ":p"))
-    M.clip(vim.fn.fnamemodify(fugitive_path, ":~"))
-    return
-  end
   M.clip(require("lbrayner.path").full_path())
 end, { nargs = 0 })
 vim.api.nvim_create_user_command("Name", function()
   M.clip(require("lbrayner.path").name())
 end, { nargs = 0 })
 vim.api.nvim_create_user_command("Path", function()
-  local fugitive_path = require("lbrayner.fugitive").fugitive_path()
-  if fugitive_path then
-    M.clip(fugitive_path)
-    return
-  end
   M.clip(require("lbrayner.path").path())
 end, { nargs = 0 })
 vim.api.nvim_create_user_command("RelativeDirectory", function()
