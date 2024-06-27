@@ -18,8 +18,8 @@ function M.full_path()
     return bufname
   end
   -- Normalized (remove trailing /) in case buffer represents a directory
-  local fp = vim.fs.normalize(vim.fn.expand("%:p"))
-  return vim.fn.fnamemodify(fp, ":~")
+  bufname = vim.fs.normalize(vim.fn.fnamemodify(bufname, ":p"))
+  return vim.fn.fnamemodify(bufname, ":~")
 end
 
 function M.is_in_directory(node, directory, opts)
