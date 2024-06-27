@@ -23,13 +23,13 @@ function M.full_path()
 end
 
 function M.is_in_directory(node, directory, opts)
+  node = vim.fs.normalize(vim.fn.fnamemodify(node, ":p"))
+  directory = vim.fs.normalize(vim.fn.fnamemodify(directory, ":p"))
   opts = opts or {}
-  local full_node = vim.fs.normalize(vim.fn.fnamemodify(node, ":p"))
-  local full_directory = vim.fs.normalize(vim.fn.fnamemodify(directory, ":p"))
-  if opts.exclusive and full_node == full_directory  then
+  if opts.exclusive and node == directory  then
     return false
   end
-  return vim.startswith(full_node, full_directory)
+  return vim.startswith(node, directory)
 end
 
 function M.name()
