@@ -22,7 +22,8 @@ end, { nargs = 0 })
 vim.api.nvim_create_user_command("FullPath", function()
   local fugitive_path = require("lbrayner.fugitive").fugitive_path()
   if fugitive_path then
-    M.clip(vim.fn.fnamemodify(fugitive_path, ":p:~"))
+    fugitive_path = vim.fs.normalize(vim.fn.fnamemodify(fugitive_path, ":p"))
+    M.clip(vim.fn.fnamemodify(fugitive_path, ":~"))
     return
   end
   M.clip(require("lbrayner.path").full_path())
