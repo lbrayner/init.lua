@@ -10,16 +10,16 @@ vim.keymap.set("ca", "Gdd", "Git difftool -y  -- :^package-lock.json<S-Left><S-L
 vim.keymap.set("ca", "Gdn", "Git diff --name-only --stat")
 vim.keymap.set("ca", "Gf", "Git! fetch upstream")
 vim.keymap.set("ca", "Gl", "Git log")
+vim.keymap.set("ca", "Glf", "Git! ls-files")
 vim.keymap.set("ca", "Glns", "Git log --name-status")
 vim.keymap.set("ca", "Glo", "Git log --oneline")
 -- To list branches of a specific remote: Git! ls-remote upstream
-vim.keymap.set("ca", "Gls", "Git! ls-remote")
+vim.keymap.set("ca", "Glr", "Git! ls-remote")
 vim.keymap.set("ca", "Gp", "Git cherry-pick")
 vim.keymap.set("ca", "Gr", "Git rebase -i")
 vim.keymap.set("ca", "Gs", "Git stash")
 -- git bash and zsh autocomplete should complete --keep-index
 vim.keymap.set("ca", "Gsk", "Git stash --keep-index")
-vim.keymap.set("ca", "Gt", "Git! ls-tree -r --name-only")
 -- Only list tags whose tips are reachable from the specified commit
 vim.keymap.set("ca", "Gtm", "Git tag --merged")
 
