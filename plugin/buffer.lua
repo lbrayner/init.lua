@@ -40,6 +40,19 @@ vim.api.nvim_create_autocmd("VimEnter", {
         end
       end,
     })
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "FugitiveChanged",
+      group = checktime,
+      callback = function()
+        if vim.fn.getcmdwintype() == "" then -- E11: Invalid in command line window
+          local fugitive_result = vim.fn.FugitiveResult()
+          if fugitive_result.capture_bufnr and type(fugitive_result.capture_bufnr) == "number" then
+            -- Check if file was modified by an asynchronous fugitive job
+            vim.cmd.checktime()
+          end
+        end
+      end,
+    })
   end,
 })
 
