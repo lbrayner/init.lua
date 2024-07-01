@@ -25,15 +25,14 @@ vim.api.nvim_create_autocmd("SwapExists", {
   end,
 })
 
--- Check if file was modified outside this instance
 local checktime = vim.api.nvim_create_augroup("checktime", { clear = true })
 
 vim.api.nvim_create_autocmd("VimEnter", {
   group = checktime,
-  desc = "Wipe buffers without files on session load",
   callback = function()
     vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "VimResume" }, {
       group = checktime,
+      desc = "Check if file was modified outside this instance",
       callback = function()
         if vim.fn.getcmdwintype() == "" then -- E11: Invalid in command line window
           vim.cmd.checktime()
@@ -43,11 +42,11 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.api.nvim_create_autocmd("User", {
       pattern = "FugitiveChanged",
       group = checktime,
+      desc = "Check if file was modified by an asynchronous fugitive job",
       callback = function()
         if vim.fn.getcmdwintype() == "" then -- E11: Invalid in command line window
           local fugitive_result = vim.fn.FugitiveResult()
           if fugitive_result.capture_bufnr and type(fugitive_result.capture_bufnr) == "number" then
-            -- Check if file was modified by an asynchronous fugitive job
             vim.cmd.checktime()
           end
         end
