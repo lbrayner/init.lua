@@ -63,7 +63,12 @@ vim.api.nvim_create_autocmd("BufEnter", {
   pattern = "fugitive://*//*",
   group = fugitive_customization,
   callback = function(args)
-    vim.bo[args.buf].modifiable = false
+    local bufnr = args.buf
+    local file = args.match
+
+    if not require("lbrayner").contains(file, "//0/") then -- Staging area
+      vim.bo[args.buf].modifiable = false
+    end
   end,
 })
 
