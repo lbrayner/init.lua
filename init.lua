@@ -410,7 +410,7 @@ local package_manager = vim.api.nvim_create_augroup("package_manager", { clear =
 
 vim.api.nvim_create_autocmd("BufRead", {
   pattern = {
-    "**/node_modules/*",
+    "*/node_modules/*",
     vim.fs.normalize("~/.local/share/virtualenvs") .. "/*",
     vim.fs.normalize("~/.m2/repository") .. "/*",
     vim.fs.normalize("~/.pyenv/versions") .. "/*/lib/*",
@@ -451,7 +451,7 @@ local set_file_type = vim.api.nvim_create_augroup("set_file_type", { clear = tru
 
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = {
-    "**/host_vars/*", "*.redis", "*.wsdl", ".ignore", ".ripgreprc*", "/tmp/dir*", "ignore", "ripgreprc*"
+    "*/host_vars/*", "*.redis", "*.wsdl", ".ignore", ".ripgreprc*", "/tmp/dir*", "ignore", "ripgreprc*"
   },
   group = set_file_type,
   desc = "Setting filetype for various patterns",
