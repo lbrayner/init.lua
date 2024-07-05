@@ -6,9 +6,8 @@ vim.api.nvim_create_autocmd({ "BufLeave", "BufRead", "BufWritePost", "CursorHold
   group = buffer_optimization,
   desc = "Setting swapfile flag to trigger SwapExists",
   callback = function(args)
-    local bufnr = args.buf
-    if vim.bo[bufnr].buftype == "" then
-      vim.bo[bufnr].swapfile = vim.bo[bufnr].modified
+    if vim.bo.buftype == "" then
+      vim.bo.swapfile = vim.bo.modified
     end
   end,
 })

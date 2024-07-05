@@ -63,11 +63,10 @@ vim.api.nvim_create_autocmd("BufEnter", {
   pattern = "fugitive://*//*",
   group = fugitive_customization,
   callback = function(args)
-    local bufnr = args.buf
     local file = args.match
 
     if not require("lbrayner").contains(file, "//0/") then -- Staging area
-      vim.bo[args.buf].modifiable = false
+      vim.bo.modifiable = false
     end
   end,
 })
@@ -88,7 +87,7 @@ vim.api.nvim_create_autocmd("FileType", {
       end, { buffer = bufnr, nowait = true })
     elseif filetype == "git" then
       fugitive_map_overrides(bufnr)
-      vim.bo[args.buf].includeexpr = "v:lua.require'lbrayner.fugitive'.diff_include_expression(v:fname)"
+      vim.bo.includeexpr = "v:lua.require'lbrayner.fugitive'.diff_include_expression(v:fname)"
     elseif filetype == "gitcommit" then
       fugitive_map_overrides(bufnr)
     end
