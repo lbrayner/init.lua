@@ -530,16 +530,6 @@ vim.keymap.set("n", "<Space>a", function()
   end
 end)
 
--- fzf-lua
-
-local fzf_lua_highlights = vim.api.nvim_create_augroup("fzf_lua_highlights", { clear = true })
-
-vim.api.nvim_create_autocmd("ColorScheme", {
-  group = fzf_lua_highlights,
-  desc = "Setup fzf-lua highlights after a colorscheme change",
-  callback = require("fzf-lua").setup_highlights,
-})
-
 -- nvim-colorizer.lua
 require("colorizer").setup()
 

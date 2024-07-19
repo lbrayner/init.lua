@@ -169,6 +169,14 @@ vim.keymap.set("n", "<Leader><F7>", files_clear_cache, opts)
 vim.keymap.set("n", "<F7>", files, opts)
 vim.keymap.set("n", "<F8>", tabs, opts)
 
+local fzf_lua_highlights = vim.api.nvim_create_augroup("fzf_lua_highlights", { clear = true })
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = fzf_lua_highlights,
+  desc = "Setup fzf-lua highlights after a colorscheme change",
+  callback = require("fzf-lua").setup_highlights,
+})
+
 local fzf_lua_qf = vim.api.nvim_create_augroup("fzf_lua_qf", { clear = true })
 
 vim.api.nvim_create_autocmd("FileType", {
