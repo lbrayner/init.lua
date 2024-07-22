@@ -3,7 +3,7 @@
 vim.o.backspace =  "indent,eol,start"
 vim.o.backupcopy = "yes"
 vim.o.breakindent = true
-vim.o.clipboard = "unnamedplus"
+vim.o.clipboard = "unnamed,unnamedplus"
 vim.o.completeopt = "menuone,popup"
 vim.o.cursorline = true
 vim.o.expandtab = true
