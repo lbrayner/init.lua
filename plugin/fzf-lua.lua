@@ -119,6 +119,7 @@ local function file_marks()
     actions = {
       ["default"] = file_mark_jump_to_location,
     },
+    fzf_opts = { ["--history"] = get_history_file("file_marks") },
     marks = "[A-Z]",
     prompt = "File marks> "
   })
