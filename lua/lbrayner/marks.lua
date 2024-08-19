@@ -142,7 +142,7 @@ end
 vim.api.nvim_create_user_command("Delfilemarks", function()
   vim.cmd("delmarks A-Z")
   current_mark = nil
- end, { nargs = 0 })
+end, { nargs = 0 })
 
 -- Mappings
 vim.keymap.set("n", "]4", file_mark_jump_to_next)
