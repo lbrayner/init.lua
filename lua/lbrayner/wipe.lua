@@ -4,7 +4,7 @@ local contains = require("lbrayner").contains
 
 function M.loop_buffers(force, predicate)
   local test = function(buf)
-    return vim.bo[buf.bufnr].buftype ~= "terminal" and predicate(buf)
+    return vim.api.nvim_buf_is_valid(buf.bufnr) and vim.bo[buf.bufnr].buftype ~= "terminal" and predicate(buf)
   end
   local buffer_count = 0
   local error_count = 0
