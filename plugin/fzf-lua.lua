@@ -24,17 +24,16 @@ fzf.setup({
     buffers = {
       -- providers that inherit these actions:
       --   buffers, tabs, lines, blines
-      ["default"]     = actions.buf_edit,
-      ["ctrl-s"]      = actions.buf_split,
-      ["alt-s"]       = actions.buf_vsplit,
-      ["ctrl-t"]      = actions.buf_tabedit,
+      ["enter"]       = actions.file_edit,
+      ["ctrl-s"]      = actions.file_split,
+      ["alt-s"]       = actions.file_vsplit,
+      ["ctrl-t"]      = actions.file_tabedit,
     },
     files = {
       -- providers that inherit these actions:
-      --   files, git_files, git_status, grep, lsp
-      --   oldfiles, quickfix, loclist, tags, btags
-      --   args
-      ["default"]     = actions.file_edit_or_qf,
+      --   files, git_files, git_status, grep, lsp, oldfiles, quickfix, loclist,
+      --   tags, btags, args, buffers, tabs, lines, blines
+      ["enter"]       = actions.file_edit_or_qf,
       ["ctrl-s"]      = actions.file_split,
       ["alt-s"]       = actions.file_vsplit,
       ["ctrl-t"]      = actions.file_tabedit,
@@ -117,7 +116,7 @@ local function file_marks()
    -- Ignore error "No marks matching..."
   pcall(fzf.marks, {
     actions = {
-      ["default"] = file_mark_jump_to_location,
+      ["enter"] = file_mark_jump_to_location,
     },
     fzf_opts = { ["--history"] = get_history_file("file_marks") },
     marks = "[A-Z]",
@@ -146,7 +145,7 @@ local function tabs()
   fzf.tabs({
     fzf_opts = {
       ["--history"] = get_history_file(),
-      ["--preview"] = 'echo "Tab #"{2}": $(echo {1} | base64 -d -)"',
+      ["--preview"] = 'echo "Tab #"{2}": $(echo {1} | base64 -d -) ["{3}"]"',
       ["--preview-window"] = "nohidden:up,1",
     },
     show_quickfix = true,
