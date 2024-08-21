@@ -11,16 +11,16 @@ vim.api.nvim_create_user_command("TabcloseRange", function(command)
     return tonumber(arg)
   end, command.fargs))
   local tabs_to_close = {}
-  local tab = from
-  while tab <= #vim.api.nvim_list_tabpages() and tab <= to do
-    table.insert(tabs_to_close, vim.api.nvim_list_tabpages()[tab])
-    tab = tab + 1
+  local tabn = from
+  while tabn <= #vim.api.nvim_list_tabpages() and tabn <= to do
+    table.insert(tabs_to_close, vim.api.nvim_list_tabpages()[tabn])
+    tabn = tabn + 1
   end
   local ei = vim.o.eventignore
   vim.opt.eventignore:append({ "TabClosed" })
   while not vim.tbl_isempty(tabs_to_close) do
-    local tab = table.remove(tabs_to_close, 1)
-    local tabnr = table_find_index_eq(vim.api.nvim_list_tabpages(), tab)
+    local tabh = table.remove(tabs_to_close, 1)
+    local tabnr = table_find_index_eq(vim.api.nvim_list_tabpages(), tabh)
     vim.cmd(tabnr .. "tabclose" .. (command.bang and "!" or ""))
   end
   vim.o.eventignore = ei
