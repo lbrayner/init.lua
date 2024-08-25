@@ -21,9 +21,23 @@ local mapping = {
   },
   search = {
     StatusLine = { bg = "Constant", fg = "Include" },
+    User1 = { bg = "Special", fg = "Include" },
+    User2 = { bg = "Special", fg = "Ignore" },
+    User3 = { bg = "Special", fg = "Underlined" },
+    User4 = { bg = "Special", fg = "Include" },
+    User5 = { bg = "Special", fg = "Ignore" },
+    User6 = { bg = "Special", fg = "Comment" },
+    User9 = { bg = "Special", fg = "Comment" },
   },
   visual = {
     StatusLine = { bg = "Constant", fg = "Include" }
+    User1 = { bg = "Changed", fg = "Todo" },
+    User2 = { bg = "Changed", fg = "Ignore" },
+    User3 = { bg = "Changed", fg = "Todo" },
+    User4 = { bg = "Changed", fg = "Underlined" },
+    User5 = { bg = "Changed", fg = "Ignore" },
+    User6 = { bg = "Changed", fg = "Comment" },
+    User9 = { bg = "Changed", fg = "Special" },
   },
 }
 
