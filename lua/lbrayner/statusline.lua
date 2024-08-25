@@ -241,7 +241,7 @@ function M.winbar()
 end
 
 function M.define_terminal_status_line()
-  vim.wo.statusline = "%3*%=%*"
+  vim.wo.statusline = ""
 end
 
 -- margins of 1 column (on both sides)
@@ -324,6 +324,7 @@ local mapping
 function M.highlight_mode(mode)
   -- if mode ~= "normal" then
   --   print("mapping", mode, vim.inspect(mapping)) -- TODO debug
+  --   print("mode", mode) -- TODO debug
   -- end
   local attr_map = attr[mode]
   -- print("attr_map", vim.inspect(attr_map)) -- TODO debug
