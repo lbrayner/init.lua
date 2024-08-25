@@ -322,13 +322,17 @@ local attr
 local mapping
 
 function M.highlight_mode(mode)
-  print("mode", vim.inspect(mode)) -- TODO debug
+  -- if mode ~= "normal" then
+  --   print("mapping", mode, vim.inspect(mapping)) -- TODO debug
+  -- end
   local attr_map = attr[mode]
+  -- print("attr_map", vim.inspect(attr_map)) -- TODO debug
   local hl_map_by_group = mapping[mode]
+  -- print("hl_map_by_group", mode, vim.inspect(hl_map_by_group)) -- TODO debug
   for group, hl_map in pairs(hl_map_by_group) do
-    print("group", vim.inspect(group)) -- TODO debug
-    print("hl_map", vim.inspect(hl_map)) -- TODO debug
-    vim.api.nvim_set_hl(0, group, vim.tbl_deep_extend("error", attr_map, hl_map))
+    hl_map = vim.tbl_deep_extend("error", attr_map, hl_map)
+    -- print("hl_map", mode, group, vim.inspect(hl_map)) -- TODO debug
+    vim.api.nvim_set_hl(0, group, hl_map)
   end
   -- vim.cmd(string.format("highlight! User7 guibg=%s", mapping["diagn_bg_"..mode])) -- nvim_set_hl can't update
 end
@@ -345,12 +349,12 @@ function M.load_theme(name)
   mapping = theme.get_color_mapping()
   for mode, hl_map_by_group in pairs(mapping) do
     for group, hl_map in pairs(hl_map_by_group) do
-      local guibg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl_map.bg)), "bg", "gui")
+      local guibg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl_map.bg)), "fg", "gui")
       local guifg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl_map.fg)), "fg", "gui")
-      -- hl_map = { bg = guibg, fg = guifg }
       mapping[mode][group] = { bg = guibg, fg = guifg }
     end
   end
+  -- print("mapping", vim.inspect(mapping)) -- TODO debug
   M.highlight_mode("normal")
   M.highlight_winbar()
 end
@@ -445,7 +449,5 @@ vim.api.nvim_create_autocmd("VimEnter", {
 if vim.v.vim_did_enter == 1 then
   vim.api.nvim_exec_autocmds("VimEnter", { group = statusline })
 end
-
-M.initialize()
 
 return M
