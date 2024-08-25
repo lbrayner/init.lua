@@ -322,24 +322,15 @@ local attr
 local mapping
 
 function M.highlight_mode(mode)
+  print("mode", vim.inspect(mode)) -- TODO debug
   local attr_map = attr[mode]
-  local hl_map_by_group = {
-    StatusLine = { bg = mapping["bg_"..mode], fg = mapping["fg_"..mode] },
-    User1 = { bg = mapping["user1_bg_"..mode], fg = mapping["user1_fg_"..mode] },
-    User2 = { bg = mapping["user2_bg_"..mode], fg = mapping["user2_fg_"..mode] },
-    User3 = { bg = mapping["user3_bg_"..mode], fg = mapping["user3_fg_"..mode] },
-    User4 = { bg = mapping["user4_bg_"..mode], fg = mapping["user4_fg_"..mode] },
-    User5 = { bg = mapping["user5_bg_"..mode], fg = mapping["user5_fg_"..mode] },
-    User6 = { bg = mapping["user6_bg_"..mode], fg = mapping["user6_fg_"..mode] },
-    User9 = { bg = mapping["user9_bg_"..mode], fg = mapping["user9_fg_"..mode] }}
+  local hl_map_by_group = mapping[mode]
   for group, hl_map in pairs(hl_map_by_group) do
+    print("group", vim.inspect(group)) -- TODO debug
+    print("hl_map", vim.inspect(hl_map)) -- TODO debug
     vim.api.nvim_set_hl(0, group, vim.tbl_deep_extend("error", attr_map, hl_map))
   end
-  vim.cmd(string.format("highlight! User7 guibg=%s", mapping["diagn_bg_"..mode])) -- nvim_set_hl can't update
-end
-
-function M.highlight_status_line_nc()
-  vim.api.nvim_set_hl(0, "StatusLineNC", { bg = mapping.not_current_bg, fg = mapping.not_current_fg })
+  -- vim.cmd(string.format("highlight! User7 guibg=%s", mapping["diagn_bg_"..mode])) -- nvim_set_hl can't update
 end
 
 function M.highlight_winbar()
@@ -352,16 +343,20 @@ function M.load_theme(name)
   local theme = require("lbrayner.statusline.themes."..name)
   attr = theme.get_attr_map()
   mapping = theme.get_color_mapping()
-  for key, color_name in pairs(mapping) do
-    mapping[key] = require("lbrayner.statusline.themes").get_color(color_name, "gui")
+  for mode, hl_map_by_group in pairs(mapping) do
+    for group, hl_map in pairs(hl_map_by_group) do
+      local guibg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl_map.bg)), "bg", "gui")
+      local guifg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl_map.fg)), "fg", "gui")
+      -- hl_map = { bg = guibg, fg = guifg }
+      mapping[mode][group] = { bg = guibg, fg = guifg }
+    end
   end
   M.highlight_mode("normal")
-  M.highlight_status_line_nc()
   M.highlight_winbar()
 end
 
 function M.initialize()
-  M.load_theme("default")
+  M.load_theme("neosolarized")
 end
 
 -- Autocmds
