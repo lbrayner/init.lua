@@ -1,4 +1,15 @@
 local mapping = {
+  command = {
+    User1 = { bg = "Constant", fg = "Todo" },
+    User2 = { bg = "Constant", fg = "Ignore" },
+    User3 = { bg = "Constant", fg = "Todo" },
+    User4 = { bg = "Constant", fg = "Comment" },
+    User5 = { bg = "Constant", fg = "Comment" },
+    User6 = { bg = "Constant", fg = "Underlined" },
+    User7 = { bg = "Constant" },
+    User9 = { bg = "Constant", fg = "Underlined" },
+    StatusLine = { bg = "Constant", fg = "Ignore" },
+  },
   insert = {
     User1 = { bg = "Added", fg = "Todo" },
     User2 = { bg = "Added", fg = "Ignore" },
@@ -29,7 +40,7 @@ local mapping = {
     User6 = { bg = "Special", fg = "Comment" },
     User7 = { bg = "Special" },
     User9 = { bg = "Special", fg = "Comment" },
-    StatusLine = { bg = "Constant", fg = "Include" },
+    StatusLine = { bg = "Special", fg = "Ignore" },
   },
   visual = {
     User1 = { bg = "Changed", fg = "Todo" },
@@ -40,7 +51,7 @@ local mapping = {
     User6 = { bg = "Changed", fg = "Comment" },
     User7 = { bg = "Changed" },
     User9 = { bg = "Changed", fg = "Special" },
-    StatusLine = { bg = "Constant", fg = "Include" }
+    StatusLine = { bg = "Changed", fg = "Ignore" }
   },
 }
 
