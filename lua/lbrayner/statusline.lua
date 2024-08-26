@@ -318,7 +318,6 @@ function M.redefine_status_line()
   end
 end
 
-local attr
 local mapping
 
 function M.highlight_mode(mode)
@@ -326,12 +325,11 @@ function M.highlight_mode(mode)
   --   print("mapping", mode, vim.inspect(mapping)) -- TODO debug
   --   print("mode", mode) -- TODO debug
   -- end
-  local attr_map = attr[mode]
   -- print("attr_map", vim.inspect(attr_map)) -- TODO debug
   local hl_map_by_group = mapping[mode]
   -- print("hl_map_by_group", mode, vim.inspect(hl_map_by_group)) -- TODO debug
   for group, hl_map in pairs(hl_map_by_group) do
-    hl_map = vim.tbl_deep_extend("error", attr_map, hl_map)
+    hl_map = vim.tbl_deep_extend("error", { bold = true }, hl_map)
     -- print("hl_map", mode, group, vim.inspect(hl_map)) -- TODO debug
     vim.api.nvim_set_hl(0, group, hl_map)
   end
@@ -349,7 +347,6 @@ function M.load_theme(name)
   if not success then
     theme = require("lbrayner.statusline.themes.neosolarized")
   end
-  attr = theme.get_attr_map()
   mapping = theme.get_color_mapping()
   for mode, hl_map_by_group in pairs(mapping) do
     for group, hl_map in pairs(hl_map_by_group) do
