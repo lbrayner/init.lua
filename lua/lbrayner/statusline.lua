@@ -345,7 +345,10 @@ function M.highlight_winbar()
 end
 
 function M.load_theme(name)
-  local theme = require("lbrayner.statusline.themes."..name)
+  local success, theme = pcall(require, "lbrayner.statusline.themes."..name)
+  if not success then
+    theme = require("lbrayner.statusline.themes.neosolarized")
+  end
   attr = theme.get_attr_map()
   mapping = theme.get_color_mapping()
   for mode, hl_map_by_group in pairs(mapping) do
@@ -358,10 +361,6 @@ function M.load_theme(name)
   -- print("mapping", vim.inspect(mapping)) -- TODO debug
   M.highlight_mode("normal")
   M.highlight_winbar()
-end
-
-function M.initialize()
-  M.load_theme("neosolarized")
 end
 
 -- Autocmds
@@ -385,7 +384,10 @@ vim.api.nvim_create_autocmd("CmdlineEnter", {
 
 vim.api.nvim_create_autocmd("ColorScheme", {
   group = statusline,
-  callback = M.initialize,
+  callback = function(args)
+    local colorscheme = args.match
+    M.load_theme(colorscheme)
+  end,
 })
 
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
