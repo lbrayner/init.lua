@@ -318,19 +318,15 @@ function M.redefine_status_line()
   end
 end
 
-local color_mapping
-local diagnostics_color_mapping
+local mapping
 
 function M.highlight_mode(mode)
-  local hl_map_by_group = color_mapping[mode]
+  local hl_map_by_group = mapping[mode]
   for group, hl_map in pairs(hl_map_by_group) do
     hl_map = vim.tbl_deep_extend("error", { bold = true }, hl_map)
     vim.api.nvim_set_hl(0, group, hl_map)
   end
-  hl_map_by_group = diagnostics_color_mapping[mode]
-  for group, hl_map in pairs(hl_map_by_group) do
-    vim.cmd(string.format("highlight! %s guibg=%s", group, hl_map.bg)) -- nvim_set_hl can't update
-  end
+  -- vim.cmd(string.format("highlight! User7 guibg=%s", mapping["diagn_bg_"..mode])) -- nvim_set_hl can't update
 end
 
 function M.highlight_winbar()
@@ -344,19 +340,12 @@ function M.load_theme(name)
   if not success then
     theme = require("lbrayner.statusline.themes.neosolarized")
   end
-  color_mapping = theme.get_color_mapping()
-  for mode, hl_map_by_group in pairs(color_mapping) do
+  mapping = theme.get_color_mapping()
+  for mode, hl_map_by_group in pairs(mapping) do
     for group, hl_map in pairs(hl_map_by_group) do
       local guibg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl_map.bg)), "fg", "gui")
       local guifg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl_map.fg)), "fg", "gui")
-      color_mapping[mode][group] = { bg = guibg, fg = guifg }
-    end
-  end
-  diagnostics_color_mapping = theme.get_diagnostics_color_mapping()
-  for mode, hl_map_by_group in pairs(diagnostics_color_mapping) do
-    for group, hl_map in pairs(hl_map_by_group) do
-      local guibg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl_map.bg)), "fg", "gui")
-      diagnostics_color_mapping[mode][group] = { bg = guibg }
+      mapping[mode][group] = { bg = guibg, fg = guifg }
     end
   end
   M.highlight_mode("normal")
