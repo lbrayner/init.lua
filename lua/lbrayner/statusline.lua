@@ -321,16 +321,9 @@ end
 local mapping
 
 function M.highlight_mode(mode)
-  -- if mode ~= "normal" then
-  --   print("mapping", mode, vim.inspect(mapping)) -- TODO debug
-  --   print("mode", mode) -- TODO debug
-  -- end
-  -- print("attr_map", vim.inspect(attr_map)) -- TODO debug
   local hl_map_by_group = mapping[mode]
-  -- print("hl_map_by_group", mode, vim.inspect(hl_map_by_group)) -- TODO debug
   for group, hl_map in pairs(hl_map_by_group) do
     hl_map = vim.tbl_deep_extend("error", { bold = true }, hl_map)
-    -- print("hl_map", mode, group, vim.inspect(hl_map)) -- TODO debug
     vim.api.nvim_set_hl(0, group, hl_map)
   end
   -- vim.cmd(string.format("highlight! User7 guibg=%s", mapping["diagn_bg_"..mode])) -- nvim_set_hl can't update
@@ -355,7 +348,6 @@ function M.load_theme(name)
       mapping[mode][group] = { bg = guibg, fg = guifg }
     end
   end
-  -- print("mapping", vim.inspect(mapping)) -- TODO debug
   M.highlight_mode("normal")
   M.highlight_winbar()
 end
