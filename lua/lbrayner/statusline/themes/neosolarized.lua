@@ -28,6 +28,7 @@ local mapping = {
     User4 = { fg = "Comment" },
     User5 = { fg = "Ignore" },
     User6 = { fg = "Statement" },
+    User7 = { bg = "Cursor" },
     User9 = { fg = "Special" },
     StatusLine = { fg = "Identifier" },
   },
