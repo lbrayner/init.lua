@@ -27,33 +27,36 @@ Packages (`:h packages`) are submodules in `pack/bundle/start`.
 
 ## Normal mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/278879863-8b28ff16-074f-4a5b-a2cf-d8ffb3f3bb4f.png)
+![Screenshot from 2024-08-27 10-09-16](https://github.com/user-attachments/assets/4f824ae4-bbd9-46dc-801f-1a6132656d58)
 
 ## Visual mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/277468644-6206d0d8-bff0-4d0b-ac4a-09f6562f5128.png)
+![Screenshot from 2024-08-27 10-09-36](https://github.com/user-attachments/assets/ca08f5d4-298a-458c-87cf-de399a7a2e75)
 
 ## Insert mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/277468649-2664962d-8d64-41b9-b35c-9c055e21c196.png)
+![Screenshot from 2024-08-27 10-10-09](https://github.com/user-attachments/assets/306c0e4d-a652-4c1a-9263-216e6c3397ef)
 
 ## Command-line mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/277468645-26d2ac22-5340-49b2-8c0c-526c9e139f4c.png)
+![Screenshot from 2024-08-27 10-10-35](https://github.com/user-attachments/assets/cd3fdacc-33f7-47c2-8ce6-f2fa7f90538f)
+
 
 ## Command-line mode (search)
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/277468641-48804bb7-0e0f-4adc-a051-cd56b9fddc71.png)
+![Screenshot from 2024-08-27 10-11-03](https://github.com/user-attachments/assets/c8606137-5dbe-4b10-86de-0861c5d6d52a)
 
 ## Terminal-mode
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/277469194-36532403-e079-416d-b47f-10416a07a6bb.png)
+![Screenshot from 2024-08-27 10-11-24](https://github.com/user-attachments/assets/92fe15ae-b6a3-4dec-9cd0-d90a2e2f4da2)
+
 
 ## Fugitive buffers
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/278879467-9280913e-070c-421f-995d-06af1f8cced0.png)
+![Screenshot from 2024-08-27 10-13-14](https://github.com/user-attachments/assets/31995d0c-f2e4-4f33-b48d-a622432f7d90)
+
 
 ## Language Server
 
-![Screenshot](https://user-images.githubusercontent.com/5733531/278879472-f870d669-7353-4f84-b196-40e16a4462b1.png)
-![Screenshot](https://user-images.githubusercontent.com/5733531/278879470-f1acba2a-1b80-4582-9b5e-ede43ee24772.png)
+![Screenshot from 2024-08-27 10-15-06](https://github.com/user-attachments/assets/9ad45a59-bc28-4586-a7e8-c0465b7b5043)
+![Screenshot from 2024-08-27 10-21-40](https://github.com/user-attachments/assets/f5880e44-400b-4d32-9b49-9e6a8498fc8e)
