@@ -111,6 +111,11 @@ function M.iterate_all_windows(func)
 end
 
 function M.jump_to_buffer(bufnr, pos, flash)
+  assert(type(bufnr) == "number", "Bad argument; 'bufnr' must be a number.")
+  if not vim.api.nvim_buf_is_valid(bufnr) then
+    vim.notify(string.format("Buffer “%d” is not valid.", bufnr))
+    return
+  end
   local win = bufwinid(bufnr)
   _jump_to_location(win, bufnr, pos, flash)
 end
