@@ -60,9 +60,9 @@ vim.api.nvim_create_autocmd("FileType", {
   end
 })
 
--- :~ does not add a / at the end
 local function open_cwd()
-  vim.cmd(string.format("e %s", vim.fn.fnameescape(vim.fn.fnamemodify(".", ":~"))))
+  -- :~ does not add a / at the end
+  vim.cmd.edit(vim.fn.fnamemodify(".", ":~"))
 end
 
 vim.keymap.set("n", "-", function()
@@ -75,6 +75,6 @@ vim.keymap.set("n", "-", function()
     open_cwd()
     return
   end
-  vim.cmd(string.format("e %s", vim.fn.fnameescape(filename)))
+  vim.cmd.edit(filename)
 end)
 vim.keymap.set("n", "g-", open_cwd)
