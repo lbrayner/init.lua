@@ -28,13 +28,17 @@ require("lir").setup {
     ["."]     = actions.toggle_show_hidden,
     ["D"]     = actions.delete,
 
+    ["C"] = clipboard_actions.copy,
+    ["X"] = clipboard_actions.cut,
+    ["P"] = clipboard_actions.paste,
+
     ["J"] = function()
       mark_actions.toggle_mark()
       vim.cmd("normal! j")
     end,
-    ["C"] = clipboard_actions.copy,
-    ["X"] = clipboard_actions.cut,
-    ["P"] = clipboard_actions.paste,
+    ["g~"] = function()
+      vim.cmd.tcd("%")
+    end
   },
   hide_cursor = true
 }
@@ -61,7 +65,7 @@ local function open_cwd()
   vim.cmd(string.format("e %s", vim.fn.fnameescape(vim.fn.fnamemodify(".", ":~"))))
 end
 
-local function open_containing_dir()
+vim.keymap.set("n", "-", function()
   if require("lir.vim").get_context() then
     require("lir.actions").up()
     return
@@ -72,8 +76,5 @@ local function open_containing_dir()
     return
   end
   vim.cmd(string.format("e %s", vim.fn.fnameescape(filename)))
-end
-
-vim.keymap.set("n", "-", open_containing_dir)
+end)
 vim.keymap.set("n", "g-", open_cwd)
-vim.keymap.set("n", "g~", "<Cmd>tcd %<CR>")
