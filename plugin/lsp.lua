@@ -1,3 +1,9 @@
+local success = pcall(require, "lspconfig")
+
+if not success then
+  return
+end
+
 local capabilities = require("lbrayner.lsp").default_capabilities()
 
 -- Lua

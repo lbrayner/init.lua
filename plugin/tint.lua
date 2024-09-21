@@ -1,3 +1,9 @@
+local success = pcall(require, "tint")
+
+if not success then
+  return
+end
+
 local function window_ignore_function(winid)
   local diff = vim.wo[winid].diff
   local preview = vim.wo[winid].previewwindow

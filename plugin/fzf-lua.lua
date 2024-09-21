@@ -1,3 +1,9 @@
+local success, fzf = pcall(require, "fzf-lua")
+
+if not success then
+  return
+end
+
 if vim.fn.executable("fzf") == 0 then
   return
 end
@@ -10,7 +16,6 @@ else
   return
 end
 
-local fzf = require("fzf-lua")
 local actions = require("fzf-lua.actions")
 
 -- register fzf-lua as the UI interface for `vim.ui.select`
