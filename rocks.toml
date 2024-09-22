@@ -11,5 +11,15 @@
 # List of Neovim plugins to install alongside their versions.
 # If the plugin name contains a dot then you must add quotes to the key name!
 [plugins]
-"rocks.nvim" = "2.40.1" # rocks.nvim can also manage itself :D
 "lir.nvim" = "scm"
+"mini.nvim" = "0.9.0"
+"nvim-colorizer.lua" = "scm"
+"rocks.nvim" = "2.40.1" # rocks.nvim can also manage itself :D
+"tint.nvim" = "scm"
+"typescript-tools.nvim" = "scm"
+fzf-lua = "0.0.1458"
+nvim-dap-ui = "4.0.0"
+nvim-jdtls = "0.2.0"
+nvim-lspconfig = "1.0.0"
+nvim-snippy = "1.0.0"
+nvim-spider = "scm"
