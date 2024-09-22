@@ -494,7 +494,7 @@ vim.api.nvim_create_autocmd("TabClosed", {
 
 local vim_dir = vim.fn.stdpath("config")
 
-if vim.env.MYVIMRC == "" then
+if not vim.env.MYVIMRC or vim.env.MYVIMRC == "" then
   vim_dir = vim.fn.expand("<sfile>:p:h")
 end
 
