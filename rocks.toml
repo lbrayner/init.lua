@@ -17,7 +17,6 @@
 "nvim-colorizer.lua" = "scm"
 "rocks-git.nvim" = "2.3.1"
 "rocks.nvim" = "2.40.2"
-"tint.nvim" = "scm"
 "typescript-tools.nvim" = "scm"
 fzf-lua = "0.0.1458"
 nvim-dap-ui = "scm"
@@ -29,3 +28,7 @@ nvim-spider = "scm"
 [plugins."neosolarized.nvim"]
 git = "svrana/neosolarized.nvim"
 rev = "main"
+
+[plugins."tint.nvim"]
+git = "lbrayner/tint.nvim"
+rev = "fixes"
