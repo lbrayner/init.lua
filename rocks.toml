@@ -20,7 +20,6 @@
 "typescript-tools.nvim" = "scm"
 fzf-lua = "0.0.1458"
 nvim-dap-ui = "scm"
-nvim-jdtls = "scm"
 nvim-lspconfig = "1.0.0"
 nvim-snippy = "scm"
 nvim-spider = "scm"
@@ -32,6 +31,10 @@ rev = "main"
 [plugins."tint.nvim"]
 git = "lbrayner/tint.nvim"
 rev = "fixes"
+
+[plugins.nvim-jdtls]
+git = "lbrayner/nvim-jdtls"
+rev = "lbrayner"
 
 [plugins.vim-characterize]
 git = "tpope/vim-characterize"
