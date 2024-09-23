@@ -37,6 +37,10 @@ rev = "fixes"
 git = "tpope/vim-characterize"
 rev = "master"
 
+[plugins.vim-dadbod]
+git = "tpope/vim-dadbod"
+rev = "master"
+
 [plugins.vim-rsi]
 git = "tpope/vim-rsi"
 rev = "master"
