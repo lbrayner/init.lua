@@ -33,6 +33,10 @@ rev = "main"
 git = "lbrayner/tint.nvim"
 rev = "fixes"
 
+[plugins.vim-characterize]
+git = "tpope/vim-characterize"
+rev = "master"
+
 [plugins.vim-rsi]
 git = "tpope/vim-rsi"
 rev = "master"
