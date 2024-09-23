@@ -499,6 +499,11 @@ local rocks_config = {
   rocks_path = vim.fs.normalize("~/.local/share/nvim/rocks"),
 }
 
+-- Stop here if we haven't installed rocks.nvim and synced at least once
+if vim.fn.glob(vim.fs.joinpath(rocks_config.rocks_path, "lib/luarocks/rocks-5.1/*/*/rock_manifest")) == "" then
+  return
+end
+
 vim.g.rocks_nvim = rocks_config
 
 local luarocks_path = {
@@ -528,23 +533,12 @@ vim.opt.runtimepath:append(vim.fs.joinpath(unpack(rocks_rtp)))
 
 -- }}}
 
-local vim_dir = vim.fn.stdpath("config")
-
-if not vim.env.MYVIMRC or vim.env.MYVIMRC == "" then
-  vim_dir = vim.fn.expand("<sfile>:p:h")
-end
-
--- Finish here if we haven't initialized the submodules
-
-if vim.fn.glob(vim.fs.joinpath(vim_dir, "pack/bundle/start/*/plugin")) == "" then
-  return
-end
-
--- Subsection: packages {{{
+-- Subsection: plugins {{{
 
 -- fidget.nvim
 
 -- Standalone UI for nvim-lsp progress. Eye candy for the impatient.
+-- Installed as a dependency of rocks.nvim
 require("fidget").setup({
   notification = {
     window = {
