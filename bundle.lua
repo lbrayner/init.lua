@@ -18,9 +18,16 @@ vim.opt.runtimepath:append(vim.fs.joinpath(vim_dir, "after"))
 vim.opt.packpath:append(vim_dir)
 vim.opt.packpath:append(vim.fs.joinpath(vim_dir, "after"))
 
--- sourcing init.lua
 
-local init = vim.fs.joinpath(vim_dir, "init.lua")
-if vim.fn.filereadable(init) == 1 then
-  vim.cmd.source(init)
+-- sourcing init files
+
+local files = {
+  vim.fs.joinpath(vim_dir, "init.lua"),
+  vim.fs.joinpath(vim_dir, "local.lua"),
+}
+
+for _, init in ipairs(files) do
+  if vim.fn.filereadable(init) == 1 then
+    vim.cmd.source(init)
+  end
 end
