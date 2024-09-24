@@ -558,8 +558,12 @@ vim.api.nvim_create_user_command("ReplFile", [[call reply#command#send(join(getl
   nargs = 0 })
 
 -- vim-characterize
+
 vim.keymap.set("n", "<F13>", "<Plug>(characterize)", { remap = true })
 vim.api.nvim_create_user_command("Characterize", [[exe "normal \<F13>"]], { nargs = 0 })
+
+-- vim-dadbod
+require("lbrayner.database")
 
 -- vim-quickhl
 
