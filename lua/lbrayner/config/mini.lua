@@ -1,9 +1,3 @@
-local success = pcall(require, "mini.align")
-
-if not success then
-  return
-end
-
 --
 -- mini.align
 --
