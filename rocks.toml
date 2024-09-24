@@ -64,3 +64,7 @@ rev = "master"
 [plugins.vim-rsi]
 git = "tpope/vim-rsi"
 rev = "master"
+
+[plugins.vim-rzip]
+git = "lbrayner/vim-rzip"
+rev = "master"
