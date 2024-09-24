@@ -1,10 +1,21 @@
-**Requires Neovim 0.10.0 or greater.**
+**Requires Neovim 0.11.0 or greater.**
 
 ```
 $ git clone 'https://github.com/lbrayner/init.lua'
-$ cd init.lua
-init.lua$ git submodule update --init
 ```
+
+Install [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
+
+```
+nvim --clean -c "source https://raw.githubusercontent.com/nvim-neorocks/rocks.nvim/master/installer.lua"
+```
+
+Keep the default Rocks installation path `~/.local/share/nvim/rocks`.
+
+There is no need to change `init.lua`.
+
+Check [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim) for the latest
+instructions.
 
 # As a bundle
 
@@ -17,11 +28,11 @@ init.lua$ nvim -u bundle.lua
 
 # The regular way
 
+Remove or backup `~/.config/nvim`.
+
 ```
 init.lua$ ln -s "$(readlink -f ..)"/init.lua ~/.config/nvim
 ```
-
-Packages (`:h packages`) are submodules in `pack/bundle/start`.
 
 # Screenshots
 
