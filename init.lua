@@ -140,6 +140,7 @@ require("lbrayner.marks")
 require("lbrayner.quickfix")
 require("lbrayner.ripgrep")
 require("lbrayner.statusline")
+require("lbrayner.tab")
 require("lbrayner.tabline")
 require("lbrayner.wipe")
 
