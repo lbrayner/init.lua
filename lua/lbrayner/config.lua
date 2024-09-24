@@ -76,6 +76,12 @@ vim.keymap.set({"n", "o", "x"}, "<Leader>b", "<cmd>lua require('spider').motion(
 vim.keymap.set({"n", "o", "x"}, "<Leader>ge", "<cmd>lua require('spider').motion('ge')<CR>", {
   desc = "Spider-ge" })
 
+-- tint.nvim
+
+if pcall(require, "tint") then
+  require("lbrayner.config.tint")
+end
+
 -- typescript-tools.nvim
 
 if pcall(require, "typescript-tools") then
