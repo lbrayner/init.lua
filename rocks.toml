@@ -56,6 +56,10 @@ rev = "master"
 git = "tpope/vim-obsession"
 rev = "master"
 
+[plugins.vim-quickhl]
+git = "t9md/vim-quickhl"
+rev = "master"
+
 [plugins.vim-rsi]
 git = "tpope/vim-rsi"
 rev = "master"
