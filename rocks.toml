@@ -44,6 +44,18 @@ rev = "master"
 git = "tpope/vim-dadbod"
 rev = "master"
 
+[plugins.vim-eunuch]
+git = "tpope/vim-eunuch"
+rev = "master"
+
+[plugins.vim-fugitive]
+git = "tpope/vim-fugitive"
+rev = "master"
+
+[plugins.vim-obsession]
+git = "tpope/vim-obsession"
+rev = "master"
+
 [plugins.vim-rsi]
 git = "tpope/vim-rsi"
 rev = "master"
