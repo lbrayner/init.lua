@@ -532,45 +532,11 @@ vim.opt.runtimepath:append(vim.fs.joinpath(unpack(rocks_rtp)))
 
 -- }}}
 
--- Subsection: plugins {{{
+-- Neovim Lua plugins
 
--- fidget.nvim
+require("lbrayner.config")
 
--- Standalone UI for nvim-lsp progress. Eye candy for the impatient.
--- Installed as a dependency of rocks.nvim
-require("fidget").setup({
-  notification = {
-    window = {
-      winblend = 0, -- to fix the interaction with transparent backgrounds
-    },
-  },
-})
-
--- Improved alternate file mapping
-vim.keymap.set("n", "<Space>a", function()
-  local alternate = vim.fn.bufnr("#")
-  if alternate > 0 and vim.api.nvim_buf_is_valid(alternate) then
-    local name = vim.fn.pathshorten(require("lbrayner.path").full_path())
-    vim.api.nvim_set_current_buf(alternate)
-    require("lbrayner.flash").flash_window()
-    require("fidget").notify(string.format("Switched to alternate buffer. Previous buffer was %s.", name))
-  else
-    vim.notify("Alternate buffer is not valid.")
-  end
-end)
-
--- nvim-colorizer.lua
-require("colorizer").setup()
-
--- nvim-jdtls: skipping autocmds and commands
-vim.g.nvim_jdtls = 1
-
--- nvim-spider
-vim.keymap.set({"n", "o", "x"}, "<Leader>w", "<cmd>lua require('spider').motion('w')<CR>", { desc = "Spider-w" })
-vim.keymap.set({"n", "o", "x"}, "<Leader>e", "<cmd>lua require('spider').motion('e')<CR>", { desc = "Spider-e" })
-vim.keymap.set({"n", "o", "x"}, "<Leader>b", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-b" })
-vim.keymap.set({"n", "o", "x"}, "<Leader>ge", "<cmd>lua require('spider').motion('ge')<CR>", {
-  desc = "Spider-ge" })
+-- Subsection: Vim plugins {{{
 
 -- reply.vim
 vim.api.nvim_create_user_command("ReplFile", [[call reply#command#send(join(getline(1,line("$")),"\n"),0,0)]], {
