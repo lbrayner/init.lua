@@ -1,8 +1,4 @@
-local success, mappings = pcall(require, "snippy.mapping")
-
-if not success then
-  return
-end
+local mappings = require("snippy.mapping")
 
 vim.keymap.set({ "i", "s" }, "<C-Tab>", mappings.next())
 vim.keymap.set({ "i", "s" }, "<S-Tab>", mappings.previous())

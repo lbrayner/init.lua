@@ -35,6 +35,12 @@ require("colorizer").setup()
 -- nvim-jdtls: skipping autocmds and commands
 vim.g.nvim_jdtls = 1
 
+-- nvim-snippy
+
+if pcall(require, "snippy.mapping") then
+  require("lbrayner.config.lsp-completion")
+end
+
 -- nvim-spider
 
 vim.keymap.set({"n", "o", "x"}, "<Leader>w", "<cmd>lua require('spider').motion('w')<CR>", { desc = "Spider-w" })
