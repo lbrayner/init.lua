@@ -18,12 +18,10 @@ vim.opt.runtimepath:append(vim.fs.joinpath(vim_dir, "after"))
 vim.opt.packpath:append(vim_dir)
 vim.opt.packpath:append(vim.fs.joinpath(vim_dir, "after"))
 
-
--- sourcing init files
+-- Sourcing init files
 
 local files = {
   vim.fs.joinpath(vim_dir, "init.lua"),
-  vim.fs.joinpath(vim_dir, "local.lua"),
 }
 
 for _, init in ipairs(files) do

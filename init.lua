@@ -492,6 +492,20 @@ vim.api.nvim_create_autocmd("TabClosed", {
 
 -- }}}
 
+-- Sourcing init files
+
+local vim_dir = vim.fn.expand("<sfile>:p:h")
+
+local files = {
+  vim.fs.joinpath(vim_dir, "local.lua"),
+}
+
+for _, init in ipairs(files) do
+  if vim.fn.filereadable(init) == 1 then
+    vim.cmd.source(init)
+  end
+end
+
 -- Subsection: rocks.nvim {{{
 
 local rocks_config = {
