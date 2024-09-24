@@ -30,7 +30,10 @@ if pcall(require, "fzf-lua") then
 end
 
 -- nvim-colorizer.lua
-require("colorizer").setup()
+
+if pcall(require, "colorizer") then
+  require("colorizer").setup()
+end
 
 -- nvim-jdtls: skipping autocmds and commands
 vim.g.nvim_jdtls = 1
