@@ -129,6 +129,7 @@ vim.keymap.set("n", "]<Space>", [[<Cmd>exe "put =repeat(nr2char(10), v:count1)\<
 
 -- Modules
 
+require("lbrayner.buffer")
 require("lbrayner.clipboard")
 require("lbrayner.coerce")
 require("lbrayner.flash")
