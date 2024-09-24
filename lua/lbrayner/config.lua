@@ -23,6 +23,12 @@ vim.keymap.set("n", "<Space>a", function()
   end
 end)
 
+-- fzf-lua
+
+if pcall(require, "fzf-lua") then
+  require("lbrayner.config.fzf-lua")
+end
+
 -- nvim-colorizer.lua
 require("colorizer").setup()
 
