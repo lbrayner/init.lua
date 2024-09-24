@@ -31,10 +31,14 @@ vim.o.wildmode = "longest:full"
 
 -- }}}
 
--- Subsection: mappings — pt-BR keyboard {{{
+-- Variables
 
 -- remapping leader to comma
 vim.g.mapleader = ","
+-- See $VIMRUNTIME/ftplugin/markdown.vim
+vim.g.markdown_recommended_style = 0
+
+-- Subsection: mappings — pt-BR keyboard {{{
 
 -- disable Ex mode mapping
 vim.keymap.set("n", "Q", "<Nop>", { remap = true })
@@ -122,6 +126,18 @@ vim.keymap.set("n", "[<Space>", [[<Cmd>exe "put!=repeat(nr2char(10), v:count1)\<
 vim.keymap.set("n", "]<Space>", [[<Cmd>exe "put =repeat(nr2char(10), v:count1)\<Bar>silent ']-"<CR>]])
 
 -- }}}
+
+-- Modules
+
+require("lbrayner.clipboard")
+require("lbrayner.coerce")
+require("lbrayner.flash")
+require("lbrayner.highlight")
+require("lbrayner.marks")
+require("lbrayner.ripgrep")
+require("lbrayner.statusline")
+require("lbrayner.tabline")
+require("lbrayner.wipe")
 
 -- Subsection: functions & commands {{{
 
@@ -219,23 +235,6 @@ vim.api.nvim_create_user_command("Synstack", function()
 end, { nargs = 0 })
 
 -- }}}
-
--- Variables
-
--- See $VIMRUNTIME/ftplugin/markdown.vim
-vim.g.markdown_recommended_style = 0
-
--- Modules
-
-require("lbrayner.clipboard")
-require("lbrayner.coerce")
-require("lbrayner.flash")
-require("lbrayner.highlight")
-require("lbrayner.marks")
-require("lbrayner.ripgrep")
-require("lbrayner.statusline")
-require("lbrayner.tabline")
-require("lbrayner.wipe")
 
 -- Subsection: autocmds {{{
 
