@@ -47,6 +47,12 @@ if pcall(require, "dapui") then
   require("lbrayner.config.dap")
 end
 
+-- nvim-lspconfig
+
+if pcall(require, "lspconfig") then
+  require("lbrayner.config.lsp")
+end
+
 -- nvim-jdtls: skipping autocmds and commands
 vim.g.nvim_jdtls = 1
 
@@ -63,3 +69,12 @@ vim.keymap.set({"n", "o", "x"}, "<Leader>e", "<cmd>lua require('spider').motion(
 vim.keymap.set({"n", "o", "x"}, "<Leader>b", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-b" })
 vim.keymap.set({"n", "o", "x"}, "<Leader>ge", "<cmd>lua require('spider').motion('ge')<CR>", {
   desc = "Spider-ge" })
+
+-- typescript-tools.nvim
+
+if pcall(require, "typescript-tools") then
+  require("typescript-tools").setup({
+    autostart = false,
+    capabilities = require("lbrayner.lsp").default_capabilities(),
+  })
+end

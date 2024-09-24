@@ -1,16 +1,8 @@
-local success = pcall(require, "lspconfig")
-
-if not success then
-  return
-end
-
-local capabilities = require("lbrayner.lsp").default_capabilities()
-
 -- Lua
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#lua_ls
 require("lspconfig").lua_ls.setup({
   autostart = false,
-  capabilities = capabilities,
+  capabilities = require("lbrayner.lsp").default_capabilities(),
   settings = {
     Lua = {
       runtime = {
@@ -33,12 +25,6 @@ require("lspconfig").lua_ls.setup({
       },
     },
   },
-})
-
--- Typescript, Javascript
-require("typescript-tools").setup({
-  autostart = false,
-  capabilities = capabilities,
 })
 
 local declaration
