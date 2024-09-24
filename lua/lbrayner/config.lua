@@ -29,6 +29,12 @@ if pcall(require, "fzf-lua") then
   require("lbrayner.config.fzf-lua")
 end
 
+-- lir.nvim
+
+if pcall(require, "lir") then
+  require("lbrayner.config.lir")
+end
+
 -- nvim-colorizer.lua
 
 if pcall(require, "colorizer") then

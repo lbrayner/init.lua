@@ -1,9 +1,3 @@
-local success = pcall(require, "lir")
-
-if not success then
-  return
-end
-
 vim.g.loaded_netrwPlugin = 1
 
 local actions = require("lir.actions")
