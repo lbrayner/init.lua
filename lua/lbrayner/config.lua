@@ -35,6 +35,12 @@ if pcall(require, "colorizer") then
   require("colorizer").setup()
 end
 
+-- nvim-dap-ui
+
+if pcall(require, "dapui") then
+  require("lbrayner.config.dap")
+end
+
 -- nvim-jdtls: skipping autocmds and commands
 vim.g.nvim_jdtls = 1
 

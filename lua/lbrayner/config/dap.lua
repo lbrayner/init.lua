@@ -1,10 +1,3 @@
--- TODO move to init.lua
-local success = pcall(require, "dapui")
-
-if not success then
-  return
-end
-
 require("dapui").setup()
 
 vim.api.nvim_create_user_command("DapUiClose", function(command)
