@@ -142,6 +142,7 @@ require("lbrayner.ripgrep")
 require("lbrayner.statusline")
 require("lbrayner.tab")
 require("lbrayner.tabline")
+require("lbrayner.terminal")
 require("lbrayner.wipe")
 
 -- Subsection: functions & commands {{{
