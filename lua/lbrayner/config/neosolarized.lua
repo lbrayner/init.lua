@@ -1,10 +1,3 @@
-local success = pcall(require, "neosolarized")
-
-if not success then
-  require("lbrayner.statusline").load_theme("neosolarized")
-  return
-end
-
 local neosolarized = vim.api.nvim_create_augroup("neosolarized", { clear = true })
 
 vim.api.nvim_create_autocmd("ColorScheme", {

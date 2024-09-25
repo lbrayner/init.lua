@@ -41,6 +41,12 @@ if pcall(require, "mini.align") then
   require("lbrayner.config.mini")
 end
 
+-- neosolarized.nvim
+
+if pcall(require, "neosolarized") then
+  require("lbrayner.config.neosolarized")
+end
+
 -- nvim-colorizer.lua
 
 if pcall(require, "colorizer") then
