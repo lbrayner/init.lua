@@ -29,6 +29,10 @@ nvim-spider = "scm"
 git = "svrana/neosolarized.nvim"
 rev = "main"
 
+[plugins."reply.vim"]
+git = "rhysd/reply.vim"
+rev = "master"
+
 [plugins."tint.nvim"]
 git = "lbrayner/tint.nvim"
 rev = "fixes"
