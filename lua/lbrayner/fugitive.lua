@@ -31,4 +31,8 @@ function M.fugitive_path()
   end
 end
 
+function M.setup()
+  require("lbrayner.fugitive._setup")
+end
+
 return M

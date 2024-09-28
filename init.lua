@@ -571,6 +571,19 @@ vim.api.nvim_create_user_command("Characterize", [[exe "normal \<F13>"]], { narg
 -- vim-dadbod
 require("lbrayner.database")
 
+-- vim-fugitive
+
+local fugitive_setup = vim.api.nvim_create_augroup("fugitive_setup", { clear = true })
+
+vim.api.nvim_create_autocmd("SourcePost", {
+  pattern = "*/plugin/fugitive.vim",
+  group = fugitive_setup,
+  desc = "Fugitive setup",
+  callback = function()
+    require("lbrayner.fugitive").setup()
+  end,
+})
+
 -- vim-quickhl
 
 vim.keymap.set("n", "<Space>m", "<Plug>(quickhl-manual-this)", { remap = true })
