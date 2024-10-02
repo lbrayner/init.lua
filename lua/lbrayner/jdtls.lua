@@ -312,7 +312,7 @@ function M.setup(config, opts)
     require("jdtls.dap").experimental.fetch_lenses(context, function(lenses)
       local lens = get_first_class_lens(lenses)
       if not lens then
-        vim.notify('No test class found')
+        vim.notify("No test class found")
         return
       end
       require("jdtls.dap").experimental.fetch_launch_args(lens, context, function(launch_args)
@@ -399,11 +399,14 @@ function M.setup(config, opts)
         "JdtOrganizeImports",
         "JdtRestart",
         "JdtSetRuntime",
+        "JdtShowMavenActiveProfiles",
         "JdtStop",
+        "JdtTestClass",
+        "JdtTestNearestMethod",
         "JdtTypeHierarchy",
         "JdtUpdateConfig",
         "JdtUpdateDebugConfig",
-        "JdtUpdateHotcode",
+        "JdtUpdateMavenActiveProfiles",
       }) do
         pcall(vim.api.nvim_buf_del_user_command, bufnr, command) -- Ignore error if command doesn't exist
       end
