@@ -233,7 +233,8 @@ function M.java_type_hierarchy(opts)
   end)
 end
 
-function M.setup(config)
+function M.setup(config, opts)
+  opts = opts or {}
   local jdtls_setup = vim.api.nvim_create_augroup("jdtls_setup", { clear = true })
 
   vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
@@ -287,6 +288,43 @@ function M.setup(config)
     })
   end
 
+  -- nvim-jdtls internal function
+  local function get_first_class_lens(lenses)
+    for _, lens in pairs(lenses) do
+      -- compatibility for versions prior to
+      -- https://github.com/microsoft/vscode-java-test/pull/1257
+      -- LegacyTestLevel.Class is 3
+      if lens.level == 3 then
+        return lens
+      end
+      -- TestLevel.Class is 5
+      if lens.testLevel == 5 then
+        return lens
+      end
+    end
+  end
+
+  local test_extra_vm_args = opts.test_extra_vm_args or {}
+
+  local function test_class(opts)
+    opts = opts or {}
+    local context = require("jdtls.dap").experimental.make_context(opts.bufnr)
+    require("jdtls.dap").experimental.fetch_lenses(context, function(lenses)
+      local lens = get_first_class_lens(lenses)
+      if not lens then
+        vim.notify('No test class found')
+        return
+      end
+      require("jdtls.dap").experimental.fetch_launch_args(lens, context, function(launch_args)
+        for _, vm_arg in ipairs(test_extra_vm_args) do
+          table.insert(launch_args.vmArguments, vm_arg)
+        end
+        local config = require("jdtls.dap").experimental.make_config(lens, launch_args, opts.config_overrides)
+        require("jdtls.dap").experimental.run(lens, config, context, opts)
+      end)
+    end)
+  end
+
   vim.api.nvim_create_autocmd("LspAttach", {
     group = jdtls_setup,
     pattern = { "*.java", "jdt://*", "*.class" },
@@ -323,13 +361,13 @@ function M.setup(config)
       vim.api.nvim_buf_create_user_command(bufnr, "JdtOrganizeImports", require("jdtls").organize_imports, {
         nargs = 0
       })
-      vim.api.nvim_buf_create_user_command(bufnr, "JdtStop", function(_command)
+      vim.api.nvim_buf_create_user_command(bufnr, "JdtStop", function()
         local client = vim.lsp.get_clients({ name = "jdtls" })[1]
         if not client then return end
         vim.api.nvim_del_augroup_by_name("jdtls_setup")
         vim.lsp.stop_client(client.id)
       end, { nargs = 0 })
-      vim.api.nvim_buf_create_user_command(bufnr, "JdtTestClass", require("jdtls").test_class, { nargs = 0 })
+      vim.api.nvim_buf_create_user_command(bufnr, "JdtTestClass", test_class, { nargs = 0 })
       vim.api.nvim_buf_create_user_command(bufnr, "JdtTestNearestMethod", require("jdtls").test_nearest_method, {
         nargs = 0 })
       vim.api.nvim_buf_create_user_command(bufnr, "JdtTypeHierarchy", java_type_hierarchy, {

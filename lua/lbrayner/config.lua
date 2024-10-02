@@ -72,10 +72,12 @@ if pcall(require, "jdtls") then
 
       vim.api.nvim_buf_create_user_command(bufnr, "JdtStart", function(command)
         local config
+        local opts = {}
         local success, session = pcall(require, "lbrayner.session.jdtls")
 
         if success then
           config = session.get_config()
+          opts = session.get_opts()
         else
           config = require("lbrayner.jdtls").get_config()
         end
@@ -87,7 +89,7 @@ if pcall(require, "jdtls") then
           return
         end
 
-        require("lbrayner.jdtls").setup(config)
+        require("lbrayner.jdtls").setup(config, opts)
       end,
       {
         bang = true,
