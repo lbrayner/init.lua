@@ -31,6 +31,9 @@ end
 vim.keymap.set("n", "crc", function()
   return make_operator(function(word)
     word = string.gsub(word, "-", "_")
+    if not require("lbrayner").contains(word, "_") and string.find(word, "%l") then
+      return string.gsub(word, "^.", string.lower)
+    end
     -- From tpope's vim-abolish
     word = vim.fn.substitute(word, [[\C\(_\)\=\(.\)]],
     [[\=submatch(1)==""?tolower(submatch(2)) : toupper(submatch(2))]], "g")
