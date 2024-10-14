@@ -9,7 +9,7 @@ local function replace_keyword_under_cursor(coerce)
   local line_to_cursor = line:sub(1, cursor[2])
   local keyword_start = vim.fn.match(line_to_cursor, "\\k*$")
   local cursor_til_end = line:sub(keyword_start + 1)
-  local keyword_end = keyword_start + vim.fn.match(cursor_til_end, "[^[:keyword:]]") - 1
+  local keyword_end = keyword_start + vim.fn.match(cursor_til_end, "[^[:keyword:]]")
   keyword_end = keyword_end < keyword_start and vim.fn.col("$") - 1 or keyword_end
   local bufnr = vim.api.nvim_win_get_buf(win)
   local keyword = vim.api.nvim_buf_get_text(bufnr, lnum, keyword_start, lnum, keyword_end, {})[1]
