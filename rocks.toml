@@ -18,7 +18,7 @@
 "rocks-git.nvim" = "2.3.1"
 "rocks.nvim" = "2.40.2"
 "typescript-tools.nvim" = "scm"
-fzf-lua = "0.0.1458"
+fzf-lua = "0.0.1475"
 nvim-dap = "scm"
 nvim-dap-ui = "scm"
 nvim-lspconfig = "1.0.0"
