@@ -59,9 +59,9 @@ if pcall(require, "dapui") then
   require("lbrayner.config.dap")
 end
 
--- nvim-jdtls
+-- nvim-jdtls (git: lbrayner/nvim-jdtls, lbrayner)
 
-if pcall(require, "jdtls") then
+if pcall(require, "jdtls") and pcall(require, "lspconfig") then
   local jdtls_start = vim.api.nvim_create_augroup("jdtls_start", { clear = true })
 
   vim.api.nvim_create_autocmd("FileType", {
