@@ -1,7 +1,5 @@
 -- Backend is vim-dadbod
 
-vim.opt.isfname:append(":")
-
 local database_access = vim.api.nvim_create_augroup("database_access", { clear = true })
 
 vim.api.nvim_create_autocmd("FileType", {
