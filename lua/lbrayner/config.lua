@@ -111,17 +111,22 @@ vim.g.nvim_jdtls = 1
 
 -- nvim-snippy
 
-if pcall(require, "snippy.mapping") then
+if pcall(require, "snippy") then
   require("lbrayner.config.lsp-completion")
 end
 
 -- nvim-spider
 
-vim.keymap.set({"n", "o", "x"}, "<Leader>w", "<cmd>lua require('spider').motion('w')<CR>", { desc = "Spider-w" })
-vim.keymap.set({"n", "o", "x"}, "<Leader>e", "<cmd>lua require('spider').motion('e')<CR>", { desc = "Spider-e" })
-vim.keymap.set({"n", "o", "x"}, "<Leader>b", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-b" })
-vim.keymap.set({"n", "o", "x"}, "<Leader>ge", "<cmd>lua require('spider').motion('ge')<CR>", {
-  desc = "Spider-ge" })
+if pcall(require, "spider") then
+  local function spider(motion)
+    return function() require("spider").motion(motion) end
+  end
+
+  vim.keymap.set({"n", "o", "x"}, "<Leader>w",  spider("w"),  { desc = "Spider-w"  })
+  vim.keymap.set({"n", "o", "x"}, "<Leader>e",  spider("e"),  { desc = "Spider-e"  })
+  vim.keymap.set({"n", "o", "x"}, "<Leader>b",  spider("b"),  { desc = "Spider-b"  })
+  vim.keymap.set({"n", "o", "x"}, "<Leader>ge", spider("ge"), { desc = "Spider-ge" })
+end
 
 -- tint.nvim
 
