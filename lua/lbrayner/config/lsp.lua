@@ -1,5 +1,6 @@
 -- Commands
 
+---@type table<string, MyCmdSubcommand>
 local subcommand_tbl = {}
 require("lbrayner.subcommands").create_command_and_subcommands("Lsp", subcommand_tbl, {
   desc = "Lsp and subcommands",
@@ -71,15 +72,6 @@ local function on_attach(_, bufnr)
   vim.keymap.set("n", "gy", type_definition, bufopts)
 
   -- Commands
-  vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceAddFolder", function(command)
-    local dir = command.args
-    if dir == "" then
-      dir = vim.fn.getcwd()
-    else
-      dir = vim.fn.fnamemodify(dir, ":p") -- In case ".", "..", etc. are supplied
-    end
-    vim.lsp.buf.add_workspace_folder(dir)
-  end, { complete = "file", nargs = "?" })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixAll", function()
     quickfix_diagnostics_opts.severity = nil
     lsp_setqflist({}, bufnr)
@@ -338,7 +330,19 @@ end
 
 local simple_subcommand_impl = require("lbrayner.subcommands").simple_subcommand_impl
 
----@type table<string, MyCmdSubcommand>
+subcommand_tbl.addWorkspaceFolder = {
+  complete = require("lbrayner.subcommands").complete_filename,
+  impl = function(args, _)
+    local dir = table.concat(args, " ")
+    if dir == "" then
+      dir = vim.fn.getcwd()
+    else
+      dir = vim.fn.fnamemodify(dir, ":p") -- In case ".", "..", etc. are supplied
+    end
+    vim.lsp.buf.add_workspace_folder(dir)
+  end,
+}
+
 subcommand_tbl.codeAction = {
   impl = function(args, opts)
     simple_subcommand_impl(args, function()

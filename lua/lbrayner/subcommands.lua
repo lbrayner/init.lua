@@ -2,6 +2,10 @@
 
 local M = {}
 
+function M.complete_filename(lead)
+  return vim.fn.glob(lead .. "*", 1, 1)
+end
+
 ---@param opts table :h lua-guide-commands-create
 local function main_cmd(name, subcommand_tbl)
   return function(opts)
