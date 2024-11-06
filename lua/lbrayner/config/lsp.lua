@@ -98,14 +98,6 @@ local function on_attach(_, bufnr)
     end
     vim.lsp.buf.remove_workspace_folder(dir)
   end, { complete = "file", nargs = "?" })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspRename", function(command)
-    local name = command.args
-    if name and name ~= "" then
-      vim.lsp.buf.rename(name)
-      return
-    end
-    vim.lsp.buf.rename()
-  end, { nargs = "?" })
   vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceFolders", function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, { nargs = 0 })
@@ -167,7 +159,6 @@ vim.api.nvim_create_autocmd("LspDetach", {
       "LspDiagnosticQuickFixWarn",
       "LspReferences",
       "LspRemoveWorkspaceFolder",
-      "LspRename",
       "LspWorkspaceFolders",
       "LspWorkspaceSymbol",
     }) do
@@ -406,6 +397,17 @@ subcommand_tbl.implementation = {
     require("lbrayner.subcommands").simple_subcommand_impl(args, function()
       implementation()
     end)
+  end,
+}
+
+subcommand_tbl.rename = {
+  impl = function(args, _)
+    local name = table.concat(args, " ")
+    if name and name ~= "" then
+      vim.lsp.buf.rename(name)
+      return
+    end
+    vim.lsp.buf.rename()
   end,
 }
 
