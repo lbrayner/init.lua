@@ -48,17 +48,6 @@ function M.get_session()
   return ""
 end
 
--- From vim.lsp.util.bufwinid
-local function bufwinid(bufnr)
-  local win = vim.fn.bufwinid(bufnr)
-  if win > 0 then return win end
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
-    if vim.api.nvim_win_get_buf(win) == bufnr then
-      return win
-    end
-  end
-end
-
 local function _jump_to_location(win, bufnr, pos, flash)
   -- From vim.lsp.util.show_document
   -- Save position in jumplist
@@ -116,13 +105,13 @@ function M.jump_to_buffer(bufnr, pos, flash)
     vim.notify(string.format("Buffer “%d” is not valid.", bufnr))
     return
   end
-  local win = bufwinid(bufnr)
+  local win = vim.fn.win_findbuf(bufnr)[1]
   _jump_to_location(win, bufnr, pos, flash)
 end
 
 function M.jump_to_location(filename, pos, flash)
   local bufnr = vim.fn.bufadd(filename)
-  local win = bufwinid(bufnr)
+  local win = vim.fn.win_findbuf(bufnr)[1]
 
   if not win then
     vim.ui.select({

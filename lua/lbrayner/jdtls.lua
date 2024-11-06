@@ -106,7 +106,7 @@ function M.java_go_to_top_level_declaration()
       return
     end
 
-    vim.lsp.util.jump_to_location({
+    vim.lsp.util.show_document({
       uri = params.textDocument.uri, range = top_level_symbols[1].selectionRange
     }, offset_encoding)
   end, bufnr)
@@ -202,7 +202,7 @@ function M.java_type_hierarchy(opts)
     end
 
     if vim.tbl_count(locations) == 1  then
-      vim.lsp.util.jump_to_location(locations[1], offset_encoding, opts.reuse_win)
+      vim.lsp.util.show_document(locations[1], offset_encoding, opts.reuse_win)
       return
     end
 
