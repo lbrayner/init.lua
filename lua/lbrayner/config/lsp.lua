@@ -336,10 +336,12 @@ lsp_setqflist_replace = function()
   vim.fn.setqflist({}, "r", { title = quickfix_diagnostics_opts.title, items = items })
 end
 
+local simple_subcommand_impl = require("lbrayner.subcommands").simple_subcommand_impl
+
 ---@type table<string, MyCmdSubcommand>
 subcommand_tbl.codeAction = {
   impl = function(args, opts)
-    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+    simple_subcommand_impl(args, function()
       vim.lsp.buf.code_action({ range = get_range(opts) })
     end)
   end,
@@ -347,7 +349,7 @@ subcommand_tbl.codeAction = {
 
 subcommand_tbl.declaration = {
   impl = function(args, _)
-    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+    simple_subcommand_impl(args, function()
       declaration()
     end)
   end,
@@ -355,7 +357,7 @@ subcommand_tbl.declaration = {
 
 subcommand_tbl.definition = {
   impl = function(args, _)
-    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+    simple_subcommand_impl(args, function()
       definition()
     end)
   end,
@@ -363,7 +365,7 @@ subcommand_tbl.definition = {
 
 subcommand_tbl.detach = {
   impl = function(args, _)
-    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+    simple_subcommand_impl(args, function()
       for _, client in ipairs(vim.lsp.get_clients()) do
         vim.lsp.buf_detach_client(0, client.id)
       end
@@ -373,7 +375,7 @@ subcommand_tbl.detach = {
 
 subcommand_tbl.documentSymbol = {
   impl = function(args, _)
-    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+    simple_subcommand_impl(args, function()
       vim.lsp.buf.document_symbol()
     end)
   end,
@@ -381,7 +383,7 @@ subcommand_tbl.documentSymbol = {
 
 subcommand_tbl.format = {
   impl = function(args, opts)
-    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+    simple_subcommand_impl(args, function()
       vim.lsp.buf.format({ async = true, range = get_range(opts) })
     end)
   end,
@@ -389,7 +391,7 @@ subcommand_tbl.format = {
 
 subcommand_tbl.hover = {
   impl = function(args, _)
-    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+    simple_subcommand_impl(args, function()
       vim.lsp.buf.hover()
     end)
   end,
@@ -397,7 +399,7 @@ subcommand_tbl.hover = {
 
 subcommand_tbl.implementation = {
   impl = function(args, _)
-    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+    simple_subcommand_impl(args, function()
       implementation()
     end)
   end,
@@ -416,7 +418,7 @@ subcommand_tbl.rename = {
 
 subcommand_tbl.signatureHelp = {
   impl = function(args, _)
-    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+    simple_subcommand_impl(args, function()
       vim.lsp.buf.signature_help()
     end)
   end,
@@ -424,7 +426,7 @@ subcommand_tbl.signatureHelp = {
 
 subcommand_tbl.typeDefinition = {
   impl = function(args, _)
-    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+    simple_subcommand_impl(args, function()
       type_definition()
     end)
   end,
