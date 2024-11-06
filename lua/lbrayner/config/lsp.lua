@@ -345,7 +345,7 @@ lsp_setqflist_replace = function()
 end
 
 local function assert_empty(args)
-  assert(vim.tbl_isempty(args), "Trailing characters")
+  assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
 end
 
 ---@type table<string, MyCmdSubcommand>
@@ -357,21 +357,21 @@ subcommand_tbl.codeAction = {
 }
 
 subcommand_tbl.declaration = {
-  impl = function(args, opts)
+  impl = function(args, _)
     assert_empty(args)
     declaration()
   end,
 }
 
 subcommand_tbl.definition = {
-  impl = function(args, opts)
+  impl = function(args, _)
     assert_empty(args)
     definition()
   end,
 }
 
 subcommand_tbl.detach = {
-  impl = function(args, opts)
+  impl = function(args, _)
     assert_empty(args)
     for _, client in ipairs(vim.lsp.get_clients()) do
       vim.lsp.buf_detach_client(0, client.id)
@@ -380,7 +380,7 @@ subcommand_tbl.detach = {
 }
 
 subcommand_tbl.documentSymbol = {
-  impl = function(args, opts)
+  impl = function(args, _)
     assert_empty(args)
     vim.lsp.buf.document_symbol()
   end,
@@ -394,28 +394,28 @@ subcommand_tbl.format = {
 }
 
 subcommand_tbl.hover = {
-  impl = function(args, opts)
+  impl = function(args, _)
     assert_empty(args)
     vim.lsp.buf.hover()
   end,
 }
 
 subcommand_tbl.implementation = {
-  impl = function(args, opts)
+  impl = function(args, _)
     assert_empty(args)
     implementation()
   end,
 }
 
 subcommand_tbl.signatureHelp = {
-  impl = function(args, opts)
+  impl = function(args, _)
     assert_empty(args)
     vim.lsp.buf.signature_help()
   end,
 }
 
 subcommand_tbl.typeDefinition = {
-  impl = function(args, opts)
+  impl = function(args, _)
     assert_empty(args)
     type_definition()
   end,

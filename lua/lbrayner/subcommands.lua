@@ -3,7 +3,7 @@
 local M = {}
 
 ---@param opts table :h lua-guide-commands-create
-local function main_cmd(name)
+local function main_cmd(name, subcommand_tbl)
   return function(opts)
     local fargs = opts.fargs
     local subcommand_key = fargs[1]
@@ -22,7 +22,7 @@ end
 function M.create_command_and_subcommands(name, subcommand_tbl)
   assert(name:match("^%u%a+$"), "Bad argument; 'name' must a capitalized word.")
   assert(type(subcommand_tbl) == "table", "'subcommand_tbl' must be a table")
-  vim.api.nvim_create_user_command(name, main_cmd(name), {
+  vim.api.nvim_create_user_command(name, main_cmd(name, subcommand_tbl), {
     nargs = "+",
     desc = "My awesome command with subcommand completions",
     complete = function(arg_lead, cmdline, _)
