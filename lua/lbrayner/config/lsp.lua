@@ -36,6 +36,7 @@ local is_test_file
 local get_range
 local quickfix_diagnostics_opts = {}
 local lsp_setqflist
+local subcommand_tbl = {}
 
 -- From nvim-lspconfig. 'client' is not used.
 local function on_attach(_, bufnr)
@@ -72,9 +73,6 @@ local function on_attach(_, bufnr)
     end
     vim.lsp.buf.add_workspace_folder(dir)
   end, { complete = "file", nargs = "?" })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspCodeAction", function(command)
-    vim.lsp.buf.code_action({ range = get_range(command) })
-  end, { nargs = 0, range = true })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDeclaration", declaration, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDefinition", definition, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDetach", function()
@@ -249,6 +247,10 @@ vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.buf.on_hover, {
   close_events = require("lbrayner").get_close_events(),
 })
 
+-- Commands
+
+require("lbrayner.subcommands").create_command_and_subcommands("Lsp", subcommand_tbl)
+
 -- Definitions {{{
 
 lsp_set_statusline = function(clients, bufnr)
@@ -367,6 +369,15 @@ lsp_setqflist_replace = function()
 
   vim.fn.setqflist({}, "r", { title = quickfix_diagnostics_opts.title, items = items })
 end
+
+---@type table<string, MyCmdSubcommand>
+subcommand_tbl.codeAction = {
+  impl = function(args, opts)
+    print("codeAction args", vim.inspect(args)) -- TODO debug
+    assert(vim.tbl_isempty(args), "Trailing characters")
+    vim.lsp.buf.code_action({ range = get_range(opts) })
+  end,
+}
 
 -- }}}
 
