@@ -1,3 +1,8 @@
+-- Commands
+
+local subcommand_tbl = {}
+require("lbrayner.subcommands").create_command_and_subcommands("Lsp", subcommand_tbl)
+
 -- Lua
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#lua_ls
 require("lspconfig").lua_ls.setup({
@@ -36,7 +41,6 @@ local is_test_file
 local get_range
 local quickfix_diagnostics_opts = {}
 local lsp_setqflist
-local subcommand_tbl = {}
 
 -- From nvim-lspconfig. 'client' is not used.
 local function on_attach(_, bufnr)
@@ -158,8 +162,6 @@ vim.api.nvim_create_autocmd("LspDetach", {
 
     -- Delete user commands
     for _, command in ipairs({
-      "LspAddWorkspaceFolder",
-      "LspCodeAction",
       "LspDiagnosticQuickFixAll",
       "LspDiagnosticQuickFixError",
       "LspDiagnosticQuickFixWarn",
@@ -220,10 +222,6 @@ vim.lsp.buf.on_hover = vim.lsp.handlers["textDocument/hover"]
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.buf.on_hover, {
   close_events = require("lbrayner").get_close_events(),
 })
-
--- Commands
-
-require("lbrayner.subcommands").create_command_and_subcommands("Lsp", subcommand_tbl)
 
 -- Definitions {{{
 
@@ -344,80 +342,86 @@ lsp_setqflist_replace = function()
   vim.fn.setqflist({}, "r", { title = quickfix_diagnostics_opts.title, items = items })
 end
 
-local function assert_empty(args)
-  assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
-end
-
 ---@type table<string, MyCmdSubcommand>
 subcommand_tbl.codeAction = {
   impl = function(args, opts)
-    assert_empty(args)
-    vim.lsp.buf.code_action({ range = get_range(opts) })
+    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+      vim.lsp.buf.code_action({ range = get_range(opts) })
+    end)
   end,
 }
 
 subcommand_tbl.declaration = {
   impl = function(args, _)
-    assert_empty(args)
-    declaration()
+    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+      declaration()
+    end)
   end,
 }
 
 subcommand_tbl.definition = {
   impl = function(args, _)
-    assert_empty(args)
-    definition()
+    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+      definition()
+    end)
   end,
 }
 
 subcommand_tbl.detach = {
   impl = function(args, _)
-    assert_empty(args)
-    for _, client in ipairs(vim.lsp.get_clients()) do
-      vim.lsp.buf_detach_client(0, client.id)
-    end
+    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+      for _, client in ipairs(vim.lsp.get_clients()) do
+        vim.lsp.buf_detach_client(0, client.id)
+      end
+    end)
   end,
 }
 
 subcommand_tbl.documentSymbol = {
   impl = function(args, _)
-    assert_empty(args)
-    vim.lsp.buf.document_symbol()
+    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+      vim.lsp.buf.document_symbol()
+    end)
   end,
 }
 
 subcommand_tbl.format = {
   impl = function(args, opts)
-    assert_empty(args)
-    vim.lsp.buf.format({ async = true, range = get_range(opts) })
+    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+      vim.lsp.buf.format({ async = true, range = get_range(opts) })
+    end)
   end,
 }
 
 subcommand_tbl.hover = {
   impl = function(args, _)
-    assert_empty(args)
-    vim.lsp.buf.hover()
+    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+      vim.lsp.buf.hover()
+    end)
   end,
 }
 
 subcommand_tbl.implementation = {
   impl = function(args, _)
-    assert_empty(args)
-    implementation()
+    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+      implementation()
+    end)
   end,
 }
 
 subcommand_tbl.signatureHelp = {
   impl = function(args, _)
-    assert_empty(args)
-    vim.lsp.buf.signature_help()
+    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+      vim.lsp.buf.signature_help()
+    end)
   end,
 }
 
 subcommand_tbl.typeDefinition = {
   impl = function(args, _)
-    assert_empty(args)
-    type_definition()
+    require("lbrayner.subcommands").simple_subcommand_impl(args, function()
+      type_definition()
+    end)
   end,
 }
 

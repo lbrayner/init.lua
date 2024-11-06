@@ -51,4 +51,9 @@ function M.create_command_and_subcommands(name, subcommand_tbl)
   })
 end
 
+function M.simple_subcommand_impl(args, impl)
+  assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
+  impl()
+end
+
 return M
