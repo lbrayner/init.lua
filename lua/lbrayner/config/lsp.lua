@@ -73,13 +73,6 @@ local function on_attach(_, bufnr)
     end
     vim.lsp.buf.add_workspace_folder(dir)
   end, { complete = "file", nargs = "?" })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDeclaration", declaration, { nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDefinition", definition, { nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDetach", function()
-    for _, client in ipairs(vim.lsp.get_clients()) do
-      vim.lsp.buf_detach_client(0, client.id)
-    end
-  end, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixAll", function()
     quickfix_diagnostics_opts.severity = nil
     lsp_setqflist({}, bufnr)
@@ -90,13 +83,6 @@ local function on_attach(_, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixWarn", function()
     lsp_setqflist({ severity = { min = vim.diagnostic.severity.WARN } }, bufnr)
   end, { nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDocumentSymbol", vim.lsp.buf.document_symbol, {
-    nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspFormat", function(command)
-    vim.lsp.buf.format({ async = true, range = get_range(command) })
-  end, { nargs = 0, range = "%" })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspHover", vim.lsp.buf.hover, { nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspImplementation", implementation, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspReferences", references, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspReferencesNoTests", function()
     references({ no_tests = true })
@@ -116,9 +102,6 @@ local function on_attach(_, bufnr)
     end
     vim.lsp.buf.rename()
   end, { nargs = "?" })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspSignatureHelp", vim.lsp.buf.signature_help, {
-    nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspTypeDefinition", type_definition, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceFolders", function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, { nargs = 0 })
@@ -177,21 +160,12 @@ vim.api.nvim_create_autocmd("LspDetach", {
     for _, command in ipairs({
       "LspAddWorkspaceFolder",
       "LspCodeAction",
-      "LspDeclaration",
-      "LspDefinition",
-      "LspDetach",
       "LspDiagnosticQuickFixAll",
       "LspDiagnosticQuickFixError",
       "LspDiagnosticQuickFixWarn",
-      "LspDocumentSymbol",
-      "LspFormat",
-      "LspHover",
-      "LspImplementation",
       "LspReferences",
       "LspRemoveWorkspaceFolder",
       "LspRename",
-      "LspSignatureHelp",
-      "LspTypeDefinition",
       "LspWorkspaceFolders",
       "LspWorkspaceSymbol",
     }) do
@@ -370,12 +344,80 @@ lsp_setqflist_replace = function()
   vim.fn.setqflist({}, "r", { title = quickfix_diagnostics_opts.title, items = items })
 end
 
+local function assert_empty(args)
+  assert(vim.tbl_isempty(args), "Trailing characters")
+end
+
 ---@type table<string, MyCmdSubcommand>
 subcommand_tbl.codeAction = {
   impl = function(args, opts)
-    print("codeAction args", vim.inspect(args)) -- TODO debug
-    assert(vim.tbl_isempty(args), "Trailing characters")
+    assert_empty(args)
     vim.lsp.buf.code_action({ range = get_range(opts) })
+  end,
+}
+
+subcommand_tbl.declaration = {
+  impl = function(args, opts)
+    assert_empty(args)
+    declaration()
+  end,
+}
+
+subcommand_tbl.definition = {
+  impl = function(args, opts)
+    assert_empty(args)
+    definition()
+  end,
+}
+
+subcommand_tbl.detach = {
+  impl = function(args, opts)
+    assert_empty(args)
+    for _, client in ipairs(vim.lsp.get_clients()) do
+      vim.lsp.buf_detach_client(0, client.id)
+    end
+  end,
+}
+
+subcommand_tbl.documentSymbol = {
+  impl = function(args, opts)
+    assert_empty(args)
+    vim.lsp.buf.document_symbol()
+  end,
+}
+
+subcommand_tbl.format = {
+  impl = function(args, opts)
+    assert_empty(args)
+    vim.lsp.buf.format({ async = true, range = get_range(opts) })
+  end,
+}
+
+subcommand_tbl.hover = {
+  impl = function(args, opts)
+    assert_empty(args)
+    vim.lsp.buf.hover()
+  end,
+}
+
+subcommand_tbl.implementation = {
+  impl = function(args, opts)
+    assert_empty(args)
+    implementation()
+  end,
+}
+
+subcommand_tbl.signatureHelp = {
+  impl = function(args, opts)
+    assert_empty(args)
+    vim.lsp.buf.signature_help()
+  end,
+}
+
+subcommand_tbl.typeDefinition = {
+  impl = function(args, opts)
+    assert_empty(args)
+    type_definition()
   end,
 }
 
