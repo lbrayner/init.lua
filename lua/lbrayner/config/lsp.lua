@@ -1,7 +1,10 @@
 -- Commands
 
 local subcommand_tbl = {}
-require("lbrayner.subcommands").create_command_and_subcommands("Lsp", subcommand_tbl)
+require("lbrayner.subcommands").create_command_and_subcommands("Lsp", subcommand_tbl, {
+  desc = "Lsp and subcommands",
+  range = true
+})
 
 -- Lua
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#lua_ls

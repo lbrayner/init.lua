@@ -19,12 +19,14 @@ local function main_cmd(name, subcommand_tbl)
   end
 end
 
-function M.create_command_and_subcommands(name, subcommand_tbl)
+function M.create_command_and_subcommands(name, subcommand_tbl, opts)
+  opts = opts or {}
   assert(name:match("^%u%a+$"), "Bad argument; 'name' must a capitalized word.")
   assert(type(subcommand_tbl) == "table", "'subcommand_tbl' must be a table")
+  assert(type(opts) == "table", "'opts' must be a table")
   vim.api.nvim_create_user_command(name, main_cmd(name, subcommand_tbl), {
     nargs = "+",
-    desc = "My awesome command with subcommand completions",
+    desc = opts.desc,
     complete = function(arg_lead, cmdline, _)
       -- Get the subcommand.
       local subcmd_key, subcmd_arg_lead = cmdline:match("^['<,'>]*" .. name .. "[!]*%s(%S+)%s(.*)$")
@@ -46,8 +48,8 @@ function M.create_command_and_subcommands(name, subcommand_tbl)
         :totable()
       end
     end,
-    bang = true,
-    range = true
+    bang = opts.bang,
+    range = opts.range
   })
 end
 
