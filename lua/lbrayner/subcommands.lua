@@ -6,7 +6,7 @@ function M.complete_filename(lead)
   return vim.fn.glob(lead .. "*", 1, 1)
 end
 
-local function generate_implementations(subcommand_tbl)
+local function main_cmd(name, subcommand_tbl)
   for subcommand_key, subcommand in pairs(subcommand_tbl) do
     if subcommand.simple and type(subcommand.simple) == "function" then
       local simple = subcommand.simple
@@ -17,11 +17,7 @@ local function generate_implementations(subcommand_tbl)
       subcommand.simple = nil
     end
   end
-end
-
----@param opts table :h lua-guide-commands-create
-local function main_cmd(name, subcommand_tbl)
-  generate_implementations(subcommand_tbl)
+  ---@param opts table :h lua-guide-commands-create
   return function(opts)
     local fargs = opts.fargs
     local subcommand_key = fargs[1]
