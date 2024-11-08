@@ -33,9 +33,8 @@ function M.create_command_and_subcommands(name, subcommand_tbl, opts)
   assert(name:match("^%u%a+$"), "Bad argument; 'name' must a capitalized word.")
   assert(type(subcommand_tbl) == "table", "'subcommand_tbl' must be a table")
   assert(type(opts) == "table", "'opts' must be a table")
-  vim.api.nvim_create_user_command(name, main_cmd(name, subcommand_tbl), {
+  vim.api.nvim_create_user_command(name, main_cmd(name, subcommand_tbl), vim.tbl_extend("keep", {
     nargs = "+",
-    desc = opts.desc,
     complete = function(arg_lead, cmdline, _)
       -- Get the subcommand.
       local subcmd_key, subcmd_arg_lead = cmdline:match("^['<,'>]*" .. name .. "[!]*%s(%S+)%s(.*)$")
@@ -50,16 +49,16 @@ function M.create_command_and_subcommands(name, subcommand_tbl, opts)
       if cmdline:match("^['<,'>]*" .. name .. "[!]*%s+%w*$") then
         -- Filter subcommands that match
         local subcommand_keys = vim.tbl_keys(subcommand_tbl)
-        return vim.iter(subcommand_keys)
+        local candidates = vim.iter(subcommand_keys)
         :filter(function(key)
           return key:find(arg_lead) ~= nil
         end)
         :totable()
+        table.sort(candidates)
+        return candidates
       end
     end,
-    bang = opts.bang,
-    range = opts.range
-  })
+  }, opts))
 end
 
 return M
