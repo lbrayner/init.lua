@@ -10,6 +10,11 @@ local function main_cmd(name, subcommand_tbl)
   ---@param opts table :h lua-guide-commands-create
   return function(opts)
     local fargs = opts.fargs
+    while vim.tbl_get(subcommand_tbl, fargs[1], "subcommand_tbl") and
+      type(subcommand_tbl[fargs[1]].subcommand_tbl) == "table" do
+      subcommand_tbl = subcommand_tbl[fargs[1]].subcommand_tbl
+      table.remove(fargs, 1)
+    end
     local subcommand_key = fargs[1]
     -- Get the subcommand's arguments, if any
     local args = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
@@ -21,7 +26,7 @@ local function main_cmd(name, subcommand_tbl)
     -- Invoke the subcommand
     if subcommand.simple and type(subcommand.simple) == "function" then
       assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
-      simple(opts)
+      subcommand.simple(opts)
     else
       subcommand.impl(args, opts)
     end

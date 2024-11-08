@@ -359,6 +359,16 @@ subcommand_tbl.definition = {
   end,
 }
 
+subcommand_tbl.diagnostic = {
+  subcommand_tbl = {
+    quickfixAll = {
+      simple = function(_)
+        quickfix_diagnostics_opts.severity = nil
+        lsp_setqflist({}, vim.api.nvim_get_current_buf())
+      end,
+    }
+  },
+}
 subcommand_tbl.detach = {
   simple = function(_)
     for _, client in ipairs(vim.lsp.get_clients()) do
