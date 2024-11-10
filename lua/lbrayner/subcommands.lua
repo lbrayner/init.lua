@@ -41,27 +41,41 @@ function M.create_command_and_subcommands(name, subcommand_tbl, opts)
   vim.api.nvim_create_user_command(name, main_cmd(name, subcommand_tbl), vim.tbl_extend("keep", {
     nargs = "+",
     complete = function(arg_lead, cmdline, _)
+      -- Check if cmdline is a subcommand
+      local subcommands = cmdline:match("^['<,'>]*" .. name .. "[!]?(%s+.*)")
+      if not subcommands then
+        return
+      end
       -- Get the subcommand.
-      local subcmd_key, subcmd_arg_lead = cmdline:match("^['<,'>]*" .. name .. "[!]*%s(%S+)%s(.*)$")
+      local subcmd_key
+      (function()
+        -- Support nested subcommand tables
+        for w in string.gmatch(subcommands, "%s+(%S+)") do
+          if vim.tbl_get(subcommand_tbl, w, "subcommand_tbl") and
+            type(subcommand_tbl[w].subcommand_tbl) == "table" then
+            subcommand_tbl = subcommand_tbl[w].subcommand_tbl
+            subcmd_key = w
+          else
+            return
+          end
+        end
+      end)()
       if subcmd_key
-        and subcmd_arg_lead
+        and arg_lead
         and subcommand_tbl[subcmd_key]
         and subcommand_tbl[subcmd_key].complete then
         -- The subcommand has completions. Return them.
-        return subcommand_tbl[subcmd_key].complete(subcmd_arg_lead)
+        return subcommand_tbl[subcmd_key].complete(arg_lead)
       end
-      -- Check if cmdline is a subcommand
-      if cmdline:match("^['<,'>]*" .. name .. "[!]*%s+%w*$") then
-        -- Filter subcommands that match
-        local subcommand_keys = vim.tbl_keys(subcommand_tbl)
-        local candidates = vim.iter(subcommand_keys)
-        :filter(function(key)
-          return key:find(arg_lead) ~= nil
-        end)
-        :totable()
-        table.sort(candidates)
-        return candidates
-      end
+      -- Filter subcommands that match
+      local subcommand_keys = vim.tbl_keys(subcommand_tbl)
+      local candidates = vim.iter(subcommand_keys)
+      :filter(function(key)
+        return key:find(arg_lead) ~= nil
+      end)
+      :totable()
+      table.sort(candidates)
+      return candidates
     end,
   }, opts))
 end
