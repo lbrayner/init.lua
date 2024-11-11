@@ -41,41 +41,42 @@ function M.create_command_and_subcommands(name, subcommand_tbl, opts)
   vim.api.nvim_create_user_command(name, main_cmd(name, subcommand_tbl), vim.tbl_extend("keep", {
     nargs = "+",
     complete = function(arg_lead, cmdline, _)
-      -- Check if cmdline is a subcommand
-      local subcommands = cmdline:match("^['<,'>]*" .. name .. "[!]?(%s+.*)")
-      if not subcommands then
+      local arguments = cmdline:match("^['<,'>]*" .. name .. "[!]?(%s+.*)")
+      if not arguments then
         return
       end
-      -- Get the subcommand.
       local subcmd_key
-      (function()
-        -- Support nested subcommand tables
-        for w in string.gmatch(subcommands, "%s+(%S+)") do
+      -- Support nested subcommand tables
+      local nested = (function(subcommand_tbl)
+        for w in string.gmatch(arguments, "%s+(%w+)") do
           if vim.tbl_get(subcommand_tbl, w, "subcommand_tbl") and
             type(subcommand_tbl[w].subcommand_tbl) == "table" then
             subcommand_tbl = subcommand_tbl[w].subcommand_tbl
             subcmd_key = w
           else
-            return
+            return subcommand_tbl
           end
         end
-      end)()
-      if subcmd_key
-        and arg_lead
-        and subcommand_tbl[subcmd_key]
-        and subcommand_tbl[subcmd_key].complete then
-        -- The subcommand has completions. Return them.
-        return subcommand_tbl[subcmd_key].complete(arg_lead)
-      end
-      -- Filter subcommands that match
-      local subcommand_keys = vim.tbl_keys(subcommand_tbl)
-      local candidates = vim.iter(subcommand_keys)
-      :filter(function(key)
-        return key:find(arg_lead) ~= nil
-      end)
-      :totable()
-      table.sort(candidates)
-      return candidates
+        return subcommand_tbl
+      end)(subcommand_tbl)
+      return (function(subcommand_tbl)
+        if subcmd_key
+          and arg_lead
+          and subcommand_tbl[subcmd_key]
+          and subcommand_tbl[subcmd_key].complete then
+          -- The subcommand has completions. Return them.
+          return subcommand_tbl[subcmd_key].complete(arg_lead)
+        end
+        -- Filter subcommands that match
+        local subcommand_keys = vim.tbl_keys(subcommand_tbl)
+        local candidates = vim.iter(subcommand_keys)
+        :filter(function(key)
+          return key:find(arg_lead) ~= nil
+        end)
+        :totable()
+        table.sort(candidates)
+        return candidates
+      end)(nested)
     end,
   }, opts))
 end
