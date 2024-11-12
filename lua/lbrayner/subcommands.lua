@@ -9,27 +9,29 @@ end
 local function main_cmd(name, subcommand_tbl)
   ---@param opts table :h lua-guide-commands-create
   return function(opts)
-    local fargs = opts.fargs
-    while vim.tbl_get(subcommand_tbl, fargs[1], "subcommand_tbl") and
-      type(subcommand_tbl[fargs[1]].subcommand_tbl) == "table" do
-      subcommand_tbl = subcommand_tbl[fargs[1]].subcommand_tbl
-      table.remove(fargs, 1)
-    end
-    local subcommand_key = fargs[1]
-    -- Get the subcommand's arguments, if any
-    local args = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
-    local subcommand = subcommand_tbl[subcommand_key]
-    if not subcommand then
-      vim.notify(name .. ": Unknown command: " .. subcommand_key, vim.log.levels.ERROR)
-      return
-    end
-    -- Invoke the subcommand
-    if subcommand.simple and type(subcommand.simple) == "function" then
-      assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
-      subcommand.simple(opts)
-    else
-      subcommand.impl(args, opts)
-    end
+    (function (subcommand_tbl)
+      local fargs = opts.fargs
+      while vim.tbl_get(subcommand_tbl, fargs[1], "subcommand_tbl") and
+        type(subcommand_tbl[fargs[1]].subcommand_tbl) == "table" do
+        subcommand_tbl = subcommand_tbl[fargs[1]].subcommand_tbl
+        table.remove(fargs, 1)
+      end
+      local subcommand_key = fargs[1]
+      -- Get the subcommand's arguments, if any
+      local args = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
+      local subcommand = subcommand_tbl[subcommand_key]
+      if not subcommand then
+        vim.notify(name .. ": Unknown command: " .. subcommand_key, vim.log.levels.ERROR)
+        return
+      end
+      -- Invoke the subcommand
+      if subcommand.simple and type(subcommand.simple) == "function" then
+        assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
+        subcommand.simple(opts)
+      else
+        subcommand.impl(args, opts)
+      end
+    end)(subcommand_tbl)
   end
 end
 
