@@ -43,8 +43,6 @@ local references
 local type_definition
 local is_test_file
 local get_range
-local quickfix_diagnostics_opts = {}
-local lsp_setqflist
 
 -- From nvim-lspconfig. 'client' is not used.
 local function on_attach(_, bufnr)
@@ -72,16 +70,6 @@ local function on_attach(_, bufnr)
   vim.keymap.set("n", "gy", type_definition, bufopts)
 
   -- Commands
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixAll", function()
-    quickfix_diagnostics_opts.severity = nil
-    lsp_setqflist({}, bufnr)
-  end, { nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixError", function()
-    lsp_setqflist({ severity = vim.diagnostic.severity.ERROR }, bufnr)
-  end, { nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspDiagnosticQuickFixWarn", function()
-    lsp_setqflist({ severity = { min = vim.diagnostic.severity.WARN } }, bufnr)
-  end, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspReferences", references, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspReferencesNoTests", function()
     references({ no_tests = true })
@@ -149,9 +137,6 @@ vim.api.nvim_create_autocmd("LspDetach", {
 
     -- Delete user commands
     for _, command in ipairs({
-      "LspDiagnosticQuickFixAll",
-      "LspDiagnosticQuickFixError",
-      "LspDiagnosticQuickFixWarn",
       "LspReferences",
       "LspRemoveWorkspaceFolder",
       "LspWorkspaceFolders",
@@ -163,6 +148,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
 })
 
 local lsp_setqflist_replace
+local quickfix_diagnostics_opts = {}
 
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
   group = lsp_setup,
@@ -289,7 +275,15 @@ get_range = function(command)
   return range
 end
 
-lsp_setqflist = function(opts, bufnr)
+lsp_setqflist_replace = function()
+  local diagnostics = vim.diagnostic.get(nil, quickfix_diagnostics_opts)
+  local items = vim.diagnostic.toqflist(diagnostics)
+
+  vim.fn.setqflist({}, "r", { title = quickfix_diagnostics_opts.title, items = items })
+end
+
+local function lsp_setqflist(opts)
+  local bufnr = vim.api.nvim_get_current_buf()
   local active_clients = vim.lsp.get_clients({ bufnr = bufnr })
   if #active_clients ~= 1 then
     -- Only one client supported.
@@ -319,13 +313,6 @@ lsp_setqflist = function(opts, bufnr)
   end
 
   vim.diagnostic.setqflist(quickfix_diagnostics_opts)
-end
-
-lsp_setqflist_replace = function()
-  local diagnostics = vim.diagnostic.get(nil, quickfix_diagnostics_opts)
-  local items = vim.diagnostic.toqflist(diagnostics)
-
-  vim.fn.setqflist({}, "r", { title = quickfix_diagnostics_opts.title, items = items })
 end
 
 subcommand_tbl.addWorkspaceFolder = {
@@ -361,12 +348,22 @@ subcommand_tbl.definition = {
 
 subcommand_tbl.diagnostic = {
   subcommand_tbl = {
-    quickfixAll = {
+    all = {
       simple = function(_)
         quickfix_diagnostics_opts.severity = nil
-        lsp_setqflist({}, vim.api.nvim_get_current_buf())
+        lsp_setqflist({})
       end,
-    }
+    },
+    error = {
+      simple = function(_)
+        lsp_setqflist({ severity = vim.diagnostic.severity.ERROR })
+      end,
+    },
+    warn = {
+      simple = function(_)
+        lsp_setqflist({ severity = { min = vim.diagnostic.severity.WARN } })
+      end,
+    },
   },
 }
 subcommand_tbl.detach = {
