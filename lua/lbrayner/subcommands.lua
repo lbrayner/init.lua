@@ -51,15 +51,11 @@ function M.create_command_and_subcommands(name, subcommand_tbl, opts)
         -- Support nested subcommand tables
         local subcmd_key = (function()
           for w in string.gmatch(arguments, "%s+(%w+)") do
-            if subcommand_tbl[w] then
-              if vim.tbl_get(subcommand_tbl, w, "subcommand_tbl") and
-                type(subcommand_tbl[w].subcommand_tbl) == "table" then
-                subcommand_tbl = subcommand_tbl[w].subcommand_tbl
-              else
-                return w
-              end
+            if vim.tbl_get(subcommand_tbl, w, "subcommand_tbl") and
+              type(subcommand_tbl[w].subcommand_tbl) == "table" then
+              subcommand_tbl = subcommand_tbl[w].subcommand_tbl
             else
-              return
+              return subcommand_tbl[w] and w or nil
             end
           end
         end)()
