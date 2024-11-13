@@ -28,9 +28,14 @@ local function main_cmd(name, subcommand_tbl)
       if subcommand.simple and type(subcommand.simple) == "function" then
         assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
         subcommand.simple(opts)
-      else
-        subcommand.impl(args, opts)
+        return
+      elseif subcommand.optional and type(subcommand.optional) == "table" then
+        assert(vim.iter(vim.split(subcommand.optional, "%s+")):all(function(arg)
+          vim.tbl_contains(subcommand.optional, arg)
+        end))
       end
+
+      subcommand.impl(args, opts)
     end)(subcommand_tbl)
   end
 end
