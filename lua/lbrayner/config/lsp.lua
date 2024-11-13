@@ -42,7 +42,6 @@ local implementation
 local references
 local type_definition
 local is_test_file
-local get_range
 
 -- From nvim-lspconfig. 'client' is not used.
 local function on_attach(_, bufnr)
@@ -258,7 +257,7 @@ is_test_file = (function()
   return nil
 end)()
 
-get_range = function(command)
+local function get_range(command)
   -- Visual selection
   local range = {
     start = vim.api.nvim_buf_get_mark(0, "<"),
