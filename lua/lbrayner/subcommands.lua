@@ -58,6 +58,8 @@ function M.create_command_and_subcommands(name, subcommand_tbl, opts)
               else
                 return w
               end
+            else
+              return
             end
           end
         end)()
