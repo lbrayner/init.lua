@@ -345,6 +345,14 @@ subcommand_tbl.definition = {
   end,
 }
 
+subcommand_tbl.detach = {
+  simple = function(_)
+    for _, client in ipairs(vim.lsp.get_clients()) do
+      vim.lsp.buf_detach_client(0, client.id)
+    end
+  end,
+}
+
 subcommand_tbl.diagnostic = {
   subcommand_tbl = {
     all = {
@@ -364,13 +372,6 @@ subcommand_tbl.diagnostic = {
       end,
     },
   },
-}
-subcommand_tbl.detach = {
-  simple = function(_)
-    for _, client in ipairs(vim.lsp.get_clients()) do
-      vim.lsp.buf_detach_client(0, client.id)
-    end
-  end,
 }
 
 subcommand_tbl.documentSymbol = {
