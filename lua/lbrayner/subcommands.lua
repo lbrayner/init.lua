@@ -27,7 +27,14 @@ local function main_cmd(name, subcommand_tbl)
       -- Invoke the subcommand
       if subcommand.simple and type(subcommand.simple) == "function" then
         assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
-        subcommand.simple(opts)
+        assert(opts.range == 0, string.format("No range allowed"))
+        subcommand.simple()
+      elseif subcommand.ranged and type(subcommand.ranged) == "function" then
+        assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
+        subcommand.ranged(opts)
+      elseif subcommand.required and type(subcommand.required) == "function" then
+        assert(opts.range == 0, string.format("No range allowed"))
+        subcommand.required(args)
       else
         subcommand.impl(args, opts)
       end

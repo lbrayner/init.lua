@@ -316,7 +316,7 @@ end
 
 subcommand_tbl.addWorkspaceFolder = {
   complete = require("lbrayner.subcommands").complete_filename,
-  impl = function(args, _)
+  required = function(args)
     local dir = table.concat(args, " ")
     if dir == "" then
       dir = vim.fn.getcwd()
@@ -328,25 +328,27 @@ subcommand_tbl.addWorkspaceFolder = {
 }
 
 subcommand_tbl.codeAction = {
-  simple = function(opts)
+  ranged = function(opts)
+    print("codeAction opts", vim.inspect(opts)) -- TODO debug
     vim.lsp.buf.code_action({ range = get_range(opts) })
   end,
 }
 
 subcommand_tbl.declaration = {
-  simple = function(_)
+  simple = function()
+    print("declaration opts", vim.inspect(_)) -- TODO debug
     declaration()
   end,
 }
 
 subcommand_tbl.definition = {
-  simple = function(_)
+  simple = function()
     definition()
   end,
 }
 
 subcommand_tbl.detach = {
-  simple = function(_)
+  simple = function()
     for _, client in ipairs(vim.lsp.get_clients()) do
       vim.lsp.buf_detach_client(0, client.id)
     end
@@ -356,18 +358,18 @@ subcommand_tbl.detach = {
 subcommand_tbl.diagnostic = {
   subcommand_tbl = {
     all = {
-      simple = function(_)
+      simple = function()
         quickfix_diagnostics_opts.severity = nil
         lsp_setqflist({})
       end,
     },
     error = {
-      simple = function(_)
+      simple = function()
         lsp_setqflist({ severity = vim.diagnostic.severity.ERROR })
       end,
     },
     warn = {
-      simple = function(_)
+      simple = function()
         lsp_setqflist({ severity = { min = vim.diagnostic.severity.WARN } })
       end,
     },
@@ -375,31 +377,31 @@ subcommand_tbl.diagnostic = {
 }
 
 subcommand_tbl.documentSymbol = {
-  simple = function(_)
+  simple = function()
     vim.lsp.buf.document_symbol()
   end,
 }
 
 subcommand_tbl.format = {
-  simple = function(opts)
+  ranged = function(opts)
     vim.lsp.buf.format({ async = true, range = get_range(opts) })
   end,
 }
 
 subcommand_tbl.hover = {
-  simple = function(_)
+  simple = function()
     vim.lsp.buf.hover()
   end,
 }
 
 subcommand_tbl.implementation = {
-  simple = function(_)
+  simple = function()
     implementation()
   end,
 }
 
 subcommand_tbl.rename = {
-  impl = function(args, _)
+  required = function(args)
     local name = table.concat(args, " ")
     if name and name ~= "" then
       vim.lsp.buf.rename(name)
@@ -410,13 +412,13 @@ subcommand_tbl.rename = {
 }
 
 subcommand_tbl.signatureHelp = {
-  simple = function(_)
+  simple = function()
     vim.lsp.buf.signature_help()
   end,
 }
 
 subcommand_tbl.typeDefinition = {
-  simple = function(_)
+  simple = function()
     type_definition()
   end,
 }
