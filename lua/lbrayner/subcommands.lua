@@ -43,7 +43,7 @@ function M.create_command_and_subcommands(name, subcommand_tbl, opts)
   vim.api.nvim_create_user_command(name, main_cmd(name, subcommand_tbl), vim.tbl_extend("keep", {
     nargs = "+",
     complete = function(arg_lead, cmdline, _)
-      local arguments = cmdline:match("^['<,'>]*" .. name .. "[!]?(%s+.*)")
+      local arguments = cmdline:match("^%S*" .. name .. "[!]?(%s+.*)")
       if not arguments then
         return
       end
