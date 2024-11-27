@@ -1,3 +1,5 @@
+-- vim: fdm=marker
+
 -- {{{
 
 local is_test_file = (function()
@@ -21,6 +23,23 @@ end
 
 local function definition()
   vim.lsp.buf.definition({ on_list = on_list, reuse_win = true })
+end
+
+local function get_range(opts)
+  -- Visual selection
+  local range = {
+    start = vim.api.nvim_buf_get_mark(0, "<"),
+    ["end"] = vim.api.nvim_buf_get_mark(0, ">")
+  }
+  if opts.line1 ~= range.start[1] or
+    opts.line2 ~= range["end"][1] then
+    -- Supplied range inferred
+    range = {
+      start = { opts.line1, 0 },
+      ["end"] = { opts.line2, 2147483647 }, -- Maximum line length (vi_diff.txt)
+    }
+  end
+  return range
 end
 
 -- Documentation is missing reuse_win
@@ -104,23 +123,6 @@ end
 
 local function type_definition()
   vim.lsp.buf.type_definition({ on_list = on_list, reuse_win = true })
-end
-
-local function get_range(opts)
-  -- Visual selection
-  local range = {
-    start = vim.api.nvim_buf_get_mark(0, "<"),
-    ["end"] = vim.api.nvim_buf_get_mark(0, ">")
-  }
-  if opts.line1 ~= range.start[1] or
-    opts.line2 ~= range["end"][1] then
-    -- Supplied range inferred
-    range = {
-      start = { opts.line1, 0 },
-      ["end"] = { opts.line2, 2147483647 }, -- Maximum line length (vi_diff.txt)
-    }
-  end
-  return range
 end
 
 -- }}}
@@ -381,5 +383,3 @@ subcommand_tbl.workspaceSymbol = {
     vim.lsp.buf.workspace_symbol(name)
   end,
 }
-
--- vim: fdm=marker
