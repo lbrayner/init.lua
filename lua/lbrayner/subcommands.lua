@@ -27,14 +27,14 @@ local function main_cmd(name, subcommand_tbl)
       -- Invoke the subcommand
       if subcommand.simple and type(subcommand.simple) == "function" then
         assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
-        assert(opts.range == 0, string.format("No range allowed"))
+        assert(opts.range == 0, "No range allowed")
         subcommand.simple()
       elseif subcommand.ranged and type(subcommand.ranged) == "function" then
         assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
         subcommand.ranged(opts)
-      elseif subcommand.required and type(subcommand.required) == "function" then
-        assert(opts.range == 0, string.format("No range allowed"))
-        subcommand.required(args)
+      elseif subcommand.optional and type(subcommand.optional) == "function" then
+        assert(opts.range == 0, "No range allowed")
+        subcommand.optional(args)
       else
         subcommand.impl(args, opts)
       end
@@ -77,9 +77,17 @@ function M.create_command_and_subcommands(name, subcommand_tbl, opts)
           table.sort(candidates)
           return candidates
         elseif arg_lead
-          and subcommand_tbl[subcmd_key]
-          and subcommand_tbl[subcmd_key].complete then
+          and vim.tbl_get(subcommand_tbl, subcmd_key, "complete") then
           -- The subcommand has completions. Return them.
+          if type(subcommand_tbl[subcmd_key].complete == "table") then
+            local candidates = vim.iter(subcommand_tbl[subcmd_key].complete)
+            :filter(function(key)
+              return key:find(arg_lead) ~= nil
+            end)
+            :totable()
+            table.sort(candidates)
+            return candidates
+          end
           return subcommand_tbl[subcmd_key].complete(arg_lead)
         end
       end)(subcommand_tbl)

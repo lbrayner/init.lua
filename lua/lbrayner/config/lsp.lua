@@ -69,10 +69,6 @@ local function on_attach(_, bufnr)
   vim.keymap.set("n", "gy", type_definition, bufopts)
 
   -- Commands
-  vim.api.nvim_buf_create_user_command(bufnr, "LspReferences", references, { nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspReferencesNoTests", function()
-    references({ no_tests = true })
-  end, { nargs = 0 })
   vim.api.nvim_buf_create_user_command(bufnr, "LspRemoveWorkspaceFolder", function(command)
     local dir = command.args
     if dir == "" then
@@ -136,7 +132,6 @@ vim.api.nvim_create_autocmd("LspDetach", {
 
     -- Delete user commands
     for _, command in ipairs({
-      "LspReferences",
       "LspRemoveWorkspaceFolder",
       "LspWorkspaceFolders",
       "LspWorkspaceSymbol",
@@ -316,7 +311,7 @@ end
 
 subcommand_tbl.addWorkspaceFolder = {
   complete = require("lbrayner.subcommands").complete_filename,
-  required = function(args)
+  optional = function(args)
     local dir = table.concat(args, " ")
     if dir == "" then
       dir = vim.fn.getcwd()
@@ -400,8 +395,17 @@ subcommand_tbl.implementation = {
   end,
 }
 
+subcommand_tbl.references = {
+  complete = { "--no-tests" },
+  optional = function(args)
+    args = table.concat(args, " ")
+    assert(args == "" or args == "--no-tests", string.format("Illegal arguments: %s", args))
+    references({ no_tests = (args == "--no-tests") })
+  end,
+}
+
 subcommand_tbl.rename = {
-  required = function(args)
+  optional = function(args)
     local name = table.concat(args, " ")
     if name and name ~= "" then
       vim.lsp.buf.rename(name)
