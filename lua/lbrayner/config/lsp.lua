@@ -67,26 +67,6 @@ local function on_attach(_, bufnr)
   end, bufopts)
   vim.keymap.set("n", "gK", vim.lsp.buf.signature_help, bufopts)
   vim.keymap.set("n", "gy", type_definition, bufopts)
-
-  -- Commands
-  vim.api.nvim_buf_create_user_command(bufnr, "LspRemoveWorkspaceFolder", function(command)
-    local dir = command.args
-    if dir == "" then
-      dir = vim.fn.getcwd()
-    end
-    vim.lsp.buf.remove_workspace_folder(dir)
-  end, { complete = "file", nargs = "?" })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceFolders", function()
-    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end, { nargs = 0 })
-  vim.api.nvim_buf_create_user_command(bufnr, "LspWorkspaceSymbol", function(command)
-    local name = command.args
-    if name and name ~= "" then
-      vim.lsp.buf.workspace_symbol(name)
-      return
-    end
-    vim.lsp.buf.workspace_symbol()
-  end, { nargs = "?" })
 end
 
 local lsp_set_statusline
@@ -128,15 +108,6 @@ vim.api.nvim_create_autocmd("LspDetach", {
 
     if vim.api.nvim_get_current_buf() == bufnr then
       vim.api.nvim_exec_autocmds("User", { modeline = false, pattern = "CustomStatusline" })
-    end
-
-    -- Delete user commands
-    for _, command in ipairs({
-      "LspRemoveWorkspaceFolder",
-      "LspWorkspaceFolders",
-      "LspWorkspaceSymbol",
-    }) do
-      pcall(vim.api.nvim_buf_del_user_command, bufnr, command) -- Ignore error if command doesn't exist
     end
   end,
 })
@@ -395,6 +366,12 @@ subcommand_tbl.implementation = {
   end,
 }
 
+subcommand_tbl.listWorkspaceFolders = {
+  simple = function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end,
+}
+
 subcommand_tbl.references = {
   complete = { "--no-tests" },
   optional = function(args)
@@ -404,14 +381,22 @@ subcommand_tbl.references = {
   end,
 }
 
+subcommand_tbl.removeWorkspaceFolder = {
+  complete = require("lbrayner.subcommands").complete_filename,
+  optional = function(args)
+    local dir = table.concat(args, " ")
+    if dir == "" then
+      dir = vim.fn.getcwd()
+    end
+    vim.lsp.buf.remove_workspace_folder(dir)
+  end,
+}
+
 subcommand_tbl.rename = {
   optional = function(args)
     local name = table.concat(args, " ")
-    if name and name ~= "" then
-      vim.lsp.buf.rename(name)
-      return
-    end
-    vim.lsp.buf.rename()
+    name = name ~= "" and name or nil
+    vim.lsp.buf.rename(name)
   end,
 }
 
@@ -424,6 +409,14 @@ subcommand_tbl.signatureHelp = {
 subcommand_tbl.typeDefinition = {
   simple = function()
     type_definition()
+  end,
+}
+
+subcommand_tbl.workspaceSymbol = {
+  optional = function(args)
+    local name = table.concat(args, " ")
+    name = name ~= "" and name or nil
+    vim.lsp.buf.workspace_symbol(name)
   end,
 }
 
