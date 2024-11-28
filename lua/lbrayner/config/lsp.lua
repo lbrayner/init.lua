@@ -15,7 +15,7 @@ local is_test_file = (function()
 end)()
 
 local on_list = require("lbrayner.lsp").on_list
-local quickfix_diagnostics_opts = {}
+local diagnostic_qf_opts = {}
 
 local function declaration()
   vim.lsp.buf.declaration({ on_list = on_list, reuse_win = true })
@@ -47,14 +47,14 @@ local function implementation()
   vim.lsp.buf.implementation({ on_list = on_list, reuse_win = true })
 end
 
-local function lsp_setqflist_replace()
-  local diagnostics = vim.diagnostic.get(nil, quickfix_diagnostics_opts)
+local function diagnostic_replaceqflist()
+  local diagnostics = vim.diagnostic.get(nil, diagnostic_qf_opts)
   local items = vim.diagnostic.toqflist(diagnostics)
 
-  vim.fn.setqflist({}, "r", { title = quickfix_diagnostics_opts.title, items = items })
+  vim.fn.setqflist({}, "r", { title = diagnostic_qf_opts.title, items = items })
 end
 
-local function lsp_setqflist(opts)
+local function diagnostic_setqflist(opts)
   local bufnr = vim.api.nvim_get_current_buf()
   local active_clients = vim.lsp.get_clients({ bufnr = bufnr })
   if #active_clients ~= 1 then
@@ -64,22 +64,22 @@ local function lsp_setqflist(opts)
 
   local active_client = active_clients[1]
 
-  quickfix_diagnostics_opts = vim.tbl_extend("keep", {
+  diagnostic_qf_opts = vim.tbl_extend("keep", {
     namespace = vim.lsp.diagnostic.get_namespace(active_client.id),
-  }, opts, quickfix_diagnostics_opts)
+  }, opts, diagnostic_qf_opts)
 
   local title = "LSP Diagnostics: " .. active_client.name
 
-  local severity = quickfix_diagnostics_opts.severity
+  local severity = diagnostic_qf_opts.severity
   if type(severity) == "table" then severity = severity.min end
   if severity then
     title = string.format("%s (%s)", title, vim.diagnostic.severity[severity])
   end
 
-  quickfix_diagnostics_opts.title = title
+  diagnostic_qf_opts.title = title
 
-  if vim.fn.getqflist({ title = true }).title == quickfix_diagnostics_opts.title then
-    lsp_setqflist_replace()
+  if vim.fn.getqflist({ title = true }).title == diagnostic_qf_opts.title then
+    diagnostic_replaceqflist()
     vim.cmd("botright copen")
     return
   end
@@ -196,9 +196,9 @@ vim.api.nvim_create_autocmd("DiagnosticChanged", {
   callback = function()
     if not vim.startswith(vim.fn.getqflist({ title = true }).title, "LSP Diagnostics") then return end
 
-    if not quickfix_diagnostics_opts.namespace then return end
+    if not diagnostic_qf_opts.namespace then return end
 
-    lsp_setqflist_replace()
+    diagnostic_replaceqflist()
   end,
 })
 
@@ -289,18 +289,18 @@ subcommand_tbl.diagnostic = {
   subcommand_tbl = {
     all = {
       simple = function()
-        quickfix_diagnostics_opts.severity = nil
-        lsp_setqflist({})
+        diagnostic_qf_opts.severity = nil
+        diagnostic_setqflist({})
       end,
     },
     error = {
       simple = function()
-        lsp_setqflist({ severity = vim.diagnostic.severity.ERROR })
+        diagnostic_setqflist({ severity = vim.diagnostic.severity.ERROR })
       end,
     },
     warn = {
       simple = function()
-        lsp_setqflist({ severity = { min = vim.diagnostic.severity.WARN } })
+        diagnostic_setqflist({ severity = { min = vim.diagnostic.severity.WARN } })
       end,
     },
   },
