@@ -14,8 +14,69 @@ local is_test_file = (function()
   return nil
 end)()
 
-local on_list = require("lbrayner.lsp").on_list
 local diagnostic_qf_opts = {}
+
+local function client_extract_names(clients)
+  local names = vim.tbl_map(function (client)
+    return client.name
+  end, clients)
+  table.sort(names)
+  return names
+end
+
+local function customize_statusline(clients, bufnr)
+  local names = client_extract_names(clients)
+  local stl_lsp = table.concat(names, ",") -- joining items with a separator
+
+  -- Custom statusline
+  vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
+  vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. stl_lsp .. '%* '
+  if vim.api.nvim_get_current_buf() == bufnr then
+    vim.api.nvim_exec_autocmds("User", { modeline = false, pattern = "CustomStatusline" })
+  end
+end
+
+local function diagnostic_setqflist(opts)
+  opts = opts or {}
+  opts.open = opts.open == nil and true or opts.open
+  local clients = vim.lsp.get_clients({ bufnr = vim.api.nvim_get_current_buf() })
+  local diagnostics = {}
+
+  for _, client in ipairs(clients) do
+    diagnostic_qf_opts = vim.tbl_extend("keep", {
+      namespace = vim.lsp.diagnostic.get_namespace(client.id),
+    }, opts, diagnostic_qf_opts)
+
+    vim.list_extend(diagnostics, vim.diagnostic.get(nil, diagnostic_qf_opts))
+  end
+
+  local names = client_extract_names(clients)
+  local title = "LSP Diagnostics: " .. table.concat(names, ",") -- joining items with a separator
+
+  local severity = diagnostic_qf_opts.severity
+  if severity then
+    if type(severity) == "table" then severity = severity.min end
+    title = string.format("%s (%s)", title, vim.diagnostic.severity[severity])
+  end
+
+  diagnostic_qf_opts.title = title
+
+  local action = " "
+  local items = vim.diagnostic.toqflist(diagnostics)
+  local qflist = vim.fn.getqflist({ title = 1, winid = 1 })
+
+  if qflist.title == title then
+    action = "u"
+  end
+
+  vim.fn.setqflist({}, action, { title = title, items = items })
+
+  if opts.open and qflist.winid == 0 then
+    vim.cmd("botright copen")
+  end
+end
+
+local on_list = require("lbrayner.lsp").on_list
 
 local function declaration()
   vim.lsp.buf.declaration({ on_list = on_list, reuse_win = true })
@@ -45,61 +106,6 @@ end
 -- Documentation is missing reuse_win
 local function implementation()
   vim.lsp.buf.implementation({ on_list = on_list, reuse_win = true })
-end
-
-local function diagnostic_replaceqflist()
-  local diagnostics = vim.diagnostic.get(nil, diagnostic_qf_opts)
-  local items = vim.diagnostic.toqflist(diagnostics)
-
-  vim.fn.setqflist({}, "r", { title = diagnostic_qf_opts.title, items = items })
-end
-
-local function diagnostic_setqflist(opts)
-  local bufnr = vim.api.nvim_get_current_buf()
-  local active_clients = vim.lsp.get_clients({ bufnr = bufnr })
-  if #active_clients ~= 1 then
-    -- Only one client supported.
-    return
-  end
-
-  local active_client = active_clients[1]
-
-  diagnostic_qf_opts = vim.tbl_extend("keep", {
-    namespace = vim.lsp.diagnostic.get_namespace(active_client.id),
-  }, opts, diagnostic_qf_opts)
-
-  local title = "LSP Diagnostics: " .. active_client.name
-
-  local severity = diagnostic_qf_opts.severity
-  if type(severity) == "table" then severity = severity.min end
-  if severity then
-    title = string.format("%s (%s)", title, vim.diagnostic.severity[severity])
-  end
-
-  diagnostic_qf_opts.title = title
-
-  if vim.fn.getqflist({ title = true }).title == diagnostic_qf_opts.title then
-    diagnostic_replaceqflist()
-    vim.cmd("botright copen")
-    return
-  end
-
-  vim.diagnostic.setqflist(quickfix_diagnostics_opts)
-end
-
-local function lsp_set_statusline(clients, bufnr)
-  local names = vim.tbl_map(function (client)
-    return client.name
-  end, clients)
-  table.sort(names)
-  local stl_lsp = table.concat(names, ",") -- joining items with a separator
-
-  -- Custom statusline
-  vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
-  vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. stl_lsp .. '%* '
-  if vim.api.nvim_get_current_buf() == bufnr then
-    vim.api.nvim_exec_autocmds("User", { modeline = false, pattern = "CustomStatusline" })
-  end
 end
 
 local function references(config)
@@ -138,7 +144,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     if #clients == 0 then return end
 
-    lsp_set_statusline(clients, bufnr)
+    customize_statusline(clients, bufnr)
 
     -- Enable completion triggered by <c-x><c-o>
     -- Some filetype plugins define omnifunc and $VIMRUNTIME/lua/vim/lsp.lua
@@ -177,7 +183,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
         return client.id ~= args.data.client_id
       end, clients)
 
-      lsp_set_statusline(other_clients, bufnr)
+      customize_statusline(other_clients, bufnr)
       return
     end
 
@@ -193,12 +199,10 @@ vim.api.nvim_create_autocmd("LspDetach", {
 
 vim.api.nvim_create_autocmd("DiagnosticChanged", {
   group = lsp_setup,
-  callback = function()
-    if not vim.startswith(vim.fn.getqflist({ title = true }).title, "LSP Diagnostics") then return end
+  callback = function(args)
+    if not vim.startswith(vim.fn.getqflist({ title = 1 }).title, "LSP Diagnostics") then return end
 
-    if not diagnostic_qf_opts.namespace then return end
-
-    diagnostic_replaceqflist()
+    diagnostic_setqflist({ open = false })
   end,
 })
 
@@ -260,7 +264,6 @@ subcommand_tbl.addWorkspaceFolder = {
 
 subcommand_tbl.codeAction = {
   ranged = function(opts)
-    print("codeAction opts", vim.inspect(opts)) -- TODO debug
     vim.lsp.buf.code_action({ range = get_range(opts) })
   end,
 }
@@ -290,7 +293,7 @@ subcommand_tbl.diagnostic = {
     all = {
       simple = function()
         diagnostic_qf_opts.severity = nil
-        diagnostic_setqflist({})
+        diagnostic_setqflist()
       end,
     },
     error = {
