@@ -55,7 +55,7 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
       callback = function(args)
         local bufnr = args.buf
         if vim.api.nvim_get_current_buf() ~= bufnr then
-          -- After a buf_write_post, do nothing if bufnr is not current
+          -- After a BufWritePost, do nothing if bufnr is not current
           return
         end
         if vim.fn.getloclist(0, { title = 1 }).title == "Conflict markers" then

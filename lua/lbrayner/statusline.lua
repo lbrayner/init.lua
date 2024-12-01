@@ -435,7 +435,14 @@ vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", "TextChanged", "TextChangedI", "WinEnter" }, {
       group = statusline,
-      callback = vim.schedule_wrap(M.redefine_status_line),
+      callback = function(args)
+        local bufnr = args.buf
+        if vim.api.nvim_get_current_buf() ~= bufnr then
+          -- After a BufWritePost, do nothing if bufnr is not current
+          return
+        end
+        vim.schedule(M.redefine_status_line)
+      end,
     })
     vim.schedule(M.redefine_status_line)
   end,

@@ -249,7 +249,12 @@ local aesthetics = vim.api.nvim_create_augroup("aesthetics", { clear = true })
 vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
   group = aesthetics,
   desc = "Buffer aesthetics",
-  callback = function()
+  callback = function(args)
+    local bufnr = args.buf
+    if vim.api.nvim_get_current_buf() ~= bufnr then
+      -- After a BufWritePost, do nothing if bufnr is not current
+      return
+    end
     if require("lbrayner").window_is_floating() or
       vim.bo.filetype == "fugitiveblame" or
       vim.startswith(vim.bo.syntax, "Neogit") then

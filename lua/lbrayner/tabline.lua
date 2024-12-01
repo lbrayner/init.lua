@@ -75,7 +75,12 @@ vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     vim.api.nvim_create_autocmd({ "BufEnter", "BufFilePost", "BufWritePost", "DirChanged", "WinEnter" }, {
       group = tabline,
-      callback = function()
+      callback = function(args)
+        local bufnr = args.buf
+        if vim.api.nvim_get_current_buf() ~= bufnr then
+          -- After a BufWritePost, do nothing if bufnr is not current
+          return
+        end
         if not require("lbrayner").window_is_floating() then
           M.redefine_tabline()
         end

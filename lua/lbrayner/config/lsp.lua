@@ -202,14 +202,13 @@ vim.api.nvim_create_autocmd("BufWritePost", {
   callback = function(args)
     local bufnr = args.buf
     if vim.api.nvim_get_current_buf() ~= bufnr then
-      -- After a buf_write_post, do nothing if bufnr is not current
+      -- After a BufWritePost, do nothing if bufnr is not current
       return
     end
     if not vim.startswith(vim.fn.getqflist({ title = 1 }).title, "LSP Diagnostics") then
       -- Do nothing if qflist is not "LSP Diagnostics"
       return
     end
-
     diagnostic_setqflist({ open = false })
   end,
 })
