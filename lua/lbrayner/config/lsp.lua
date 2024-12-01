@@ -197,10 +197,18 @@ vim.api.nvim_create_autocmd("LspDetach", {
   end,
 })
 
-vim.api.nvim_create_autocmd("DiagnosticChanged", {
+vim.api.nvim_create_autocmd("BufWritePost", {
   group = lsp_setup,
   callback = function(args)
-    if not vim.startswith(vim.fn.getqflist({ title = 1 }).title, "LSP Diagnostics") then return end
+    local bufnr = args.buf
+    if vim.api.nvim_get_current_buf() ~= bufnr then
+      -- After a buf_write_post, do nothing if bufnr is not current
+      return
+    end
+    if not vim.startswith(vim.fn.getqflist({ title = 1 }).title, "LSP Diagnostics") then
+      -- Do nothing if qflist is not "LSP Diagnostics"
+      return
+    end
 
     diagnostic_setqflist({ open = false })
   end,
