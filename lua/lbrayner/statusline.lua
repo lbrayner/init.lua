@@ -167,33 +167,21 @@ local function fugitive_temporary_buffer()
   return "Git "..table.concat(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf()).args, " ")
 end
 
--- margins of 1 column (on both sides)
-function M.define_modified_status_line()
-  local leftline = " "
+function M.buffer_status()
+  local status = vim.bo.modified and "%1*" or ""
 
   if vim.wo.previewwindow then
-    leftline = leftline.."%5*%w%* "
-  end
-
-  if vim.b.Statusline_custom_mod_leftline then
-    leftline = leftline..vim.b.Statusline_custom_mod_leftline
+    status = status.."%<"..vim.fn.pathshorten(require("lbrayner.path").full_path())
+  elseif require("lbrayner").buffer_is_scratch() and vim.api.nvim_buf_get_name(0) == "" then
+    status = status.."%<%5*%f%*"
+  elseif vim.bo.buftype ~= "" then
+    status = status.."%<%5*"..M.get_buffer_name().."%*"
   else
-    leftline = leftline.."%1*"
-    if vim.wo.previewwindow then
-      leftline = leftline.."%<"..vim.fn.pathshorten(require("lbrayner.path").full_path())
-    else
-      leftline = leftline.."%<"..M.get_buffer_name()
-    end
-    leftline = leftline.." %{v:lua.require'lbrayner.statusline'.status_flag()}%*"
+    status = status.."%<"..M.get_buffer_name()
   end
+  status = status..(vim.bo.modified and " " or " %1*")..M.status_flag().."%*"
 
-  local rightline = ""
-  if vim.b.Statusline_custom_mod_rightline then
-    rightline = rightline..vim.b.Statusline_custom_mod_rightline
-  end
-  rightline = rightline..M.get_status_line_tail()
-
-  vim.wo.statusline = leftline.." %="..rightline
+  return status
 end
 
 function M.winbar()
@@ -246,6 +234,12 @@ end
 
 -- margins of 1 column (on both sides)
 function M.define_status_line()
+  -- This variable is defined by the runtime.
+  -- :h g:actual_curwin
+  if vim.g.actual_curwin and vim.g.actual_curwin ~= vim.api.nvim_get_current_win() then
+    return
+  end
+
   if vim.fn.exists("*FugitiveResult") == 1 then
     local fugitive_result = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())
     if fugitive_result.filetype and
@@ -280,17 +274,7 @@ function M.define_status_line()
   elseif vim.b.Statusline_custom_leftline then
     leftline = leftline..vim.b.Statusline_custom_leftline
   else
-    if vim.wo.previewwindow then
-      leftline = leftline.."%<"..vim.fn.pathshorten(require("lbrayner.path").full_path())
-    elseif require("lbrayner").buffer_is_scratch() and
-      vim.api.nvim_buf_get_name(0) == "" then
-      leftline = leftline.."%<%5*%f%*"
-    elseif vim.bo.buftype ~= "" then
-      leftline = leftline.."%<%5*"..M.get_buffer_name().."%*"
-    else
-      leftline = leftline.."%<"..M.get_buffer_name().."%*"
-    end
-    leftline = leftline.." %1*%{v:lua.require'lbrayner.statusline'.status_flag()}%*"
+    leftline = leftline.."%{%v:lua.require'lbrayner.statusline'.buffer_status()%}"
   end
 
   local rightline = ""
@@ -300,22 +284,6 @@ function M.define_status_line()
   rightline = rightline..M.get_status_line_tail()
 
   vim.wo.statusline = leftline.." %="..rightline
-end
-
-function M.redefine_status_line()
-  if vim.startswith(vim.fn.mode(), "t") then
-    return
-  end
-  -- This variable is defined by the runtime.
-  -- :h g:actual_curwin
-  if vim.g.actual_curwin and vim.g.actual_curwin ~= vim.api.nvim_get_current_win() then
-    return
-  end
-  if vim.bo.modified then
-    M.define_modified_status_line()
-  else
-    M.define_status_line()
-  end
 end
 
 local mapping
@@ -391,7 +359,6 @@ vim.api.nvim_create_autocmd("InsertEnter", {
   group = statusline,
   callback = function()
     M.highlight_mode("insert")
-    M.redefine_status_line()
   end,
 })
 
@@ -421,19 +388,19 @@ vim.api.nvim_create_autocmd("TermEnter", {
 
 vim.api.nvim_create_autocmd("TermLeave", {
   group = statusline,
-  callback = M.redefine_status_line,
+  callback = M.define_status_line,
 })
 
 vim.api.nvim_create_autocmd("User", {
   pattern = "CustomStatusline",
   group = statusline,
-  callback = M.redefine_status_line,
+  callback = M.define_status_line,
 })
 
 vim.api.nvim_create_autocmd("VimEnter", {
   group = statusline,
   callback = function()
-    vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", "TextChanged", "TextChangedI", "WinEnter" }, {
+    vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
       group = statusline,
       callback = function(args)
         local bufnr = args.buf
@@ -441,10 +408,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
           -- After a BufWritePost, do nothing if bufnr is not current
           return
         end
-        vim.schedule(M.redefine_status_line)
+        if vim.go.statusline ~= vim.wo.statusline then
+          return
+        end
+        vim.schedule(M.define_status_line)
       end,
     })
-    vim.schedule(M.redefine_status_line)
+    vim.schedule(M.define_status_line)
   end,
 })
 
