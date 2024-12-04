@@ -51,36 +51,13 @@ local function get_buffer_severity(bufnr)
   end
 end
 
-function M.highlight_diagnostics(opts)
-  opts = opts or {}
-
-  if vim.api.nvim_get_current_buf() ~= opts.buf then
-    return
-  end
-
-  local buffer_severity = opts.buffer_severity
-
-  if not buffer_severity then
-    buffer_severity = get_buffer_severity(opts.buf)
-  end
-
-  if not buffer_severity then
-    vim.cmd("highlight! User7 guifg=NONE") -- Using ex highlight because nvim_set_hl can't update
-    return
-  end
-
-  local group = "Diagnostic"..string.sub(buffer_severity, 1, 1)..string.lower(string.sub(buffer_severity, 2))
-  local guifg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(group)), "fg", "gui")
-  vim.cmd(string.format("highlight! User7 guifg=%s", guifg)) -- nvim_set_hl can't update
-end
-
 function M.diagnostics()
   local bufnr = vim.api.nvim_get_current_buf()
-  local buffer_severity = get_buffer_severity(bufnr)
-  if not buffer_severity then
+
+  if vim.tbl_isempty(vim.diagnostic.get(bufnr)) then
     return " "
   end
-  M.highlight_diagnostics({ buf = bufnr, buffer_severity = buffer_severity })
+
   return "%7*•%*"
 end
 
@@ -338,7 +315,7 @@ vim.api.nvim_create_autocmd("CmdlineEnter", {
     else
       return
     end
-    vim.cmd.redraw() -- TODO redrawstatus should work here, create an issue on github
+    vim.api.nvim__redraw({ statusline = 1 })
   end,
 })
 
@@ -348,11 +325,6 @@ vim.api.nvim_create_autocmd("ColorScheme", {
     local colorscheme = args.match
     M.load_theme(colorscheme)
   end,
-})
-
-vim.api.nvim_create_autocmd("DiagnosticChanged", {
-  group = statusline,
-  callback = M.highlight_diagnostics,
 })
 
 vim.api.nvim_create_autocmd("InsertEnter", {
@@ -399,21 +371,59 @@ vim.api.nvim_create_autocmd("User", {
 
 vim.api.nvim_create_autocmd("VimEnter", {
   group = statusline,
-  callback = function()
+  callback = function(args)
+    local bufnr = args.buf
+    local diagnostic_changed_autocmd
+
+    local function diagnostic_changed(bufnr)
+      if diagnostic_changed_autocmd then
+        vim.api.nvim_del_autocmd(diagnostic_changed_autocmd)
+      end
+
+      diagnostic_changed_autocmd = vim.api.nvim_create_autocmd("DiagnosticChanged", {
+        group = statusline,
+        buffer = bufnr,
+        callback = function(args)
+          local bufnr = args.buf
+          local buffer_severity = get_buffer_severity(bufnr)
+
+          local user7 = vim.api.nvim_get_hl(0, { name = "User7" })
+
+          if not buffer_severity then
+            vim.api.nvim_set_hl(0, "User7", { bg = user7.bg, fg = "NONE" })
+            return
+          end
+
+          local group = "Diagnostic"
+          group = group..string.sub(buffer_severity, 1, 1)..string.lower(string.sub(buffer_severity, 2))
+          local severity_hl = vim.api.nvim_get_hl(0, { name = group })
+          vim.api.nvim_set_hl(0, "User7", { bg = user7.bg, fg = severity_hl.fg })
+        end,
+      })
+    end
+
     vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
       group = statusline,
+      -- desc = "Set statusline if empty",
       callback = function(args)
         local bufnr = args.buf
+
         if vim.api.nvim_get_current_buf() ~= bufnr then
           -- After a BufWritePost, do nothing if bufnr is not current
           return
         end
+
+        diagnostic_changed(bufnr)
+
         if vim.go.statusline ~= vim.wo.statusline then
           return
         end
+
         vim.schedule(M.define_status_line)
       end,
     })
+
+    diagnostic_changed(bufnr)
     vim.schedule(M.define_status_line)
   end,
 })
