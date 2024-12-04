@@ -16,19 +16,21 @@ vim.api.nvim_create_autocmd("FileType", {
       vim.keymap.set("n", "<C-Return>", "<Cmd>'{,'}DB<CR>", bufopts)
       vim.keymap.set("n", "<C-kEnter>", "<Cmd>'{,'}DB<CR>", bufopts)
 
+      -- Custom statusline
       if vim.b[bufnr].db then
-        vim.b[bufnr].Statusline_custom_rightline = "%9*dadbod%* "
-        vim.b[bufnr].Statusline_custom_mod_rightline = "%9*dadbod%* "
+        vim.b[bufnr].lbrayner = vim.tbl_extend("keep", {
+          statusline = { status = "%9*dadbod%* " }
+        }, vim.b[bufnr].lbrayner or {})
       end
 
       vim.api.nvim_buf_create_user_command(bufnr, "DatabaseAccessClear", function()
         vim.b[bufnr].db = nil
         -- postgresql
         pcall(vim.keymap.del, "n", "<Leader>dt", bufopts)
-        -- statusline
-        vim.b[bufnr].Statusline_custom_rightline = nil
-        vim.b[bufnr].Statusline_custom_mod_rightline = nil
-        vim.api.nvim_exec_autocmds("User", { modeline = false, pattern = "CustomStatusline" })
+        -- Restore the statusline
+        vim.b[bufnr].lbrayner = vim.tbl_extend("keep", {
+          statusline = { status = nil }
+        }, vim.b[bufnr].lbrayner or {})
       end, { nargs = 0 })
     end)
   end,

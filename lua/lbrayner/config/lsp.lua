@@ -29,11 +29,9 @@ local function customize_statusline(clients, bufnr)
   local stl_lsp = table.concat(names, ",") -- joining items with a separator
 
   -- Custom statusline
-  vim.b[bufnr].Statusline_custom_rightline = '%9*' .. stl_lsp .. '%* '
-  vim.b[bufnr].Statusline_custom_mod_rightline = '%9*' .. stl_lsp .. '%* '
-  if vim.api.nvim_get_current_buf() == bufnr then
-    vim.api.nvim_exec_autocmds("User", { modeline = false, pattern = "CustomStatusline" })
-  end
+  vim.b[bufnr].lbrayner = vim.tbl_extend("keep", {
+    statusline = { status = '%9*' .. stl_lsp .. '%* ' }
+  }, vim.b[bufnr].lbrayner or {})
 end
 
 local function diagnostic_setqflist(opts)
@@ -188,12 +186,9 @@ vim.api.nvim_create_autocmd("LspDetach", {
     end
 
     -- Restore the statusline
-    vim.b[bufnr].Statusline_custom_rightline = nil
-    vim.b[bufnr].Statusline_custom_mod_rightline = nil
-
-    if vim.api.nvim_get_current_buf() == bufnr then
-      vim.api.nvim_exec_autocmds("User", { modeline = false, pattern = "CustomStatusline" })
-    end
+    vim.b[bufnr].lbrayner = vim.tbl_extend("keep", {
+      statusline = { status = nil }
+    }, vim.b[bufnr].lbrayner or {})
   end,
 })
 

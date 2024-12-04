@@ -344,17 +344,6 @@ function M.setup(config, opts)
       vim.keymap.set("n", "gC", M.java_go_to_top_level_declaration, bufopts)
       vim.keymap.set("n", "gY", java_type_hierarchy, bufopts)
 
-      -- Custom statusline
-      if vim.endswith(bufname, ".java") then
-        vim.b[bufnr].Statusline_custom_leftline = '%<%{expand("%:t:r")} ' ..
-          "%{v:lua.require'lbrayner.statusline'.status_flag()}"
-        vim.b[bufnr].Statusline_custom_mod_leftline = '%<%1*%{expand("%:t:r")}' ..
-          " %{v:lua.require'lbrayner.statusline'.status_flag()}%*"
-        if vim.api.nvim_get_current_buf() == bufnr then
-          vim.api.nvim_exec_autocmds("User", { modeline = false, pattern = "CustomStatusline" })
-        end
-      end
-
       -- Commands
       vim.api.nvim_buf_create_user_command(bufnr, "JdtGoToTopLevelDeclaration",
         M.java_go_to_top_level_declaration, { nargs = 0 })
@@ -384,10 +373,6 @@ function M.setup(config, opts)
     desc = "Undo jdtls buffer setup",
     callback = function(args)
       local bufnr = args.buf
-
-      -- Restore the statusline
-      vim.b[bufnr].Statusline_custom_leftline = nil
-      vim.b[bufnr].Statusline_custom_mod_leftline = nil
 
       -- Delete user commands
       for _, command in ipairs({
