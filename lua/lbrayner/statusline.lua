@@ -404,13 +404,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
           local user7 = vim.api.nvim_get_hl(0, { name = "User7" })
 
           if not severity then
-            vim.api.nvim_set_hl(0, "User7", { bg = user7.bg, fg = "NONE" })
+            vim.api.nvim_set_hl(0, "User7", vim.tbl_deep_extend("keep", { fg = "NONE" }, user7))
             return
           end
 
           local group = "Diagnostic" .. string.sub(severity, 1, 1) .. string.lower(string.sub(severity, 2))
           local severity_hl = vim.api.nvim_get_hl(0, { name = group })
-          vim.api.nvim_set_hl(0, "User7", { bg = user7.bg, fg = severity_hl.fg })
+          vim.api.nvim_set_hl(0, "User7", vim.tbl_deep_extend("keep", { fg = severity_hl.fg }, user7))
         end,
       })
     end
