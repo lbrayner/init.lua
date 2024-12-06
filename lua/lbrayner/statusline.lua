@@ -111,7 +111,7 @@ function M.define_status_line()
     leftline = leftline .. "%{%v:lua.require'lbrayner.statusline'.get_buffer_status()%}"
   end
 
-  local rightline = "%{%v:lua.require'lbrayner.statusline'.get_buffer_custom_status()%}"
+  local rightline = "%{%v:lua.require'lbrayner.statusline'.get_minor_modes()%}"
 
   rightline = rightline .. M.get_statusline_tail()
   vim.wo.statusline = leftline .. " %=" .. rightline
@@ -140,12 +140,13 @@ function M.get_buffer_name(opts)
   return buffer_name
 end
 
-function M.get_buffer_custom_status()
+-- TODO min lenght
+function M.get_minor_modes()
   local bufnr = vim.api.nvim_get_current_buf()
-  local buffer_local_status = vim.tbl_get(vim.b[bufnr], "lbrayner", "statusline", "status")
+  local modes = vim.tbl_get(vim.b[bufnr], "lbrayner", "statusline", "modes", "str")
 
-  if buffer_local_status and type(buffer_local_status) == "string" then
-    return buffer_local_status
+  if modes and modes ~= "" then
+    return "%9*" .. modes .. "%* "
   end
 
   return ""
@@ -319,6 +320,45 @@ function M.load_theme(name)
   M.highlight_mode("normal")
   M.highlight_winbar()
 end
+
+function M.set_minor_modes(bufnr, modes, behavior)
+  assert(type(bufnr) == "number" and bufnr > 0, "'bufnr' must be a positive number")
+  assert(vim.islist(modes), "'modes' must be a list")
+  assert(behavior == "append" or behavior == "remove" or
+  behavior == nil, "invalid 'behavior': " .. tostring(behavior))
+
+  local lbrayner = vim.b[bufnr].lbrayner or vim.empty_dict()
+  local data = vim.tbl_get(lbrayner, "statusline", "modes", "data") or vim.empty_dict()
+
+  if not behavior then
+    data = vim.empty_dict()
+  end
+
+  if behavior == "remove" then
+    for _, mode in ipairs(modes) do
+      data[mode] = nil
+    end
+  else
+    for _, mode in ipairs(modes) do
+      data[mode] = true
+    end
+  end
+
+  local keys = vim.tbl_keys(data)
+  table.sort(keys)
+
+  lbrayner = vim.tbl_deep_extend("keep", {
+    statusline = {
+      modes = {
+        str = table.concat(keys, ",")
+      }
+    }
+  }, lbrayner)
+
+  lbrayner.statusline.modes.data = data
+  vim.b[bufnr].lbrayner = lbrayner
+end
+
 
 -- Autocmds
 

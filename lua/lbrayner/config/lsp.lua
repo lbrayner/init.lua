@@ -20,18 +20,7 @@ local function client_extract_names(clients)
   local names = vim.tbl_map(function (client)
     return client.name
   end, clients)
-  table.sort(names)
   return names
-end
-
-local function customize_statusline(clients, bufnr)
-  local names = client_extract_names(clients)
-  local stl_lsp = table.concat(names, ",") -- joining items with a separator
-
-  -- Custom statusline
-  vim.b[bufnr].lbrayner = vim.tbl_extend("keep", {
-    statusline = { status = '%9*' .. stl_lsp .. '%* ' }
-  }, vim.b[bufnr].lbrayner or {})
 end
 
 local function diagnostic_setqflist(opts)
@@ -49,6 +38,7 @@ local function diagnostic_setqflist(opts)
   end
 
   local names = client_extract_names(clients)
+  table.sort(names)
   local title = "LSP Diagnostics: " .. table.concat(names, ",") -- joining items with a separator
 
   local severity = diagnostic_qf_opts.severity
@@ -142,7 +132,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     if #clients == 0 then return end
 
-    customize_statusline(clients, bufnr)
+    local names = client_extract_names(clients)
+    require("lbrayner.statusline").set_minor_modes(bufnr, names, "append")
 
     -- Enable completion triggered by <c-x><c-o>
     -- Some filetype plugins define omnifunc and $VIMRUNTIME/lua/vim/lsp.lua
@@ -174,21 +165,8 @@ vim.api.nvim_create_autocmd("LspDetach", {
   desc = "Undo LSP buffer setup",
   callback = function(args)
     local bufnr = args.buf
-    local clients = vim.lsp.get_clients({ bufnr = bufnr })
-
-    if vim.tbl_get(args, "data") and #clients > 1 then
-      local other_clients = vim.tbl_filter(function(client)
-        return client.id ~= args.data.client_id
-      end, clients)
-
-      customize_statusline(other_clients, bufnr)
-      return
-    end
-
-    -- Restore the statusline
-    vim.b[bufnr].lbrayner = vim.tbl_extend("keep", {
-      statusline = { status = nil }
-    }, vim.b[bufnr].lbrayner or {})
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    require("lbrayner.statusline").set_minor_modes(bufnr, { client.name }, "remove")
   end,
 })
 
