@@ -190,7 +190,7 @@ function M.get_statusline_tail()
     "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%) %2*%{&filetype}%* "
   end
   return buffer_position ..
-  " %1.1{%v:lua.require'lbrayner.statusline'.get_diagnostics()%}" ..
+  " %{%v:lua.require'lbrayner.statusline'.get_diagnostics()%}" ..
   "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)" ..
   " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*" ..
   " %4.(%4*%{&fileformat}%*%)" ..
