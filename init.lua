@@ -523,10 +523,10 @@ local rocks_config = {
   rocks_path = vim.fs.normalize("~/.local/share/nvim/rocks"),
 }
 
--- Stop here if we haven't installed rocks.nvim and synced at least once
-if vim.fn.glob(vim.fs.joinpath(rocks_config.rocks_path, "lib/luarocks/rocks-5.1/*/*/rock_manifest")) == "" then
+-- rocks.nvim wasn't synced at least once
+if not vim.uv.fs_stat(vim.fs.normalize("~/.local/share/nvim/site/pack/rocks/start/neosolarized.nvim")) then
+  -- A statusline theme is required
   require("lbrayner.statusline").load_theme("neosolarized")
-  return
 end
 
 vim.g.rocks_nvim = rocks_config
