@@ -131,7 +131,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local clients = vim.lsp.get_clients({ bufnr = bufnr })
 
     local client = vim.lsp.get_client_by_id(args.data.client_id)
-    require("lbrayner.statusline").set_minor_modes("append", bufnr, client.name)
+    require("lbrayner.statusline").set_minor_modes(bufnr, client.name, "append")
 
     if #clients > 1 then return end
 
@@ -166,7 +166,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
   callback = function(args)
     local bufnr = args.buf
     local client = vim.lsp.get_client_by_id(args.data.client_id)
-    require("lbrayner.statusline").set_minor_modes("remove", bufnr, client.name)
+    require("lbrayner.statusline").set_minor_modes(bufnr, client.name, "remove")
   end,
 })
 
