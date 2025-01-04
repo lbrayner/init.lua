@@ -351,7 +351,8 @@ function M.setup(config, opts)
         nargs = 0
       })
       vim.api.nvim_buf_create_user_command(bufnr, "JdtStop", function()
-        local client = vim.lsp.get_clients({ name = "jdtls" })[1]
+        local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "jdtls" })
+        local _, client = next(clients)
         if not client then return end
         vim.api.nvim_del_augroup_by_name("jdtls_setup")
         vim.lsp.stop_client(client.id)

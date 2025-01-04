@@ -37,8 +37,8 @@ local function diagnostic_setqflist(opts)
   table.sort(names)
 
   local title = "LSP Diagnostics: " .. table.concat(names, ",") -- joining items with a separator
-
   local severity = diagnostic_qf_opts.severity
+
   if severity then
     if type(severity) == "table" then severity = severity.min end
     title = string.format("%s (%s)", title, vim.diagnostic.severity[severity])
