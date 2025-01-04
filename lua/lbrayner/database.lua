@@ -16,13 +16,13 @@ vim.api.nvim_create_autocmd("FileType", {
       vim.keymap.set("n", "<C-Return>", "<Cmd>'{,'}DB<CR>", bufopts)
       vim.keymap.set("n", "<C-kEnter>", "<Cmd>'{,'}DB<CR>", bufopts)
 
-      require("lbrayner.statusline").set_minor_modes(bufnr, { "dadbod" }, "append")
+      require("lbrayner.statusline").set_minor_modes("append", bufnr, "dadbod")
 
       vim.api.nvim_buf_create_user_command(bufnr, "DatabaseAccessClear", function()
         vim.b[bufnr].db = nil
         -- postgresql
         pcall(vim.keymap.del, "n", "<Leader>dt", bufopts)
-        require("lbrayner.statusline").set_minor_modes(bufnr, { "dadbod" }, "remove")
+        require("lbrayner.statusline").set_minor_modes("remove", bufnr, "dadbod")
       end, { nargs = 0 })
     end)
   end,

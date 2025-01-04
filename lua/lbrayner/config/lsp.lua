@@ -130,10 +130,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local bufnr = args.buf
     local clients = vim.lsp.get_clients({ bufnr = bufnr })
 
-    if #clients == 0 then return end
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    require("lbrayner.statusline").set_minor_modes("append", bufnr, client.name)
 
-    local names = client_extract_names(clients)
-    require("lbrayner.statusline").set_minor_modes(bufnr, names, "append")
+    if #clients > 1 then return end
 
     -- Enable completion triggered by <c-x><c-o>
     -- Some filetype plugins define omnifunc and $VIMRUNTIME/lua/vim/lsp.lua
@@ -166,7 +166,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
   callback = function(args)
     local bufnr = args.buf
     local client = vim.lsp.get_client_by_id(args.data.client_id)
-    require("lbrayner.statusline").set_minor_modes(bufnr, { client.name }, "remove")
+    require("lbrayner.statusline").set_minor_modes("remove", bufnr, client.name)
   end,
 })
 

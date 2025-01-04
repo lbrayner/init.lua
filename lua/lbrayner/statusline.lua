@@ -321,27 +321,18 @@ function M.load_theme(name)
   M.highlight_winbar()
 end
 
-function M.set_minor_modes(bufnr, modes, behavior)
+function M.set_minor_modes(behavior, bufnr, mode)
+  assert(behavior == "append" or behavior == "remove", "invalid 'behavior': " .. tostring(behavior))
   assert(type(bufnr) == "number" and bufnr > 0, "'bufnr' must be a positive number")
-  assert(vim.islist(modes), "'modes' must be a list")
-  assert(behavior == "append" or behavior == "remove" or
-  behavior == nil, "invalid 'behavior': " .. tostring(behavior))
+  assert(type(mode) == "string", "'mode' must be a string")
 
   local lbrayner = vim.b[bufnr].lbrayner or vim.empty_dict()
   local data = vim.tbl_get(lbrayner, "statusline", "modes", "data") or vim.empty_dict()
 
-  if not behavior then
-    data = vim.empty_dict()
-  end
-
   if behavior == "remove" then
-    for _, mode in ipairs(modes) do
-      data[mode] = nil
-    end
-  else
-    for _, mode in ipairs(modes) do
-      data[mode] = true
-    end
+    data[mode] = nil
+  else -- append
+    data[mode] = true
   end
 
   local keys = vim.tbl_keys(data)
