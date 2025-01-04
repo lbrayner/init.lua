@@ -16,13 +16,6 @@ end)()
 
 local diagnostic_qf_opts = {}
 
-local function client_extract_names(clients)
-  local names = vim.tbl_map(function (client)
-    return client.name
-  end, clients)
-  return names
-end
-
 local function diagnostic_setqflist(opts)
   opts = opts or {}
   opts.open = opts.open == nil and true or opts.open
@@ -37,8 +30,12 @@ local function diagnostic_setqflist(opts)
     vim.list_extend(diagnostics, vim.diagnostic.get(nil, diagnostic_qf_opts))
   end
 
-  local names = client_extract_names(clients)
+  local names = vim.tbl_map(function (client)
+    return client.name
+  end, clients)
+
   table.sort(names)
+
   local title = "LSP Diagnostics: " .. table.concat(names, ",") -- joining items with a separator
 
   local severity = diagnostic_qf_opts.severity
@@ -128,12 +125,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
   desc = "LSP buffer setup",
   callback = function(args)
     local bufnr = args.buf
-    local clients = vim.lsp.get_clients({ bufnr = bufnr })
-
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     require("lbrayner.statusline").set_minor_modes(bufnr, client.name, "append")
-
-    if #clients > 1 then return end
 
     -- Enable completion triggered by <c-x><c-o>
     -- Some filetype plugins define omnifunc and $VIMRUNTIME/lua/vim/lsp.lua

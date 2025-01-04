@@ -321,17 +321,17 @@ function M.load_theme(name)
   M.highlight_winbar()
 end
 
-function M.set_minor_modes(bufnr, mode, behavior)
+function M.set_minor_modes(bufnr, mode, action)
   assert(type(bufnr) == "number" and bufnr > 0, "'bufnr' must be a positive number")
   assert(type(mode) == "string", "'mode' must be a string")
-  assert(behavior == "append" or behavior == "remove", "invalid 'behavior': " .. tostring(behavior))
+  assert(action == "append" or action == "remove", "invalid 'action': " .. tostring(action))
 
   local lbrayner = vim.b[bufnr].lbrayner or vim.empty_dict()
   local data = vim.tbl_get(lbrayner, "statusline", "modes", "data") or vim.empty_dict()
 
-  if behavior == "append" then
+  if action == "append" then
     data[mode] = true
-  elseif behavior == "remove" then
+  elseif action == "remove" then
     data[mode] = nil
   end
 
