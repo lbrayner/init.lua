@@ -2,7 +2,7 @@
 
 local M = {}
 
--- {{{
+-- {{{ Local functions
 
 local mapping
 
@@ -55,18 +55,6 @@ local function get_buffer_position()
 end
 
 -- }}}
-
--- From :h qf.vim:
-
--- The quickfix filetype plugin includes configuration for displaying the command
--- that produced the quickfix list in the status-line. To disable this setting,
--- configure as follows:
-
-vim.g.qf_disable_statusline = 1
-
-vim.go.laststatus = 3
-vim.go.statusline = "%{v:lua.require'lbrayner.statusline'.get_empty()}"
-vim.go.winbar = "%{%v:lua.require'lbrayner.statusline'.get_winbar()%}"
 
 -- margins of 1 column (on both sides)
 function M.define_status_line()
@@ -350,6 +338,21 @@ function M.set_minor_modes(bufnr, mode, action)
   vim.b[bufnr].lbrayner = lbrayner
 end
 
+-- Options
+
+vim.go.laststatus = 3
+vim.go.statusline = "%{v:lua.require'lbrayner.statusline'.get_empty()}"
+vim.go.winbar = "%{%v:lua.require'lbrayner.statusline'.get_winbar()%}"
+
+-- Variables
+
+-- From :h qf.vim:
+
+-- The quickfix filetype plugin includes configuration for displaying the command
+-- that produced the quickfix list in the status-line. To disable this setting,
+-- configure as follows:
+
+vim.g.qf_disable_statusline = 1
 
 -- Autocmds
 
