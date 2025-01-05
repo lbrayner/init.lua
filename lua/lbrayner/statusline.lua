@@ -108,20 +108,6 @@ function M.get_empty()
   return ""
 end
 
-function M.get_statusline_tail()
-  local buffer_position = get_buffer_position()
-  if vim.bo.buftype ~= "" then
-    return buffer_position ..
-    "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%) %2*%{&filetype}%* "
-  end
-  return buffer_position ..
-  " %{%v:lua.require'lbrayner.statusline'.get_diagnostics()%}" ..
-  "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)" ..
-  " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*" ..
-  " %4.(%4*%{&fileformat}%*%)" ..
-  " %2*%{&filetype}%* "
-end
-
 -- A Nerd Font is required
 function M.get_status_flag()
   if vim.bo.modified then
@@ -203,9 +189,20 @@ function M.get_statusline()
     leftline = leftline .. "%{%v:lua.require'lbrayner.statusline'.get_buffer_status()%}"
   end
 
-  local rightline = "%{%v:lua.require'lbrayner.statusline'.get_minor_modes()%}"
+  local rightline = "%{%v:lua.require'lbrayner.statusline'.get_minor_modes()%}" .. get_buffer_position()
 
-  rightline = rightline .. M.get_statusline_tail()
+  if vim.bo.buftype ~= "" then
+    rightline = rightline ..
+    "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%) %2*%{&filetype}%* "
+  else
+    rightline = rightline ..
+    " %{%v:lua.require'lbrayner.statusline'.get_diagnostics()%}" ..
+    "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)" ..
+    " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*" ..
+    " %4.(%4*%{&fileformat}%*%)" ..
+    " %2*%{&filetype}%* "
+  end
+
   return leftline .. " %=" .. rightline
 end
 
