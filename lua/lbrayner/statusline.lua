@@ -2,24 +2,10 @@
 
 local M = {}
 
--- {{{ Local functions
-
-local mapping
+-- {{{ Helper functions
 
 local function get_fugitive_temporary_buffer_name()
   return "Git " .. table.concat(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf()).args, " ")
-end
-
-local function get_buffer_severity(bufnr)
-  if vim.tbl_isempty(vim.diagnostic.get(bufnr)) then
-    return nil
-  end
-  for _, level in ipairs(vim.diagnostic.severity) do
-    local items =  vim.diagnostic.get(bufnr, { severity = level })
-    if not vim.tbl_isempty(items) then
-      return level
-    end
-  end
 end
 
 local function get_number_of_lines()
@@ -55,55 +41,6 @@ local function get_buffer_position()
 end
 
 -- }}}
-
--- margins of 1 column (on both sides)
-function M.define_status_line()
-  -- This variable is defined by the runtime.
-  -- :h g:actual_curwin
-  if vim.g.actual_curwin and vim.g.actual_curwin ~= vim.api.nvim_get_current_win() then
-    return
-  end
-
-  if vim.fn.exists("*FugitiveResult") == 1 then
-    local fugitive_result = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())
-    if fugitive_result.filetype and
-      fugitive_result.blame_file and
-      fugitive_result.filetype == "fugitiveblame" then -- Fugitive blame
-      vim.wo.statusline = " Fugitive blame " ..
-      "%<%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*%=" .. get_buffer_position()
-      return
-    end
-  end
-
-  local leftline = " "
-  if vim.wo.previewwindow then
-    leftline = leftline .. "%5*%w%* "
-  end
-
-  if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
-    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").fugitive_git_dir())
-    leftline = leftline .. "%6*" .. dir .. "$%* %<" .. "Fugitive summary " ..
-    "%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
-  elseif vim.fn.exists("*FugitiveResult") == 1 and
-    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
-    local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
-    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").fugitive_git_dir())
-    leftline = leftline .. "%6*" .. dir .. "$%* %<" .. fugitive_temp_buf ..
-    " %1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
-  elseif require("lbrayner").is_quickfix_or_location_list() then
-    leftline = leftline ..
-    "%<%5*%f%* %{v:lua.require'lbrayner'.get_quickfix_or_location_list_title()}"
-  elseif vim.w.cmdline then
-    leftline = leftline .. "%<%5*[Command Line]%*"
-  else
-    leftline = leftline .. "%{%v:lua.require'lbrayner.statusline'.get_buffer_status()%}"
-  end
-
-  local rightline = "%{%v:lua.require'lbrayner.statusline'.get_minor_modes()%}"
-
-  rightline = rightline .. M.get_statusline_tail()
-  vim.wo.statusline = leftline .. " %=" .. rightline
-end
 
 function M.get_buffer_name(opts)
   opts = opts or {}
@@ -230,6 +167,48 @@ function M.get_version_control()
   return branch
 end
 
+-- margins of 1 column (on both sides)
+function M.get_statusline()
+  if vim.fn.exists("*FugitiveResult") == 1 then
+    local fugitive_result = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())
+    if fugitive_result.filetype and
+      fugitive_result.blame_file and
+      fugitive_result.filetype == "fugitiveblame" then -- Fugitive blame
+      return " Fugitive blame " ..
+      "%<%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*%=" .. get_buffer_position()
+    end
+  end
+
+  local leftline = " "
+  if vim.wo.previewwindow then
+    leftline = leftline .. "%5*%w%* "
+  end
+
+  if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
+    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").fugitive_git_dir())
+    leftline = leftline .. "%6*" .. dir .. "$%* %<" .. "Fugitive summary " ..
+    "%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
+  elseif vim.fn.exists("*FugitiveResult") == 1 and
+    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
+    local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
+    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").fugitive_git_dir())
+    leftline = leftline .. "%6*" .. dir .. "$%* %<" .. fugitive_temp_buf ..
+    " %1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
+  elseif require("lbrayner").is_quickfix_or_location_list() then
+    leftline = leftline ..
+    "%<%5*%f%* %{v:lua.require'lbrayner'.get_quickfix_or_location_list_title()}"
+  elseif vim.w.cmdline then
+    leftline = leftline .. "%<%5*[Command Line]%*"
+  else
+    leftline = leftline .. "%{%v:lua.require'lbrayner.statusline'.get_buffer_status()%}"
+  end
+
+  local rightline = "%{%v:lua.require'lbrayner.statusline'.get_minor_modes()%}"
+
+  rightline = rightline .. M.get_statusline_tail()
+  return leftline .. " %=" .. rightline
+end
+
 function M.get_winbar()
   if vim.fn.exists("*FugitiveResult") == 1 then
     local fugitive_result = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())
@@ -273,6 +252,8 @@ function M.get_winbar()
 
   return statusline
 end
+
+local mapping
 
 function M.highlight_mode(mode)
   local hl_map_by_group = mapping[mode]
@@ -356,6 +337,16 @@ vim.g.qf_disable_statusline = 1
 
 -- Autocmds
 
+local function define_status_line() -- {{{
+  -- This variable is defined by the runtime.
+  -- :h g:actual_curwin
+  if vim.g.actual_curwin and vim.g.actual_curwin ~= vim.api.nvim_get_current_win() then
+    return
+  end
+
+  vim.wo.statusline = M.get_statusline()
+end -- }}}
+
 local statusline = vim.api.nvim_create_augroup("statusline", { clear = true })
 
 vim.api.nvim_create_autocmd("CmdlineEnter", {
@@ -414,7 +405,7 @@ vim.api.nvim_create_autocmd("TermEnter", {
 
 vim.api.nvim_create_autocmd("TermLeave", {
   group = statusline,
-  callback = M.define_status_line,
+  callback = define_status_line,
 })
 
 vim.api.nvim_create_autocmd("VimEnter", {
@@ -433,7 +424,18 @@ vim.api.nvim_create_autocmd("VimEnter", {
         buffer = bufnr,
         callback = function(args)
           local bufnr = args.buf
-          local severity = get_buffer_severity(bufnr)
+
+          local severity = (function(bufnr)
+            if vim.tbl_isempty(vim.diagnostic.get(bufnr)) then
+              return nil
+            end
+            for _, level in ipairs(vim.diagnostic.severity) do
+              local items =  vim.diagnostic.get(bufnr, { severity = level })
+              if not vim.tbl_isempty(items) then
+                return level
+              end
+            end
+          end)(bufnr)
 
           local user7 = vim.api.nvim_get_hl(0, { name = "User7" })
 
@@ -457,13 +459,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
         diagnostic_changed(bufnr)
 
         if vim.go.statusline == vim.wo.statusline then
-          vim.schedule(M.define_status_line)
+          vim.schedule(define_status_line)
         end
       end,
     })
 
     diagnostic_changed(bufnr)
-    vim.schedule(M.define_status_line)
+    vim.schedule(define_status_line)
   end,
 })
 
