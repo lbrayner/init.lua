@@ -65,7 +65,6 @@ function M.get_buffer_name(opts)
   return buffer_name
 end
 
--- TODO min lenght
 function M.get_minor_modes()
   local bufnr = vim.api.nvim_get_current_buf()
   local modes = vim.tbl_get(vim.b[bufnr], "lbrayner", "statusline", "modes", "str")
@@ -349,6 +348,7 @@ local statusline = vim.api.nvim_create_augroup("statusline", { clear = true })
 vim.api.nvim_create_autocmd("CmdlineEnter", {
   pattern = { ":", "/", "?" },
   group = statusline,
+  desc = "Command-line modes statusline highlight",
   callback = function(args)
     if args.file == ":" then
       M.highlight_mode("command")
@@ -363,6 +363,7 @@ vim.api.nvim_create_autocmd("CmdlineEnter", {
 
 vim.api.nvim_create_autocmd("ColorScheme", {
   group = statusline,
+  desc = "Load statusline theme",
   callback = function(args)
     local colorscheme = args.match
     M.load_theme(colorscheme)
@@ -371,6 +372,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 
 vim.api.nvim_create_autocmd("InsertEnter", {
   group = statusline,
+  desc = "Insert mode statusline highlight",
   callback = function()
     M.highlight_mode("insert")
   end,
@@ -379,6 +381,7 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 vim.api.nvim_create_autocmd("ModeChanged", {
   pattern = [[[^vV\x16]:[vV\x16]*]],
   group = statusline,
+  desc = "Visual modes statusline highlight",
   callback = function()
     M.highlight_mode("visual")
   end,
@@ -387,6 +390,7 @@ vim.api.nvim_create_autocmd("ModeChanged", {
 vim.api.nvim_create_autocmd("ModeChanged", {
   pattern = "[^n]*:n*",
   group = statusline,
+  desc = "Command/Normal mode statusline highlight",
   callback = function()
     M.highlight_mode("normal")
   end,
@@ -394,6 +398,7 @@ vim.api.nvim_create_autocmd("ModeChanged", {
 
 vim.api.nvim_create_autocmd("TermEnter", {
   group = statusline,
+  desc = "Terminal mode statusline definition and highlight",
   callback = function()
     M.highlight_mode("terminal")
     vim.wo.statusline = ""
@@ -402,11 +407,13 @@ vim.api.nvim_create_autocmd("TermEnter", {
 
 vim.api.nvim_create_autocmd("TermLeave", {
   group = statusline,
+  desc = "Restore regular statusline",
   callback = define_status_line,
 })
 
 vim.api.nvim_create_autocmd("VimEnter", {
   group = statusline,
+  desc = "Create statusline autocmds",
   callback = function(args)
     local bufnr = args.buf
     local diagnostic_changed_autocmd
@@ -419,6 +426,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
       diagnostic_changed_autocmd = vim.api.nvim_create_autocmd("DiagnosticChanged", {
         group = statusline,
         buffer = bufnr,
+        desc = "Diagnostic severity statusline highlight",
         callback = function(args)
           local bufnr = args.buf
 
@@ -450,6 +458,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
     vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
       group = statusline,
+      desc = "Define window local statusline, buffer-local diagnostic autocmd",
       callback = function(args)
         local bufnr = args.buf
 
