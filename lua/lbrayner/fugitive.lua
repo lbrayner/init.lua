@@ -31,6 +31,18 @@ function M.get_fugitive_path()
   end
 end
 
+function M.is_fugitive_blame(bufnr)
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+  if vim.fn.exists("*FugitiveResult") == 1 then
+    local fugitive_result = vim.fn.FugitiveResult(bufnr)
+    if fugitive_result.filetype and
+      fugitive_result.blame_file and
+      fugitive_result.filetype == "fugitiveblame" then
+      return true
+    end
+  end
+end
+
 function M.setup()
   require("lbrayner.fugitive._setup")
 end

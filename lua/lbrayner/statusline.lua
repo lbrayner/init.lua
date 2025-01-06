@@ -155,14 +155,9 @@ end
 
 -- margins of 1 column (on both sides)
 function M.get_statusline()
-  if vim.fn.exists("*FugitiveResult") == 1 then
-    local fugitive_result = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())
-    if fugitive_result.filetype and
-      fugitive_result.blame_file and
-      fugitive_result.filetype == "fugitiveblame" then -- Fugitive blame
-      return " Fugitive blame " ..
-      "%<%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*%=" .. get_buffer_position()
-    end
+  if require("lbrayner.fugitive").is_fugitive_blame() then
+    return " Fugitive blame " ..
+    "%<%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*%=" .. get_buffer_position()
   end
 
   local leftline = " "
@@ -207,13 +202,8 @@ function M.get_statusline()
 end
 
 function M.get_winbar()
-  if vim.fn.exists("*FugitiveResult") == 1 then
-    local fugitive_result = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())
-    if fugitive_result.filetype and
-      fugitive_result.blame_file and
-      fugitive_result.filetype == "fugitiveblame" then -- Fugitive blame
-      return " Fugitive blame %<%{v:lua.require'lbrayner.statusline'.get_status_flag()}"
-    end
+  if require("lbrayner.fugitive").is_fugitive_blame() then
+    return " Fugitive blame %<%{v:lua.require'lbrayner.statusline'.get_status_flag()}"
   end
 
   local statusline = " "
