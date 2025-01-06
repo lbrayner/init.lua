@@ -44,7 +44,7 @@ function M.redefine_tabline()
     end
     local truncated_filename = truncate_filename(bufname, max_length)
     tabline = tabline .. string.format("%%#Normal#%s ", truncated_filename)
-  elseif require("lbrayner.fugitive").fugitive_object() then
+  elseif require("lbrayner.fugitive").get_fugitive_object() then
     local name_dir = vim.fn.FugitiveParse(bufname)
     local dir = name_dir[2]
     dir = string.gsub(dir, "/%.git$", "") -- Fugitive summary
