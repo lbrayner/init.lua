@@ -204,6 +204,15 @@ function M.read_file(filepath)
   return data
 end
 
+function M.set_number()
+  vim.wo.number = true
+  vim.wo.relativenumber = true
+  -- setting nonumber if length of line count is greater than 3
+  if #tostring(vim.fn.line("$")) > 3 then
+    vim.wo.number = false
+  end
+end
+
 function M.setup_matchit()
   if vim.g.loaded_matchit == 1 then
     vim.b.match_ignorecase = 0
