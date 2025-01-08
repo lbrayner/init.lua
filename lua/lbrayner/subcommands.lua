@@ -42,6 +42,22 @@ local function main_cmd(name, subcommand_tbl)
   end
 end
 
+local function smart_complete(lead, options)
+  if not lead:find("%u") then
+    return vim.iter(options)
+    :filter(function(option)
+      return option:lower():find(lead:lower()) ~= nil
+    end)
+    :totable()
+  else
+    return vim.iter(options)
+    :filter(function(option)
+      return option:find(lead) ~= nil
+    end)
+    :totable()
+  end
+end
+
 function M.create_command_and_subcommands(name, subcommand_tbl, opts)
   opts = opts or {}
   assert(name:match("^%u%a+$"), "Bad argument; 'name' must a capitalized word.")
@@ -68,23 +84,14 @@ function M.create_command_and_subcommands(name, subcommand_tbl, opts)
         end)()
         if not subcmd_key then
           -- Filter subcommands that match
-          local subcommand_keys = vim.tbl_keys(subcommand_tbl)
-          local candidates = vim.iter(subcommand_keys)
-          :filter(function(key)
-            return key:find(arg_lead) ~= nil
-          end)
-          :totable()
+          local candidates = smart_complete(arg_lead, vim.tbl_keys(subcommand_tbl))
           table.sort(candidates)
           return candidates
         elseif arg_lead
           and vim.tbl_get(subcommand_tbl, subcmd_key, "complete") then
           -- The subcommand has completions. Return them.
           if type(subcommand_tbl[subcmd_key].complete == "table") then
-            local candidates = vim.iter(subcommand_tbl[subcmd_key].complete)
-            :filter(function(key)
-              return key:find(arg_lead) ~= nil
-            end)
-            :totable()
+            local candidates = smart_complete(arg_lead, subcommand_tbl[subcmd_key].complete)
             table.sort(candidates)
             return candidates
           end
