@@ -8,7 +8,6 @@ vim.g.markdown_recommended_style = 0
 -- Modules
 
 require("lbrayner.autocmds")
-require("lbrayner.buffer")
 require("lbrayner.clipboard")
 require("lbrayner.coerce")
 require("lbrayner.diagnostic")
