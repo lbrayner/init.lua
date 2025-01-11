@@ -14,6 +14,12 @@ Keep the default Rocks installation path `~/.local/share/nvim/rocks`.
 
 There is no need to change `init.lua`.
 
+Create `~/.local/share/nvim/site/pack/rocks/start` for `rocks-git.nvim` (this is a bug):
+
+```
+mkdir ~/.local/share/nvim/site/pack/rocks/start
+```
+
 Start Neovim and run `:Rocks sync`. Restart Neovim.
 
 Check [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim) for the latest
