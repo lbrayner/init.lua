@@ -402,7 +402,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     if vim.v.this_session == "" then return end
     require("lbrayner.wipe").loop_buffers(true, function(buf) -- BWipeNotReadable!
-      return buf.listed == 1 and vim.fn.filereadable(buf.name) == 0
+      return buf.listed == 1 and not vim.uv.fs_stat(buf.name)
     end)
   end,
 })

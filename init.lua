@@ -34,7 +34,7 @@ local files = {
 }
 
 for _, init in ipairs(files) do
-  if vim.fn.filereadable(init) == 1 then
+  if vim.uv.fs_stat(init) then
     vim.cmd.source(init)
   end
 end

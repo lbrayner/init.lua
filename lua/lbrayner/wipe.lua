@@ -84,7 +84,7 @@ end, { nargs = 0 })
 
 vim.api.nvim_create_user_command("BWipeNotReadable", function(command)
   wipe_buffers(command.bang, function(buf)
-    return buf.listed == 1 and vim.fn.filereadable(buf.name) == 0
+    return buf.listed == 1 and not vim.uv.fs_stat(buf.name)
   end)
 end, { bang = true, nargs = 0 })
 

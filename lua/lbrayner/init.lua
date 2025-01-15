@@ -16,7 +16,7 @@ function M.diff_include_expression(fname)
   fname = vim.fn.tr(fname, ".", "/")
   if vim.fn.isdirectory("lua") == 1 then
     local init = vim.fs.joinpath("lua", fname, "init.lua")
-    if vim.fn.filereadable(init) == 1 then
+    if vim.uv.fs_stat(init) then
       return init
     end
     return vim.fs.joinpath("lua", fname)

@@ -48,7 +48,7 @@ function M.get_config()
         settings = {
           url = (function()
             local prefs = vim.fs.normalize("~/.config/nvim/config/jdtls/settings.prefs")
-            if vim.fn.filereadable(prefs) == 1 then
+            if vim.uv.fs_stat(prefs) then
               return prefs
             end
           end)(),
