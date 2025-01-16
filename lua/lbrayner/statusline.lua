@@ -392,7 +392,14 @@ vim.api.nvim_create_autocmd("TermEnter", {
   desc = "Terminal mode statusline definition and highlight",
   callback = function()
     M.highlight_mode("terminal")
-    vim.wo.statusline = ""
+    local winid = vim.api.nvim_get_current_win()
+    vim.schedule(function()
+      if vim.api.nvim_win_is_valid(winid) then
+        vim.api.nvim_win_call(winid, function()
+          vim.wo.statusline = ""
+        end)
+      end
+    end)
   end,
 })
 
