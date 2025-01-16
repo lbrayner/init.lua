@@ -4,7 +4,12 @@
 $ git clone 'https://github.com/lbrayner/init.lua'
 ```
 
-Install [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim):
+Before installing [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim),
+check the
+[requirements](https://github.com/nvim-neorocks/rocks.nvim#pencil-requirements)
+(don't mind `netrw`).
+
+Install `rocks.nvim`:
 
 ```
 nvim --clean -c "source https://raw.githubusercontent.com/nvim-neorocks/rocks.nvim/master/installer.lua"
