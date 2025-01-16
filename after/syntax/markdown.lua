@@ -1,6 +1,4 @@
-if not vim.b.current_syntax or vim.b.current_syntax ~= "markdown" then
-  return
-end
+if vim.b.current_syntax ~= "markdown" then return end
 
 vim.api.nvim_set_hl(0, "markdownH2", { link = "Type" })
 vim.api.nvim_set_hl(0, "markdownH3", { link = "Underlined" })
