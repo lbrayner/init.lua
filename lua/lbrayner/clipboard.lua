@@ -34,5 +34,8 @@ end, { nargs = 0 })
 vim.api.nvim_create_user_command("RelativeDirectory", function()
   M.clip(require("lbrayner.path").relative_directory())
 end, { nargs = 0 })
+vim.api.nvim_create_user_command("WorkingDirectoryName", function()
+  M.clip(require("lbrayner.path").working_directory_name())
+end, { nargs = 0 })
 
 return M

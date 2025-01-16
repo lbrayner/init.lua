@@ -65,4 +65,8 @@ function M.relative_directory()
   return vim.fn.expand("%:h")
 end
 
+function M.working_directory_name()
+  return vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+end
+
 return M
