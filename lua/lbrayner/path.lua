@@ -35,6 +35,10 @@ function M.is_in_directory(node, directory, opts)
   return vim.startswith(node, directory)
 end
 
+function M.folder_name()
+  return vim.fn.expand("%:p:h:t")
+end
+
 function M.name()
   return vim.fn.expand("%:t")
 end
