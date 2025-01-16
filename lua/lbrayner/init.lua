@@ -48,7 +48,7 @@ function M.get_session()
   return ""
 end
 
-local function _jump_to_location(win, bufnr, pos, flash)
+local function _jump_to_location(winid, bufnr, pos, flash)
   -- From vim.lsp.util.show_document
   -- Save position in jumplist
   if vim.bo.buftype ~= "terminal" then -- TODO debug to find the real cause
@@ -56,11 +56,11 @@ local function _jump_to_location(win, bufnr, pos, flash)
   end
 
   vim.bo[bufnr].buflisted = true
-  vim.api.nvim_win_set_buf(win, bufnr)
-  vim.api.nvim_set_current_win(win)
+  vim.api.nvim_win_set_buf(winid, bufnr)
+  vim.api.nvim_set_current_win(winid)
   if pos then
-    vim.api.nvim_win_set_cursor(win, pos)
-    vim.api.nvim_win_call(win, function()
+    vim.api.nvim_win_set_cursor(winid, pos)
+    vim.api.nvim_win_call(winid, function()
       -- Open folds under the cursor
       vim.cmd("normal! zv")
     end)
@@ -105,15 +105,15 @@ function M.jump_to_buffer(bufnr, pos, flash)
     vim.notify(string.format("Buffer “%d” is not valid.", bufnr))
     return
   end
-  local win = vim.fn.win_findbuf(bufnr)[1]
-  _jump_to_location(win, bufnr, pos, flash)
+  local winid = vim.fn.win_findbuf(bufnr)[1]
+  _jump_to_location(winid, bufnr, pos, flash)
 end
 
 function M.jump_to_location(filename, pos, flash)
   local bufnr = vim.fn.bufadd(filename)
-  local win = vim.fn.win_findbuf(bufnr)[1]
+  local winid = vim.fn.win_findbuf(bufnr)[1]
 
-  if not win then
+  if not winid then
     vim.ui.select({
       { command = "buffer", description = "Current window" },
       { command = "new", description = "Horizontal split" },
@@ -129,15 +129,15 @@ function M.jump_to_location(filename, pos, flash)
       -- From vim.lsp.util.create_window_without_focus
       local prev = vim.api.nvim_get_current_win()
       vim.cmd(open_cmd.command)
-      win = vim.api.nvim_get_current_win()
+      winid = vim.api.nvim_get_current_win()
       vim.api.nvim_set_current_win(prev)
 
-      _jump_to_location(win, bufnr, pos, flash)
+      _jump_to_location(winid, bufnr, pos, flash)
     end)
     return
   end
 
-  _jump_to_location(win, bufnr, pos, flash)
+  _jump_to_location(winid, bufnr, pos, flash)
 end
 
 local function navigate_depth_parent(n)

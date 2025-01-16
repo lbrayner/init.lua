@@ -504,8 +504,8 @@ vim.api.nvim_create_autocmd("TermEnter", {
   group = terminal_setup,
   callback = function()
     if not require("lbrayner").window_is_floating() then
-      local terminals = vim.tbl_filter(function(win)
-        local bufnr = vim.api.nvim_win_get_buf(win)
+      local terminals = vim.tbl_filter(function(winid)
+        local bufnr = vim.api.nvim_win_get_buf(winid)
         return vim.bo[bufnr].buftype == "terminal"
       end, vim.api.nvim_tabpage_list_wins(0))
       if vim.tbl_count(terminals) > 1 then

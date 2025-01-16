@@ -184,8 +184,8 @@ function M.omnifunc(findstart, base)
     return findstart == 1 and -1 or {}
   end
 
-  local win = api.nvim_get_current_win()
-  local cursor = api.nvim_win_get_cursor(win)
+  local winid = api.nvim_get_current_win()
+  local cursor = api.nvim_win_get_cursor(winid)
   local lnum = cursor[1] - 1
   local cursor_col = cursor[2]
   local line = api.nvim_get_current_line()
@@ -204,7 +204,7 @@ function M.omnifunc(findstart, base)
 
   local util = vim.lsp.util
   for _, client in ipairs(clients) do
-    local params = util.make_position_params(win, client.offset_encoding)
+    local params = util.make_position_params(winid, client.offset_encoding)
     client.request(ms.textDocument_completion, params, function(err, result)
       -- print('params', vim.inspect(params)) -- TODO debug
       -- do -- TODO debug

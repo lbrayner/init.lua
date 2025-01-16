@@ -2,8 +2,8 @@ local M = {}
 
 local function replace_keyword_under_cursor(coerce)
   -- From $VIMRUNTIME/lua/vim/lsp/_completion.lua, vim.lsp._completion.omnifunc
-  local win = vim.api.nvim_get_current_win()
-  local cursor = vim.api.nvim_win_get_cursor(win)
+  local winid = vim.api.nvim_get_current_win()
+  local cursor = vim.api.nvim_win_get_cursor(winid)
   local lnum = cursor[1] - 1
   local line = vim.api.nvim_get_current_line()
   local line_to_cursor = line:sub(1, cursor[2])
@@ -11,7 +11,7 @@ local function replace_keyword_under_cursor(coerce)
   local cursor_til_end = line:sub(keyword_start + 1)
   local keyword_end = keyword_start + vim.fn.match(cursor_til_end, "[^[:keyword:]]")
   keyword_end = keyword_end < keyword_start and vim.fn.col("$") - 1 or keyword_end
-  local bufnr = vim.api.nvim_win_get_buf(win)
+  local bufnr = vim.api.nvim_win_get_buf(winid)
   local keyword = vim.api.nvim_buf_get_text(bufnr, lnum, keyword_start, lnum, keyword_end, {})[1]
   keyword = coerce(keyword)
   vim.api.nvim_buf_set_text(bufnr, lnum, keyword_start, lnum, keyword_end, { keyword })
