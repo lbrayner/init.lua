@@ -474,7 +474,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 -- rocks.nvim wasn't synced at least once
-if not vim.uv.fs_stat(vim.fs.normalize("~/.local/share/nvim/site/pack/rocks/start/neosolarized.nvim")) then
+if not pcall(require, "neosolarized") then
   -- A statusline theme is required
   M.load_theme("neosolarized")
 end

@@ -1,6 +1,6 @@
 -- Set up rocks.nvim
 
-local rocks_config = {
+local rocks_config = vim.g.rocks_nvim or { -- g:rocks_nvim may have been set in bundle.lua
   rocks_path = vim.fs.normalize("~/.local/share/nvim/rocks"),
 }
 
