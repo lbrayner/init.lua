@@ -269,7 +269,7 @@ local package_manager = vim.api.nvim_create_augroup("package_manager", { clear =
 vim.api.nvim_create_autocmd("BufRead", {
   pattern = {
     "*/node_modules/*",
-    vim.fs.normalize("~/.local/share/nvim/rocks/share") .. "/*",
+    vim.fs.joinpath(vim.g.rocks_nvim.rocks_path, "share") .. "/*",
     vim.fs.normalize("~/.local/share/virtualenvs") .. "/*",
     vim.fs.normalize("~/.m2/repository") .. "/*",
     vim.fs.normalize("~/.pyenv/versions") .. "/*/lib/*",
