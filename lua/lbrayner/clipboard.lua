@@ -6,8 +6,7 @@ function M.clip(text)
     vim.fn.setreg('"', text)
   end
   vim.fn.setreg("+", vim.fn.getreg('"'))
-  vim.fn.setreg("*", vim.fn.getreg('"'))
-  vim.notify(vim.fn.getreg('"'))
+  vim.notify(vim.fn.getreg("+"))
 end
 
 vim.api.nvim_create_user_command("Clip", function(command)
