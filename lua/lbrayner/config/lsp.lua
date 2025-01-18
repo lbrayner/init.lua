@@ -88,6 +88,10 @@ local function get_range(opts)
   return range
 end
 
+local function hover()
+  vim.lsp.buf.hover({ close_events = require("lbrayner").get_close_events() })
+end
+
 -- Documentation is missing reuse_win
 local function implementation()
   vim.lsp.buf.implementation({ on_list = on_list, reuse_win = true })
@@ -138,7 +142,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set({ "n", "v" }, "<F11>", vim.lsp.buf.code_action, bufopts)
     vim.keymap.set("n", "gD", declaration, bufopts)
     vim.keymap.set("n", "gd", definition, bufopts)
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
+    vim.keymap.set("n", "K", hover, bufopts)
     vim.keymap.set("n", "gi", implementation, bufopts)
     vim.keymap.set("n", "gr", function()
       -- Exclude test references if not visiting a test file
@@ -205,14 +209,6 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   end,
 })
 
--- Handler configuration
-
-vim.lsp.buf.on_hover = vim.lsp.handlers["textDocument/hover"]
-
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.buf.on_hover, {
-  close_events = require("lbrayner").get_close_events(),
-})
-
 -- Commands
 
 ---@type table<string, MyCmdSubcommand>
@@ -242,15 +238,11 @@ subcommand_tbl.codeAction = {
 }
 
 subcommand_tbl.declaration = {
-  simple = function()
-    declaration()
-  end,
+  simple = declaration,
 }
 
 subcommand_tbl.definition = {
-  simple = function()
-    definition()
-  end,
+  simple = definition,
 }
 
 subcommand_tbl.detach = {
@@ -283,9 +275,7 @@ subcommand_tbl.diagnostic = {
 }
 
 subcommand_tbl.documentSymbol = {
-  simple = function()
-    vim.lsp.buf.document_symbol()
-  end,
+  simple = vim.lsp.buf.document_symbol,
 }
 
 subcommand_tbl.format = {
@@ -295,15 +285,11 @@ subcommand_tbl.format = {
 }
 
 subcommand_tbl.hover = {
-  simple = function()
-    vim.lsp.buf.hover()
-  end,
+  simple = hover,
 }
 
 subcommand_tbl.implementation = {
-  simple = function()
-    implementation()
-  end,
+  simple = implementation,
 }
 
 subcommand_tbl.listWorkspaceFolders = {
@@ -341,15 +327,11 @@ subcommand_tbl.rename = {
 }
 
 subcommand_tbl.signatureHelp = {
-  simple = function()
-    vim.lsp.buf.signature_help()
-  end,
+  simple = vim.lsp.buf.signature_help,
 }
 
 subcommand_tbl.typeDefinition = {
-  simple = function()
-    type_definition()
-  end,
+  simple = type_definition,
 }
 
 subcommand_tbl.workspaceSymbol = {
