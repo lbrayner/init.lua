@@ -16,7 +16,7 @@ local function request_custom_text_document_edit(command)
   client.request("workspace/executeCommand", {
     command = command,
     arguments = {
-      vim.uri_from_bufnr(bufnr), -- toResolve: TypeHierarchyItem
+      vim.uri_from_bufnr(bufnr),
       start.line,
       start.character,
     },
