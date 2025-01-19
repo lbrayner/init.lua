@@ -41,4 +41,28 @@ function M.forward_slurp()
   request_custom_text_document_edit("forward-slurp")
 end
 
+local clojure_lsp_setup = vim.api.nvim_create_augroup("clojure_lsp_setup", { clear = true })
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = clojure_lsp_setup,
+  pattern = { "*.clj", "*.edn" },
+  desc = "clojure-lsp buffer setup",
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+    if client.name ~= "clojure_lsp" then
+      return
+    end
+
+    local bufnr = args.buf
+
+    -- Mappings
+    local bufopts = { buffer = bufnr }
+    vim.keymap.set("n", ">(", M.backward_barf, bufopts)
+    vim.keymap.set("n", "<)", M.forward_barf, bufopts)
+    vim.keymap.set("n", "<(", M.backward_slurp, bufopts)
+    vim.keymap.set("n", ">)", M.forward_slurp, bufopts)
+  end,
+})
+
 return M

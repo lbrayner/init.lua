@@ -42,6 +42,7 @@ vim.g.markdown_recommended_style = 0
 
 require("lbrayner.autocmds")
 require("lbrayner.clipboard")
+require("lbrayner.clojure")
 require("lbrayner.coerce")
 require("lbrayner.diagnostic")
 require("lbrayner.diff")
