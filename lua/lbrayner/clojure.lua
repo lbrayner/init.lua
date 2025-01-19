@@ -58,10 +58,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     -- Mappings
     local bufopts = { buffer = bufnr }
-    vim.keymap.set("n", ">(", M.backward_barf, bufopts)
-    vim.keymap.set("n", "<)", M.forward_barf, bufopts)
-    vim.keymap.set("n", "<(", M.backward_slurp, bufopts)
-    vim.keymap.set("n", ">)", M.forward_slurp, bufopts)
+    vim.keymap.set("i", "<S-Right>", M.backward_barf,  bufopts)
+    vim.keymap.set("i", "<S-Left>",  M.forward_barf,   bufopts)
+    vim.keymap.set("i", "<S-Up>",    M.backward_slurp, bufopts)
+    vim.keymap.set("i", "<S-Down>",  M.forward_slurp,  bufopts)
   end,
 })
 
