@@ -72,20 +72,21 @@ local function definition()
 end
 
 local function get_range(opts)
-  -- Visual selection
-  local range = {
+  local visual_selection = {
     start = vim.api.nvim_buf_get_mark(0, "<"),
     ["end"] = vim.api.nvim_buf_get_mark(0, ">")
   }
-  if opts.line1 ~= range.start[1] or
-    opts.line2 ~= range["end"][1] then
+
+  if opts.line1 ~= visual_selection.start[1] or
+    opts.line2 ~= visual_selection["end"][1] then
     -- Supplied range inferred
-    range = {
+    return {
       start = { opts.line1, 0 },
       ["end"] = { opts.line2, 2147483647 }, -- Maximum line length (vi_diff.txt)
     }
   end
-  return range
+
+  return visual_selection
 end
 
 local function hover()
@@ -185,7 +186,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 
 local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear = true })
 
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+vim.api.nvim_create_autocmd("BufNewFile", {
   group = lspconfig_custom,
   desc = "New buffers attach to language servers managed by lspconfig even when autostart is false",
   callback = function(args)
@@ -199,7 +200,9 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
           local bufname = vim.api.nvim_buf_get_name(bufnr)
           if vim.startswith(bufname, folder_name) then
             if vim.fn.exists("#lspconfig#BufRead#" .. folder_name .. "/*") == 1 then
-              vim.api.nvim_exec_autocmds("BufRead", { group = "lspconfig", pattern = bufname })
+              vim.schedule(function()
+                vim.api.nvim_exec_autocmds("BufRead", { group = "lspconfig", pattern = bufname })
+              end)
               return
             end
           end
