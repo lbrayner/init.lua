@@ -81,37 +81,17 @@ if vim.v.vim_did_enter == 1 then
 end
 
 local close_events = require("lbrayner").get_close_events()
-
-local function goto_first()
-  -- Save the current cursor position
-  local line_col = vim.api.nvim_win_get_cursor(0)
-  local prevd = vim.diagnostic.get_prev({ pos = {
-    vim.api.nvim_win_get_cursor(0)[1], 1
-  }, wrap = false})
-
-  -- If there's an anterior diagnostic in the current line, it's in column 1
-  if prevd and prevd.lnum+1 == line_col[1] and prevd.col == 0 then
-    vim.diagnostic.jump({ diagnostic = prevd, float = { close_events = close_events } })
-    return
-  end
-
-  local nextd = vim.diagnostic.get_next({ pos = {
-    vim.api.nvim_win_get_cursor(0)[1], 0
-  }, wrap = false})
-
-  -- If there's no next diagnostic in the current line, there might be one in
-  -- column 1
-  if not nextd or nextd.lnum+1 ~= line_col[1] then
-    vim.diagnostic.open_float({ close_events = close_events })
-    return
-  end
-
-  vim.diagnostic.jump({ diagnostic = nextd, float = { close_events = close_events } })
-end
-
 local opts = { silent = true }
 
-vim.keymap.set("n", "<Space>d", goto_first, opts)
+vim.keymap.set("n", "<Space>d", function() -- Go to first line diagnostic
+  local line_col = vim.api.nvim_win_get_cursor(0)
+  local line_diagnostics = vim.diagnostic.get(0, { lnum = line_col[1]-1 })
+  local _, first = next(line_diagnostics)
+
+  if first then
+    vim.diagnostic.jump({ diagnostic = first, float = { close_events = close_events } })
+  end
+end, opts)
 vim.keymap.set("n", "<Space>D", function()
   vim.diagnostic.open_float({ close_events = close_events, scope = "buffer" })
 end, opts)
