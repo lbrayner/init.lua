@@ -83,17 +83,25 @@ end
 local close_events = require("lbrayner").get_close_events()
 local opts = { silent = true }
 
-vim.keymap.set("n", "<Space>d", function() -- Go to first line diagnostic
+vim.keymap.set("n", "<Space>D", function() -- Go to first buffer diagnostic and open buffer-scoped float
+  local buffer_diagnostics = vim.diagnostic.get(0)
+  local _, first = next(buffer_diagnostics)
+
+  if first then
+    vim.diagnostic.jump({ diagnostic = first })
+    vim.schedule(function()
+      vim.diagnostic.open_float({ close_events = close_events, scope = "buffer" })
+    end)
+  end
+end, opts)
+vim.keymap.set("n", "<Space>d", function() -- Go to first line diagnostic and open line-scoped float
   local line_col = vim.api.nvim_win_get_cursor(0)
   local line_diagnostics = vim.diagnostic.get(0, { lnum = line_col[1]-1 })
   local _, first = next(line_diagnostics)
 
   if first then
-    vim.diagnostic.jump({ diagnostic = first, float = { close_events = close_events } })
+    vim.diagnostic.jump({ diagnostic = first, float = { close_events = close_events, scope = "line" } })
   end
-end, opts)
-vim.keymap.set("n", "<Space>D", function()
-  vim.diagnostic.open_float({ close_events = close_events, scope = "buffer" })
 end, opts)
 vim.keymap.set("n", "[d", function()
   vim.diagnostic.jump({ count = -1, float = { close_events = close_events } })
