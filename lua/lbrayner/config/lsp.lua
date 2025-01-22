@@ -191,24 +191,11 @@ vim.api.nvim_create_autocmd("BufNewFile", {
   desc = "New buffers attach to language servers managed by lspconfig even when autostart is false",
   callback = function(args)
     local bufnr = args.buf
-    for _, client in ipairs(vim.lsp.get_clients()) do
-      if vim.tbl_get(client, "config", "workspace_folders") then
-        local folder_names = vim.tbl_map(function (workspace_folder)
-          return workspace_folder.name
-        end, client.config.workspace_folders)
-        for _, folder_name in ipairs(folder_names) do
-          local bufname = vim.api.nvim_buf_get_name(bufnr)
-          if vim.startswith(bufname, folder_name) then
-            if vim.fn.exists("#lspconfig#BufRead#" .. folder_name .. "/*") == 1 then
-              vim.schedule(function()
-                vim.api.nvim_exec_autocmds("BufRead", { group = "lspconfig", pattern = bufname })
-              end)
-              return
-            end
-          end
-        end
-      end
-    end
+    local bufname = vim.api.nvim_buf_get_name(bufnr)
+
+    vim.schedule(function()
+      vim.api.nvim_exec_autocmds("BufRead", { group = "lspconfig", pattern = bufname })
+    end)
   end,
 })
 
