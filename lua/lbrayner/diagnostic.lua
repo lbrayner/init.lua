@@ -80,48 +80,39 @@ if vim.v.vim_did_enter == 1 then
   vim.api.nvim_exec_autocmds("VimEnter", { group = trunc_virt_text })
 end
 
-local function get_cursor()
-  return vim.api.nvim_win_get_cursor(0)
-end
-
 local close_events = require("lbrayner").get_close_events()
-
-local function open_float()
-  return vim.diagnostic.open_float({ close_events = close_events })
-end
 
 local function goto_first()
   -- Save the current cursor position
-  local line_col = get_cursor()
-  -- Move the cursor to the second column
-  vim.api.nvim_win_set_cursor(0, { line_col[1], 1 })
-  local prev_pos = vim.diagnostic.get_prev_pos()
+  local line_col = vim.api.nvim_win_get_cursor(0)
+  local prevd = vim.diagnostic.get_prev({ pos = {
+    vim.api.nvim_win_get_cursor(0)[1], 1
+  }, wrap = false})
+
   -- If there's an anterior diagnostic in the current line, it's in column 1
-  if prev_pos and prev_pos[1]+1 == line_col[1] and prev_pos[2] < get_cursor()[2] then
-    -- Go to column 1 and open the floating window
-    vim.api.nvim_win_set_cursor(0, { line_col[1], 0 })
-    -- Scheduling lest CursorMoved is triggered
-    return vim.schedule(open_float)
+  if prevd and prevd.lnum+1 == line_col[1] and prevd.col == 0 then
+    vim.diagnostic.jump({ diagnostic = prevd, float = { close_events = close_events } })
+    return
   end
-  -- Move the cursor to the beginning of the line
-  vim.api.nvim_win_set_cursor(0, { line_col[1], 0 })
-  local next_pos = vim.diagnostic.get_next_pos()
+
+  local nextd = vim.diagnostic.get_next({ pos = {
+    vim.api.nvim_win_get_cursor(0)[1], 0
+  }, wrap = false})
+
   -- If there's no next diagnostic in the current line, there might be one in
   -- column 1
-  if not next_pos or next_pos[1]+1 ~= line_col[1] then
-    -- If there isn't, restore the cursor
-    return open_float() or vim.api.nvim_win_set_cursor(0, line_col)
+  if not nextd or nextd.lnum+1 ~= line_col[1] then
+    vim.diagnostic.open_float({ close_events = close_events })
+    return
   end
-  -- Move the cursor to the first diagnostic in the line
-  vim.api.nvim_win_set_cursor(0, { line_col[1], next_pos[2] })
-  -- Scheduling lest CursorMoved is triggered
-  return vim.schedule(open_float)
+
+  vim.diagnostic.jump({ diagnostic = nextd, float = { close_events = close_events } })
 end
 
 local opts = { silent = true }
 
-vim.keymap.set("n", "<Space>e", goto_first, opts)
-vim.keymap.set("n", "<Space>E", function()
+vim.keymap.set("n", "<Space>d", goto_first, opts)
+vim.keymap.set("n", "<Space>D", function()
   vim.diagnostic.open_float({ close_events = close_events, scope = "buffer" })
 end, opts)
 vim.keymap.set("n", "[d", function()
