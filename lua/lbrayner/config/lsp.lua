@@ -145,7 +145,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "gd", definition, bufopts)
     vim.keymap.set("n", "K", hover, bufopts)
     vim.keymap.set("n", "gi", implementation, bufopts)
-    vim.keymap.set("n", "gr", function()
+    vim.keymap.set("n", "gR", function()
       -- Exclude test references if not visiting a test file
       if is_test_file and not is_test_file(vim.api.nvim_buf_get_name(0)) then
         references({ no_tests = true })
