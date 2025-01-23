@@ -33,6 +33,14 @@ function M.backward_slurp()
   request_custom_text_document_edit("backward-slurp")
 end
 
+function M.drag_backward()
+  request_custom_text_document_edit("drag-backward")
+end
+
+function M.drag_forward()
+  request_custom_text_document_edit("drag-forward")
+end
+
 function M.forward_barf()
   request_custom_text_document_edit("forward-barf")
 end
@@ -58,6 +66,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     -- Mappings
     local bufopts = { buffer = bufnr }
+    vim.keymap.set("i", "<M-Left>",  M.drag_backward,  bufopts)
+    vim.keymap.set("i", "<M-Right>", M.drag_forward,   bufopts)
     vim.keymap.set("i", "<S-Right>", M.backward_barf,  bufopts)
     vim.keymap.set("i", "<S-Left>",  M.forward_barf,   bufopts)
     vim.keymap.set("i", "<S-Up>",    M.backward_slurp, bufopts)
