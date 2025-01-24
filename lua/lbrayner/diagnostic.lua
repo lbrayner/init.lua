@@ -152,41 +152,6 @@ if not _G.default_virtual_text_handler then
   _G.default_virtual_text_handler = vim.diagnostic.handlers.virtual_text
 end
 
-vim.api.nvim_create_user_command("DefaultDiagnostics", function()
-  vim.diagnostic.config({
-    signs = {
-      text = {
-        [ERR] = "E",
-        [WAR] = "W",
-        [INF] = "I",
-        [HIN] = "H",
-      },
-      texthl = {
-        [ERR] = err,
-        [WAR] = war,
-        [INF] = inf,
-        [HIN] = hin,
-      },
-      linehl = {
-        [ERR] = "",
-        [WAR] = "",
-        [INF] = "",
-        [HIN] = "",
-      },
-      numhl = {
-        [ERR] = "",
-        [WAR] = "",
-        [INF] = "",
-        [HIN] = "",
-      },
-    },
-    severity_sort = false,
-    virtual_text = true
-  })
-
-  vim.diagnostic.handlers.virtual_text = _G.default_virtual_text_handler
-end, { nargs = 0 })
-
 local function customize_diagnostics()
   vim.diagnostic.config({
     signs = {
@@ -240,7 +205,7 @@ local function customize_diagnostics()
   }
 end
 
-vim.api.nvim_create_user_command("CustomDiagnostics", customize_diagnostics, { nargs = 0 })
+vim.api.nvim_create_user_command("CustomizeDiagnostics", customize_diagnostics, { nargs = 0 })
 
 local custom_diagnostics = vim.api.nvim_create_augroup("custom_diagnostics", { clear = true })
 
