@@ -111,66 +111,62 @@ if not _G.default_virtual_text_handler then
   _G.default_virtual_text_handler = vim.diagnostic.handlers.virtual_text
 end
 
-local function customize_diagnostics()
-  vim.diagnostic.config({
-    signs = {
-      text = {
-        [ERR] = "",
-        [WAR] = "",
-        [INF] = "",
-        [HIN] = "",
-      },
-      texthl = {
-        [ERR] = err,
-        [WAR] = war,
-        [INF] = inf,
-        [HIN] = hin,
-      },
-      linehl = {
-        [ERR] = "",
-        [WAR] = "",
-        [INF] = "",
-        [HIN] = "",
-      },
-      numhl = {
-        [ERR] = err,
-        [WAR] = war,
-        [INF] = inf,
-        [HIN] = hin,
-      },
-    },
-    severity_sort = true,
-    virtual_text = {
-      prefix = "•",
-      spacing = 0,
-    },
-  })
-
-  vim.diagnostic.handlers.virtual_text = {
-    show = function(namespace, bufnr, diagnostics, opts)
-      _G.default_virtual_text_handler.show(namespace, bufnr, diagnostics, opts)
-
-      local wininfos = vim.tbl_filter(function(wininfo)
-        return wininfo.bufnr == bufnr
-      end, vim.fn.getwininfo())
-
-      for _, wininfo in ipairs(wininfos) do
-        handle_long_extmarks(namespace, bufnr, wininfo.winid)
-      end
-    end,
-    hide = function(namespace, bufnr)
-      _G.default_virtual_text_handler.hide(namespace, bufnr)
-    end,
-  }
-end
-
-vim.api.nvim_create_user_command("CustomizeDiagnostics", customize_diagnostics, { nargs = 0 })
-
 local custom_diagnostics = vim.api.nvim_create_augroup("custom_diagnostics", { clear = true })
 
 vim.api.nvim_create_autocmd("VimEnter", {
   group = custom_diagnostics,
-  callback = customize_diagnostics,
+  callback = function()
+    vim.diagnostic.config({
+      signs = {
+        text = {
+          [ERR] = "",
+          [WAR] = "",
+          [INF] = "",
+          [HIN] = "",
+        },
+        texthl = {
+          [ERR] = err,
+          [WAR] = war,
+          [INF] = inf,
+          [HIN] = hin,
+        },
+        linehl = {
+          [ERR] = "",
+          [WAR] = "",
+          [INF] = "",
+          [HIN] = "",
+        },
+        numhl = {
+          [ERR] = err,
+          [WAR] = war,
+          [INF] = inf,
+          [HIN] = hin,
+        },
+      },
+      severity_sort = true,
+      virtual_text = {
+        prefix = "•",
+        spacing = 0,
+      },
+    })
+
+    vim.diagnostic.handlers.virtual_text = {
+      show = function(namespace, bufnr, diagnostics, opts)
+        _G.default_virtual_text_handler.show(namespace, bufnr, diagnostics, opts)
+
+        local wininfos = vim.tbl_filter(function(wininfo)
+          return wininfo.bufnr == bufnr
+        end, vim.fn.getwininfo())
+
+        for _, wininfo in ipairs(wininfos) do
+          handle_long_extmarks(namespace, bufnr, wininfo.winid)
+        end
+      end,
+      hide = function(namespace, bufnr)
+        _G.default_virtual_text_handler.hide(namespace, bufnr)
+      end,
+    }
+  end,
 })
 
 local close_events = require("lbrayner").get_close_events()
