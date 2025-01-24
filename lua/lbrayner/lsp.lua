@@ -189,10 +189,10 @@ function M.on_list(options)
   require("lbrayner").jump_to_location(filename, pos)
 end
 
-local lsp_setup = vim.api.nvim_create_augroup("lsp_setup", { clear = true })
+local lsp_buffer = vim.api.nvim_create_augroup("lsp_buffer", { clear = true })
 
 vim.api.nvim_create_autocmd("LspAttach", {
-  group = lsp_setup,
+  group = lsp_buffer,
   desc = "LSP buffer setup",
   callback = function(args)
     local bufnr = args.buf
@@ -225,7 +225,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 vim.api.nvim_create_autocmd("LspDetach", {
-  group = lsp_setup,
+  group = lsp_buffer,
   desc = "Undo LSP buffer setup",
   callback = function(args)
     local bufnr = args.buf
@@ -234,8 +234,11 @@ vim.api.nvim_create_autocmd("LspDetach", {
   end,
 })
 
+local lsp_diagnostic = vim.api.nvim_create_augroup("lsp_diagnostic", { clear = true })
+
 vim.api.nvim_create_autocmd("BufWritePost", {
-  group = lsp_setup,
+  group = lsp_diagnostic,
+  desc = "Update LSP Diagnostics quickfix list",
   callback = function(args)
     local bufnr = args.buf
     if vim.api.nvim_get_current_buf() ~= bufnr then
