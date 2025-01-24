@@ -76,4 +76,4 @@ end
 
 -- Configure Neovim Lua plugins
 
-require("lbrayner.config")
+require("lbrayner.setup")

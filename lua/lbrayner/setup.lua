@@ -26,25 +26,25 @@ end
 -- fzf-lua
 
 if pcall(require, "fzf-lua") then
-  require("lbrayner.config.fzf-lua")
+  require("lbrayner.setup.fzf-lua")
 end
 
 -- lir.nvim
 
 if pcall(require, "lir") then
-  require("lbrayner.config.lir")
+  require("lbrayner.setup.lir")
 end
 
 -- mini.nvim
 
 if pcall(require, "mini.align") then
-  require("lbrayner.config.mini")
+  require("lbrayner.setup.mini")
 end
 
 -- neosolarized.nvim
 
 if pcall(require, "neosolarized") then
-  require("lbrayner.config.neosolarized")
+  require("lbrayner.setup.neosolarized")
 end
 
 -- nvim-colorizer.lua
@@ -56,7 +56,7 @@ end
 -- nvim-dap-ui
 
 if pcall(require, "dapui") then
-  require("lbrayner.config.dap")
+  require("lbrayner.setup.dap")
 end
 
 -- nvim-lspconfig
@@ -91,13 +91,13 @@ if pcall(require, "lspconfig") then
     },
   })
 
-  require("lbrayner.config.lsp")
+  require("lbrayner.setup.lsp")
 end
 
 -- nvim-snippy
 
 if pcall(require, "snippy") then
-  require("lbrayner.config.lsp-completion")
+  require("lbrayner.setup.lsp-completion")
 end
 
 -- nvim-spider
@@ -116,7 +116,7 @@ end
 -- tint.nvim
 
 if pcall(require, "tint") then
-  require("lbrayner.config.tint")
+  require("lbrayner.setup.tint")
 end
 
 -- typescript-tools.nvim
