@@ -102,12 +102,6 @@ if pcall(require, "lspconfig") then
   })
 end
 
--- nvim-snippy
-
-if pcall(require, "snippy") then
-  require("lbrayner.setup.lsp-completion")
-end
-
 -- tint.nvim
 
 if pcall(require, "tint") then
