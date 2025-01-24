@@ -1,7 +1,5 @@
 -- vim: fdm=marker
 
-local M = {}
-
 -- {{{ Helper functions
 
 local function get_fugitive_temporary_buffer_name()
@@ -41,6 +39,8 @@ local function get_buffer_position()
 end
 
 -- }}}
+
+local M = {}
 
 function M.get_buffer_name(opts)
   opts = opts or {}
