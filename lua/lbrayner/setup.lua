@@ -100,8 +100,6 @@ if pcall(require, "lspconfig") then
       },
     },
   })
-
-  require("lbrayner.setup.lsp")
 end
 
 -- nvim-snippy
