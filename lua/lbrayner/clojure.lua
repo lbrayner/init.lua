@@ -1,6 +1,12 @@
 local M = {}
 
-local function request_custom_text_document_edit(command)
+local function default_handler(err) -- function(err, result, ctx)
+  assert(not err, vim.inspect(err))
+end
+
+local function request_custom_text_document_edit(command, handler)
+  handler = handler or default_handler
+
   local bufnr = vim.api.nvim_get_current_buf()
 
   -- From nvim-jdtls
@@ -20,9 +26,21 @@ local function request_custom_text_document_edit(command)
       start.line,
       start.character,
     },
-  }, function(err, result, ctx)
-    assert(not err, vim.inspect(err))
-  end, bufnr)
+  }, handler, bufnr)
+end
+
+local function drag_handler(err) -- function(err, result, ctx)
+  if not err then return end
+
+  local code = vim.tbl_get(err, "code")
+
+  if code and code == -32600 then -- "Nothing to change."
+    local message = vim.tbl_get(err, "code")
+    vim.notify(err.message)
+    return
+  end
+
+  default_handler(err)
 end
 
 function M.backward_barf()
@@ -34,11 +52,11 @@ function M.backward_slurp()
 end
 
 function M.drag_backward()
-  request_custom_text_document_edit("drag-backward")
+  request_custom_text_document_edit("drag-backward", drag_handler)
 end
 
 function M.drag_forward()
-  request_custom_text_document_edit("drag-forward")
+  request_custom_text_document_edit("drag-forward", drag_handler)
 end
 
 function M.forward_barf()
