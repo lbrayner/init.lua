@@ -401,4 +401,14 @@ subcommand_tbl.workspaceSymbol = {
   end,
 }
 
+vim.keymap.set("n", "<F11>", function()
+  vim.ui.select({ "Yes", "No" }, { prompt = string.format("Start Language Server?") }, function(choice)
+    if not choice then return end
+
+    if choice == "Yes" then
+      vim.cmd("LspStart")
+    end
+  end)
+end)
+
 return M
