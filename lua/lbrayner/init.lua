@@ -118,13 +118,12 @@ function M.jump_to_location(filename, pos, flash)
       { command = "buffer", description = "Current window" },
       { command = "new", description = "Horizontal split" },
       { command = "vnew", description = "Vertical split" },
-      { command = "tabnew", description = "Tab" } }, {
+      { command = "tabnew", description = "Tab" }
+    }, {
       prompt = string.format("Open %s in:", vim.fn.fnamemodify(filename, ":~:.")),
       format_item = function(open_cmd) return open_cmd.description end,
     }, function(open_cmd)
-      if not open_cmd then
-        return
-      end
+      if not open_cmd then return end
 
       -- From vim.lsp.util.create_window_without_focus
       local prev = vim.api.nvim_get_current_win()
