@@ -273,7 +273,7 @@ vim.api.nvim_create_autocmd("BufNewFile", {
 ---@type table<string, MyCmdSubcommand>
 local subcommand_tbl = {}
 require("lbrayner.subcommands").create_command_and_subcommands("Lsp", subcommand_tbl, {
-  desc = "Lsp and subcommands",
+  desc = "LSP client commands",
   range = true
 })
 
@@ -400,6 +400,8 @@ subcommand_tbl.workspaceSymbol = {
     vim.lsp.buf.workspace_symbol(name)
   end,
 }
+
+-- Mappings
 
 vim.keymap.set("n", "<F11>", function()
   vim.ui.select({ "Yes", "No" }, { prompt = string.format("Start Language Server?") }, function(choice)
