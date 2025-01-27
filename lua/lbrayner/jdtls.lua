@@ -342,11 +342,9 @@ function M.test_class(opts)
       -- Get extra JVM args from environment
       local dap_jvm_args = os.getenv("DAP_JVM_ARGS")
 
-      print("test_class config.vmArgs before", vim.inspect(config.vmArgs)) -- TODO debug
       if dap_jvm_args and dap_jvm_args ~= "" then
         config.vmArgs = config.vmArgs .. " " .. dap_jvm_args
       end
-      print("test_class config.vmArgs after", vim.inspect(config.vmArgs)) -- TODO debug
 
       require("jdtls.dap").experimental.run(lens, config, context, opts)
     end)
