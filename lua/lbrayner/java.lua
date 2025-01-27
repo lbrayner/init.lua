@@ -66,7 +66,7 @@ subcommand_tbl.stop = {
 }
 
 subcommand_tbl.testClass = {
-  simple = test_class,
+  simple = require("lbrayner.jdtls").test_class,
 }
 
 subcommand_tbl.testNearestMethod = {

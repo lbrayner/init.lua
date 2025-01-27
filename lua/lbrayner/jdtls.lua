@@ -340,11 +340,13 @@ function M.test_class(opts)
     require("jdtls.dap").experimental.fetch_launch_args(lens, context, function(launch_args)
       local config = require("jdtls.dap").experimental.make_config(lens, launch_args, opts.config_overrides)
       -- Get extra JVM args from environment
-      local dap_vm_args = os.getenv("DAP_JVM_ARGS")
+      local dap_jvm_args = os.getenv("DAP_JVM_ARGS")
 
-      if dap_vm_args then
-        config.vmArgs = config.vmArgs .. " " .. dap_vm_args
+      print("test_class config.vmArgs before", vim.inspect(config.vmArgs)) -- TODO debug
+      if dap_jvm_args and dap_jvm_args ~= "" then
+        config.vmArgs = config.vmArgs .. " " .. dap_jvm_args
       end
+      print("test_class config.vmArgs after", vim.inspect(config.vmArgs)) -- TODO debug
 
       require("jdtls.dap").experimental.run(lens, config, context, opts)
     end)
