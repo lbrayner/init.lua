@@ -64,9 +64,10 @@ local SymbolKind = vim.lsp.protocol.SymbolKind
 function M.java_go_to_top_level_declaration()
   local bufnr = vim.api.nvim_get_current_buf()
 
-  -- From nvim-jdtls
   local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "jdtls" })
   local _, client = next(clients)
+
+  -- From nvim-jdtls
   if not client then
     vim.notify("No LSP client with name `jdtls` available", vim.log.levels.WARN)
     return
@@ -210,7 +211,10 @@ function M.java_type_hierarchy(opts)
     vim.api.nvim_command("botright copen")
   end
 
-  opts = opts or {}
+  opts = opts or {
+    on_list = require("lbrayner.lsp").on_list,
+    reuse_win = true
+  }
 
   local position = vim.lsp.util.make_position_params(0, offset_encoding)
   local command = {
@@ -240,7 +244,7 @@ function M.setup(config, opts)
   vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
     group = jdtls_setup,
     pattern = "*.java",
-    desc = "New Java buffers attach to jdtls",
+    desc = "New Java buffers attach to JDT Language Server",
     callback = function(args)
       local bufnr = args.buf
 
@@ -272,7 +276,7 @@ function M.setup(config, opts)
       vim.api.nvim_create_autocmd("BufEnter", {
         group = jdtls_setup,
         buffer = bufnr,
-        desc = "This Java buffer will attach to jdtls once focused",
+        desc = "This Java buffer will attach to JDT Language Server once focused",
         once = true,
         callback = function()
           require("jdtls").start_or_attach(config)
@@ -281,13 +285,34 @@ function M.setup(config, opts)
     end
   end
 
-  local function java_type_hierarchy()
-    M.java_type_hierarchy({
-      on_list = require("lbrayner.lsp").on_list,
-      reuse_win = true
-    })
-  end
+  vim.api.nvim_create_autocmd("LspAttach", {
+    group = jdtls_setup,
+    pattern = { "*.java", "jdt://*", "*.class" },
+    desc = "JDT Language Server buffer setup",
+    callback = function(args)
+      local bufnr = args.buf
+      local bufname = args.match
 
+      local uri = vim.uri_from_bufnr(bufnr)
+      if not vim.startswith(uri, "file://") and not vim.startswith(uri, "jdt://") then
+        -- Don't attach to buffers such as Fugitive objects
+        return
+      end
+
+      -- Mappings
+      local bufopts = { buffer = bufnr }
+      vim.keymap.set("n", "gC", M.java_go_to_top_level_declaration, bufopts)
+      vim.keymap.set("n", "gY", M.java_type_hierarchy, bufopts)
+    end,
+  })
+
+  require("jdtls").start_or_attach(config)
+end
+
+--- from nvim-jdtls
+--- Debug the test class in the current buffer
+--- @param opts JdtTestOpts|nil
+function M.test_class(opts)
   -- nvim-jdtls internal function
   local function get_first_class_lens(lenses)
     for _, lens in pairs(lenses) do
@@ -304,102 +329,26 @@ function M.setup(config, opts)
     end
   end
 
-  local test_extra_vm_args = opts.test_extra_vm_args or {}
+  opts = opts or {}
+  local context = require("jdtls.dap").experimental.make_context(opts.bufnr)
+  require("jdtls.dap").experimental.fetch_lenses(context, function(lenses)
+    local lens = get_first_class_lens(lenses)
+    if not lens then
+      vim.notify("No test class found")
+      return
+    end
+    require("jdtls.dap").experimental.fetch_launch_args(lens, context, function(launch_args)
+      local config = require("jdtls.dap").experimental.make_config(lens, launch_args, opts.config_overrides)
+      -- Get extra JVM args from environment
+      local dap_vm_args = os.getenv("DAP_JVM_ARGS")
 
-  local function test_class(opts)
-    opts = opts or {}
-    local context = require("jdtls.dap").experimental.make_context(opts.bufnr)
-    require("jdtls.dap").experimental.fetch_lenses(context, function(lenses)
-      local lens = get_first_class_lens(lenses)
-      if not lens then
-        vim.notify("No test class found")
-        return
+      if dap_vm_args then
+        config.vmArgs = config.vmArgs .. " " .. dap_vm_args
       end
-      require("jdtls.dap").experimental.fetch_launch_args(lens, context, function(launch_args)
-        for _, vm_arg in ipairs(test_extra_vm_args) do
-          table.insert(launch_args.vmArguments, vm_arg)
-        end
-        local config = require("jdtls.dap").experimental.make_config(lens, launch_args, opts.config_overrides)
-        require("jdtls.dap").experimental.run(lens, config, context, opts)
-      end)
+
+      require("jdtls.dap").experimental.run(lens, config, context, opts)
     end)
-  end
-
-  vim.api.nvim_create_autocmd("LspAttach", {
-    group = jdtls_setup,
-    pattern = { "*.java", "jdt://*", "*.class" },
-    desc = "jdtls buffer setup",
-    callback = function(args)
-      local bufnr = args.buf
-      local bufname = args.match
-
-      local uri = vim.uri_from_bufnr(bufnr)
-      if not vim.startswith(uri, "file://") and not vim.startswith(uri, "jdt://") then
-        -- Don't attach to buffers such as Fugitive objects
-        return
-      end
-
-      -- Mappings
-      local bufopts = { buffer = bufnr }
-      vim.keymap.set("n", "gC", M.java_go_to_top_level_declaration, bufopts)
-      vim.keymap.set("n", "gY", java_type_hierarchy, bufopts)
-
-      -- Commands
-      vim.api.nvim_buf_create_user_command(bufnr, "JdtGoToTopLevelDeclaration",
-        M.java_go_to_top_level_declaration, { nargs = 0 })
-      vim.api.nvim_buf_create_user_command(bufnr, "JdtOrganizeImports", require("jdtls").organize_imports, {
-        nargs = 0
-      })
-      vim.api.nvim_buf_create_user_command(bufnr, "JdtStop", function()
-        local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "jdtls" })
-        local _, client = next(clients)
-        if not client then return end
-        vim.api.nvim_del_augroup_by_name("jdtls_setup")
-        vim.lsp.stop_client(client.id)
-      end, { nargs = 0 })
-      vim.api.nvim_buf_create_user_command(bufnr, "JdtTestClass", test_class, { nargs = 0 })
-      vim.api.nvim_buf_create_user_command(bufnr, "JdtTestNearestMethod", require("jdtls").test_nearest_method, {
-        nargs = 0 })
-      vim.api.nvim_buf_create_user_command(bufnr, "JdtTypeHierarchy", java_type_hierarchy, {
-        nargs = 0
-      })
-    end,
-  })
-
-  local jdtls_undo = vim.api.nvim_create_augroup("jdtls_undo", { clear = true })
-
-  vim.api.nvim_create_autocmd("LspDetach", {
-    group = jdtls_undo,
-    pattern = "*.java",
-    desc = "Undo jdtls buffer setup",
-    callback = function(args)
-      local bufnr = args.buf
-
-      -- Delete user commands
-      for _, command in ipairs({
-        "JdtBytecode",
-        "JdtCompile",
-        "JdtGoToTopLevelDeclaration",
-        "JdtJol",
-        "JdtJshell",
-        "JdtOrganizeImports",
-        "JdtRestart",
-        "JdtSetRuntime",
-        "JdtShowMavenActiveProfiles",
-        "JdtStop",
-        "JdtTestClass",
-        "JdtTestNearestMethod",
-        "JdtTypeHierarchy",
-        "JdtUpdateConfig",
-        "JdtUpdateDebugConfig",
-        "JdtUpdateMavenActiveProfiles",
-      }) do
-        pcall(vim.api.nvim_buf_del_user_command, bufnr, command) -- Ignore error if command doesn't exist
-      end
-    end,
-  })
-
-  require("jdtls").start_or_attach(config)
+  end)
 end
 
 return M

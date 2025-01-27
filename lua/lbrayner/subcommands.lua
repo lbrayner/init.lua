@@ -28,7 +28,7 @@ local function main_cmd(name, subcommand_tbl)
       if subcommand.simple and type(subcommand.simple) == "function" then
         assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
         assert(opts.range == 0, "No range allowed")
-        subcommand.simple()
+        subcommand.simple({ bang = opts.bang })
       elseif subcommand.ranged and type(subcommand.ranged) == "function" then
         assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
         subcommand.ranged(opts)
@@ -36,7 +36,7 @@ local function main_cmd(name, subcommand_tbl)
         assert(opts.range == 0, "No range allowed")
         subcommand.optional(args)
       else
-        subcommand.impl(args, opts)
+        subcommand.impl(opts, args)
       end
     end)(subcommand_tbl)
   end
