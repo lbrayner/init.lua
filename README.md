@@ -1,8 +1,23 @@
 **Requires Neovim 0.11.0 or greater.**
 
+Remove or backup `~/.config/nvim`.
+
+```
+$ git clone 'https://github.com/lbrayner/init.lua' ~/.config/nvim
+```
+
+# As a bundle
+
+You can use these configurations (`init.lua` + plugins) without affecting your
+setup (`:h -u`).
+
 ```
 $ git clone 'https://github.com/lbrayner/init.lua'
+$ cd init.lua
+init.lua$ nvim -u bundle.lua
 ```
+
+# Install rocks.nvim
 
 Before installing [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim),
 check the
@@ -25,27 +40,14 @@ Create `~/.local/share/nvim/site/pack/rocks/start` for `rocks-git.nvim` (this is
 mkdir ~/.local/share/nvim/site/pack/rocks/start
 ```
 
+**Be aware** that `rocks-git.nvim` installs plugins as Vim packages in
+`~/.local/share/nvim/site/pack/rocks/start`. See `:h packages`. Packages in
+`pack/*/start` are implicitly loaded on start-up.
+
 Start Neovim and run `:Rocks sync`. Restart Neovim.
 
 Check [rocks.nvim](https://github.com/nvim-neorocks/rocks.nvim) for the latest
 instructions.
-
-# As a bundle
-
-You can use these configurations (`init.lua` + plugins) without affecting your
-setup (`:h -u`).
-
-```
-init.lua$ nvim -u bundle.lua
-```
-
-# The regular way
-
-Remove or backup `~/.config/nvim`.
-
-```
-init.lua$ ln -s "$(readlink -f ..)"/init.lua ~/.config/nvim
-```
 
 # Screenshots
 
