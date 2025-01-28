@@ -31,7 +31,7 @@ local function main_cmd(name, subcommand_tbl)
         subcommand.simple({ bang = opts.bang })
       elseif subcommand.ranged and type(subcommand.ranged) == "function" then
         assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
-        subcommand.ranged(opts)
+        subcommand.ranged({ line1 = opts.line1, line2 = opts.line2 })
       elseif subcommand.optional and type(subcommand.optional) == "function" then
         assert(opts.range == 0, "No range allowed")
         subcommand.optional(args)
