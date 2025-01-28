@@ -237,8 +237,7 @@ function M.java_type_hierarchy(opts)
   end)
 end
 
-function M.setup(config, opts)
-  opts = opts or {}
+function M.setup(config)
   local jdtls_setup = vim.api.nvim_create_augroup("jdtls_setup", { clear = true })
 
   vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
@@ -309,8 +308,9 @@ function M.setup(config, opts)
   require("jdtls").start_or_attach(config)
 end
 
---- from nvim-jdtls
---- Debug the test class in the current buffer
+-- Modified test_class from nvim-jdtls/lua/jdtls/dap.lua so that additional
+-- vmArgs can be supplied via environment variable
+
 --- @param opts JdtTestOpts|nil
 function M.test_class(opts)
   -- nvim-jdtls internal function
@@ -338,6 +338,10 @@ function M.test_class(opts)
       return
     end
     require("jdtls.dap").experimental.fetch_launch_args(lens, context, function(launch_args)
+      -- JdtTestOpts.config_overrides of type JdtDapConfig completely overrides
+      -- arguments, such as vmArgs. See function `make_config` in
+      -- nvim-jdtls/lua/jdtls/dap.lua, which is invoked in the following
+      -- statement.
       local config = require("jdtls.dap").experimental.make_config(lens, launch_args, opts.config_overrides)
       -- Get extra JVM args from environment
       local dap_jvm_args = os.getenv("DAP_JVM_ARGS")

@@ -28,12 +28,10 @@ subcommand_tbl.start = {
     end
 
     local config
-    local jdtls_start_opts = {}
     local success, session = pcall(require, "lbrayner.session.jdtls")
 
     if success then
       config = session.get_config()
-      jdtls_start_opts = session.get_opts()
     else
       config = require("lbrayner.jdtls").get_config()
     end
@@ -45,7 +43,7 @@ subcommand_tbl.start = {
       return
     end
 
-    require("lbrayner.jdtls").setup(config, jdtls_start_opts)
+    require("lbrayner.jdtls").setup(config)
   end,
 }
 
