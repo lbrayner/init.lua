@@ -176,7 +176,7 @@ function M.on_list(options)
     return
   end
 
-  local qfitem = options.items[1]
+  local _, qfitem = next(options.items)
   local filename = qfitem.filename
   local pos = { qfitem.lnum, (qfitem.col - 1) }
 
