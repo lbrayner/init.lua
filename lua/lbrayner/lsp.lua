@@ -404,7 +404,7 @@ subcommand_tbl.workspaceSymbol = {
 -- Mappings
 
 vim.keymap.set("n", "<F11>", function()
-  vim.ui.select({ "Yes", "No" }, { prompt = string.format("Start Language Server?") }, function(choice)
+  vim.ui.select({ "Yes", "No" }, { prompt = "Start Language Server?" }, function(choice)
     if not choice then return end
 
     if choice == "Yes" then
