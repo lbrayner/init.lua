@@ -204,6 +204,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
     -- respects that, so we override it.
     vim.bo[bufnr].omnifunc = "v:lua.require'lbrayner.lsp._completion'.omnifunc"
 
+    -- :h grr ($VIMRUNTIME/doc/lsp.txt)
+    -- Some keymaps are created unconditionally when Nvim starts:
+    -- - "grn" is mapped in Normal mode to |vim.lsp.buf.rename()|
+    -- - "gra" is mapped in Normal and Visual mode to |vim.lsp.buf.code_action()|
+    -- - "grr" is mapped in Normal mode to |vim.lsp.buf.references()|
+    -- - "gri" is mapped in Normal mode to |vim.lsp.buf.implementation()|
+    -- - "gO" is mapped in Normal mode to |vim.lsp.buf.document_symbol()|
+    -- - CTRL-S is mapped in Insert mode to |vim.lsp.buf.signature_help()|
+
     -- Mappings
     local bufopts = { buffer = bufnr }
     vim.keymap.set({ "n", "v" }, "<F11>", vim.lsp.buf.code_action, bufopts)
@@ -219,7 +228,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
       end
       references()
     end, bufopts)
-    vim.keymap.set("n", "gK", vim.lsp.buf.signature_help, bufopts)
     vim.keymap.set("n", "gy", type_definition, bufopts)
   end,
 })
@@ -383,10 +391,6 @@ subcommand_tbl.rename = {
     name = name ~= "" and name or nil
     vim.lsp.buf.rename(name)
   end,
-}
-
-subcommand_tbl.signatureHelp = {
-  simple = vim.lsp.buf.signature_help,
 }
 
 subcommand_tbl.typeDefinition = {
