@@ -417,9 +417,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
     local diagnostic_changed_autocmd
 
     local function diagnostic_changed(bufnr)
-      if diagnostic_changed_autocmd then
-        pcall(vim.api.nvim_del_autocmd, diagnostic_changed_autocmd)
-      end
+      pcall(vim.api.nvim_del_autocmd, diagnostic_changed_autocmd)
 
       diagnostic_changed_autocmd = vim.api.nvim_create_autocmd("DiagnosticChanged", {
         group = statusline,
