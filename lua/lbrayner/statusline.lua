@@ -413,10 +413,10 @@ vim.api.nvim_create_autocmd("VimEnter", {
   group = statusline,
   desc = "Create statusline autocmds",
   callback = function(args)
-    local bufnr = args.buf
     local diagnostic_changed_autocmd
 
     local function diagnostic_changed(bufnr)
+      bufnr = bufnr or vim.api.nvim_get_current_buf()
       pcall(vim.api.nvim_del_autocmd, diagnostic_changed_autocmd)
 
       diagnostic_changed_autocmd = vim.api.nvim_create_autocmd("DiagnosticChanged", {
@@ -466,7 +466,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
       end,
     })
 
-    diagnostic_changed(bufnr)
+    vim.schedule(diagnostic_changed)
     vim.schedule(define_status_line)
   end,
 })
