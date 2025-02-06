@@ -324,14 +324,20 @@ vim.g.qf_disable_statusline = 1
 
 -- Autocmds
 
-local function define_status_line() -- {{{
+local function is_actual_curwin() -- {{{
   -- This variable is defined by the runtime.
   -- :h g:actual_curwin
   if vim.g.actual_curwin and vim.g.actual_curwin ~= vim.api.nvim_get_current_win() then
-    return
+    return false
   end
 
-  vim.wo.statusline = M.get_statusline()
+  return true
+end -- }}}
+
+local function define_status_line() -- {{{
+  if is_actual_curwin() then
+    vim.wo.statusline = M.get_statusline()
+  end
 end -- }}}
 
 local statusline = vim.api.nvim_create_augroup("statusline", { clear = true })
@@ -416,7 +422,34 @@ vim.api.nvim_create_autocmd("VimEnter", {
     local diagnostic_changed_autocmd
 
     local function diagnostic_changed(bufnr)
+      local function highlight_severity(bufnr)
+        local severity = (function(bufnr)
+          if vim.tbl_isempty(vim.diagnostic.get(bufnr)) then
+            return nil
+          end
+          for _, level in ipairs(vim.diagnostic.severity) do
+            local items =  vim.diagnostic.get(bufnr, { severity = level })
+            if not vim.tbl_isempty(items) then
+              return level
+            end
+          end
+        end)(bufnr)
+
+        local user7 = vim.api.nvim_get_hl(0, { name = "User7" })
+
+        if not severity then
+          vim.api.nvim_set_hl(0, "User7", vim.tbl_deep_extend("keep", { fg = "NONE" }, user7))
+          return
+        end
+
+        local group = "Diagnostic" .. string.sub(severity, 1, 1) .. string.lower(string.sub(severity, 2))
+        local severity_hl = vim.api.nvim_get_hl(0, { name = group })
+        vim.api.nvim_set_hl(0, "User7", vim.tbl_deep_extend("keep", { fg = severity_hl.fg }, user7))
+      end
+
       bufnr = bufnr or vim.api.nvim_get_current_buf()
+      highlight_severity(bufnr)
+
       pcall(vim.api.nvim_del_autocmd, diagnostic_changed_autocmd)
 
       diagnostic_changed_autocmd = vim.api.nvim_create_autocmd("DiagnosticChanged", {
@@ -425,29 +458,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
         desc = "Diagnostic severity statusline highlight",
         callback = function(args)
           local bufnr = args.buf
-
-          local severity = (function(bufnr)
-            if vim.tbl_isempty(vim.diagnostic.get(bufnr)) then
-              return nil
-            end
-            for _, level in ipairs(vim.diagnostic.severity) do
-              local items =  vim.diagnostic.get(bufnr, { severity = level })
-              if not vim.tbl_isempty(items) then
-                return level
-              end
-            end
-          end)(bufnr)
-
-          local user7 = vim.api.nvim_get_hl(0, { name = "User7" })
-
-          if not severity then
-            vim.api.nvim_set_hl(0, "User7", vim.tbl_deep_extend("keep", { fg = "NONE" }, user7))
-            return
-          end
-
-          local group = "Diagnostic" .. string.sub(severity, 1, 1) .. string.lower(string.sub(severity, 2))
-          local severity_hl = vim.api.nvim_get_hl(0, { name = group })
-          vim.api.nvim_set_hl(0, "User7", vim.tbl_deep_extend("keep", { fg = severity_hl.fg }, user7))
+          highlight_severity(bufnr)
         end,
       })
     end
