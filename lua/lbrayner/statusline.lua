@@ -467,6 +467,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
       group = statusline,
       desc = "Define window local statusline, buffer-local diagnostic autocmd",
       callback = function(args)
+        if require("lbrayner").win_is_floating() then
+          -- Statusline is not allowed in floating windows (see :h
+          -- api-floatwin). Moreover BufWinEnter and WinEnter are triggered
+          -- even when {enter} is false (see :h nvim_open_win).
+          return
+        end
+
         local bufnr = args.buf
 
         diagnostic_changed(bufnr)

@@ -238,7 +238,7 @@ function M.truncate_filename(filename, maxlength)
   return string.sub(tail, 1, cut - 1) .. "…" .. string.sub(tail, cut)
 end
 
-function M.window_is_floating()
+function M.win_is_floating()
   return vim.api.nvim_win_get_config(0).relative ~= ""
 end
 

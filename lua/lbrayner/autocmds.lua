@@ -6,10 +6,10 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
   callback = function(args)
     local bufnr = args.buf
     if vim.api.nvim_get_current_buf() ~= bufnr then
-      -- After a BufWritePost, do nothing if bufnr is not current
+      -- After a BufWritePost do nothing if bufnr is not current
       return
     end
-    if require("lbrayner").window_is_floating() or
+    if require("lbrayner").win_is_floating() or
       vim.bo.filetype == "fugitiveblame" or
       vim.startswith(vim.bo.syntax, "Neogit") then
       return
@@ -503,7 +503,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 vim.api.nvim_create_autocmd("TermEnter", {
   group = terminal_setup,
   callback = function()
-    if not require("lbrayner").window_is_floating() then
+    if not require("lbrayner").win_is_floating() then
       local terminals = vim.tbl_filter(function(winid)
         local bufnr = vim.api.nvim_win_get_buf(winid)
         return vim.bo[bufnr].buftype == "terminal"
