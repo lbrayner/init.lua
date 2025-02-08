@@ -86,19 +86,6 @@ function M.is_quickfix_or_location_list(winid)
   return vim.fn.getwininfo(winid)[1]["quickfix"] == 1
 end
 
--- TODO from tint.nvim, still not used
-function M.iterate_all_windows(func)
-  for _, tabpage in ipairs(vim.api.nvim_list_tabpages()) do
-    if vim.api.nvim_tabpage_is_valid(tabpage) then
-      for _, winid in ipairs(vim.api.nvim_tabpage_list_wins(tabpage)) do
-        if vim.api.nvim_win_is_valid(winid) then
-          func(winid, tabpage)
-        end
-      end
-    end
-  end
-end
-
 function M.jump_to_buffer(bufnr, pos, flash)
   assert(type(bufnr) == "number", "Bad argument; 'bufnr' must be a number.")
   if not vim.api.nvim_buf_is_valid(bufnr) then
@@ -190,17 +177,6 @@ function M.preserve_view_port(command)
   if not success then
     error(err)
   end
-end
-
--- From fzf-lua utils
-function M.read_file(filepath)
-  local fd = vim.uv.fs_open(filepath, "r", 438)
-  if fd == nil then return "" end
-  local stat = assert(vim.uv.fs_fstat(fd))
-  if stat.type ~= "file" then return "" end
-  local data = assert(vim.uv.fs_read(fd, stat.size, 0))
-  assert(vim.uv.fs_close(fd))
-  return data
 end
 
 function M.set_number()
