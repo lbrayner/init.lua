@@ -26,7 +26,7 @@ end
 M.trailing_whitespace_hl_group()
 
 function M.highlight_trailing_whitespace()
-  if require("lbrayner").buffer_is_scratch() then
+  if require("lbrayner").buf_is_scratch() then
     M.clear_trailing_whitespace()
   elseif vim.tbl_contains({ "help", "terminal" }, vim.bo.buftype) then
     M.clear_trailing_whitespace()

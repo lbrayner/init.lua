@@ -1,6 +1,6 @@
 local M = {}
 
-function M.buffer_is_scratch(bufnr)
+function M.buf_is_scratch(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
   return vim.bo[bufnr].buftype == "nofile" and
   vim.tbl_contains({ "hide", "wipe" }, vim.bo[bufnr].bufhidden) and

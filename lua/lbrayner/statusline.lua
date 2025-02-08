@@ -81,7 +81,7 @@ function M.get_buffer_status()
 
   if vim.wo.previewwindow then
     status = status .. "%<" .. vim.fn.pathshorten(require("lbrayner.path").full_path())
-  elseif require("lbrayner").buffer_is_scratch() and vim.api.nvim_buf_get_name(0) == "" then
+  elseif require("lbrayner").buf_is_scratch() and vim.api.nvim_buf_get_name(0) == "" then
     status = status .. "%<%5*%f%*"
   elseif vim.bo.buftype ~= "" then
     status = status .. "%<%5*" .. M.get_buffer_name({ tail = true }) .. "%*"
