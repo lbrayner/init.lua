@@ -337,13 +337,16 @@ vim.api.nvim_create_autocmd("CmdlineEnter", {
   group = statusline,
   desc = "Command-line modes statusline highlight",
   callback = function(args)
-    if args.file == ":" then
+    local cmdline_char = args.file
+
+    if cmdline_char == ":" then
       M.highlight_mode("command")
-    elseif vim.tbl_contains({ "/", "?" }, args.file) then
+    elseif vim.tbl_contains({ "/", "?" }, cmdline_char) then
       M.highlight_mode("search")
     else
       return
     end
+
     vim.api.nvim__redraw({ statusline = 1 })
   end,
 })
