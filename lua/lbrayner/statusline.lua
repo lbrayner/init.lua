@@ -324,18 +324,8 @@ vim.g.qf_disable_statusline = 1
 
 -- Autocmds
 
-local function is_actual_curwin() -- {{{
-  -- This variable is defined by the runtime.
-  -- :h g:actual_curwin
-  if vim.g.actual_curwin and vim.g.actual_curwin ~= vim.api.nvim_get_current_win() then
-    return false
-  end
-
-  return true
-end -- }}}
-
 local function define_status_line() -- {{{
-  if is_actual_curwin() then
+  if require("lbrayner").win_is_actual_curwin() then
     vim.wo.statusline = M.get_statusline()
   end
 end -- }}}

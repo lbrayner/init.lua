@@ -214,6 +214,16 @@ function M.truncate_filename(filename, maxlength)
   return string.sub(tail, 1, cut - 1) .. "…" .. string.sub(tail, cut)
 end
 
+function M.win_is_actual_curwin()
+  -- This variable is defined by the runtime.
+  -- :h g:actual_curwin
+  if vim.g.actual_curwin and vim.g.actual_curwin ~= vim.api.nvim_get_current_win() then
+    return false
+  end
+
+  return true
+end
+
 function M.win_is_floating()
   return vim.api.nvim_win_get_config(0).relative ~= ""
 end
