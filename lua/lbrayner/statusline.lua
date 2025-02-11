@@ -6,20 +6,6 @@ local function get_fugitive_temporary_buffer_name()
   return "Git " .. table.concat(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf()).args, " ")
 end
 
-local function get_number_of_lines()
-  if vim.bo.buftype == "terminal" then
-    return "%" .. (#tostring(vim.bo.scrollback)+1) .. "L"
-  end
-
-  local length = #tostring(vim.fn.line("$"))
-
-  if length < 5 then
-    length = 5
-  end
-
-  return "%-" .. length .. "L"
-end
-
 local function get_line_format()
   if vim.bo.buftype == "terminal" then
     return "%" .. (#tostring(vim.bo.scrollback)+1) .. "l"
@@ -34,11 +20,25 @@ local function get_line_format()
   return "%" .. length .. "l"
 end
 
-local function get_buffer_position()
-  return get_line_format() .. ",%-3.v %3.P " .. get_number_of_lines()
+local function get_number_of_lines()
+  if vim.bo.buftype == "terminal" then
+    return "%" .. (#tostring(vim.bo.scrollback)+1) .. "L"
+  end
+
+  local length = #tostring(vim.fn.line("$"))
+
+  if length < 5 then
+    length = 5
+  end
+
+  return "%-" .. length .. "L"
 end
 
 -- }}}
+
+local function get_buffer_position() -- {{{
+  return get_line_format() .. ",%-3.v %3.P " .. get_number_of_lines()
+end -- }}}
 
 local M = {}
 
@@ -63,17 +63,6 @@ function M.get_buffer_name(opts)
   end
 
   return buffer_name
-end
-
-function M.get_minor_modes()
-  local bufnr = vim.api.nvim_get_current_buf()
-  local modes = vim.tbl_get(vim.b[bufnr], "lbrayner", "statusline", "modes", "str")
-
-  if modes and modes ~= "" then
-    return "%9*" .. modes .. "%* "
-  end
-
-  return ""
 end
 
 function M.get_buffer_status()
@@ -108,6 +97,17 @@ function M.get_empty()
   return ""
 end
 
+function M.get_minor_modes()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local modes = vim.tbl_get(vim.b[bufnr], "lbrayner", "statusline", "modes", "str")
+
+  if modes and modes ~= "" then
+    return "%9*" .. modes .. "%* "
+  end
+
+  return ""
+end
+
 -- A Nerd Font is required
 function M.get_status_flag()
   if vim.bo.modified then
@@ -129,28 +129,6 @@ function M.get_status_flag()
     return "󰌾"
   end
   return " "
-end
-
-function M.get_version_control()
-  if vim.fn.exists("*FugitiveHead") == 0 then
-    return ""
-  end
-
-  local branch = vim.fn.FugitiveHead()
-
-  if branch == "" then
-    branch = vim.fn["fugitive#Head"](7)
-  end
-
-  if branch == "" then
-    return ""
-  end
-
-  if string.len(branch) > 30 then
-    return string.sub(branch, 1, 24) .. "…" .. string.sub(branch, -5)
-  end
-
-  return branch
 end
 
 -- margins of 1 column (on both sides)
@@ -199,6 +177,28 @@ function M.get_statusline()
   end
 
   return leftline .. " %=" .. rightline
+end
+
+function M.get_version_control()
+  if vim.fn.exists("*FugitiveHead") == 0 then
+    return ""
+  end
+
+  local branch = vim.fn.FugitiveHead()
+
+  if branch == "" then
+    branch = vim.fn["fugitive#Head"](7)
+  end
+
+  if branch == "" then
+    return ""
+  end
+
+  if string.len(branch) > 30 then
+    return string.sub(branch, 1, 24) .. "…" .. string.sub(branch, -5)
+  end
+
+  return branch
 end
 
 function M.get_winbar()
