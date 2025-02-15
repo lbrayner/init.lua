@@ -1,3 +1,5 @@
+local offset_encoding = "utf-16"
+
 local M = {}
 
 local function default_handler(err) -- function(err, result, ctx)
@@ -17,7 +19,7 @@ local function request_custom_text_document_edit(command, handler)
     return
   end
 
-  local start = vim.lsp.util.make_range_params()["range"]["start"]
+  local start = vim.lsp.util.make_range_params(0, offset_encoding)["range"]["start"]
 
   client.request("workspace/executeCommand", {
     command = command,
