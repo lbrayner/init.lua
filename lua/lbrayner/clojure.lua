@@ -1,13 +1,37 @@
+-- vim: fdm=marker
+
 local offset_encoding = "utf-16"
 
 local M = {}
+
+-- {{{ Helper functions
 
 local function default_handler(err) -- function(err, result, ctx)
   assert(not err, vim.inspect(err))
 end
 
-local function request_custom_text_document_edit(command, handler)
-  handler = handler or default_handler
+local function drag_handler(err) -- function(err, result, ctx)
+  if not err then return end
+
+  local code = vim.tbl_get(err, "code")
+
+  if code and code == -32600 then -- "Nothing to change."
+    local message = vim.tbl_get(err, "code")
+    vim.notify(err.message)
+    return
+  end
+
+  default_handler(err)
+end
+
+-- }}}
+
+local function request_custom_text_document_edit(command) -- {{{
+  local handler = default_handler
+
+  if vim.startswith(command, "drag-") then
+    handler = drag_handler
+  end
 
   local bufnr = vim.api.nvim_get_current_buf()
 
@@ -29,21 +53,7 @@ local function request_custom_text_document_edit(command, handler)
       start.character,
     },
   }, handler, bufnr)
-end
-
-local function drag_handler(err) -- function(err, result, ctx)
-  if not err then return end
-
-  local code = vim.tbl_get(err, "code")
-
-  if code and code == -32600 then -- "Nothing to change."
-    local message = vim.tbl_get(err, "code")
-    vim.notify(err.message)
-    return
-  end
-
-  default_handler(err)
-end
+end -- }}}
 
 function M.backward_barf()
   request_custom_text_document_edit("backward-barf")
@@ -54,11 +64,11 @@ function M.backward_slurp()
 end
 
 function M.drag_backward()
-  request_custom_text_document_edit("drag-backward", drag_handler)
+  request_custom_text_document_edit("drag-backward")
 end
 
 function M.drag_forward()
-  request_custom_text_document_edit("drag-forward", drag_handler)
+  request_custom_text_document_edit("drag-forward")
 end
 
 function M.forward_barf()
