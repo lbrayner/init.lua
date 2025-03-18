@@ -457,6 +457,7 @@ vim.api.nvim_create_autocmd("TermOpen", {
   desc = "Terminal filetype",
   callback = function()
     vim.bo.filetype = "terminal"
+    vim.wo.relativenumber = true
   end,
 })
 
