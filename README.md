@@ -32,12 +32,12 @@ nvim --clean -c "source https://raw.githubusercontent.com/nvim-neorocks/rocks.nv
 
 Keep the default Rocks installation path `~/.local/share/nvim/rocks`.
 
-There is no need to change `init.lua`.
+There is no need to change `init.lua`. Quit Neovim.
 
 Create `~/.local/share/nvim/site/pack/rocks/start` for `rocks-git.nvim` (this is a bug):
 
 ```
-mkdir ~/.local/share/nvim/site/pack/rocks/start
+mkdir -p ~/.local/share/nvim/site/pack/rocks/start
 ```
 
 **Be aware** that `rocks-git.nvim` installs plugins as Vim packages in

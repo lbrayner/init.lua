@@ -15,7 +15,9 @@ subcommand_tbl.goToTopLevelDeclaration = {
 }
 
 subcommand_tbl.organizeImports = {
-  simple = require("jdtls").organize_imports,
+  simple = function()
+    require("jdtls").organize_imports()
+  end,
 }
 
 subcommand_tbl.start = {
@@ -68,7 +70,9 @@ subcommand_tbl.testClass = {
 }
 
 subcommand_tbl.testNearestMethod = {
-  simple = require("jdtls").test_nearest_method,
+  simple = function()
+    require("jdtls").test_nearest_method()
+  end,
 }
 
 subcommand_tbl.typeHierarchy = {
