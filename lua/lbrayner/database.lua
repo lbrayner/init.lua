@@ -53,7 +53,7 @@ local database_connection = vim.api.nvim_create_augroup("database_connection", {
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   pattern = "mysql:*@*:*.sql",
   group = database_connection,
-  desc = "Set up buffer SQL database connection parameters",
+  desc = "Set up buffer MySQL database connection parameters",
   callback = function(args)
     local name = vim.fn.fnamemodify(args.match, ":t")
     vim.b.db = string.gsub(name, "^mysql:(.*)@.*:(%d+)%.sql$", "mysql://%1@localhost:%2")
@@ -63,7 +63,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   pattern = "postgresql:*@*:*.sql",
   group = database_connection,
-  desc = "Set up buffer SQL database connection parameters",
+  desc = "Set up buffer PostgreSQL database connection parameters",
   callback = function(args)
     local name = vim.fn.fnamemodify(args.match, ":t")
     vim.b.db = string.gsub(name, "^postgresql:(.*)@.*:(%d+)%.sql$", "postgresql://%1@localhost:%2")
@@ -77,5 +77,17 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   callback = function(args)
     local name = vim.fn.fnamemodify(args.match, ":t")
     vim.b.db = string.gsub(name, "^redis:.*:(%d+)%.redis$", "redis://:%1")
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
+  pattern = "sqlserver:*@*:*.sql",
+  group = database_connection,
+  desc = "Set up buffer SQL Server database connection parameters",
+  callback = function(args)
+    local name = vim.fn.fnamemodify(args.match, ":t")
+    vim.b.db = string.gsub(
+      name, "^sqlserver:(.*)@(.*):(%d+)%.sql$", "sqlserver://%1@%2:%3?trustServerCertificate=true"
+    )
   end,
 })
