@@ -129,6 +129,8 @@ local function files()
 
   if vim.fn.executable("find_file_cache") == 1 then
     cmd = "find_file_cache"
+  elseif vim.fn.executable("rg") == 1 then
+    cmd = "rg --files --sort path"
   end
 
   fzf_files({ cmd = cmd })
