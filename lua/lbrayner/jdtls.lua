@@ -73,7 +73,7 @@ function M.java_go_to_top_level_declaration()
 
   local params = { textDocument = vim.lsp.util.make_text_document_params(bufnr) }
 
-  client.request("textDocument/documentSymbol", params, function(err, result, ctx)
+  client:request("textDocument/documentSymbol", params, function(err, result, ctx)
     assert(not err, vim.inspect(err))
 
     if vim.tbl_isempty(result) then

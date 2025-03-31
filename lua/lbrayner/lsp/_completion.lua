@@ -205,7 +205,7 @@ function M.omnifunc(findstart, base)
   local util = vim.lsp.util
   for _, client in ipairs(clients) do
     local params = util.make_position_params(winid, client.offset_encoding)
-    client.request(ms.textDocument_completion, params, function(err, result)
+    client:request(ms.textDocument_completion, params, function(err, result)
       -- print('params', vim.inspect(params)) -- TODO debug
       -- do -- TODO debug
       --   local fd = assert(vim.uv.fs_open('/var/tmp/textDocument_completion_result.lua', 'w', 438))
@@ -275,7 +275,7 @@ vim.api.nvim_create_autocmd("CompleteDonePre", {
     -- From cmp_nvim_lsp
     if vim.tbl_get(client.capabilities, "textDocument", "completion", "resolveSupport") and
       vim.tbl_get(client.server_capabilities, "completionProvider", "resolveProvider") then
-      client.request("completionItem/resolve", completion_item, function(_, result)
+      client:request("completionItem/resolve", completion_item, function(_, result)
         completion_item = result or completion_item
         complete(client, bufnr, completed_item, completion_item)
       end)

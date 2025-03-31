@@ -45,7 +45,7 @@ local function request_custom_text_document_edit(command) -- {{{
 
   local start = vim.lsp.util.make_range_params(0, offset_encoding)["range"]["start"]
 
-  client.request("workspace/executeCommand", {
+  client:request("workspace/executeCommand", {
     command = command,
     arguments = {
       vim.uri_from_bufnr(bufnr),
