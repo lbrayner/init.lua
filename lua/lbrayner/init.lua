@@ -188,7 +188,7 @@ function M.set_number()
   end
 end
 
-function M.setup_matchit()
+function M.setup_xml_matchit()
   if vim.g.loaded_matchit == 1 then
     vim.b.match_ignorecase = 0
     vim.b.match_words = [[<:>,]] ..

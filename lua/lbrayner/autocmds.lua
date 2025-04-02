@@ -178,7 +178,7 @@ local file_type_setup = vim.api.nvim_create_augroup("file_type_setup", { clear =
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = {
-    "gitcommit", "html", "javascriptreact", "lua", "mail", "markdown", "sql",
+    "gitcommit", "html", "java", "javascriptreact", "lua", "mail", "markdown", "sql",
     "text", "typescriptreact", "xml"
   },
   group = file_type_setup,
@@ -196,11 +196,13 @@ vim.api.nvim_create_autocmd("FileType", {
       vim.keymap.set("n", "]<", function()
         require("lbrayner").navigate_depth(vim.v.count1)
       end, { buffer = bufnr, silent = true })
+    elseif filetype == "java" then
+      vim.b.match_words = "<:>"
     elseif filetype == "lua" then
       vim.bo.includeexpr = "v:lua.require'lbrayner'.diff_include_expression(v:fname)"
     elseif filetype == "mail" then
       vim.bo.infercase = true
-      require("lbrayner").setup_matchit()
+      require("lbrayner").setup_xml_matchit()
     elseif filetype == "markdown" then
       vim.bo.infercase = true
       vim.bo.textwidth = 80
