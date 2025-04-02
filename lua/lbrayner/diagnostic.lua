@@ -1,5 +1,7 @@
 -- vim: fdm=marker
 
+local M = {}
+
 -- {{{
 
 local function is_long(bufnr, winid, virt_texts, lnum)
@@ -53,6 +55,16 @@ local function handle_long_extmarks(namespace, bufnr, winid)
 end
 
 -- }}}
+
+local min_severity = "ERROR"
+
+function M.set_min_severity_to_error()
+  min_severity = "ERROR"
+end
+
+function M.set_min_severity_to_warn()
+  min_severity = "WARN"
+end
 
 local trunc_virt_text = vim.api.nvim_create_augroup("trunc_virt_text", { clear = true })
 
@@ -200,11 +212,13 @@ vim.keymap.set("n", "]d", function()
 end, opts)
 vim.keymap.set("n", "[!", function()
   vim.diagnostic.jump({ count = -1, float = { close_events = close_events }, severity = {
-    min = vim.diagnostic.severity.WARN
+    min = vim.diagnostic.severity[min_severity]
   } })
 end, opts)
 vim.keymap.set("n", "]!", function()
   vim.diagnostic.jump({ count = 1, float = { close_events = close_events }, severity = {
-    min = vim.diagnostic.severity.WARN
+    min = vim.diagnostic.severity[min_severity]
   } })
 end, opts)
+
+return M
