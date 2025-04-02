@@ -56,7 +56,11 @@ end
 
 -- }}}
 
-local min_severity = "ERROR"
+local min_severity = "WARN"
+
+function M.get_min_severity()
+  return min_severity
+end
 
 function M.set_min_severity_to_error()
   min_severity = "ERROR"
