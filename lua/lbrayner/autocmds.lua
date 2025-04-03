@@ -459,7 +459,6 @@ vim.api.nvim_create_autocmd("TermOpen", {
   desc = "Terminal filetype",
   callback = function()
     vim.bo.filetype = "terminal"
-    vim.wo.relativenumber = true
   end,
 })
 
@@ -473,6 +472,14 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.schedule(function()
       if not vim.api.nvim_buf_is_valid(bufnr) then
         return
+      end
+
+      -- Find first window in current tab visiting this buffer
+      local winid = vim.fn.win_findbuf(bufnr)[1]
+
+      -- Specifically trying to exclude fzf-lua buffers
+      if vim.bo[bufnr].filetype == "terminal" and winid == vim.api.nvim_get_current_win() then
+        vim.wo.relativenumber = true
       end
 
       if vim.api.nvim_buf_get_name(bufnr) ~= vim.b[bufnr].term_title then
