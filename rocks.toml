@@ -14,7 +14,6 @@
 "colorbuddy.nvim" = "scm"
 "lir.nvim" = "scm"
 "mini.nvim" = "scm"
-"nvim-colorizer.lua" = "scm"
 "rocks-git.nvim" = "2.3.2"
 "rocks.nvim" = "2.40.4"
 "typescript-tools.nvim" = "scm"
@@ -27,6 +26,10 @@ nvim-spider = "scm"
 
 [plugins."neosolarized.nvim"]
 git = "svrana/neosolarized.nvim"
+rev = "main"
+
+[plugins.nvim-highlight-colors]
+git = "brenoprata10/nvim-highlight-colors"
 rev = "main"
 
 [plugins."reply.vim"]

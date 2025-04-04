@@ -102,6 +102,12 @@ if pcall(require, "lspconfig") then
   })
 end
 
+-- nvim-highlight-colors
+
+if pcall(require, "nvim-highlight-colors") then
+  require("nvim-highlight-colors").setup({})
+end
+
 -- tint.nvim
 
 if pcall(require, "tint") then
