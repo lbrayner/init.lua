@@ -105,7 +105,7 @@ end
 -- nvim-highlight-colors
 
 if pcall(require, "nvim-highlight-colors") then
-  require("nvim-highlight-colors").setup({})
+  require("nvim-highlight-colors").setup({ enable_hsl_without_function = false })
 end
 
 -- tint.nvim
