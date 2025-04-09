@@ -99,6 +99,10 @@ local function fzf_files(options)
     fzf_opts = { ["--history"] = get_history_file() }
   }, options)
 
+  if vim.startswith(options.cmd, "find_file_cache") then
+    options.git_icons = false
+  end
+
   fzf.files(options)
 end
 
