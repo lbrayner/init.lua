@@ -134,10 +134,7 @@ function M.java_type_hierarchy(opts)
     assert(not err, vim.inspect(err))
     depth = depth + 1
 
-    local parents = vim.tbl_filter(function(parent)
-      -- Filtering out SymbolKind.Null items
-      return parent.kind ~= SymbolKind.Null
-    end, result.parents)
+    local parents = result.parents
 
     if not vim.tbl_isempty(parents) and depth > maximum_resolve_depth then
       vim.notify(string.format("Type hierarchy: maximum resolve depth is %d.", maximum_resolve_depth),
@@ -154,7 +151,7 @@ function M.java_type_hierarchy(opts)
         assert(vim.tbl_count(parents) == 1,
           string.format("Type hierarchy: could not determine parent with result %s",
           vim.inspect(result)))
-        -- Symbol at point is a SymbolKind.Method, parent is a SymbolKind.Interface
+        -- Symbol at point is a SymbolKind.Method
         parent = parents[1]
       end
 
