@@ -85,8 +85,11 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   desc = "Set up buffer SQL Server database connection parameters",
   callback = function(args)
     local name = vim.fn.fnamemodify(args.match, ":t")
-    vim.b.db = string.gsub(
-      name, "^sqlserver:(.*)@(.*):(%d+)%.sql$", "sqlserver://%1@%2:%3?trustServerCertificate=true"
+    local user, pwd_var, host, port = string.match(name, "^sqlserver:(.*):(.*)@(.*):(%d+)%.sql$")
+    local password = pwd_var ~= "" and os.getenv(pwd_var) or ""
+    vim.b.db = string.format(
+      "sqlserver://%s@%s:%s?trustServerCertificate=true&%s",
+      user, host, port, "password=" .. password
     )
   end,
 })
