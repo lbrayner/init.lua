@@ -228,7 +228,6 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
         vim.cmd.startinsert()
       end)
     end)
-    vim.bo.spelllang = "en"
     vim.wo.spell = true
   end,
 })
