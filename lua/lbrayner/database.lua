@@ -80,7 +80,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
 })
 
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
-  pattern = "sqlserver:*@*:*.sql",
+  pattern = "sqlserver:*:*@*:*.sql",
   group = database_connection,
   desc = "Set up buffer SQL Server database connection parameters",
   callback = function(args)
