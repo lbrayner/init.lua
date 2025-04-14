@@ -220,7 +220,7 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("BufWinEnter", {
   pattern = "COMMIT_EDITMSG",
   group = file_type_setup,
-  desc = "Start in insert mode",
+  desc = "Set up COMMIT_EDITMSG buffer",
   callback = function(args)
     local bufnr = args.buf
     vim.schedule(function()
