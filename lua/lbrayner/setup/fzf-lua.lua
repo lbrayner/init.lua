@@ -106,14 +106,34 @@ local function fzf_files(options)
   fzf.files(options)
 end
 
-local function files_clear_cache()
+local function files_clear_cache(opts)
+  opts = opts or {}
+  local args = opts.args or ""
+  local cmd = string.format("%s %s", "find_file_cache -C", args)
+
   if vim.fn.executable("find_file_cache") == 0 then
     vim.notify("find_file_cache not executable.", vim.log.levels.ERROR)
     return
   end
 
-  fzf_files({ cmd = "find_file_cache -C" })
+  fzf_files({ cmd = cmd })
   vim.notify("Cleared FZF cache.")
+end
+
+local function files(opts)
+  opts = opts or {}
+  local args = opts.args or ""
+  local cmd
+
+  if vim.fn.executable("find_file_cache") == 1 then
+    cmd = "find_file_cache"
+  elseif vim.fn.executable("rg") == 1 then
+    cmd = "rg --files --sort path"
+  end
+
+  cmd = string.format("%s %s", cmd, args)
+
+  fzf_files({ cmd = cmd })
 end
 
 local function file_marks()
@@ -126,18 +146,6 @@ local function file_marks()
     marks = "[A-Z]",
     prompt = "File marks> "
   })
-end
-
-local function files()
-  local cmd
-
-  if vim.fn.executable("find_file_cache") == 1 then
-    cmd = "find_file_cache"
-  elseif vim.fn.executable("rg") == 1 then
-    cmd = "rg --files --sort path"
-  end
-
-  fzf_files({ cmd = cmd })
 end
 
 local function help_tags()
@@ -160,8 +168,8 @@ local function tabs()
 end
 
 vim.api.nvim_create_user_command("Buffers", buffers, { nargs = 0 })
-vim.api.nvim_create_user_command("FilesClearCache", files_clear_cache, { nargs = 0 })
-vim.api.nvim_create_user_command("Files", files, { nargs = 0 })
+vim.api.nvim_create_user_command("FilesClearCache", files_clear_cache, { complete = "file", nargs = "*" })
+vim.api.nvim_create_user_command("Files", files, { complete = "file", nargs = "*" })
 vim.api.nvim_create_user_command("HelpTags", help_tags, { nargs = 0 })
 vim.api.nvim_create_user_command("Marks", file_marks, { nargs = 0 })
 vim.api.nvim_create_user_command("Tabs", tabs, { nargs = 0 })
