@@ -23,7 +23,7 @@ function M.get_config()
 
         local java_debug_jars = vim.fn.glob(java_debug_jar_pattern, 1, 1)
         if vim.tbl_count(java_debug_jars) == 1 then
-          table.insert(bundles, java_debug_jars[1])
+          vim.list_extend(bundles, java_debug_jars)
         end
 
         local vscode_java_test_jars = vim.tbl_filter(function(jar)
