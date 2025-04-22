@@ -284,6 +284,12 @@ function M.setup(config)
     pattern = { "*.java", "jdt://*", "*.class" },
     desc = "JDT Language Server buffer setup",
     callback = function(args)
+      local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+      if client.name ~= "jdtls" then
+        return
+      end
+
       local bufnr = args.buf
       local bufname = args.match
 
