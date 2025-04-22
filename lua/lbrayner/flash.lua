@@ -80,8 +80,4 @@ vim.api.nvim_create_user_command("FlashWindowMode", function()
   vim.notify("Flash window mode enabled.") -- TODO use vim.notify
 end, { nargs = 0 })
 
-vim.keymap.set({
-  "", -- nvo: normal, visual, operator-pending
-  "i" }, "<F10>", M.flash_window)
-
 return M

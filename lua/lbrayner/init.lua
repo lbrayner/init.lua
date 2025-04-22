@@ -48,7 +48,7 @@ function M.get_session()
   return ""
 end
 
-local function _jump_to_location(winid, bufnr, pos, flash)
+local function _jump_to_location(winid, bufnr, pos)
   -- From vim.lsp.util.show_document
   -- Save position in jumplist
   if vim.bo.buftype ~= "terminal" then -- TODO debug to find the real cause
@@ -64,10 +64,6 @@ local function _jump_to_location(winid, bufnr, pos, flash)
       -- Open folds under the cursor
       vim.cmd("normal! zv")
     end)
-  end
-
-  if flash and not require("lbrayner.flash").is_flash_window_mode() then
-    require("lbrayner.flash").flash_window()
   end
 end
 
@@ -86,17 +82,17 @@ function M.is_quickfix_or_location_list(winid)
   return vim.fn.getwininfo(winid)[1]["quickfix"] == 1
 end
 
-function M.jump_to_buffer(bufnr, pos, flash)
+function M.jump_to_buffer(bufnr, pos)
   assert(type(bufnr) == "number", "Bad argument; 'bufnr' must be a number.")
   if not vim.api.nvim_buf_is_valid(bufnr) then
     vim.notify(string.format("Buffer “%d” is not valid.", bufnr))
     return
   end
   local winid = vim.fn.win_findbuf(bufnr)[1]
-  _jump_to_location(winid, bufnr, pos, flash)
+  _jump_to_location(winid, bufnr, pos)
 end
 
-function M.jump_to_location(filename, pos, flash)
+function M.jump_to_location(filename, pos)
   local bufnr = vim.fn.bufadd(filename)
   local winid = vim.fn.win_findbuf(bufnr)[1]
 
@@ -118,12 +114,12 @@ function M.jump_to_location(filename, pos, flash)
       winid = vim.api.nvim_get_current_win()
       vim.api.nvim_set_current_win(prev)
 
-      _jump_to_location(winid, bufnr, pos, flash)
+      _jump_to_location(winid, bufnr, pos)
     end)
     return
   end
 
-  _jump_to_location(winid, bufnr, pos, flash)
+  _jump_to_location(winid, bufnr, pos)
 end
 
 local function navigate_depth_parent(n)

@@ -15,7 +15,6 @@ if pcall(require, "fidget") then
     if alternate > 0 and vim.api.nvim_buf_is_valid(alternate) then
       local name = vim.fn.pathshorten(require("lbrayner.path").full_path())
       vim.api.nvim_set_current_buf(alternate)
-      require("lbrayner.flash").flash_window()
       require("fidget").notify(string.format("Switched to alternate buffer. Previous buffer was %s.", name))
     else
       vim.notify("Alternate buffer is not valid.")

@@ -46,7 +46,7 @@ require("lbrayner.clojure")
 require("lbrayner.coerce")
 require("lbrayner.diagnostic")
 require("lbrayner.diff")
-require("lbrayner.flash")
+require("lbrayner.flash") -- TODO stopped working
 require("lbrayner.highlight")
 require("lbrayner.java")
 require("lbrayner.lsp")
