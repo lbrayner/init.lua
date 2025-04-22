@@ -66,6 +66,10 @@ if pcall(require, "dapui") then
   end, { nargs = "?" })
 
   vim.api.nvim_create_user_command("DapUiReset", require("dapui").setup, { nargs = 0 })
+
+  vim.api.nvim_create_user_command("DapUiToggle", function(command)
+    require("dapui").toggle({ layout = tonumber(command.args) })
+  end, { nargs = "?" })
 end
 
 -- nvim-lspconfig
