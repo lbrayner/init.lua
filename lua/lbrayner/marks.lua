@@ -21,10 +21,10 @@ local function get_file_mark_navigator()
   end
 
   local indexed_marks = {}
-  for _, file_mark_info in ipairs(file_mark_info_list) do
-    table.insert(indexed_marks, file_mark_info.mark)
+  for i, file_mark_info in pairs(file_mark_info_list) do
+    indexed_marks[i] = file_mark_info.mark
+    indexed_marks[file_mark_info.mark] = i
   end
-  vim.tbl_add_reverse_lookup(indexed_marks)
 
   return file_mark_info_by_mark, indexed_marks
 end
