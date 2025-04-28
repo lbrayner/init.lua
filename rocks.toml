@@ -21,7 +21,7 @@ fzf-lua = "0.0.1475"
 nvim-dap = "scm"
 nvim-dap-ui = "scm"
 nvim-lspconfig = "1.0.0"
-nvim-snippy = "scm"
+# nvim-snippy = "scm"
 nvim-spider = "scm"
 
 [plugins."neosolarized.nvim"]
@@ -43,6 +43,10 @@ rev = "fixes"
 [plugins.nvim-jdtls]
 git = "lbrayner/nvim-jdtls"
 rev = "lbrayner"
+
+[plugins.nvim-snippy]
+git = "dcampos/nvim-snippy"
+rev = "master"
 
 [plugins.vim-characterize]
 git = "tpope/vim-characterize"
