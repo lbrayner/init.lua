@@ -90,7 +90,7 @@ function M.create_command_and_subcommands(name, subcommand_tbl, opts)
         elseif arg_lead
           and vim.tbl_get(subcommand_tbl, subcmd_key, "complete") then
           -- The subcommand has completions. Return them.
-          if type(subcommand_tbl[subcmd_key].complete == "table") then
+          if type(subcommand_tbl[subcmd_key].complete) == "table" then
             local candidates = smart_complete(arg_lead, subcommand_tbl[subcmd_key].complete)
             table.sort(candidates)
             return candidates
