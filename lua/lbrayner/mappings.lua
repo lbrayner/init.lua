@@ -88,11 +88,8 @@ vim.keymap.set("n", "]<Space>", [[<Cmd>exe "put =repeat(nr2char(10), v:count1)\<
 if pcall(require, "snippy") then
   local mappings = require("snippy.mapping")
 
-  vim.keymap.set({ "i", "s" }, "<F10>", function()
-    print("hello F10") -- TODO debug
-    mappings.next()()
-  end)
-  vim.keymap.set({ "i", "s" }, "<S-Tab>", mappings.previous)
+  vim.keymap.set({ "i", "s" }, "<Tab>", mappings.next("<Tab>"))
+  vim.keymap.set({ "i", "s" }, "<S-Tab>", mappings.previous("<S-Tab>"))
   -- TODO analyze the utility of cut_text
   -- vim.keymap.set("x", "<Tab>", mappings.cut_text, { remap = true })
   -- vim.keymap.set("n", "g<Tab>", mappings.cut_text, { remap = true })
