@@ -7,6 +7,7 @@ vim.o.cursorline = true
 vim.o.expandtab = true
 vim.o.fileformat = "unix"
 vim.o.fileformats = "unix,dos"
+vim.o.fixendofline = false
 vim.o.ignorecase = true
 vim.o.lazyredraw = true
 vim.o.linebreak = true
