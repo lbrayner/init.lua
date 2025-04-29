@@ -20,6 +20,26 @@ subcommand_tbl.organizeImports = {
   end,
 }
 
+subcommand_tbl.setupDapMainClassConfigs = {
+  simple = function()
+    require("jdtls.dap").setup_dap_main_class_configs({
+      on_ready = function()
+        local success, session = pcall(require, "lbrayner.session.jdtls")
+
+        if not success then
+          return
+        end
+
+        local dap_configs_on_ready = session.dap_configs_on_ready
+
+        if dap_configs_on_ready and type(dap_configs_on_ready) == "function" then
+          dap_configs_on_ready()
+        end
+      end
+  })
+  end,
+}
+
 subcommand_tbl.start = {
   simple = function(opts)
     local bufnr = vim.api.nvim_get_current_buf()
@@ -32,7 +52,7 @@ subcommand_tbl.start = {
     local config
     local success, session = pcall(require, "lbrayner.session.jdtls")
 
-    if success then
+    if success and session.get_config and type(session.get_config) == "function" then
       config = session.get_config()
     else
       config = require("lbrayner.jdtls").get_config()
