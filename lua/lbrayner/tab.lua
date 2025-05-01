@@ -55,8 +55,11 @@ end, { bang = true, nargs = 0 })
 vim.api.nvim_create_user_command("Tabclose", function(command)
   local ei = vim.o.eventignore
   vim.opt.eventignore:append({ "TabClosed" })
-  vim.cmd("tabclose" .. (command.bang and "!" or ""))
+  local tc = vim.o.tabclose
+  vim.o.tabclose = ""
+  vim.cmd.tabclose()
   vim.o.eventignore = ei
+  vim.o.tabclose = tc
 end, { bang = true, nargs = 0 })
 
 vim.api.nvim_create_user_command("Tabnew", function()
