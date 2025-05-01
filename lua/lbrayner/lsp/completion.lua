@@ -73,6 +73,47 @@ local function request(clients, bufnr, win, ctx, callback)
   end
 end
 
+--- Applies the given defaults to the completion item, modifying it in place.
+---
+--- @param item lsp.CompletionItem
+--- @param defaults lsp.ItemDefaults?
+local function apply_defaults(item, defaults)
+  if not defaults then
+    return
+  end
+
+  item.insertTextFormat = item.insertTextFormat or defaults.insertTextFormat
+  item.insertTextMode = item.insertTextMode or defaults.insertTextMode
+  item.data = item.data or defaults.data
+  if defaults.editRange then
+    local textEdit = item.textEdit or {}
+    item.textEdit = textEdit
+    textEdit.newText = textEdit.newText or item.textEditText or item.insertText or item.label
+    if defaults.editRange.start then
+      textEdit.range = textEdit.range or defaults.editRange
+    elseif defaults.editRange.insert then
+      textEdit.insert = defaults.editRange.insert
+      textEdit.replace = defaults.editRange.replace
+    end
+  end
+end
+
+--- @param result vim.lsp.CompletionResult
+--- @return lsp.CompletionItem[]
+local function get_items(result)
+  if result.items then
+    -- When we have a list, apply the defaults and return an array of items.
+    for _, item in ipairs(result.items) do
+      ---@diagnostic disable-next-line: param-type-mismatch
+      apply_defaults(item, result.itemDefaults)
+    end
+    return result.items
+  else
+    -- Else just return the items as they are.
+    return result
+  end
+end
+
 --- @param window integer
 --- @param warmup integer
 --- @return fun(sample: number): number
@@ -105,6 +146,76 @@ local function reset_timer()
   end
 
   completion_timer = nil
+end
+
+--- @param lnum integer 0-indexed
+--- @param line string
+--- @param items lsp.CompletionItem[]
+--- @param encoding string
+--- @return integer?
+local function adjust_start_col(lnum, line, items, encoding)
+  local min_start_char = nil
+  for _, item in pairs(items) do
+    if item.textEdit and item.textEdit.range.start.line == lnum then
+      if min_start_char and min_start_char ~= item.textEdit.range.start.character then
+        return nil
+      end
+      min_start_char = item.textEdit.range.start.character
+    end
+  end
+  if min_start_char then
+    return vim.str_byteindex(line, encoding, min_start_char, false)
+  else
+    return nil
+  end
+end
+
+--- @private
+--- @param line string line content
+--- @param lnum integer 0-indexed line number
+--- @param cursor_col integer
+--- @param client_id integer client ID
+--- @param client_start_boundary integer 0-indexed word boundary
+--- @param server_start_boundary? integer 0-indexed word boundary, based on textEdit.range.start.character
+--- @param result vim.lsp.CompletionResult
+--- @param encoding string
+--- @return table[] matches
+--- @return integer? server_start_boundary
+function M._convert_results(
+  line,
+  lnum,
+  cursor_col,
+  client_id,
+  client_start_boundary,
+  server_start_boundary,
+  result,
+  encoding
+)
+  -- Completion response items may be relative to a position different than `client_start_boundary`.
+  -- Concrete example, with lua-language-server:
+  --
+  -- require('plenary.asy|
+  --         ▲       ▲   ▲
+  --         │       │   └── cursor_pos:                     20
+  --         │       └────── client_start_boundary:          17
+  --         └────────────── textEdit.range.start.character: 9
+  --                                 .newText = 'plenary.async'
+  --                  ^^^
+  --                  prefix (We'd remove everything not starting with `asy`,
+  --                  so we'd eliminate the `plenary.async` result
+  --
+  -- `adjust_start_col` is used to prefer the language server boundary.
+  --
+  local candidates = get_items(result)
+  local curstartbyte = adjust_start_col(lnum, line, candidates, encoding)
+  if server_start_boundary == nil then
+    server_start_boundary = curstartbyte
+  elseif curstartbyte ~= nil and curstartbyte ~= server_start_boundary then
+    server_start_boundary = client_start_boundary
+  end
+  local prefix = line:sub((server_start_boundary or client_start_boundary) + 1, cursor_col)
+  local matches = vim.lsp.completion._lsp_to_complete_items(result, prefix, client_id)
+  return matches, server_start_boundary
 end
 
 --- @param bufnr integer
@@ -152,7 +263,7 @@ local function trigger(bufnr, clients, ctx)
         local client = lsp.get_client_by_id(client_id)
         local encoding = client and client.offset_encoding or 'utf-16'
         local client_matches
-        client_matches, server_start_boundary = vim.lsp.completion._convert_results(
+        client_matches, server_start_boundary = M._convert_results(
           line,
           cursor_row - 1,
           cursor_col,
