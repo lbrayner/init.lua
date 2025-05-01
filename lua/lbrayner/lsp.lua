@@ -199,12 +199,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     require("lbrayner.statusline").set_minor_modes(bufnr, client.name, "append")
 
-    -- Enable completion triggered by <c-x><c-o>
-    -- Some filetype plugins define omnifunc and $VIMRUNTIME/lua/vim/lsp.lua
-    -- respects that, so we override it.
-    -- vim.bo[bufnr].omnifunc = "v:lua.require'lbrayner.lsp._completion'.omnifunc"
-    -- return vim.lsp.completion._omnifunc(findstart, base)
-    vim.bo[bufnr].omnifunc = "v:lua.require'lbrayner.lsp.completion'._omnifunc"
+    if client:supports_method("textDocument/completion") then
+      vim.lsp.completion.enable(true, client.id, bufnr)
+
+      -- Enable completion triggered by <c-x><c-o>
+      -- Some filetype plugins define omnifunc and $VIMRUNTIME/lua/vim/lsp.lua
+      -- respects that, so we override it.
+      vim.bo[bufnr].omnifunc = "v:lua.require'lbrayner.lsp.completion'._omnifunc"
+    end
+
 
     -- :h grr ($VIMRUNTIME/doc/lsp.txt)
     -- Some keymaps are created unconditionally when Nvim starts:
