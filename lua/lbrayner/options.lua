@@ -22,6 +22,7 @@ vim.o.splitbelow = true
 vim.o.splitright = true
 vim.o.switchbuf = "usetab,uselast"
 vim.o.synmaxcol = 500 -- From tpope's vim-sensible (lowering this improves performance in files with long lines)
+vim.o.tabclose = "left"
 vim.o.tabstop = 2
 vim.o.termguicolors = true
 vim.o.title = true

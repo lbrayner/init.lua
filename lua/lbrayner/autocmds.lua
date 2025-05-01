@@ -437,20 +437,6 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   end,
 })
 
-local tab_events = vim.api.nvim_create_augroup("tab_events", { clear = true })
-
-vim.api.nvim_create_autocmd("TabClosed", {
-  group = tab_events,
-  desc = "Returning to previous tab instead of next",
-  callback = function(args)
-    local tab = tonumber(args.file)
-
-    if tab > 1 and tab <= vim.fn.tabpagenr("$") then
-      vim.cmd.tabprevious()
-    end
-  end,
-})
-
 local terminal_setup = vim.api.nvim_create_augroup("terminal_setup", { clear = true })
 
 vim.api.nvim_create_autocmd("TermOpen", {
