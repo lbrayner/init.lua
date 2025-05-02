@@ -137,7 +137,7 @@ function M.default_capabilities()
           },
           labelDetailsSupport = true,
           preselectSupport = true,
-          snippetSupport = pcall(require, "snippy"),
+          snippetSupport = true,
           tagSupport = {
             valueSet = { 1 }
           }

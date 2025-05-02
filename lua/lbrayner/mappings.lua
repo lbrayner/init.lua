@@ -83,18 +83,6 @@ vim.keymap.set("v", "<Leader>x", [[""y:keepp .,$s/\C\V<C-R>"//gc<Left><Left><Lef
 vim.keymap.set("n", "[<Space>", [[<Cmd>exe "put!=repeat(nr2char(10), v:count1)\<Bar>silent ']+"<CR>]])
 vim.keymap.set("n", "]<Space>", [[<Cmd>exe "put =repeat(nr2char(10), v:count1)\<Bar>silent ']-"<CR>]])
 
--- nvim-snippy
-
-if pcall(require, "snippy") then
-  local mappings = require("snippy.mapping")
-
-  vim.keymap.set({ "i", "s" }, "<Tab>", mappings.next("<Tab>"))
-  vim.keymap.set({ "i", "s" }, "<S-Tab>", mappings.previous("<S-Tab>"))
-  -- TODO analyze the utility of cut_text
-  -- vim.keymap.set("x", "<Tab>", mappings.cut_text, { remap = true })
-  -- vim.keymap.set("n", "g<Tab>", mappings.cut_text, { remap = true })
-end
-
 -- nvim-spider
 
 if pcall(require, "spider") then
