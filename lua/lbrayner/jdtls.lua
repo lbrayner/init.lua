@@ -45,7 +45,7 @@ function M.get_config()
       java = {
         settings = {
           url = (function()
-            local prefs = vim.fs.normalize("~/.config/nvim/config/jdtls/settings.prefs")
+            local prefs = vim.fs.normalize("~/.local/share/nvim/eclipse/settings.prefs")
             if vim.uv.fs_stat(prefs) then
               return prefs
             end
