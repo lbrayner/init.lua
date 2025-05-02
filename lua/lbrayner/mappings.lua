@@ -7,8 +7,6 @@ vim.keymap.set("v", "ç", ":")
 vim.keymap.set("n", "Ç", ":<Up><CR>")
 vim.keymap.set("v", "Ç", ":<Up><CR>")
 vim.keymap.set("n", "¬", "^")
-vim.keymap.set("n", "qç", "q:")
-vim.keymap.set("v", "qç", "q:")
 vim.keymap.set("v", "¬", "^")
 
 -- alternate file
