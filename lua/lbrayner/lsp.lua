@@ -123,47 +123,6 @@ end
 
 -- }}}
 
--- From cmp_nvim_lsp
-function M.default_capabilities()
-  return {
-    textDocument = {
-      completion = {
-        completionItem = {
-          commitCharactersSupport = true,
-          deprecatedSupport = true,
-          insertReplaceSupport = true,
-          insertTextModeSupport = {
-            valueSet = { 1, 2 }
-          },
-          labelDetailsSupport = true,
-          preselectSupport = true,
-          snippetSupport = true,
-          tagSupport = {
-            valueSet = { 1 }
-          }
-        },
-        completionList = {
-          itemDefaults = {
-            "commitCharacters",
-            "data",
-            "editRange",
-            "insertTextFormat",
-            "insertTextMode",
-          }
-        },
-        contextSupport = true,
-        dynamicRegistration = false,
-        insertTextMode = 1
-      }
-    },
-    workspace = { -- TODO disable until #26520 is resolved
-      didChangeWatchedFiles = {
-        dynamicRegistration = false
-      }
-    }
-  }
-end
-
 function M.on_list(options)
   if vim.tbl_isempty(options.items) then
     vim.notify("Empty list.")

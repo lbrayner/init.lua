@@ -79,7 +79,6 @@ if pcall(require, "lspconfig") then
   -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#lua_ls
   require("lspconfig").lua_ls.setup({
     autostart = false,
-    capabilities = require("lbrayner.lsp").default_capabilities(),
     settings = {
       Lua = {
         runtime = {
@@ -122,6 +121,5 @@ end
 if pcall(require, "typescript-tools") then
   require("typescript-tools").setup({
     autostart = false,
-    capabilities = require("lbrayner.lsp").default_capabilities(),
   })
 end

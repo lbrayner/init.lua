@@ -5,10 +5,9 @@ function M.get_config()
     textDocument = {
       declaration = {
         dynamicRegistration = true,
-        linkSupport = true
       },
     },
-  }, require("lbrayner.lsp").default_capabilities())
+  }, vim.lsp.protocol.make_client_capabilities())
 
   local java_debug_jar_pattern = vim.fs.joinpath(vim.fn.stdpath("data"),
     "java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar")
