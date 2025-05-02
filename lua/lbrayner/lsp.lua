@@ -200,7 +200,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
     require("lbrayner.statusline").set_minor_modes(bufnr, client.name, "append")
 
     if client:supports_method("textDocument/completion") then
-      vim.lsp.completion.enable(true, client.id, bufnr)
+      -- vim.lsp.completion.enable(true, client.id, bufnr)
+      require("lbrayner.lsp.completion").enable(true, client.id, bufnr)
 
       -- Enable completion triggered by <c-x><c-o>
       -- Some filetype plugins define omnifunc and $VIMRUNTIME/lua/vim/lsp.lua
