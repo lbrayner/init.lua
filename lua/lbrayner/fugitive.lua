@@ -1,6 +1,6 @@
 local M = {}
 
-function M.diff_include_expression(fname)
+function M.include_expression(fname)
   -- diff hunks in vim-fugitive buffers
   local fname = string.gsub(fname, "^[ab]/", "")
   return fname

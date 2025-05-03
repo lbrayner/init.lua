@@ -199,7 +199,7 @@ vim.api.nvim_create_autocmd("FileType", {
     elseif filetype == "java" then
       vim.b.match_words = "<:>"
     elseif filetype == "lua" then
-      vim.bo.includeexpr = "v:lua.require'lbrayner'.diff_include_expression(v:fname)"
+      vim.bo.includeexpr = "v:lua.require'lbrayner'.include_expression(v:fname)"
     elseif filetype == "mail" then
       vim.bo.infercase = true
       require("lbrayner").setup_xml_matchit()

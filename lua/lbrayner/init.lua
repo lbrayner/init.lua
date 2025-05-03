@@ -12,7 +12,7 @@ function M.contains(s, text)
   return string.find(s, text, 1, true)
 end
 
-function M.diff_include_expression(fname)
+function M.include_expression(fname)
   fname = vim.fn.tr(fname, ".", "/")
   if vim.fn.isdirectory("lua") == 1 then
     local init = vim.fs.joinpath("lua", fname, "init.lua")
