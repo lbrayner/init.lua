@@ -200,6 +200,7 @@ vim.api.nvim_create_autocmd("FileType", {
       vim.b.match_words = "<:>"
     elseif filetype == "lua" then
       vim.bo.includeexpr = "v:lua.require'lbrayner'.include_expression(v:fname)"
+      vim.opt_local.suffixesadd:remove(".lua")
     elseif filetype == "mail" then
       vim.bo.infercase = true
       require("lbrayner").setup_xml_matchit()

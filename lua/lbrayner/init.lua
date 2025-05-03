@@ -12,18 +12,6 @@ function M.contains(s, text)
   return string.find(s, text, 1, true)
 end
 
-function M.include_expression(fname)
-  fname = vim.fn.tr(fname, ".", "/")
-  if vim.fn.isdirectory("lua") == 1 then
-    local init = vim.fs.joinpath("lua", fname, "init.lua")
-    if vim.uv.fs_stat(init) then
-      return init
-    end
-    return vim.fs.joinpath("lua", fname)
-  end
-  return fname
-end
-
 function M.get_close_events()
   return { "CursorMoved", "CursorMovedI", "InsertCharPre", "WinScrolled" }
 end
@@ -65,6 +53,26 @@ local function _jump_to_location(winid, bufnr, pos)
       vim.cmd("normal! zv")
     end)
   end
+end
+
+function M.include_expression(fname)
+  fname = vim.fn.tr(fname, ".", "/")
+  if vim.fn.isdirectory("lua") == 1 then
+    local init = vim.fs.joinpath("lua", fname, "init.lua")
+
+    if vim.uv.fs_stat(init) then
+      return init
+    end
+
+    local module = vim.fs.joinpath("lua", fname .. ".lua")
+
+    if vim.uv.fs_stat(module) then
+      return module
+    end
+
+    return vim.fs.joinpath("lua", fname)
+  end
+  return fname
 end
 
 function M.is_location_list(winid)
