@@ -15,7 +15,7 @@ function M.get_config()
 
   return {
     capabilities = capabilities,
-    cmd = require("lspconfig.server_configurations.jdtls").default_config.cmd,
+    cmd = require("lspconfig.configs.jdtls").default_config.cmd,
     init_options = {
       bundles = (function()
         local bundles = {}
