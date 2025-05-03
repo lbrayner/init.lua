@@ -46,6 +46,7 @@ fzf.setup({
     previewer = false,
   },
   files = {
+    hidden = false,
     previewer = false,
   },
   keymap = {
