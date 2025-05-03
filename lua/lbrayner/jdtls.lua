@@ -235,6 +235,10 @@ function M.java_type_hierarchy(opts)
   end)
 end
 
+function M.replace_jdtls_ui_pick_many()
+  require("lbrayner.jdtls._pick_many")
+end
+
 function M.setup(config)
   local jdtls_setup = vim.api.nvim_create_augroup("jdtls_setup", { clear = true })
 

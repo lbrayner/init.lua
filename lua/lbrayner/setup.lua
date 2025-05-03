@@ -84,6 +84,7 @@ if pcall(require, "jdtls") then
   -- nvim-jdtls: skipping autocmds and commands
   vim.g.nvim_jdtls = 1
   require("lbrayner.jdtls").create_command_and_subcommands()
+  require("lbrayner.jdtls").replace_jdtls_ui_pick_many()
 end
 
 -- nvim-lspconfig
