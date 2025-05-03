@@ -57,22 +57,33 @@ end
 
 function M.include_expression(fname)
   fname = vim.fn.tr(fname, ".", "/")
-  if vim.fn.isdirectory("lua") == 1 then
-    local init = vim.fs.joinpath("lua", fname, "init.lua")
+  local dir = "lua"
 
-    if vim.uv.fs_stat(init) then
-      return init
+  if vim.fn.isdirectory(dir) == 0 then
+    dir = "vim/dot-local/share/nvim/site/lua"
+
+    if vim.fn.isdirectory(dir) == 0 then
+      dir = nil
     end
-
-    local module = vim.fs.joinpath("lua", fname .. ".lua")
-
-    if vim.uv.fs_stat(module) then
-      return module
-    end
-
-    return vim.fs.joinpath("lua", fname)
   end
-  return fname
+
+  if not dir then
+    return fname
+  end
+
+  local init = vim.fs.joinpath(dir, fname, "init.lua")
+
+  if vim.uv.fs_stat(init) then
+    return init
+  end
+
+  local module = vim.fs.joinpath(dir, fname .. ".lua")
+
+  if vim.uv.fs_stat(module) then
+    return module
+  end
+
+  return vim.fs.joinpath(dir, fname)
 end
 
 function M.is_location_list(winid)
