@@ -34,7 +34,7 @@ local function main_cmd(name, subcommand_tbl)
         subcommand.ranged({ line1 = opts.line1, line2 = opts.line2 })
       elseif subcommand.optional and type(subcommand.optional) == "function" then
         assert(opts.range == 0, "No range allowed")
-        subcommand.optional(args)
+        subcommand.optional(args, subcommand.complete)
       else
         subcommand.impl(opts, args)
       end
@@ -72,7 +72,7 @@ function M.create_command_and_subcommands(name, subcommand_tbl, opts)
       end
       return (function(subcommand_tbl)
         -- Support nested subcommand tables
-        local subcmd_key = (function()
+        local subcommand_key = (function()
           for w in string.gmatch(arguments, "%s+(%w+)") do
             if vim.tbl_get(subcommand_tbl, w, "subcommand_tbl") and
               type(subcommand_tbl[w].subcommand_tbl) == "table" then
@@ -82,20 +82,20 @@ function M.create_command_and_subcommands(name, subcommand_tbl, opts)
             end
           end
         end)()
-        if not subcmd_key then
+        if not subcommand_key then
           -- Filter subcommands that match
           local candidates = smart_complete(arg_lead, vim.tbl_keys(subcommand_tbl))
           table.sort(candidates)
           return candidates
         elseif arg_lead
-          and vim.tbl_get(subcommand_tbl, subcmd_key, "complete") then
+          and vim.tbl_get(subcommand_tbl, subcommand_key, "complete") then
           -- The subcommand has completions. Return them.
-          if type(subcommand_tbl[subcmd_key].complete) == "table" then
-            local candidates = smart_complete(arg_lead, subcommand_tbl[subcmd_key].complete)
+          if type(subcommand_tbl[subcommand_key].complete) == "table" then
+            local candidates = smart_complete(arg_lead, subcommand_tbl[subcommand_key].complete)
             table.sort(candidates)
             return candidates
           end
-          return subcommand_tbl[subcmd_key].complete(arg_lead)
+          return subcommand_tbl[subcommand_key].complete(arg_lead)
         end
       end)(subcommand_tbl)
     end,

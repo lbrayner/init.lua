@@ -93,3 +93,32 @@ subcommand_tbl.testNearestMethod = {
 subcommand_tbl.typeHierarchy = {
   simple = require("lbrayner.jdtls").java_type_hierarchy,
 }
+
+subcommand_tbl.updateProjectConfig = {
+  simple = require("jdtls").update_project_config,
+}
+
+subcommand_tbl.updateProjectsConfig = {
+  complete = { "--all", "--prompt" },
+  optional = function(args, complete)
+    assert(
+      vim.tbl_isempty(args) or #args == 1,
+      string.format("Illegal arguments: %s", table.concat(args, " "))
+    )
+
+    local _, arg = next(args)
+
+    if not arg then
+      require("jdtls").update_projects_config()
+      return
+    end
+
+    assert(
+      vim.list_contains(complete, arg),
+      string.format("Illegal arguments: %s", table.concat(args, " "))
+    )
+
+    local select_mode = arg:match("--(%a+)")
+    require("jdtls").update_projects_config({ select_mode = select_mode })
+  end,
+}
