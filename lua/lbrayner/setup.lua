@@ -72,6 +72,12 @@ if pcall(require, "dapui") then
   end, { nargs = "?" })
 end
 
+-- nvim-highlight-colors
+
+if pcall(require, "nvim-highlight-colors") then
+  require("nvim-highlight-colors").setup({ enable_hsl_without_function = false })
+end
+
 -- nvim-jdtls
 
 if pcall(require, "jdtls") then
@@ -110,12 +116,6 @@ if pcall(require, "lspconfig") then
       },
     },
   })
-end
-
--- nvim-highlight-colors
-
-if pcall(require, "nvim-highlight-colors") then
-  require("nvim-highlight-colors").setup({ enable_hsl_without_function = false })
 end
 
 -- tint.nvim
