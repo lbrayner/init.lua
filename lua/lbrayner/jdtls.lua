@@ -1,5 +1,9 @@
 local M = {}
 
+function M.create_command_and_subcommands()
+  require("lbrayner.jdtls._command")
+end
+
 function M.get_config()
   local capabilities = vim.tbl_deep_extend("keep", {
     textDocument = {

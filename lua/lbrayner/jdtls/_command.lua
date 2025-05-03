@@ -1,8 +1,3 @@
--- nvim-jdtls: skipping autocmds and commands
-vim.g.nvim_jdtls = 1
-
--- Commands
-
 ---@type table<string, MyCmdSubcommand>
 local subcommand_tbl = {}
 require("lbrayner.subcommands").create_command_and_subcommands("Jdt", subcommand_tbl, {

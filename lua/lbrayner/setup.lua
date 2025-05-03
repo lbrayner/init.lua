@@ -72,6 +72,14 @@ if pcall(require, "dapui") then
   end, { nargs = "?" })
 end
 
+-- nvim-jdtls
+
+if pcall(require, "jdtls") then
+  -- nvim-jdtls: skipping autocmds and commands
+  vim.g.nvim_jdtls = 1
+  require("lbrayner.jdtls").create_command_and_subcommands()
+end
+
 -- nvim-lspconfig
 
 if pcall(require, "lspconfig") then
