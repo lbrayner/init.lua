@@ -59,17 +59,7 @@ function M.get_config()
   }
 end
 
-do
-  local operations_mt = {
-    __index = function(_, key)
-      return require("lbrayner.jdtls._operations")[key]
-    end,
-    __newindex = function()
-      error("Cannot add item")
-    end,
-  }
-  M.operations = setmetatable({}, operations_mt)
-end
+M.operations = require("lbrayner").get_reloadable_module("lbrayner.jdtls._operations")
 
 function M.java_go_to_top_level_declaration()
   M.operations.java_go_to_top_level_declaration()
@@ -156,17 +146,7 @@ function M.setup(config)
   require("jdtls").start_or_attach(config)
 end
 
-do
-  local dap_mt = {
-    __index = function(_, key)
-      return require("lbrayner.jdtls._dap")[key]
-    end,
-    __newindex = function()
-      error("Cannot add item")
-    end,
-  }
-  M.dap = setmetatable({}, dap_mt)
-end
+M.dap = require("lbrayner").get_reloadable_module("lbrayner.jdtls._dap")
 
 function M.test_class(opts)
   M.dap.test_class(opts)

@@ -27,6 +27,18 @@ function M.get_quickfix_or_location_list_title(winid)
   return vim.fn.getqflist({ title = 1 }).title
 end
 
+function M.get_reloadable_module(module)
+  local reloadable_mt = {
+    __index = function(_, key)
+      return require(module)[key]
+    end,
+    __newindex = function()
+      error("Cannot add item")
+    end,
+  }
+  return setmetatable({}, reloadable_mt)
+end
+
 function M.get_session()
   -- vim-obsession
   local session = string.gsub(vim.v.this_session, "%.%d+%.obsession~?", "")
