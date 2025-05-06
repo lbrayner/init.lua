@@ -5,6 +5,15 @@ require("lbrayner.subcommands").create_command_and_subcommands("Jdt", subcommand
   desc = "JDT Language Server commands",
 })
 
+subcommand_tbl.compile = {
+  complete = { "--full" },
+  optional = function(args)
+    args = table.concat(args, " ")
+    assert(args == "" or args == "--full", string.format("Illegal arguments: %s", args))
+    require("jdtls").compile(args == "--full" and "full") -- Incremental by default
+  end,
+}
+
 subcommand_tbl.goToTopLevelDeclaration = {
   simple = require("lbrayner.jdtls").java_go_to_top_level_declaration,
 }
@@ -98,6 +107,7 @@ subcommand_tbl.updateProjectConfig = {
   simple = require("jdtls").update_project_config,
 }
 
+-- Reference implementarion of multiple mutually exclusive flags
 subcommand_tbl.updateProjectsConfig = {
   complete = { "--all", "--prompt" },
   optional = function(args, complete)
