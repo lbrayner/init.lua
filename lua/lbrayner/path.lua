@@ -8,6 +8,36 @@ function M.directory()
   return vim.fn.expand("%:p:~:h")
 end
 
+---@return string?
+function M.first_level()
+  local directory = M.directory()
+
+  if not M.is_in_directory(directory, vim.fn.getcwd()) then
+    return
+  end
+
+  local first_level = vim.fs.root(directory, function(_, path)
+    return vim.fn.fnamemodify(path, ":h") == vim.fn.getcwd()
+  end)
+
+  return first_level
+end
+
+---@return string?
+function M.first_level_name()
+  local first_level = M.first_level()
+
+  if not first_level then
+    return
+  end
+
+  return vim.fn.fnamemodify(first_level, ":t")
+end
+
+function M.folder_name()
+  return vim.fn.expand("%:p:h:t")
+end
+
 function M.full_path()
   local bufnr = 0
   local bufname = vim.api.nvim_buf_get_name(bufnr)
@@ -33,10 +63,6 @@ function M.is_in_directory(node, directory, opts)
     return false
   end
   return vim.startswith(node, directory)
-end
-
-function M.folder_name()
-  return vim.fn.expand("%:p:h:t")
 end
 
 function M.name()

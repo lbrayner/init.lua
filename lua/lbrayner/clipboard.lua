@@ -9,6 +9,14 @@ function M.clip(text)
   vim.notify(vim.fn.getreg("+"))
 end
 
+local function first_level(result)
+  if not result then
+    vim.notify("Unable to determine the first level. Check the working directory.")
+    return
+  end
+  M.clip(result)
+end
+
 vim.api.nvim_create_user_command("Clip", function(command)
   M.clip(command.args)
 end, { nargs = "?" })
@@ -17,6 +25,12 @@ vim.api.nvim_create_user_command("Cwd", function()
 end, { nargs = 0 })
 vim.api.nvim_create_user_command("Directory", function()
   M.clip(require("lbrayner.path").directory())
+end, { nargs = 0 })
+vim.api.nvim_create_user_command("FirstLevel", function()
+  first_level(require("lbrayner.path").first_level())
+end, { nargs = 0 })
+vim.api.nvim_create_user_command("FirstLevelName", function()
+  first_level(require("lbrayner.path").first_level_name())
 end, { nargs = 0 })
 vim.api.nvim_create_user_command("FolderName", function()
   M.clip(require("lbrayner.path").folder_name())
