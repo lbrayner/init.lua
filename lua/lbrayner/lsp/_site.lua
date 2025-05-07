@@ -1,15 +1,11 @@
 local M = {}
 
-M.is_test_file = (function()
+function M.is_test_file(filename)
   local success, site = pcall(require, "lbrayner.site.lsp")
 
   if success then
-    return function(filename)
-      return site.is_test_file(filename)
-    end
+    return site.is_test_file(filename)
   end
-
-  return nil
-end)()
+end
 
 return M

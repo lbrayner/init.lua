@@ -25,7 +25,7 @@ function M.references(config)
 
   config = config or {}
 
-  if is_test_file and config.no_tests then
+  if config.no_tests then
     vim.lsp.buf.references(context, { on_list = function(options)
       options.items = vim.tbl_filter(function(item)
         -- Filter out tests

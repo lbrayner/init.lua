@@ -35,6 +35,7 @@ M.lib = require("lbrayner").get_reloadable_module("lbrayner.lsp._lib")
 function M.on_list(options)
   M.lib.on_list(options)
 end
+
 function M.references(config)
   M.operations.references(config)
 end
@@ -84,7 +85,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "gi", M.implementation, bufopts)
     vim.keymap.set("n", "gR", function()
       -- Exclude test references if not visiting a test file
-      if M.is_test_file and not M.is_test_file(vim.api.nvim_buf_get_name(0)) then
+      if M.is_test_file(vim.api.nvim_buf_get_name(0))
+        == false then -- must be defined on site, returns nil if not available
         M.references({ no_tests = true })
         return
       end
