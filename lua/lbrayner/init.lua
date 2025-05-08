@@ -27,16 +27,15 @@ function M.get_quickfix_or_location_list_title(winid)
   return vim.fn.getqflist({ title = 1 }).title
 end
 
-function M.get_reloadable_module(module)
-  local reloadable_mt = {
+function M.get_proxy_table_for_module(module)
+  return setmetatable({}, {
     __index = function(_, key)
       return require(module)[key]
     end,
     __newindex = function()
       error("Cannot add item")
     end,
-  }
-  return setmetatable({}, reloadable_mt)
+  })
 end
 
 function M.get_session()

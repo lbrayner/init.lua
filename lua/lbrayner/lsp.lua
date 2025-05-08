@@ -1,6 +1,6 @@
 local M = {}
 
-M.operations = require("lbrayner").get_reloadable_module("lbrayner.lsp._operations")
+M.operations = require("lbrayner").get_proxy_table_for_module("lbrayner.lsp._operations")
 
 function M.declaration()
   M.operations.declaration()
@@ -10,7 +10,7 @@ function M.definition()
   M.operations.definition()
 end
 
-M.diagnostic = require("lbrayner").get_reloadable_module("lbrayner.lsp._diagnostic")
+M.diagnostic = require("lbrayner").get_proxy_table_for_module("lbrayner.lsp._diagnostic")
 
 function M.diagnostic_setqflist(opts)
   M.diagnostic.diagnostic_setqflist(opts)
@@ -24,13 +24,13 @@ function M.implementation()
   M.operations.implementation()
 end
 
-M.site = require("lbrayner").get_reloadable_module("lbrayner.lsp._site")
+M.site = require("lbrayner").get_proxy_table_for_module("lbrayner.lsp._site")
 
 function M.is_test_file()
   M.site.is_test_file()
 end
 
-M.lib = require("lbrayner").get_reloadable_module("lbrayner.lsp._lib")
+M.lib = require("lbrayner").get_proxy_table_for_module("lbrayner.lsp._lib")
 
 function M.on_list(options)
   M.lib.on_list(options)

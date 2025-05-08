@@ -59,7 +59,7 @@ function M.get_config()
   }
 end
 
-M.operations = require("lbrayner").get_reloadable_module("lbrayner.jdtls._operations")
+M.operations = require("lbrayner").get_proxy_table_for_module("lbrayner.jdtls._operations")
 
 function M.java_go_to_top_level_declaration()
   M.operations.java_go_to_top_level_declaration()
