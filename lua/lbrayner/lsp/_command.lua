@@ -62,8 +62,7 @@ subcommand_tbl.diagnostic = {
   subcommand_tbl = {
     all = {
       simple = function()
-        diagnostic_qf_opts.severity = nil
-        require("lbrayner.lsp").diagnostic_setqflist()
+        require("lbrayner.lsp").diagnostic_setqflist({ severity = { min = vim.diagnostic.severity.HINT } })
       end,
     },
     error = {
