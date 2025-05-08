@@ -146,10 +146,4 @@ function M.setup(config)
   require("jdtls").start_or_attach(config)
 end
 
-M.dap = require("lbrayner").get_reloadable_module("lbrayner.jdtls._dap")
-
-function M.test_class(opts)
-  M.dap.test_class(opts)
-end
-
 return M
