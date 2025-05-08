@@ -1,49 +1,5 @@
 local M = {}
 
-M.operations = require("lbrayner").get_proxy_table_for_module("lbrayner.lsp._operations")
-
-function M.declaration()
-  M.operations.declaration()
-end
-
-function M.definition()
-  M.operations.definition()
-end
-
-M.diagnostic = require("lbrayner").get_proxy_table_for_module("lbrayner.lsp._diagnostic")
-
-function M.diagnostic_setqflist(opts)
-  M.diagnostic.diagnostic_setqflist(opts)
-end
-
-function M.hover()
-  M.operations.hover()
-end
-
-function M.implementation()
-  M.operations.implementation()
-end
-
-M.site = require("lbrayner").get_proxy_table_for_module("lbrayner.lsp._site")
-
-function M.is_test_file()
-  M.site.is_test_file()
-end
-
-M.lib = require("lbrayner").get_proxy_table_for_module("lbrayner.lsp._lib")
-
-function M.on_list(options)
-  M.lib.on_list(options)
-end
-
-function M.references(config)
-  M.operations.references(config)
-end
-
-function M.type_definition()
-  M.operations.type_definition()
-end
-
 -- Autocmds
 
 local lsp_buffer = vim.api.nvim_create_augroup("lsp_buffer", { clear = true })
@@ -160,4 +116,55 @@ vim.keymap.set("n", "<F11>", function()
   end)
 end)
 
-return M
+local get_proxy = require("lbrayner").get_proxy_table_for_module
+
+M.diagnostic = get_proxy("lbrayner.lsp._diagnostic")
+M.lib = get_proxy("lbrayner.lsp._lib")
+M.operations = get_proxy("lbrayner.lsp._operations")
+M.site = get_proxy("lbrayner.lsp._site")
+
+local function get(proxy, key)
+  if not rawget(M, key) then
+    rawset(M, key, function(...)
+      return proxy[key](...)
+    end)
+  end
+  return rawget(M, key)
+end
+
+return setmetatable(M, {
+  __index = function(_, key)
+    if vim.list_contains(
+      {
+        "diagnostic_setqflist",
+      }, key) then
+      return get(M.diagnostic, key)
+    end
+    if vim.list_contains(
+      {
+        "on_list",
+      }, key) then
+      return get(M.lib, key)
+    end
+    if vim.list_contains(
+      {
+        "declaration",
+        "definition",
+        "hover",
+        "implementation",
+        "references",
+        "type_definition",
+      }, key) then
+      return get(M.operations, key)
+    end
+    if vim.list_contains(
+      {
+        "is_test_file",
+      }, key) then
+      return get(M.site, key)
+    end
+  end,
+  __newindex = function()
+    error("Cannot add item")
+  end,
+})
