@@ -194,8 +194,8 @@ function M.get_version_control()
     return ""
   end
 
-  if string.len(branch) > 30 then
-    return string.sub(branch, 1, 24) .. "…" .. string.sub(branch, -5)
+  if string.len(branch) > 60 then
+    return string.sub(branch, 1, 54) .. "…" .. string.sub(branch, -5)
   end
 
   return branch
