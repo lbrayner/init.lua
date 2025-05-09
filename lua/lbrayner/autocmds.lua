@@ -353,29 +353,33 @@ vim.api.nvim_create_autocmd("FileType", {
       vim.wo[winid].wrap = false
     end
 
-    local function get_name_by_bufnr()
-      local name_by_bufnr = vim.empty_dict()
+    local function get_file_names()
+      local names = vim.empty_dict()
       for _, qfitem in ipairs(vim.fn.getqflist()) do
-        if not name_by_bufnr[qfitem.bufnr] then
-          name_by_bufnr[qfitem.bufnr] = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(qfitem.bufnr), ":~")
+        local name
+        if qfitem.bufnr > 0 then
+          name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(qfitem.bufnr), ":~")
+        else
+          name = vim.fn.fnamemodify(qfitem.text, ":p:~")
+        end
+        if not names[name] then
+          names[name] = true
         end
       end
-      return name_by_bufnr
+      return vim.tbl_keys(names)
     end
 
     -- https://github.com/wincent/ferret: ferret#private#qargs()
     if require("lbrayner").is_quickfix_list() then
       vim.api.nvim_buf_create_user_command(bufnr, "QFFileNamesToArgList", function()
-        local name_by_bufnr = get_name_by_bufnr()
         local names = vim.tbl_map(function(name)
           return vim.fn.fnameescape(name)
-        end, vim.tbl_values(name_by_bufnr))
+        end, get_file_names())
         vim.cmd("%argdelete")
         vim.cmd.argadd(table.concat(names, " "))
       end, { nargs = 0 })
       vim.api.nvim_buf_create_user_command(bufnr, "QFYankFileNames", function()
-        local name_by_bufnr = get_name_by_bufnr()
-        local names = vim.tbl_values(name_by_bufnr)
+        local names = get_file_names()
         vim.fn.setreg('"', names)
         vim.fn.setreg("+", names)
         vim.fn.setreg("*", names)
