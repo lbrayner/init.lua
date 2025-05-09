@@ -122,34 +122,48 @@ function M.jump_to_buffer(bufnr, pos)
   _jump_to_location(winid, bufnr, pos)
 end
 
-function M.jump_to_location(filename, pos)
+function M.jump_to_location(filename, pos, opts)
+  opts = opts or {}
   local bufnr = vim.fn.bufadd(filename)
   local winid = vim.fn.win_findbuf(bufnr)[1]
 
-  if not winid then
-    vim.ui.select({
+  local function open(command)
+    if not command then return end
+
+    -- From vim.lsp.util.create_window_without_focus
+    local prev = vim.api.nvim_get_current_win()
+    vim.cmd(command)
+    winid = vim.api.nvim_get_current_win()
+    vim.api.nvim_set_current_win(prev)
+
+    _jump_to_location(winid, bufnr, pos)
+  end
+
+  if winid then
+    _jump_to_location(winid, bufnr, pos)
+    return
+  end
+
+  if opts.open_cmd then
+    open(opts.open_cmd)
+    return
+  end
+
+  vim.ui.select(
+    {
       { command = "buffer", description = "Current window" },
       { command = "new", description = "Horizontal split" },
       { command = "vnew", description = "Vertical split" },
       { command = "tabnew", description = "Tab" }
-    }, {
+    },
+    {
       prompt = string.format("Open %s in:", vim.fn.fnamemodify(filename, ":~:.")),
-      format_item = function(open_cmd) return open_cmd.description end,
-    }, function(open_cmd)
-      if not open_cmd then return end
-
-      -- From vim.lsp.util.create_window_without_focus
-      local prev = vim.api.nvim_get_current_win()
-      vim.cmd(open_cmd.command)
-      winid = vim.api.nvim_get_current_win()
-      vim.api.nvim_set_current_win(prev)
-
-      _jump_to_location(winid, bufnr, pos)
-    end)
-    return
-  end
-
-  _jump_to_location(winid, bufnr, pos)
+      format_item = function(selected) return selected.description end,
+    },
+    function(selected)
+      open(selected.command)
+    end
+  )
 end
 
 local function navigate_depth_parent(n)

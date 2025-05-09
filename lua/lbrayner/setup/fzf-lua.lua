@@ -8,6 +8,15 @@ local actions = require("fzf-lua.actions")
 -- register fzf-lua as the UI interface for `vim.ui.select`
 fzf.register_ui_select()
 
+local function file_switch_or_edit_or_qf(selected, opts)
+  if #selected > 1 then
+    return actions.file_sel_to_qf(selected, opts)
+  else
+    local file = require("fzf-lua.path").entry_to_file(selected[1])
+    require("lbrayner").jump_to_location(file.stripped, nil, { open_cmd = "buffer" })
+  end
+end
+
 fzf.setup({
   -- These override the default tables completely
   -- no need to set to `false` to disable an action
@@ -17,7 +26,7 @@ fzf.setup({
       -- Pickers inheriting these actions:
       --   files, git_files, git_status, grep, lsp, oldfiles, quickfix, loclist,
       --   tags, btags, args, buffers, tabs, lines, blines
-      ["enter"]       = actions.file_edit_or_qf,
+      ["enter"]       = file_switch_or_edit_or_qf,
       ["ctrl-s"]      = actions.file_split,
       ["alt-s"]       = actions.file_vsplit,
       ["ctrl-t"]      = actions.file_tabedit,
