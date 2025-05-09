@@ -13,16 +13,8 @@ fzf.setup({
   -- no need to set to `false` to disable an action
   -- delete or modify is sufficient
   actions = {
-    buffers = {
-      -- providers that inherit these actions:
-      --   buffers, tabs, lines, blines
-      ["enter"]       = actions.file_edit,
-      ["ctrl-s"]      = actions.file_split,
-      ["alt-s"]       = actions.file_vsplit,
-      ["ctrl-t"]      = actions.file_tabedit,
-    },
     files = {
-      -- providers that inherit these actions:
+      -- Pickers inheriting these actions:
       --   files, git_files, git_status, grep, lsp, oldfiles, quickfix, loclist,
       --   tags, btags, args, buffers, tabs, lines, blines
       ["enter"]       = actions.file_edit_or_qf,
