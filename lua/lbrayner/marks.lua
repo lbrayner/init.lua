@@ -93,7 +93,7 @@ local function file_mark_info_jump_to_location(file_mark_info)
   if not vim.api.nvim_buf_is_loaded(bufnr) then
     pos = { file_mark_info.pos[2], (file_mark_info.pos[3] - 1) }
   end
-  require("lbrayner").jump_to_location(file, pos, true)
+  require("lbrayner").jump_to_location(file, pos)
 end
 
 function M.file_mark_jump_to_location(mark)
