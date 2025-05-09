@@ -27,6 +27,7 @@ fzf.setup({
       --   files, git_files, git_status, grep, lsp, oldfiles, quickfix, loclist,
       --   tags, btags, args, buffers, tabs, lines, blines
       ["enter"]       = file_switch_or_edit_or_qf,
+      ["alt-g"]       = actions.file_edit_or_qf,
       ["ctrl-s"]      = actions.file_split,
       ["alt-s"]       = actions.file_vsplit,
       ["ctrl-t"]      = actions.file_tabedit,
