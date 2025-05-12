@@ -161,7 +161,7 @@ function M.jump_to_location(filename, pos, opts)
       format_item = function(selected) return selected.description end,
     },
     function(selected)
-      open(selected.command)
+      open(selected and selected.command)
     end
   )
 end
