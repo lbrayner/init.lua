@@ -10,7 +10,8 @@ fzf.register_ui_select()
 
 local function file_switch_or_edit_or_qf(selected, opts)
   if #selected > 1 then
-    return actions.file_sel_to_qf(selected, opts)
+    actions.file_sel_to_qf(selected, opts)
+    return
   else
     local file = require("fzf-lua.path").entry_to_file(selected[1])
     require("lbrayner").jump_to_location(file.stripped, nil, { open_cmd = "buffer" })
