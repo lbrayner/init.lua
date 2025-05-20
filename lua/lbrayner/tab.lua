@@ -64,6 +64,6 @@ end, { bang = true, nargs = 0 })
 
 vim.api.nvim_create_user_command("TabeditThis", function()
   require("lbrayner").preserve_view_port(function()
-    vim.cmd("tabedit %")
+    vim.cmd("tab split")
   end)
 end, { nargs = 0 })
