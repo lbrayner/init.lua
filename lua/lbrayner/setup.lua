@@ -52,6 +52,36 @@ if pcall(require, "colorizer") then
   require("colorizer").setup()
 end
 
+-- nvim-dap
+if pcall(require, "dap") then
+  local dap_custom = vim.api.nvim_create_augroup("dap_custom", { clear = true })
+
+  -- Redefine DapContinue
+  vim.api.nvim_create_autocmd("VimEnter", {
+    group = dap_custom,
+    once = true,
+    callback = function()
+      vim.api.nvim_create_user_command("DapContinue", function()
+        require("dap").continue({
+          before = function(config)
+            local success, session = pcall(require, "lbrayner.session")
+
+            if success and session.dap_run_before and type(session.dap_run_before) == "function" then
+              config = session.dap_run_before(config)
+            end
+
+            return config
+          end
+        })
+      end, { nargs = 0 })
+    end,
+  })
+
+  if vim.v.vim_did_enter == 1 then
+    vim.api.nvim_exec_autocmds("VimEnter", { group = dap_custom })
+  end
+end
+
 -- nvim-dap-ui
 
 if pcall(require, "dapui") then
