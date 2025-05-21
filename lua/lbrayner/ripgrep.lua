@@ -115,7 +115,7 @@ function M.user_command_with_config_path(command_name, config_path)
 end
 
 vim.go.grepformat = "%f:%l:%c:%m"
-vim.go.grepprg = "rg --vimgrep --sort path"
+vim.go.grepprg = "rg --engine=auto --vimgrep --sort path"
 vim.go.shellpipe = "&>"
 
 M.user_command_with_config_path("Rg")
