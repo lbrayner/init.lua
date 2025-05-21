@@ -339,12 +339,10 @@ vim.api.nvim_create_autocmd("CmdlineEnter", {
   callback = function(args)
     local cmdline_char = args.file
 
-    if cmdline_char == ":" then
-      M.highlight_mode("command")
-    elseif vim.tbl_contains({ "/", "?" }, cmdline_char) then
+    if vim.tbl_contains({ "/", "?" }, cmdline_char) then
       M.highlight_mode("search")
     else
-      return
+      M.highlight_mode("command")
     end
 
     vim.api.nvim__redraw({ statusline = 1 })
@@ -360,7 +358,8 @@ vim.api.nvim_create_autocmd("ColorScheme", {
   end,
 })
 
-vim.api.nvim_create_autocmd("InsertEnter", {
+vim.api.nvim_create_autocmd("ModeChanged", {
+  pattern = [[[^i]*:i*]],
   group = statusline,
   desc = "Insert mode statusline highlight",
   callback = function()
