@@ -448,7 +448,9 @@ vim.api.nvim_create_autocmd("TermOpen", {
   group = terminal_setup,
   desc = "Terminal filetype",
   callback = function()
-    vim.bo.filetype = "terminal"
+    if vim.b.default_filetype then
+      vim.bo.filetype = "terminal"
+    end
   end,
 })
 
@@ -524,17 +526,18 @@ vim.api.nvim_create_autocmd("TermLeave", {
 
 vim.api.nvim_create_autocmd("VimEnter", {
   group = terminal_setup,
-  desc = "Start in terminal mode",
+  desc = "Start in Insert Mode in terminal mode",
   callback = function()
     vim.api.nvim_create_autocmd("TermOpen", {
       group = terminal_setup,
       callback = function(args)
         local bufnr = args.buf
-        local file = vim.api.nvim_buf_get_name(bufnr)
-        local filename = vim.fn.fnamemodify(file, ":t")
-        if vim.startswith(filename, "Neogit") then
+        local filetype = vim.bo[bufnr].filetype
+
+        if vim.startswith(filetype, "dapui") then
           return
         end
+
         vim.cmd.startinsert()
       end,
     })
