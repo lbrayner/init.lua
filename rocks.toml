@@ -37,7 +37,7 @@ rev = "master"
 
 [plugins."tint.nvim"]
 git = "lbrayner/tint.nvim"
-rev = "80b15a91087991068d5834419437f652d1d4bc8e"
+rev = "fixes"
 branch = "fixes"
 ignore_tags = true
 
