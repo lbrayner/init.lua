@@ -15,9 +15,9 @@
 "lir.nvim" = "scm"
 "mini.nvim" = "scm"
 "rocks-git.nvim" = "2.5.3"
-"rocks.nvim" = "2.44.0"
+"rocks.nvim" = "2.45.0"
 "typescript-tools.nvim" = "scm"
-fzf-lua = "0.0.1899"
+fzf-lua = "0.0.1902"
 nvim-dap = "scm"
 nvim-dap-ui = "scm"
 nvim-lspconfig = "2.1.0"
@@ -37,7 +37,9 @@ rev = "master"
 
 [plugins."tint.nvim"]
 git = "lbrayner/tint.nvim"
-rev = "fixes"
+rev = "80b15a91087991068d5834419437f652d1d4bc8e"
+branch = "fixes"
+ignore_tags = true
 
 [plugins.nvim-jdtls]
 git = "lbrayner/nvim-jdtls"
@@ -49,7 +51,9 @@ rev = "master"
 
 [plugins.vim-dadbod]
 git = "tpope/vim-dadbod"
-rev = "master"
+rev = "e95afed23712f969f83b4857a24cf9d59114c2e6"
+branch = "master"
+ignore_tags = true
 
 [plugins.vim-eunuch]
 git = "tpope/vim-eunuch"
