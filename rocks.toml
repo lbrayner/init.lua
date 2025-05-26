@@ -38,7 +38,6 @@ rev = "master"
 [plugins."tint.nvim"]
 git = "lbrayner/tint.nvim"
 rev = "fixes"
-branch = "fixes"
 ignore_tags = true
 
 [plugins.nvim-jdtls]
@@ -51,8 +50,7 @@ rev = "master"
 
 [plugins.vim-dadbod]
 git = "tpope/vim-dadbod"
-rev = "e95afed23712f969f83b4857a24cf9d59114c2e6"
-branch = "master"
+rev = "master"
 ignore_tags = true
 
 [plugins.vim-eunuch]
