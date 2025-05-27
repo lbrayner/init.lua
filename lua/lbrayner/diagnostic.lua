@@ -5,14 +5,12 @@ local M = {}
 -- {{{
 
 local function is_long(bufnr, winid, virt_texts, lnum)
-  -- TODO reduce?
-  local mess_len = 0
+  local message_length = vim.iter(virt_texts):fold(0, function(acc, v)
+    acc = acc + string.len(v[1])
+    return acc
+  end)
 
-  for _, virt_text in ipairs(virt_texts) do
-    mess_len = mess_len + string.len(virt_text[1])
-  end
-
-  if mess_len == 0 then
+  if message_length == 0 then
     return false
   end
 
@@ -22,19 +20,17 @@ local function is_long(bufnr, winid, virt_texts, lnum)
   if not success then return false end
 
   local _, line = next(lines)
-  local line_len = string.len(line)
+  local line_length = string.len(line)
   local winwidth = vim.api.nvim_win_get_width(winid) - 2 - 3 -- sign & column number
-  local long = line_len + 1 + mess_len > winwidth
+  local long = line_length + 1 + message_length > winwidth
   return long
 end
 
 local function handle_long_extmarks(namespace, bufnr, winid)
   local metadata = vim.diagnostic.get_namespace(namespace)
-
   if not metadata then return end
 
   local virt_text_ns = metadata.user_data.virt_text_ns
-
   if not virt_text_ns then return end
 
   local extmarks = vim.api.nvim_buf_get_extmarks(bufnr, virt_text_ns, 0, -1, {
@@ -43,7 +39,6 @@ local function handle_long_extmarks(namespace, bufnr, winid)
 
   for _, extmark in ipairs(extmarks) do
     local id, lnum, details = extmark[1], extmark[2], extmark[4]
-
     if not details.virt_text then return end
 
     local long = is_long(bufnr, winid, details.virt_text, lnum)
@@ -184,6 +179,10 @@ vim.api.nvim_create_autocmd("VimEnter", {
     }
   end,
 })
+
+if vim.v.vim_did_enter == 1 then
+  vim.api.nvim_exec_autocmds("VimEnter", { group = custom_diagnostics })
+end
 
 local close_events = require("lbrayner").get_close_events()
 local opts = { silent = true }
