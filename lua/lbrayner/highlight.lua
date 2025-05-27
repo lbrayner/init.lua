@@ -14,13 +14,17 @@ vim.api.nvim_create_user_command("OverlengthToggle", function()
     vim.notify("Overlength highlight cleared.")
     return
   end
-  vim.api.nvim_set_hl(0, "Overlength", { bg = "#592929" })
+  -- Don't forget to require("tint").refresh() if you want to see changes
+  -- reflected on the current session
+  vim.api.nvim_set_hl(0, "Overlength", { bg = "#ff0000" })
   vim.fn.matchadd("Overlength", string.format([[\%%%dv.\+]], vim.w.overlength))
   vim.notify("Overlength highlighted.")
 end, { nargs = 0 })
 
+-- Don't forget to require("tint").refresh() if you want to see changes
+-- reflected on the current session
 function M.trailing_whitespace_hl_group()
-  vim.api.nvim_set_hl(0, "TrailingWhitespace", { bg = "#ff0000" })
+  vim.api.nvim_set_hl(0, "TrailingWhitespace", { bg = "#770000" })
 end
 
 M.trailing_whitespace_hl_group()
