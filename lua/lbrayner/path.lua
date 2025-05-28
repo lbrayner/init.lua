@@ -20,7 +20,9 @@ function M.first_level()
     return vim.fn.fnamemodify(path, ":h") == vim.fn.getcwd()
   end)
 
-  return first_level
+  if first_level then
+    return vim.fn.fnamemodify(first_level, ":~")
+  end
 end
 
 ---@return string?
