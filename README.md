@@ -1,4 +1,4 @@
-**Requires Neovim 0.11.0 or greater.**
+**Requires Neovim 0.11.2 or greater.**
 
 Remove or backup `~/.config/nvim`.
 
