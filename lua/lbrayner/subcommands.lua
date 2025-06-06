@@ -22,22 +22,32 @@ local function main_cmd(name, subcommand_tbl)
       end
       local subcommand_key = fargs[1]
       -- Get the subcommand's arguments, if any
-      local args = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
+      opts.args = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
       local subcommand = subcommand_tbl[subcommand_key]
       if not subcommand then
         vim.notify(name .. ": Unknown command: " .. subcommand_key, vim.log.levels.ERROR)
         return
       end
+      opts.subcommand = subcommand
       -- Invoke the subcommand
       if subcommand.simple and type(subcommand.simple) == "function" then
-        assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
+        assert(
+          vim.tbl_isempty(opts.args),
+          string.format("Trailing characters: %s", table.concat(opts.args, " "))
+        )
         assert(subcommand.ranged or opts.range == 0, "No range allowed")
         subcommand.simple(opts)
       elseif subcommand.optional and type(subcommand.optional) == "function" then
         assert(subcommand.ranged or opts.range == 0, "No range allowed")
-        subcommand.optional(opts, args)
+        -- assert(
+        --   subcommand.complete and
+        --   type(subcommand.complete) == "table" and
+        --   not vim.tbl_isempty(subcommand.complete),
+        --   string.format("Illegal arguments: %s", table.concat(args, " "))
+        -- )
+        subcommand.optional(opts)
       else
-        subcommand.impl(opts, args)
+        subcommand.impl(opts)
       end
     end)(subcommand_tbl)
   end

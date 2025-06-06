@@ -8,8 +8,8 @@ require("lbrayner.subcommands").create_user_command_and_subcommands("Jdt", subco
 
 subcommand_tbl.compile = {
   complete = { "--full" },
-  optional = function(args)
-    args = table.concat(args, " ")
+  optional = function(opts)
+    local args = table.concat(opts.args, " ")
     assert(args == "" or args == "--full", string.format("Illegal arguments: %s", args))
     require("jdtls").compile(args == "--full" and "full") -- Incremental by default
   end,
@@ -111,7 +111,9 @@ subcommand_tbl.updateProjectConfig = {
 -- Reference implementarion of multiple mutually exclusive flags
 subcommand_tbl.updateProjectsConfig = {
   complete = { "--all", "--prompt" },
-  optional = function(_, args)
+  optional = function(opts)
+    local args = table.concat(opts.args, " ")
+
     assert(
       vim.tbl_isempty(args) or #args == 1,
       string.format("Illegal arguments: %s", table.concat(args, " "))
@@ -125,7 +127,7 @@ subcommand_tbl.updateProjectsConfig = {
     end
 
     assert(
-      vim.list_contains(complete, arg),
+      vim.list_contains(opts.subcommand.complete, arg),
       string.format("Illegal arguments: %s", table.concat(args, " "))
     )
 

@@ -26,8 +26,8 @@ require("lbrayner.subcommands").create_user_command_and_subcommands("Lsp", subco
 
 subcommand_tbl.addWorkspaceFolder = {
   complete = require("lbrayner.subcommands").complete_filename,
-  optional = function(args)
-    local dir = table.concat(args, " ")
+  optional = function(opts)
+    local dir = table.concat(opts.args, " ")
     if dir == "" then
       dir = vim.fn.getcwd()
     else
@@ -107,8 +107,8 @@ subcommand_tbl.listWorkspaceFolders = {
 
 subcommand_tbl.references = {
   complete = { "--no-tests" },
-  optional = function(args)
-    args = table.concat(args, " ")
+  optional = function(opts)
+    local args = table.concat(opts.args, " ")
     assert(args == "" or args == "--no-tests", string.format("Illegal arguments: %s", args))
     require("lbrayner.lsp").references({ no_tests = (args == "--no-tests") })
   end,
@@ -116,8 +116,8 @@ subcommand_tbl.references = {
 
 subcommand_tbl.removeWorkspaceFolder = {
   complete = require("lbrayner.subcommands").complete_filename,
-  optional = function(args)
-    local dir = table.concat(args, " ")
+  optional = function(opts)
+    local dir = table.concat(opts.args, " ")
     if dir == "" then
       dir = vim.fn.getcwd()
     end
@@ -126,8 +126,8 @@ subcommand_tbl.removeWorkspaceFolder = {
 }
 
 subcommand_tbl.rename = {
-  optional = function(args)
-    local name = table.concat(args, " ")
+  optional = function(opts)
+    local name = table.concat(opts.args, " ")
     name = name ~= "" and name or nil
     vim.lsp.buf.rename(name)
   end,
@@ -138,8 +138,8 @@ subcommand_tbl.typeDefinition = {
 }
 
 subcommand_tbl.workspaceSymbol = {
-  optional = function(args)
-    local name = table.concat(args, " ")
+  optional = function(opts)
+    local name = table.concat(opts.args, " ")
     name = name ~= "" and name or nil
     vim.lsp.buf.workspace_symbol(name)
   end,
