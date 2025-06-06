@@ -18,7 +18,7 @@ end
 
 ---@type table<string, MyCmdSubcommand>
 local subcommand_tbl = {}
-require("lbrayner.subcommands").create_command_and_subcommands("Lsp", subcommand_tbl, {
+require("lbrayner.subcommands").create_user_command_and_subcommands("Lsp", subcommand_tbl, {
   bar = true,
   desc = "LSP client commands",
   range = true

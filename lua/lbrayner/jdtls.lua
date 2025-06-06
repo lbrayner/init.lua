@@ -1,6 +1,6 @@
 local M = {}
 
-function M.create_command_and_subcommands()
+function M.create_user_command()
   require("lbrayner.jdtls._command")
 end
 

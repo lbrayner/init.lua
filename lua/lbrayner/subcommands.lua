@@ -58,7 +58,7 @@ local function smart_complete(lead, options)
   end
 end
 
-function M.create_command_and_subcommands(name, subcommand_tbl, opts)
+function M.create_user_command_and_subcommands(name, subcommand_tbl, opts)
   opts = opts or {}
   assert(name:match("^%u%a+$"), "Bad argument; 'name' must a capitalized word.")
   assert(type(subcommand_tbl) == "table", "'subcommand_tbl' must be a table")

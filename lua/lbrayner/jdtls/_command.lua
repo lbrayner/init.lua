@@ -1,6 +1,6 @@
 ---@type table<string, MyCmdSubcommand>
 local subcommand_tbl = {}
-require("lbrayner.subcommands").create_command_and_subcommands("Jdt", subcommand_tbl, {
+require("lbrayner.subcommands").create_user_command_and_subcommands("Jdt", subcommand_tbl, {
   bang = true,
   bar = true,
   desc = "JDT Language Server commands",
