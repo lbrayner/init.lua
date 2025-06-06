@@ -112,7 +112,7 @@ subcommand_tbl.updateProjectConfig = {
 subcommand_tbl.updateProjectsConfig = {
   complete = { "--all", "--prompt" },
   optional = function(opts)
-    local args = table.concat(opts.args, " ")
+    local args = opts.args
 
     assert(
       vim.tbl_isempty(args) or #args == 1,
