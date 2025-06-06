@@ -439,7 +439,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
         vim.api.nvim_set_hl(0, "User7", vim.tbl_deep_extend("keep", { fg = severity_hl.fg }, user7))
       end
 
-      bufnr = bufnr or vim.api.nvim_get_current_buf()
       highlight_severity(bufnr)
 
       pcall(vim.api.nvim_del_autocmd, diagnostic_changed_autocmd)
@@ -476,8 +475,26 @@ vim.api.nvim_create_autocmd("VimEnter", {
       end,
     })
 
-    vim.schedule(diagnostic_changed)
+    -- Useful when reloading the module
+    if not mapping and
+      vim.g.colors_name and
+      vim.g.colors_name ~= "" and
+      vim.g.colors_name ~= "default" then
+      M.load_theme(vim.g.colors_name)
+    end
+
+    -- Useful when reloading the module
+    if not mapping and vim.g.colors_name == "default" then
+      -- A statusline theme is required
+      M.load_theme("neosolarized")
+    end
+
+    local bufnr = args.buf
+
     vim.schedule(define_status_line)
+    vim.schedule(function()
+      diagnostic_changed(bufnr)
+    end)
   end,
 })
 
