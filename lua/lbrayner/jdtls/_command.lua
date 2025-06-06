@@ -111,7 +111,7 @@ subcommand_tbl.updateProjectConfig = {
 -- Reference implementarion of multiple mutually exclusive flags
 subcommand_tbl.updateProjectsConfig = {
   complete = { "--all", "--prompt" },
-  optional = function(args, complete)
+  optional = function(_, args)
     assert(
       vim.tbl_isempty(args) or #args == 1,
       string.format("Illegal arguments: %s", table.concat(args, " "))

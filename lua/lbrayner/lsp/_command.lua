@@ -38,7 +38,8 @@ subcommand_tbl.addWorkspaceFolder = {
 }
 
 subcommand_tbl.codeAction = {
-  ranged = function(opts)
+  ranged = true,
+  simple = function(opts)
     vim.lsp.buf.code_action({ range = get_range(opts) })
   end,
 }
@@ -84,7 +85,8 @@ subcommand_tbl.documentSymbol = {
 }
 
 subcommand_tbl.format = {
-  ranged = function(opts)
+  ranged = true,
+  simple = function(opts)
     vim.lsp.buf.format({ async = true, range = get_range(opts) })
   end,
 }

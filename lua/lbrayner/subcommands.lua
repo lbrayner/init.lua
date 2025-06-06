@@ -6,6 +6,10 @@ function M.complete_filename(lead)
   return vim.fn.glob(lead .. "*", 1, 1)
 end
 
+-- local function project(opts)
+--   return { bang = opts.bang, line1 = true, line2 = true }
+-- end
+
 local function main_cmd(name, subcommand_tbl)
   ---@param opts table :h lua-guide-commands-create
   return function(opts)
@@ -27,14 +31,11 @@ local function main_cmd(name, subcommand_tbl)
       -- Invoke the subcommand
       if subcommand.simple and type(subcommand.simple) == "function" then
         assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
-        assert(opts.range == 0, "No range allowed")
-        subcommand.simple({ bang = opts.bang })
-      elseif subcommand.ranged and type(subcommand.ranged) == "function" then
-        assert(vim.tbl_isempty(args), string.format("Trailing characters: %s", table.concat(args, " ")))
-        subcommand.ranged({ line1 = opts.line1, line2 = opts.line2 })
+        assert(subcommand.ranged or opts.range == 0, "No range allowed")
+        subcommand.simple(opts)
       elseif subcommand.optional and type(subcommand.optional) == "function" then
-        assert(opts.range == 0, "No range allowed")
-        subcommand.optional(args, subcommand.complete)
+        assert(subcommand.ranged or opts.range == 0, "No range allowed")
+        subcommand.optional(opts, args)
       else
         subcommand.impl(opts, args)
       end
