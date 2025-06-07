@@ -86,7 +86,7 @@ end
 
 -- nvim-dap-ui
 
-if pcall(require, "dapui") then
+function M.dapui()
   require("dapui").setup()
 
   vim.api.nvim_create_user_command("DapUiClose", function(command)
