@@ -1,3 +1,5 @@
+local M = {}
+
 -- fidget.nvim (installed as a dependency of rocks.nvim)
 
 if pcall(require, "fidget") then
@@ -110,11 +112,8 @@ end
 
 -- nvim-jdtls
 
-if pcall(require, "jdtls") then
-  -- nvim-jdtls: skipping autocmds and commands
-  vim.g.nvim_jdtls = 1
-  require("lbrayner.jdtls").create_user_command()
-end
+vim.g.nvim_jdtls = 1 -- skipping autocmds and commands
+require("lbrayner.jdtls").create_user_command()
 
 -- nvim-lspconfig
 
@@ -156,8 +155,10 @@ end
 
 -- typescript-tools.nvim
 
-if pcall(require, "typescript-tools") then
+function M.typescript_tools()
   require("typescript-tools").setup({
     autostart = false,
   })
 end
+
+return M

@@ -91,7 +91,7 @@ subcommand_tbl.stop = {
 }
 
 subcommand_tbl.testClass = {
-  simple = require("jdtls").test_class,
+  simple = function() require("jdtls").test_class() end,
 }
 
 subcommand_tbl.testNearestMethod = {
@@ -105,7 +105,7 @@ subcommand_tbl.typeHierarchy = {
 }
 
 subcommand_tbl.updateProjectConfig = {
-  simple = require("jdtls").update_project_config,
+  simple = function() require("jdtls").update_project_config() end,
 }
 
 -- Reference implementarion of multiple mutually exclusive flags
