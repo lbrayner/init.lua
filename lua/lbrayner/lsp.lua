@@ -74,21 +74,6 @@ vim.api.nvim_create_autocmd("BufWritePost", {
   end,
 })
 
-local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear = true })
-
-vim.api.nvim_create_autocmd("BufNewFile", {
-  group = lspconfig_custom,
-  desc = "New buffers attach to language servers managed by lspconfig even when autostart is false",
-  callback = function(args)
-    local bufnr = args.buf
-    local bufname = vim.api.nvim_buf_get_name(bufnr)
-
-    vim.schedule(function()
-      vim.api.nvim_exec_autocmds("BufRead", { group = "lspconfig", pattern = bufname })
-    end)
-  end,
-})
-
 -- Set up the Lsp command
 vim.api.nvim_create_autocmd("VimEnter", {
   once = true,

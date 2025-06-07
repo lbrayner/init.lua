@@ -1,3 +1,5 @@
+local M = {}
+
 -- fidget.nvim (installed as a dependency of rocks.nvim)
 
 if pcall(require, "fidget") then
@@ -84,7 +86,7 @@ end
 
 -- nvim-dap-ui
 
-if pcall(require, "dapui") then
+function M.dapui()
   require("dapui").setup()
 
   vim.api.nvim_create_user_command("DapUiClose", function(command)
@@ -110,15 +112,12 @@ end
 
 -- nvim-jdtls
 
-if pcall(require, "jdtls") then
-  -- nvim-jdtls: skipping autocmds and commands
-  vim.g.nvim_jdtls = 1
-  require("lbrayner.jdtls").create_user_command()
-end
+vim.g.nvim_jdtls = 1 -- skipping autocmds and commands
+require("lbrayner.jdtls").create_user_command()
 
 -- nvim-lspconfig
 
-if pcall(require, "lspconfig") then
+function M.lspconfig()
   -- Lua
   -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#lua_ls
   require("lspconfig").lua_ls.setup({
@@ -146,6 +145,21 @@ if pcall(require, "lspconfig") then
       },
     },
   })
+
+  local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear = true })
+
+  vim.api.nvim_create_autocmd("BufNewFile", {
+    group = lspconfig_custom,
+    desc = "New buffers attach to language servers managed by lspconfig even when autostart is false",
+    callback = function(args)
+      local bufnr = args.buf
+      local bufname = vim.api.nvim_buf_get_name(bufnr)
+
+      vim.schedule(function()
+        vim.api.nvim_exec_autocmds("BufRead", { group = "lspconfig", pattern = bufname })
+      end)
+    end,
+  })
 end
 
 -- tint.nvim
@@ -156,8 +170,10 @@ end
 
 -- typescript-tools.nvim
 
-if pcall(require, "typescript-tools") then
+function M.typescript_tools()
   require("typescript-tools").setup({
     autostart = false,
   })
 end
+
+return M

@@ -81,7 +81,7 @@ subcommand_tbl.diagnostic = {
 }
 
 subcommand_tbl.documentSymbol = {
-  simple = vim.lsp.buf.document_symbol,
+  simple = function() vim.lsp.buf.document_symbol() end,
 }
 
 subcommand_tbl.format = {
