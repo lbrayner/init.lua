@@ -339,9 +339,10 @@ vim.api.nvim_create_autocmd("CmdlineEnter", {
   callback = function(args)
     local cmdline_char = args.file
 
-    -- Do not redraw if waiting for input after z= or inputlist()
+    -- "@": do not redraw if waiting for input after input()
+    -- "-": do not redraw if waiting for input after z= or inputlist()
     -- See https://github.com/neovim/neovim/issues/32068
-    if cmdline_char == "-" then
+    if vim.tbl_contains({ "@", "-" }, cmdline_char) then
       return
     end
 
