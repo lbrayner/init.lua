@@ -339,9 +339,10 @@ vim.api.nvim_create_autocmd("CmdlineEnter", {
   callback = function(args)
     local cmdline_char = args.file
 
-    -- Do not redraw if waiting for input after z= or inputlist()
+    -- "@": do not redraw if waiting for input after input()
+    -- "-": do not redraw if waiting for input after z= or inputlist()
     -- See https://github.com/neovim/neovim/issues/32068
-    if cmdline_char == "-" then
+    if vim.tbl_contains({ "@", "-" }, cmdline_char) then
       return
     end
 
@@ -484,13 +485,12 @@ vim.api.nvim_create_autocmd("VimEnter", {
     -- Useful when reloading the module
     if not mapping and
       vim.g.colors_name and
-      vim.g.colors_name ~= "" and
-      vim.g.colors_name ~= "default" then
+      vim.g.colors_name ~= "" then
       M.load_theme(vim.g.colors_name)
     end
 
     -- Useful when reloading the module
-    if not mapping and vim.g.colors_name == "default" then
+    if not mapping and not vim.g.colors_name then
       -- A statusline theme is required
       M.load_theme("neosolarized")
     end
@@ -505,6 +505,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 -- rocks.nvim wasn't synced at least once
+-- Defining this early to avoid flickering
 if not pcall(require, "neosolarized") then
   -- A statusline theme is required
   M.load_theme("neosolarized")
