@@ -117,7 +117,7 @@ require("lbrayner.jdtls").create_user_command()
 
 -- nvim-lspconfig
 
-if pcall(require, "lspconfig") then
+function M.lspconfig()
   -- Lua
   -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#lua_ls
   require("lspconfig").lua_ls.setup({
