@@ -388,28 +388,26 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-local session_equalize_windows = vim.api.nvim_create_augroup("session_equalize_windows", { clear = true })
-
-vim.api.nvim_create_autocmd("VimEnter", {
-  group = session_equalize_windows,
-  desc = "Equalize windows on session startup",
-  callback = function()
-    if vim.v.this_session == "" then return end
-    pcall(vim.cmd.exe, [["normal! \<C-W>="]])
-  end,
-})
+local session_configuration = vim.api.nvim_create_augroup("session_configuration", { clear = true })
 
 -- SessionLoadPost happens before VimEnter
-local session_load = vim.api.nvim_create_augroup("session_load", { clear = true })
-
 vim.api.nvim_create_autocmd("VimEnter", {
-  group = session_load,
-  desc = "Wipe buffers without files on session load",
+  group = session_configuration,
+  desc = "Session configuration",
   callback = function()
     if vim.v.this_session == "" then return end
+
+    local session = require("lbrayner").get_session()
+
+    if vim.go.shadafile == "" then
+      vim.go.shadafile = vim.fs.joinpath(vim.fn.stdpath("state"), "shada", session .. ".shada")
+    end
+
     require("lbrayner.wipe").loop_buffers(true, function(buf) -- BWipeNotReadable!
       return buf.listed == 1 and not vim.uv.fs_stat(buf.name)
     end)
+
+    pcall(vim.cmd.exe, [["normal! \<C-W>="]]) -- Equalize windows
   end,
 })
 

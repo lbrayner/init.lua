@@ -71,14 +71,18 @@ local function file_mark_jump_to_location(selected, _)
 end
 
 local function get_history_file(suffix)
-  local session = require("lbrayner").get_session()
-  if session then
-    local history_file = "fzf_history_" .. session
-    if suffix then
-      history_file = history_file .. "_" .. suffix
-    end
-    return vim.fs.joinpath(vim.fn.stdpath("cache"), history_file)
+  if vim.go.shadafile == "" then
+    return
   end
+
+  local shadafile = vim.fn.fnamemodify(vim.go.shadafile, ":r")
+  shadafile = vim.fn.fnamemodify(shadafile, ":t")
+
+  local history_file = "fzf_history_" .. shadafile
+  if suffix then
+    history_file = history_file .. "_" .. suffix
+  end
+  return vim.fs.joinpath(vim.fn.stdpath("cache"), history_file)
 end
 
 local function buffers()
