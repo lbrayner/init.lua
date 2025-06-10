@@ -28,6 +28,7 @@ subcommand_tbl.addWorkspaceFolder = {
   complete = require("lbrayner.subcommands").complete_filename,
   optional = function(opts)
     local dir = table.concat(opts.args, " ")
+    print("dir", vim.inspect(dir)) -- TODO debug
     if dir == "" then
       dir = vim.fn.getcwd()
     else

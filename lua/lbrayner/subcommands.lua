@@ -75,12 +75,20 @@ function M.create_user_command_and_subcommands(name, subcommand_tbl, opts)
     complete = function(arg_lead, cmdline, _)
       local arguments = vim.fn.substitute(
         cmdline,
-        [[.*\%(\s*|\s*\)\?]] .. name .. [[[!]\?\(\s\+.*\)]],
+        [[.*\%(\s*|\s*\)\?]] .. name .. "[!]\\?\\(\\s\\+[^[:blank:]]*\\)\\%(\\s*|.*\\)\\?",
         [[\1]],
         ""
       )
-
+      print("name", name, "arg_lead", vim.inspect(arg_lead), "arguments", vim.inspect(arguments)) -- TODO debug
       if arguments == cmdline then return end
+
+      arg_lead = vim.fn.substitute(
+        arg_lead,
+        "^\\([^[:blank:]]\\+\\)\\%(\\s.*\\)",
+        [[\1]],
+        ""
+      )
+      print("arg_lead", vim.inspect(arg_lead)) -- TODO debug
 
       return (function(subcommand_tbl)
         -- Support nested subcommand tables
