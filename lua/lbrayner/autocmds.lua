@@ -397,12 +397,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     if vim.v.this_session == "" then return end
 
-    local session = require("lbrayner").get_session()
-
-    if vim.go.shadafile == "" then
-      vim.go.shadafile = vim.fs.joinpath(vim.fn.stdpath("state"), "shada", session .. ".shada")
-    end
-
     require("lbrayner.wipe").loop_buffers(true, function(buf) -- BWipeNotReadable!
       return buf.listed == 1 and not vim.uv.fs_stat(buf.name)
     end)
