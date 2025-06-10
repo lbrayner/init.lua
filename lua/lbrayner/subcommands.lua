@@ -84,7 +84,7 @@ function M.create_user_command_and_subcommands(name, subcommand_tbl, opts)
 
       arg_lead = vim.fn.substitute(
         arg_lead,
-        "^\\([^[:blank:]]\\+\\)\\%(\\s.*\\)",
+        "^\\([^[:blank:]]\\+\\)\\s.*",
         [[\1]],
         ""
       )
