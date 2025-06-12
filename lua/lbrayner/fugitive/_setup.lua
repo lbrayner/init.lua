@@ -88,8 +88,10 @@ vim.api.nvim_create_autocmd("FileType", {
     elseif filetype == "git" then
       fugitive_map_overrides(bufnr)
       vim.bo.includeexpr = "v:lua.require'lbrayner.fugitive'.include_expression(v:fname)"
+      vim.cmd("Glcd")
     elseif filetype == "gitcommit" then
       fugitive_map_overrides(bufnr)
+      vim.cmd("Glcd")
     end
   end,
 })
