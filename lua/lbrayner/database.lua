@@ -89,7 +89,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
     local password = pwd_var ~= "" and os.getenv(pwd_var) or ""
     vim.b.db = string.format(
       "sqlserver://%s@%s:%s?password=%s&trustServerCertificate=true",
-      user, host, port, password
+      user, host, port, vim.uri_encode(password)
     )
   end,
 })
