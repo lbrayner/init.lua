@@ -3,25 +3,7 @@ local M = {}
 -- fidget.nvim (installed as a dependency of rocks.nvim)
 
 if pcall(require, "fidget") then
-  require("fidget").setup({
-    notification = {
-      window = {
-        winblend = 0, -- to fix the interaction with transparent backgrounds
-      },
-    },
-  })
-
-  -- Improved alternate file mapping
-  vim.keymap.set("n", "<Space>a", function()
-    local alternate = vim.fn.bufnr("#")
-    if alternate > 0 and vim.api.nvim_buf_is_valid(alternate) then
-      local name = vim.fn.pathshorten(require("lbrayner.path").full_path())
-      vim.api.nvim_set_current_buf(alternate)
-      require("fidget").notify(string.format("Switched to alternate buffer. Previous buffer was %s.", name))
-    else
-      vim.notify("Alternate buffer is not valid.")
-    end
-  end)
+  require("fidget").setup()
 end
 
 -- fzf-lua
