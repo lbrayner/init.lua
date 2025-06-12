@@ -425,7 +425,7 @@ vim.api.nvim_create_autocmd("TermLeave", {
 vim.api.nvim_create_autocmd("VimEnter", {
   group = statusline,
   desc = "Create statusline autocmds",
-  callback = function(args)
+  callback = function()
     local diagnostic_changed_autocmd
 
     local function diagnostic_changed(bufnr)
@@ -503,10 +503,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
       M.load_theme("neosolarized")
     end
 
-    local bufnr = args.buf
-
     vim.schedule(define_status_line)
     vim.schedule(function()
+      local bufnr = vim.api.nvim_get_current_buf()
       diagnostic_changed(bufnr)
     end)
   end,
