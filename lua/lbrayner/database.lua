@@ -13,7 +13,7 @@ vim.api.nvim_create_autocmd("FileType", {
       end
 
       local bufopts = { buffer = bufnr }
-      vim.keymap.set("n", "<C-Return>", "<Cmd>'{,'}DB<CR>", bufopts)
+      vim.keymap.set("n", "<Enter>", "<Cmd>'{,'}DB<CR>", bufopts)
 
       require("lbrayner.statusline").set_minor_modes(bufnr, "dadbod", "append")
 
