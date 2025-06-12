@@ -8,7 +8,7 @@ end
 
 function M.get_fugitive_git_dir()
   if vim.fn.exists("*FugitiveGitDir") == 1 and vim.fn.FugitiveGitDir() ~= "" then
-    local dir, _ = string.gsub(vim.fn.fnamemodify(vim.fn.FugitiveGitDir(), ":~"), "/%.git$", "")
+    local dir, _ = string.gsub(vim.fn.FugitiveGitDir(), "/%.git$", "")
     return dir
   end
 end

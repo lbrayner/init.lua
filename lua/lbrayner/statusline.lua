@@ -2,6 +2,14 @@
 
 -- {{{ Helper functions
 
+local function get_fugitive_git_dir()
+  local fugitive_dir = require("lbrayner.fugitive").get_fugitive_git_dir()
+
+  if fugitive_dir then
+    return vim.fn.fnamemodify(fugitive_dir, ":~")
+  end
+end
+
 local function get_fugitive_temporary_buffer_name()
   return "Git " .. table.concat(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf()).args, " ")
 end
@@ -144,13 +152,13 @@ function M.get_statusline()
   end
 
   if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
-    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").get_fugitive_git_dir())
+    local dir = vim.fn.pathshorten(get_fugitive_git_dir())
     leftline = leftline .. "%6*" .. dir .. "$%* %<" .. "Fugitive summary " ..
     "%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
   elseif vim.fn.exists("*FugitiveResult") == 1 and
     not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
     local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
-    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").get_fugitive_git_dir())
+    local dir = vim.fn.pathshorten(get_fugitive_git_dir())
     leftline = leftline .. "%6*" .. dir .. "$%* %<" .. fugitive_temp_buf ..
     " %1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
   elseif require("lbrayner").is_quickfix_or_location_list() then
@@ -212,13 +220,13 @@ function M.get_winbar()
   end
 
   if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
-    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").get_fugitive_git_dir())
+    local dir = vim.fn.pathshorten(get_fugitive_git_dir())
     statusline = statusline .. dir .. "$ %<" .. "Fugitive summary " ..
     "%{v:lua.require'lbrayner.statusline'.get_status_flag()}"
   elseif vim.fn.exists("*FugitiveResult") == 1 and
     not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
     local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
-    local dir = vim.fn.pathshorten(require("lbrayner.fugitive").get_fugitive_git_dir())
+    local dir = vim.fn.pathshorten(get_fugitive_git_dir())
     statusline = statusline .. dir .. "$ %<" .. fugitive_temp_buf ..
     " %{v:lua.require'lbrayner.statusline'.get_status_flag()}"
   elseif require("lbrayner").is_quickfix_or_location_list() then
