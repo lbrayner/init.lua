@@ -61,23 +61,35 @@ subcommand_tbl.detach = {
 }
 
 subcommand_tbl.diagnostic = {
-  subcommand_tbl = {
-    all = {
-      simple = function()
-        require("lbrayner.lsp").diagnostic_setqflist({ severity = { min = vim.diagnostic.severity.HINT } })
-      end,
-    },
-    error = {
-      simple = function()
-        require("lbrayner.lsp").diagnostic_setqflist({ severity = vim.diagnostic.severity.ERROR })
-      end,
-    },
-    warn = {
-      simple = function()
-        require("lbrayner.lsp").diagnostic_setqflist({ severity = { min = vim.diagnostic.severity.WARN } })
-      end,
-    },
-  },
+  complete = { "--error", "--warn" },
+  optional = function(opts)
+    local args = opts.args
+
+    assert(
+      vim.tbl_isempty(args) or #args == 1,
+      string.format("Illegal arguments: %s", table.concat(args, " "))
+    )
+
+    local _, arg = next(args)
+
+    if not arg then
+      require("lbrayner.lsp").diagnostic_setqflist({ severity = { min = vim.diagnostic.severity.HINT } })
+      return
+    end
+
+    assert(
+      vim.list_contains(opts.subcommand.complete, arg),
+      string.format("Illegal arguments: %s", table.concat(args, " "))
+    )
+
+    if arg == "--error" then
+      require("lbrayner.lsp").diagnostic_setqflist({ severity = vim.diagnostic.severity.ERROR })
+    end
+
+    if arg == "--warn" then
+      require("lbrayner.lsp").diagnostic_setqflist({ severity = { min = vim.diagnostic.severity.WARN } })
+    end
+  end,
 }
 
 subcommand_tbl.documentSymbol = {
