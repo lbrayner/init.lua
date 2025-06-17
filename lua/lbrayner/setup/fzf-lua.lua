@@ -75,13 +75,14 @@ local function get_history_file(suffix)
     return
   end
 
-  local shadafile = vim.fn.fnamemodify(vim.go.shadafile, ":r")
-  shadafile = vim.fn.fnamemodify(shadafile, ":t")
+  local shadafile = vim.fn.fnamemodify(vim.fn.fnamemodify(vim.go.shadafile, ":r"), ":t")
 
   local history_file = "fzf_history_" .. shadafile
+
   if suffix then
     history_file = history_file .. "_" .. suffix
   end
+
   return vim.fs.joinpath(vim.fn.stdpath("cache"), history_file)
 end
 
