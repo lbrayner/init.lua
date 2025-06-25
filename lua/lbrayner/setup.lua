@@ -46,17 +46,7 @@ if pcall(require, "dap") then
     once = true,
     callback = function()
       vim.api.nvim_create_user_command("DapContinue", function()
-        require("dap").continue({
-          before = function(config)
-            local success, session = pcall(require, "lbrayner.session")
-
-            if success and session.dap_run_before and type(session.dap_run_before) == "function" then
-              config = session.dap_run_before(config)
-            end
-
-            return config
-          end
-        })
+        require("lbrayner.dap").continue()
       end, { nargs = 0 })
     end,
   })
