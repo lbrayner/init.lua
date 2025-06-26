@@ -347,13 +347,20 @@ vim.api.nvim_create_autocmd("CmdlineEnter", {
   callback = function(args)
     local cmdline_char = args.file
 
+    -- cmdline-char "@": do not redraw if waiting for input after input()
+    -- state() "s": screen has scrolled for messages (multi-line input prompt)
+    -- See https://github.com/neovim/neovim/issues/34662
+    if cmdline_char == "@" and vim.endswith(vim.fn.state(), "s") then
+      return
+    end
+
     if vim.tbl_contains({ "/", "?" }, cmdline_char) then
       M.highlight_mode("search")
     else
       M.highlight_mode("command")
     end
 
-    vim.api.nvim__redraw({ flush = true })
+    vim.api.nvim__redraw({ statusline = true })
   end,
 })
 
