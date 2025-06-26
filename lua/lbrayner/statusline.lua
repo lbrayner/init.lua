@@ -346,7 +346,6 @@ vim.api.nvim_create_autocmd("CmdlineEnter", {
   desc = "Command-line modes statusline highlight",
   callback = function(args)
     local cmdline_char = args.file
-    -- print("cmdline_char", cmdline_char, "state", vim.inspect(vim.fn.state()))
 
     -- cmdline-char "@": do not redraw if waiting for input after input()
     -- state() "s": screen has scrolled for messages (multi-line input prompt)
@@ -361,9 +360,7 @@ vim.api.nvim_create_autocmd("CmdlineEnter", {
       M.highlight_mode("command")
     end
 
-    -- vim.api.nvim__redraw({ flush = true })
     vim.api.nvim__redraw({ statusline = true })
-    -- vim.cmd("redrawstatus!")
   end,
 })
 
