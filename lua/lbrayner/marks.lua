@@ -11,23 +11,12 @@ local function get_file_mark_navigator()
 
   if vim.tbl_isempty(file_mark_info_list) then return end
 
-  local file_mark_info_by_mark = {}
-  for _, file_mark_info in ipairs(file_mark_info_list) do
-    file_mark_info_by_mark[file_mark_info.mark] = file_mark_info
-  end
-
-  local file_mark_info_by_file = {}
+  local index_by_file = {}
   for i, file_mark_info in pairs(file_mark_info_list) do
-    file_mark_info_by_file[file_mark_info.file] = file_mark_info
+    index_by_file[file_mark_info.file] = i
   end
 
-  local indexed_marks = {}
-  for i, file_mark_info in pairs(file_mark_info_list) do
-    indexed_marks[i] = file_mark_info.mark
-    indexed_marks[file_mark_info.mark] = i
-  end
-
-  return file_mark_info_by_mark, file_mark_info_by_file, file_mark_info_list, indexed_marks
+  return file_mark_info_list, index_by_file
 end
 
 local function file_mark_info_get_previous(mark)
@@ -59,12 +48,11 @@ local function file_mark_info_get_next()
 
   if file == "" then return end
 
-  local _, file_mark_info_by_file, file_mark_info_list, indexed_marks = get_file_mark_navigator()
-  local file_mark_info = file_mark_info_by_file[file]
+  local _, file_mark_info_by_file, file_mark_info_list, index_by_file = get_file_mark_navigator()
+  local idx = index_by_file[file]
 
-  if not file_mark_info then return end
+  if not idx then return end
 
-  local idx = indexed_marks[file_mark_info.mark]
   local _, next_file_mark_info = next(file_mark_info_list, idx)
   return next_file_mark_info
 end
