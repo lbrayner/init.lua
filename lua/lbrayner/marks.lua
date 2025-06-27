@@ -1,80 +1,81 @@
 local M = {}
 
-local current_mark
-
-local function get_file_mark_info_list()
-  local file_mark_info_list = vim.tbl_filter(function(mark)
-    return mark.mark:match("^'%u$") -- Uppercase letters
-  end, vim.fn.getmarklist())
-
-  return file_mark_info_list
+local function get_file()
+  return vim.fn.fnamemodify(
+    vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()), ":p:~"
+  )
 end
 
-local function get_file_mark_navigator()
-  local file_mark_info_list = get_file_mark_info_list()
+local function get_file_mark_info_list()
+  return vim.tbl_filter(function(mark)
+    return mark.mark:match("^'%u$") -- Uppercase letters
+  end, vim.fn.getmarklist())
+end
 
-  if vim.tbl_isempty(file_mark_info_list) then return end
+local function get_file_mark_info_by_mark()
+  local file_mark_info_list = get_file_mark_info_list()
 
   local file_mark_info_by_mark = {}
   for _, file_mark_info in ipairs(file_mark_info_list) do
     file_mark_info_by_mark[file_mark_info.mark] = file_mark_info
   end
 
-  local indexed_marks = {}
+  return file_mark_info_by_mark
+end
+
+local function get_file_mark_navigator(opts)
+  opts = opts or {}
+
+  local file_mark_info_list = opts.file_mark_info_list or get_file_mark_info_list()
+
+  if vim.tbl_isempty(file_mark_info_list) then return end
+
+  local index_by_file = {}
   for i, file_mark_info in pairs(file_mark_info_list) do
-    indexed_marks[i] = file_mark_info.mark
-    indexed_marks[file_mark_info.mark] = i
+    index_by_file[file_mark_info.file] = i
   end
 
-  return file_mark_info_by_mark, indexed_marks
+  return file_mark_info_list, index_by_file
 end
 
 local function file_mark_info_get_previous(mark)
-  local idx
-  local file_mark_info_by_mark, indexed_marks = get_file_mark_navigator()
+  local file = get_file()
 
-  if not indexed_marks then return end
+  if file == "" then return end
 
-  if not mark or not indexed_marks[mark] then
-    idx = #indexed_marks + 1
-  else
-    idx = indexed_marks[mark]
+  local file_mark_info_list, index_by_file = get_file_mark_navigator({
+    file_mark_info_list = vim.iter(get_file_mark_info_list()):rev():totable()
+  })
+  local idx = index_by_file[file]
+
+  if not idx then return end
+
+  local _, next_file_mark_info = next(file_mark_info_list, idx)
+
+  if not next_file_mark_info then
+    _, next_file_mark_info = next(file_mark_info_list)
   end
 
-  local previous_mark
-  if idx == 1 then
-    previous_mark = indexed_marks[#indexed_marks]
-  else
-    previous_mark = indexed_marks[idx-1]
-  end
-
-  return file_mark_info_by_mark[previous_mark]
+  return next_file_mark_info
 end
 
-local function file_mark_info_get_next(mark)
-  local idx
-  local file_mark_info_by_mark, indexed_marks = get_file_mark_navigator()
+local function file_mark_info_get_next()
+  local file = get_file()
 
-  if not indexed_marks then return end
+  if file == "" then return end
 
-  if not mark or not indexed_marks[mark] then
-    idx = 0
-  else
-    idx = indexed_marks[mark]
+  local file_mark_info_list, index_by_file = get_file_mark_navigator()
+  local idx = index_by_file[file]
+
+  if not idx then return end
+
+  local _, next_file_mark_info = next(file_mark_info_list, idx)
+
+  if not next_file_mark_info then
+    _, next_file_mark_info = next(file_mark_info_list)
   end
 
-  local next_mark
-  if idx == #indexed_marks then
-    next_mark = indexed_marks[1]
-  else
-    next_mark = indexed_marks[idx+1]
-  end
-
-  return file_mark_info_by_mark[next_mark]
-end
-
-function M.get_current_mark()
-  return current_mark
+  return next_file_mark_info
 end
 
 local function file_mark_info_jump_to_location(file_mark_info)
@@ -99,7 +100,7 @@ end
 function M.file_mark_jump_to_location(mark)
   assert(type(mark) == "string", "Bad argument; 'mark' must be a string.")
   assert(mark:match("^%u$"), "Bad argument; 'mark' must be a file mark.")
-  local file_mark_info_by_mark, _ = get_file_mark_navigator()
+  local file_mark_info_by_mark = get_file_mark_info_by_mark()
   local file_mark_info = file_mark_info_by_mark["'"..mark]
   if not file_mark_info then
     vim.notify(string.format("“%s” is not set.", mark))
@@ -108,44 +109,26 @@ function M.file_mark_jump_to_location(mark)
   file_mark_info_jump_to_location(file_mark_info)
 end
 
-local function file_mark_jump_to_previous()
-  -- Try to get a different buffer
-  local mark = current_mark
-  for _ = 1, #get_file_mark_info_list() do
-    local previous_mark_info = file_mark_info_get_previous(mark)
-    mark = previous_mark_info.mark
-    if not previous_mark_info then return end
-    local previous_mark_bufnr = previous_mark_info.pos[1]
-    if previous_mark_bufnr ~= vim.api.nvim_get_current_buf() then
-      file_mark_info_jump_to_location(previous_mark_info)
-      return
-    end
-  end
-end
-
-local function file_mark_jump_to_next()
-  -- Try to get a different buffer
-  local mark = current_mark
-  for _ = 1, #get_file_mark_info_list() do
-    local next_mark_info = file_mark_info_get_next(mark)
-    mark = next_mark_info.mark
-    if not next_mark_info then return end
-    local next_mark_bufnr = next_mark_info.pos[1]
-    if next_mark_bufnr ~= vim.api.nvim_get_current_buf() then
-      file_mark_info_jump_to_location(next_mark_info)
-      return
-    end
-  end
-end
-
--- Commands
-vim.api.nvim_create_user_command("Delfilemarks", function()
-  vim.cmd("delmarks A-Z")
-  current_mark = nil
-end, { nargs = 0 })
-
 -- Mappings
-vim.keymap.set("n", "]4", file_mark_jump_to_next)
-vim.keymap.set("n", "[4", file_mark_jump_to_previous)
+vim.keymap.set("n", "]4", function()
+  local file_mark_info = file_mark_info_get_next()
+
+  if not file_mark_info then
+    vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
+    return
+  end
+
+  file_mark_info_jump_to_location(file_mark_info)
+end)
+vim.keymap.set("n", "[4", function()
+  local file_mark_info = file_mark_info_get_previous()
+
+  if not file_mark_info then
+    vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
+    return
+  end
+
+  file_mark_info_jump_to_location(file_mark_info)
+end)
 
 return M
