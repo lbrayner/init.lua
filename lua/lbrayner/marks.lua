@@ -6,8 +6,10 @@ local function get_file_mark_info_list()
   end, vim.fn.getmarklist())
 end
 
-local function get_file_mark_navigator()
-  local file_mark_info_list = get_file_mark_info_list()
+local function get_file_mark_navigator(opts)
+  opts = opts or {}
+
+  local file_mark_info_list = opts.file_mark_info_list or get_file_mark_info_list()
 
   if vim.tbl_isempty(file_mark_info_list) then return end
 
@@ -20,25 +22,21 @@ local function get_file_mark_navigator()
 end
 
 local function file_mark_info_get_previous(mark)
-  local idx
-  local file_mark_info_by_mark, indexed_marks = get_file_mark_navigator()
+  local file = vim.fn.fnamemodify(
+    vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()), ":p:~"
+  )
 
-  if not indexed_marks then return end
+  if file == "" then return end
 
-  if not mark or not indexed_marks[mark] then
-    idx = #indexed_marks + 1
-  else
-    idx = indexed_marks[mark]
-  end
+  local file_mark_info_list, index_by_file = get_file_mark_navigator({
+    file_mark_info_list = vim.iter(get_file_mark_info_list()):rev():totable()
+  })
+  local idx = index_by_file[file]
 
-  local previous_mark
-  if idx == 1 then
-    previous_mark = indexed_marks[#indexed_marks]
-  else
-    previous_mark = indexed_marks[idx-1]
-  end
+  if not idx then return end
 
-  return file_mark_info_by_mark[previous_mark]
+  local _, next_file_mark_info = next(file_mark_info_list, idx)
+  return next_file_mark_info
 end
 
 local function file_mark_info_get_next()
@@ -48,7 +46,7 @@ local function file_mark_info_get_next()
 
   if file == "" then return end
 
-  local _, file_mark_info_by_file, file_mark_info_list, index_by_file = get_file_mark_navigator()
+  local file_mark_info_list, index_by_file = get_file_mark_navigator()
   local idx = index_by_file[file]
 
   if not idx then return end
@@ -127,6 +125,8 @@ end, { nargs = 0 })
 vim.keymap.set("n", "]4", function()
   print(vim.inspect(file_mark_info_get_next()))
 end)
-vim.keymap.set("n", "[4", file_mark_jump_to_previous)
+vim.keymap.set("n", "[4", function()
+  print(vim.inspect(file_mark_info_get_previous()))
+end)
 
 return M
