@@ -115,12 +115,6 @@ local function file_mark_jump_to_next()
   end
 end
 
--- Commands
-vim.api.nvim_create_user_command("Delfilemarks", function()
-  vim.cmd("delmarks A-Z")
-  current_mark = nil
-end, { nargs = 0 })
-
 -- Mappings
 vim.keymap.set("n", "]4", function()
   print(vim.inspect(file_mark_info_get_next()))
