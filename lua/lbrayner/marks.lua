@@ -1,5 +1,11 @@
 local M = {}
 
+local function get_file()
+  return vim.fn.fnamemodify(
+    vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()), ":p:~"
+  )
+end
+
 local function get_file_mark_info_list()
   return vim.tbl_filter(function(mark)
     return mark.mark:match("^'%u$") -- Uppercase letters
@@ -33,9 +39,7 @@ local function get_file_mark_navigator(opts)
 end
 
 local function file_mark_info_get_previous(mark)
-  local file = vim.fn.fnamemodify(
-    vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()), ":p:~"
-  )
+  local file = get_file()
 
   if file == "" then return end
 
@@ -56,9 +60,7 @@ local function file_mark_info_get_previous(mark)
 end
 
 local function file_mark_info_get_next()
-  local file = vim.fn.fnamemodify(
-    vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()), ":p:~"
-  )
+  local file = get_file()
 
   if file == "" then return end
 
