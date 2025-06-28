@@ -6,6 +6,17 @@ local function get_file_mark_info_list()
   end, vim.fn.getmarklist())
 end
 
+local function get_file_mark_info_by_mark()
+  local file_mark_info_list = get_file_mark_info_list()
+
+  local file_mark_info_by_mark = {}
+  for _, file_mark_info in ipairs(file_mark_info_list) do
+    file_mark_info_by_mark[file_mark_info.mark] = file_mark_info
+  end
+
+  return file_mark_info_by_mark
+end
+
 local function get_file_mark_navigator(opts)
   opts = opts or {}
 
@@ -77,7 +88,7 @@ end
 function M.file_mark_jump_to_location(mark)
   assert(type(mark) == "string", "Bad argument; 'mark' must be a string.")
   assert(mark:match("^%u$"), "Bad argument; 'mark' must be a file mark.")
-  local file_mark_info_by_mark, _ = get_file_mark_navigator()
+  local file_mark_info_by_mark = get_file_mark_info_by_mark()
   local file_mark_info = file_mark_info_by_mark["'"..mark]
   if not file_mark_info then
     vim.notify(string.format("“%s” is not set.", mark))
