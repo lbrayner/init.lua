@@ -140,10 +140,24 @@ end
 
 -- Mappings
 vim.keymap.set("n", "]4", function()
-  print(vim.inspect(file_mark_info_get_next()))
+  local file_mark_info = file_mark_info_get_next()
+
+  if not file_mark_info then
+    vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
+    return
+  end
+
+  file_mark_info_jump_to_location(file_mark_info)
 end)
 vim.keymap.set("n", "[4", function()
-  print(vim.inspect(file_mark_info_get_previous()))
+  local file_mark_info = file_mark_info_get_previous()
+
+  if not file_mark_info then
+    vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
+    return
+  end
+
+  file_mark_info_jump_to_location(file_mark_info)
 end)
 
 return M
