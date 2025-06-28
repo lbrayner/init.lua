@@ -47,6 +47,11 @@ local function file_mark_info_get_previous(mark)
   if not idx then return end
 
   local _, next_file_mark_info = next(file_mark_info_list, idx)
+
+  if not next_file_mark_info then
+    _, next_file_mark_info = next(file_mark_info_list)
+  end
+
   return next_file_mark_info
 end
 
@@ -63,6 +68,11 @@ local function file_mark_info_get_next()
   if not idx then return end
 
   local _, next_file_mark_info = next(file_mark_info_list, idx)
+
+  if not next_file_mark_info then
+    _, next_file_mark_info = next(file_mark_info_list)
+  end
+
   return next_file_mark_info
 end
 
