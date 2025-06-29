@@ -82,18 +82,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end,
 })
 
--- Mappings
-
-vim.keymap.set("n", "<F11>", function()
-  vim.ui.select({ "Yes", "No" }, { prompt = "Start Language Server?" }, function(choice)
-    if not choice then return end
-
-    if choice == "Yes" then
-      vim.cmd("LspStart")
-    end
-  end)
-end)
-
 local get_proxy = require("lbrayner").get_proxy_table_for_module
 
 M.diagnostic = get_proxy("lbrayner.lsp._diagnostic")

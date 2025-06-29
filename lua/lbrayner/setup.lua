@@ -87,37 +87,15 @@ end
 vim.g.nvim_jdtls = 1 -- skipping autocmds and commands
 require("lbrayner.jdtls").create_user_command()
 
--- nvim-lspconfig
+-- tint.nvim
 
-function M.lspconfig()
-  -- Lua
-  -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#lua_ls
-  require("lspconfig").lua_ls.setup({
-    autostart = false,
-    settings = {
-      Lua = {
-        runtime = {
-          -- Tell the language server which version of Lua you"re using (most
-          -- likely LuaJIT in the case of Neovim)
-          version = "LuaJIT",
-        },
-        diagnostics = {
-          -- Get the language server to recognize the `vim` global
-          globals = { "vim" },
-        },
-        workspace = {
-          -- Make the server aware of Neovim runtime files
-          library = vim.api.nvim_get_runtime_file("", true),
-        },
-        -- Do not send telemetry data containing a randomized but unique
-        -- identifier
-        telemetry = {
-          enable = false,
-        },
-      },
-    },
-  })
+if pcall(require, "tint") then
+  require("lbrayner.setup.tint")
+end
 
+-- typescript-tools.nvim
+
+function M.typescript_tools()
   local lspconfig_custom = vim.api.nvim_create_augroup("lspconfig_custom", { clear = true })
 
   vim.api.nvim_create_autocmd("BufNewFile", {
@@ -132,17 +110,7 @@ function M.lspconfig()
       end)
     end,
   })
-end
 
--- tint.nvim
-
-if pcall(require, "tint") then
-  require("lbrayner.setup.tint")
-end
-
--- typescript-tools.nvim
-
-function M.typescript_tools()
   require("typescript-tools").setup({
     autostart = false,
   })
