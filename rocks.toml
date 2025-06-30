@@ -25,56 +25,78 @@ nvim-spider = "scm"
 
 [plugins."neosolarized.nvim"]
 git = "svrana/neosolarized.nvim"
-rev = "main"
+branch = "main"
+rev = "0c01fd2ac2ab33918073f57c63bcb2ae5a31d8de"
+ignore_tags = true
 
 [plugins.nvim-highlight-colors]
 git = "brenoprata10/nvim-highlight-colors"
-rev = "main"
+branch = "main"
+rev = "b42a5ccec7457b44e89f7ed3b3afb1b375bb2093"
 ignore_tags = true
 
 [plugins."reply.vim"]
 git = "rhysd/reply.vim"
-rev = "master"
+branch = "master"
+rev = "f458f7c13cbd8eafaf9acd69e8eade71416338c5"
+ignore_tags = true
 
 [plugins."tint.nvim"]
 git = "lbrayner/tint.nvim"
-rev = "fixes"
+branch = "fixes"
+rev = "80b15a91087991068d5834419437f652d1d4bc8e"
 ignore_tags = true
 
 [plugins.nvim-jdtls]
 git = "lbrayner/nvim-jdtls"
-rev = "lbrayner"
+branch = "lbrayner"
+rev = "8597d57fb40d4ad503cf3acb2fdcfe1b0d8a193d"
+ignore_tags = true
 
 [plugins.vim-characterize]
 git = "tpope/vim-characterize"
-rev = "master"
+branch = "master"
+rev = "a8bffac6cead6b2869d939ecad06312b187a4c79"
+ignore_tags = true
 
 [plugins.vim-dadbod]
 git = "tpope/vim-dadbod"
-rev = "master"
+branch = "master"
+rev = "e95afed23712f969f83b4857a24cf9d59114c2e6"
 ignore_tags = true
 
 [plugins.vim-eunuch]
 git = "tpope/vim-eunuch"
-rev = "master"
+branch = "master"
+rev = "e86bb794a1c10a2edac130feb0ea590a00d03f1e"
+ignore_tags = true
 
 [plugins.vim-fugitive]
 git = "tpope/vim-fugitive"
-rev = "master"
+branch = "master"
+rev = "593f831d6f6d779cbabb70a4d1e6b1b1936a88af"
 ignore_tags = true
 
 [plugins.vim-obsession]
 git = "tpope/vim-obsession"
-rev = "master"
+branch = "master"
+rev = "ed9dfc7c2cc917ace8b24f4f9f80a91e05614b63"
+ignore_tags = true
 
 [plugins.vim-quickhl]
 git = "t9md/vim-quickhl"
-rev = "master"
+branch = "master"
+rev = "be1f44169c3fdee3beab629e83380515da03835e"
+ignore_tags = true
 
 [plugins.vim-rsi]
 git = "tpope/vim-rsi"
-rev = "master"
+branch = "master"
+rev = "45540637ead22f011e8215f1c90142e49d946a54"
+ignore_tags = true
 
 [plugins.vim-rzip]
 git = "lbrayner/vim-rzip"
-rev = "master"
+branch = "master"
+rev = "f65400fed27b27c7cff7ef8d428c4e5ff749bf28"
+ignore_tags = true
