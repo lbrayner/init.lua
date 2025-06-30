@@ -42,50 +42,64 @@ local function wipe_buffers(force, predicate)
   vim.cmd.echom(string.format("'%s'", message))
 end
 
-vim.api.nvim_create_user_command("BWipe", function(command)
-  wipe_buffers(command.bang, function(buf)
-    return buf.listed == 1 and contains(buf.name, command.args)
-  end)
-end, { bang = true, complete = "file", nargs = 1 })
+---@type table<string, MyCmdSubcommand>
+local subcommand_tbl = {}
+require("lbrayner.subcommands").create_user_command_and_subcommands("Wipe", subcommand_tbl, {
+  bang = true,
+  bar = true,
+  desc = "Wipe buffers with text, pattern, filetype; not loaded, not readable or hidden",
+})
 
-vim.api.nvim_create_user_command("BWipeLuaPattern", function(command)
-  wipe_buffers(command.bang, function(buf)
-    return buf.listed == 1 and string.find(buf.name, command.args)
-  end)
-end, { bang = true, complete = "file", nargs = 1 })
+subcommand_tbl.hidden = {
+  optional = function(opts)
+    local text = table.concat(opts.args, " ")
+    wipe_buffers(opts.bang, function(buf)
+      return buf.hidden == 1 and contains(buf.name, text)
+    end)
+  end,
+}
 
-vim.api.nvim_create_user_command("BWipeFileType", function(command)
-  wipe_buffers(command.bang, function(buf)
-    local filetype = command.args
-    if filetype == "" then
-      filetype = vim.bo.filetype -- Current buffer
-    end
-    return vim.bo[buf.bufnr].filetype == filetype
-  end)
-end, { bang = true, complete = "filetype", nargs = "?" })
+subcommand_tbl.notLoaded = {
+  simple = function(opts)
+    wipe_buffers(opts.bang, function(buf)
+      return buf.listed == 1 and buf.loaded == 0
+    end)
+  end,
+}
 
-vim.api.nvim_create_user_command("BWipeHidden", function(command)
-  wipe_buffers(command.bang, function(buf)
-    return buf.hidden == 1 and contains(buf.name, command.args)
-  end)
-end, { bang = true, complete = "file", nargs = "*" })
+subcommand_tbl.notReadable = {
+  simple = function(opts)
+    wipe_buffers(opts.bang, function(buf)
+      return buf.listed == 1 and not vim.uv.fs_stat(buf.name)
+    end)
+  end,
+}
 
-vim.api.nvim_create_user_command("BWipeUnlisted", function(command)
-  wipe_buffers(command.bang, function(buf)
-    return buf.listed == 0 and contains(buf.name, command.args)
-  end)
-end, { bang = true, complete = "file", nargs = "*" })
+subcommand_tbl.pattern = {
+  optional = function(opts)
+    local pattern = table.concat(opts.args, " ")
+    wipe_buffers(opts.bang, function(buf)
+      return buf.listed == 1 and string.find(buf.name, pattern)
+    end)
+  end,
+}
 
-vim.api.nvim_create_user_command("BWipeNotLoaded", function(command)
-  wipe_buffers(command.bang, function(buf)
-    return buf.listed == 1 and buf.loaded == 0
-  end)
-end, { nargs = 0 })
+subcommand_tbl.text = {
+  optional = function(opts)
+    local text = table.concat(opts.args, " ")
+    wipe_buffers(opts.bang, function(buf)
+      return buf.listed == 1 and contains(buf.name, text)
+    end)
+  end,
+}
 
-vim.api.nvim_create_user_command("BWipeNotReadable", function(command)
-  wipe_buffers(command.bang, function(buf)
-    return buf.listed == 1 and not vim.uv.fs_stat(buf.name)
-  end)
-end, { bang = true, nargs = 0 })
+subcommand_tbl.unlisted = {
+  optional = function(opts)
+    local text = table.concat(opts.args, " ")
+    wipe_buffers(opts.bang, function(buf)
+      return buf.listed == 0 and contains(buf.name, text)
+    end)
+  end,
+}
 
 return M
