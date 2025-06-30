@@ -43,8 +43,7 @@ ignore_tags = true
 
 [plugins."tint.nvim"]
 git = "lbrayner/tint.nvim"
-branch = "fixes"
-rev = "80b15a91087991068d5834419437f652d1d4bc8e"
+rev = "fixes"
 ignore_tags = true
 
 [plugins.nvim-jdtls]
