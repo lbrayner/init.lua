@@ -18,6 +18,14 @@ local function file_switch_or_edit_or_qf(selected, opts)
   end
 end
 
+local function file_tabedit_before(selected, opts)
+  for _, sel in ipairs(selected) do
+    local path = require("fzf-lua.path").entry_to_file(sel).path
+    local vimcmd = string.format("-tabedit %s", vim.fn.fnameescape(vim.fs.normalize(path)))
+    vim.cmd(vimcmd)
+  end
+end
+
 fzf.setup({
   -- These override the default tables completely
   -- no need to set to `false` to disable an action
@@ -31,6 +39,7 @@ fzf.setup({
       ["alt-g"]       = actions.file_edit_or_qf,
       ["ctrl-s"]      = actions.file_split,
       ["alt-s"]       = actions.file_vsplit,
+      ["alt-t"]       = file_tabedit_before,
       ["ctrl-t"]      = actions.file_tabedit,
       ["alt-q"]       = actions.file_sel_to_qf,
       ["alt-l"]       = actions.file_sel_to_ll,
