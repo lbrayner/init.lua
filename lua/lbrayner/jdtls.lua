@@ -19,7 +19,11 @@ function M.get_config()
 
   return {
     capabilities = capabilities,
-    cmd = require("lspconfig.configs.jdtls").default_config.cmd,
+    cmd = {
+      "jdtls",
+      "-configuration", vim.fs.normalize("~/.cache/jdtls/default/config"),
+      "-data", vim.fs.normalize("~/.cache/jdtls/default/workspace"),
+    },
     init_options = {
       bundles = (function()
         local bundles = {}
