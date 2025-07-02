@@ -6,14 +6,14 @@ local function get_file()
   )
 end
 
-local function get_file_mark_info_list()
+function M.get_file_mark_info_list()
   return vim.tbl_filter(function(mark)
     return mark.mark:match("^'%u$") -- Uppercase letters
   end, vim.fn.getmarklist())
 end
 
 local function get_file_mark_info_by_mark()
-  local file_mark_info_list = get_file_mark_info_list()
+  local file_mark_info_list = M.get_file_mark_info_list()
 
   local file_mark_info_by_mark = {}
   for _, file_mark_info in ipairs(file_mark_info_list) do
@@ -26,7 +26,7 @@ end
 local function get_file_mark_navigator(opts)
   opts = opts or {}
 
-  local file_mark_info_list = opts.file_mark_info_list or get_file_mark_info_list()
+  local file_mark_info_list = opts.file_mark_info_list or M.get_file_mark_info_list()
 
   if vim.tbl_isempty(file_mark_info_list) then return end
 
@@ -44,7 +44,7 @@ local function file_mark_info_get_previous(mark)
   if file == "" then return end
 
   local file_mark_info_list, index_by_file = get_file_mark_navigator({
-    file_mark_info_list = vim.iter(get_file_mark_info_list()):rev():totable()
+    file_mark_info_list = vim.iter(M.get_file_mark_info_list()):rev():totable()
   })
   local idx = index_by_file[file]
 
