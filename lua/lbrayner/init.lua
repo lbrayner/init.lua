@@ -240,6 +240,15 @@ function M.setup_xml_matchit()
   end
 end
 
+function M.synstack()
+  local pos = vim.api.nvim_win_get_cursor(0)
+  local synstack = vim.fn.synstack(pos[1], pos[2] + 1)
+  local syn_id_addrs = vim.tbl_map(function(item)
+    return vim.fn.synIDattr(item, "name")
+  end, synstack)
+  return syn_id_addrs
+end
+
 function M.truncate_filename(filename, maxlength)
   if string.len(filename) <= maxlength then
     return filename
