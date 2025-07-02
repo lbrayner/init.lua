@@ -52,12 +52,14 @@ local M = {}
 
 function M.get_buffer_name(opts)
   opts = opts or {}
-  local path = require("lbrayner.path").path()
+  local path
 
   if require("lbrayner.fugitive").get_fugitive_object() then
     path = require("lbrayner.fugitive").get_fugitive_object()
   elseif vim.startswith(vim.api.nvim_buf_get_name(0), "jdt://") then -- jdtls
     path = string.gsub(vim.api.nvim_buf_get_name(0), "%?.*", "")
+  else
+    path = require("lbrayner.path").path()
   end
 
   local buffer_name = path
@@ -505,8 +507,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
     vim.schedule(define_status_line)
     vim.schedule(function()
-      local bufnr = vim.api.nvim_get_current_buf()
-      diagnostic_changed(bufnr)
+      diagnostic_changed(vim.api.nvim_get_current_buf())
     end)
   end,
 })
