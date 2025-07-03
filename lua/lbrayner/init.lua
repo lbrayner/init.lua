@@ -154,7 +154,8 @@ function M.jump_to_location(filename, pos, opts)
       { command = "buffer", description = "Current window" },
       { command = "new", description = "Horizontal split" },
       { command = "vnew", description = "Vertical split" },
-      { command = "tabnew", description = "Tab" }
+      { command = "-tabnew", description = "Tab before" },
+      { command = "tabnew", description = "Tab" },
     },
     {
       prompt = string.format("Open %s in:", vim.fn.fnamemodify(filename, ":~:.")),
