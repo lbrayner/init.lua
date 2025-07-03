@@ -47,7 +47,34 @@ end, { expr = true, desc = "Comment textobject" })
 -- mini.indentscope
 --
 
-require("mini.indentscope").setup()
+require("mini.indentscope").setup({
+  draw = {
+    predicate = function(scope)
+      if vim.wo.list then
+        return false
+      end
+
+      return not scope.body.is_incomplete
+    end,
+  },
+})
+
+local indentscope = vim.api.nvim_create_augroup("indentscope", { clear = true })
+
+vim.api.nvim_create_autocmd("OptionSet", {
+  pattern = "list",
+  group = indentscope,
+  desc = "MiniIndentscope undraw if 'list' is set",
+  callback = function()
+    if not MiniIndentscope then return end
+
+    if vim.v.option_new then
+      MiniIndentscope.undraw()
+    else
+      MiniIndentscope.draw()
+    end
+  end,
+})
 
 --
 -- mini.jump
