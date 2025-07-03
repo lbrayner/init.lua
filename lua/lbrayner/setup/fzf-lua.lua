@@ -18,10 +18,10 @@ local function file_switch_or_edit_or_qf(selected, opts)
   end
 end
 
-local function file_tabedit_before(selected, opts)
+local function file_tabedit_before(selected)
   for _, sel in ipairs(selected) do
     local path = require("fzf-lua.path").entry_to_file(sel).path
-    local vimcmd = string.format("-tabedit %s", vim.fn.fnameescape(vim.fs.normalize(path)))
+    local vimcmd = string.format("-tabedit %s", vim.fn.fnameescape(path))
     vim.cmd(vimcmd)
   end
 end
