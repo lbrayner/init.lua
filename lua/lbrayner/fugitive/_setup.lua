@@ -15,6 +15,8 @@ vim.keymap.set("ca", "Glns", "Git log --name-status")
 vim.keymap.set("ca", "Glo", "Git log --oneline")
 -- To list branches of a specific remote: Git! ls-remote upstream
 vim.keymap.set("ca", "Glr", "Git! ls-remote origin")
+-- List all files of a local or remote commit, branch (tree-ish)
+vim.keymap.set("ca", "Glt", "Git! ls-tree -r")
 vim.keymap.set("ca", "Gp", "Git cherry-pick")
 vim.keymap.set("ca", "Gr", "Git rebase -i")
 vim.keymap.set("ca", "Gs", "Git stash")
