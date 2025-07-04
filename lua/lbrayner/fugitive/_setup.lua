@@ -80,6 +80,11 @@ vim.api.nvim_create_autocmd("FileType", {
     local bufnr = args.buf
     local filetype = args.match
 
+    if filetype == "git" and not vim.b[bufnr].fugitive_type then
+      -- jdtls code actions preview buffers are now of filetype "git"
+      return
+    end
+
     if filetype == "fugitive" then
       fugitive_map_overrides(bufnr)
       vim.cmd("Glcd")
