@@ -28,7 +28,7 @@ vim.keymap.set("i", "<F6>", "<Esc><Cmd>w<CR>")
 -- list mode
 vim.keymap.set({
   "", -- nvo: normal, visual, operator-pending
-  "i" }, "<F12>", "<Cmd>set list!<CR>", { silent = true })
+  "i" }, "<F3>", "<Cmd>set list!<CR>", { silent = true })
 
 -- quickfix and locallist
 vim.keymap.set("n", "<Space>l", "<Cmd>lopen<CR>", { silent = true })
