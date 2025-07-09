@@ -226,7 +226,11 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
     local bufnr = args.buf
     vim.schedule(function()
       vim.api.nvim_buf_call(bufnr, function()
-        vim.cmd.startinsert()
+        local line = vim.api.nvim_buf_get_lines(bufnr, 0, 1, true)[1]
+        -- If editing a commit message, do not start in insert mode
+        if line == "" then
+          vim.cmd.startinsert()
+        end
       end)
     end)
     vim.wo.spell = true
