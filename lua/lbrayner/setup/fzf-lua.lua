@@ -1,3 +1,5 @@
+-- vim: fdm=marker
+
 if vim.fn.executable("fzf") == 0 then
   return
 end
@@ -5,7 +7,26 @@ end
 local fzf = require("fzf-lua")
 local actions = require("fzf-lua.actions")
 
-local function file_switch_or_edit_or_qf(selected, opts)
+local function get_history_file(suffix) -- {{{
+  if vim.go.shadafile == "" then
+    return
+  end
+
+  local shadafile = vim.fn.fnamemodify(vim.fn.fnamemodify(vim.go.shadafile, ":r"), ":t")
+
+  local history_file = "fzf_history_" .. shadafile
+
+  if suffix then
+    history_file = history_file .. "_" .. suffix
+  end
+
+  return vim.fs.joinpath(vim.fn.stdpath("cache"), history_file)
+end -- }}}
+
+-- register fzf-lua as the UI interface for `vim.ui.select`
+fzf.register_ui_select({ fzf_opts = { ["--history"] = get_history_file("ui_select") } })
+
+local function file_switch_or_edit_or_qf(selected, opts) -- {{{
   if #selected > 1 then
     actions.file_sel_to_qf(selected, opts)
     return
@@ -13,15 +34,15 @@ local function file_switch_or_edit_or_qf(selected, opts)
     local file = require("fzf-lua.path").entry_to_file(selected[1])
     require("lbrayner").jump_to_location(file.path, nil, { open_cmd = "buffer" })
   end
-end
+end -- }}}
 
-local function file_tabedit_before(selected)
+local function file_tabedit_before(selected) -- {{{
   for _, sel in ipairs(selected) do
     local path = require("fzf-lua.path").entry_to_file(sel).path
     local vimcmd = string.format("-tabedit %s", vim.fn.fnameescape(path))
     vim.cmd(vimcmd)
   end
-end
+end -- }}}
 
 fzf.setup({
   -- These override the default tables completely
@@ -70,129 +91,6 @@ fzf.setup({
   },
 })
 
-local function file_mark_jump_to_location(selected, _)
-  local mark = selected[1]
-  mark = mark:match("%u") -- Uppercase letters
-  require("lbrayner.marks").file_mark_jump_to_location(mark)
-end
-
-local function get_history_file(suffix)
-  if vim.go.shadafile == "" then
-    return
-  end
-
-  local shadafile = vim.fn.fnamemodify(vim.fn.fnamemodify(vim.go.shadafile, ":r"), ":t")
-
-  local history_file = "fzf_history_" .. shadafile
-
-  if suffix then
-    history_file = history_file .. "_" .. suffix
-  end
-
-  return vim.fs.joinpath(vim.fn.stdpath("cache"), history_file)
-end
-
--- register fzf-lua as the UI interface for `vim.ui.select`
-fzf.register_ui_select({ fzf_opts = { ["--history"] = get_history_file("ui_select") } })
-
-local function buffers()
-  fzf.buffers({ fzf_opts = { ["--history"] = get_history_file() } })
-end
-
-local function fzf_files(options)
-  options = vim.tbl_deep_extend("keep", {
-    -- https://github.com/ibhagwan/fzf-lua/issues/996
-    -- actions.files refers to all pickers that deal with files which also
-    -- includes grep, etc. Toggle ignore action is defined specifically for
-    -- files
-    actions = { ["ctrl-g"] = false },
-    fzf_opts = { ["--history"] = get_history_file() }
-  }, options)
-
-  if vim.startswith(options.cmd, "find_file_cache") then
-    options.git_icons = false
-  end
-
-  fzf.files(options)
-end
-
-local function files_clear_cache(opts)
-  opts = opts or {}
-  local args = opts.args or ""
-  local cmd = string.format("%s %s", "find_file_cache -C", args)
-
-  if vim.fn.executable("find_file_cache") == 0 then
-    vim.notify("find_file_cache not executable.", vim.log.levels.ERROR)
-    return
-  end
-
-  fzf_files({ cmd = cmd })
-  vim.notify("Cleared FZF cache.")
-end
-
-local function files(opts)
-  opts = opts or {}
-  local args = opts.args or ""
-  local cmd
-
-  if vim.fn.executable("find_file_cache") == 1 then
-    cmd = "find_file_cache"
-  elseif vim.fn.executable("rg") == 1 then
-    cmd = "rg --files --sort path"
-  end
-
-  cmd = string.format("%s %s", cmd, args)
-
-  fzf_files({ cmd = cmd })
-end
-
-local function file_marks()
-   -- Ignore error "No marks matching..."
-  pcall(fzf.marks, {
-    actions = {
-      ["enter"] = file_mark_jump_to_location,
-    },
-    fzf_opts = { ["--history"] = get_history_file("file_marks") },
-    marks = "[A-Z]",
-    prompt = "File marks> "
-  })
-end
-
-local function help_tags()
-  fzf.help_tags({
-    actions = { ["alt-s"] = actions.help_vert },
-    fzf_opts = { ["--history"] = get_history_file("help_tags") },
-  })
-end
-
-local function tabs()
-  fzf.tabs({
-    fzf_opts = {
-      ["--history"] = get_history_file(),
-      ["--preview"] = 'echo "Tab #"{2}": $(echo {1} | base64 -d -)"',
-      ["--preview-window"] = "nohidden:up,1",
-    },
-    show_quickfix = true,
-    show_unlisted = true
-  })
-end
-
-vim.api.nvim_create_user_command("Buffers", buffers, { nargs = 0 })
-vim.api.nvim_create_user_command("FilesClearCache", files_clear_cache, { complete = "file", nargs = "*" })
-vim.api.nvim_create_user_command("Files", files, { complete = "file", nargs = "*" })
-vim.api.nvim_create_user_command("HelpTags", help_tags, { nargs = 0 })
-vim.api.nvim_create_user_command("Marks", file_marks, { nargs = 0 })
-vim.api.nvim_create_user_command("Tabs", tabs, { nargs = 0 })
-
-local opts = { silent = true }
-
-vim.keymap.set("n", "<F1>", help_tags, opts)
-vim.keymap.set("n", "<F4>", file_marks, opts)
-vim.keymap.set("n", "<F5>", buffers, opts)
-vim.keymap.set("n", "<Leader><F7>", files_clear_cache, opts)
-vim.keymap.set("n", "<F7>", files, opts)
-vim.keymap.set("n", "<F8>", tabs, opts)
-
 local fzf_lua_highlights = vim.api.nvim_create_augroup("fzf_lua_highlights", { clear = true })
 
 vim.api.nvim_create_autocmd("ColorScheme", {
@@ -213,3 +111,107 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.keymap.set("n", "<F7>", fzf.quickfix_stack, { buffer = bufnr })
   end,
 })
+
+local function buffers() -- {{{
+  fzf.buffers({ fzf_opts = { ["--history"] = get_history_file() } })
+end -- }}}
+
+local function fzf_files(options) -- {{{
+  options = vim.tbl_deep_extend("keep", {
+    -- https://github.com/ibhagwan/fzf-lua/issues/996
+    -- actions.files refers to all pickers that deal with files which also
+    -- includes grep, etc. Toggle ignore action is defined specifically for
+    -- files
+    actions = { ["ctrl-g"] = false },
+    fzf_opts = { ["--history"] = get_history_file() }
+  }, options)
+
+  if vim.startswith(options.cmd, "find_file_cache") then
+    options.git_icons = false
+  end
+
+  fzf.files(options)
+end -- }}}
+
+local function files_clear_cache(opts) -- {{{
+  opts = opts or {}
+  local args = opts.args or ""
+  local cmd = string.format("%s %s", "find_file_cache -C", args)
+
+  if vim.fn.executable("find_file_cache") == 0 then
+    vim.notify("find_file_cache not executable.", vim.log.levels.ERROR)
+    return
+  end
+
+  fzf_files({ cmd = cmd })
+  vim.notify("Cleared FZF cache.")
+end -- }}}
+
+local function files(opts) -- {{{
+  opts = opts or {}
+  local args = opts.args or ""
+  local cmd
+
+  if vim.fn.executable("find_file_cache") == 1 then
+    cmd = "find_file_cache"
+  elseif vim.fn.executable("rg") == 1 then
+    cmd = "rg --files --sort path"
+  end
+
+  cmd = string.format("%s %s", cmd, args)
+
+  fzf_files({ cmd = cmd })
+end -- }}}
+
+local function file_marks() -- {{{
+  local function file_mark_jump_to_location(selected, _)
+    local mark = selected[1]
+    mark = mark:match("%u") -- Uppercase letters
+    require("lbrayner.marks").file_mark_jump_to_location(mark)
+  end
+
+   -- Ignore error "No marks matching..."
+  pcall(fzf.marks, {
+    actions = {
+      ["enter"] = file_mark_jump_to_location,
+    },
+    fzf_opts = { ["--history"] = get_history_file("file_marks") },
+    marks = "[A-Z]",
+    prompt = "File marks> "
+  })
+end -- }}}
+
+local function help_tags() -- {{{
+  fzf.help_tags({
+    actions = { ["alt-s"] = actions.help_vert },
+    fzf_opts = { ["--history"] = get_history_file("help_tags") },
+  })
+end -- }}}
+
+local function tabs() -- {{{
+  fzf.tabs({
+    fzf_opts = {
+      ["--history"] = get_history_file(),
+      ["--preview"] = 'echo "Tab #"{2}": $(echo {1} | base64 -d -)"',
+      ["--preview-window"] = "nohidden:up,1",
+    },
+    show_quickfix = true,
+    show_unlisted = true
+  })
+end -- }}}
+
+vim.api.nvim_create_user_command("Buffers", buffers, { nargs = 0 })
+vim.api.nvim_create_user_command("FilesClearCache", files_clear_cache, { complete = "file", nargs = "*" })
+vim.api.nvim_create_user_command("Files", files, { complete = "file", nargs = "*" })
+vim.api.nvim_create_user_command("HelpTags", help_tags, { nargs = 0 })
+vim.api.nvim_create_user_command("Marks", file_marks, { nargs = 0 })
+vim.api.nvim_create_user_command("Tabs", tabs, { nargs = 0 })
+
+local opts = { silent = true }
+
+vim.keymap.set("n", "<F1>", help_tags, opts)
+vim.keymap.set("n", "<F4>", file_marks, opts)
+vim.keymap.set("n", "<F5>", buffers, opts)
+vim.keymap.set("n", "<Leader><F7>", files_clear_cache, opts)
+vim.keymap.set("n", "<F7>", files, opts)
+vim.keymap.set("n", "<F8>", tabs, opts)
