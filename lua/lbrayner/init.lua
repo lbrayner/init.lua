@@ -133,13 +133,14 @@ function M.jump_to_location(filename, pos, opts)
     -- From vim.lsp.util.create_window_without_focus
     local prev = vim.api.nvim_get_current_win()
     vim.cmd(command)
-    winid = vim.api.nvim_get_current_win()
-    local possibly_new_buf = vim.api.nvim_win_get_buf(winid) -- [No Name]
+    local possibly_new_winid = vim.api.nvim_get_current_win()
+    local possibly_new_buf = vim.api.nvim_win_get_buf(possibly_new_winid) -- [No Name]
     vim.api.nvim_set_current_win(prev)
 
-    _jump_to_location(winid, bufnr, pos)
+    _jump_to_location(possibly_new_winid, bufnr, pos)
 
-    if bufnr ~= possibly_new_buf then
+    if winid ~= possibly_new_winid and
+      bufnr ~= possibly_new_buf and vim.api.nvim_buf_get_name(possibly_new_buf) == "" then
       -- Delete new empty buffer possibly created by command
       pcall(vim.api.nvim_buf_delete, possibly_new_buf, { force = force })
     end
