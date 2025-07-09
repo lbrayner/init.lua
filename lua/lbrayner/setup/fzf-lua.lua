@@ -5,9 +5,6 @@ end
 local fzf = require("fzf-lua")
 local actions = require("fzf-lua.actions")
 
--- register fzf-lua as the UI interface for `vim.ui.select`
-fzf.register_ui_select()
-
 local function file_switch_or_edit_or_qf(selected, opts)
   if #selected > 1 then
     actions.file_sel_to_qf(selected, opts)
@@ -94,6 +91,9 @@ local function get_history_file(suffix)
 
   return vim.fs.joinpath(vim.fn.stdpath("cache"), history_file)
 end
+
+-- register fzf-lua as the UI interface for `vim.ui.select`
+fzf.register_ui_select({ fzf_opts = { ["--history"] = get_history_file("ui_select") } })
 
 local function buffers()
   fzf.buffers({ fzf_opts = { ["--history"] = get_history_file() } })
