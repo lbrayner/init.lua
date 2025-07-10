@@ -35,37 +35,15 @@ local function make_opts(opts) -- {{{
   if not history_file then return opts end
 
   local cmd = "tac " .. history_file .. " | nauniq | tac | sponge " .. history_file
-  -- local cmd = "tac " .. history_file .. " | nauniq | tac"
-  print("cmd", vim.inspect(cmd)) -- TODO debug
 
-  -- opts.fn_post_fzf = function()
-  --   local on_exit = function(obj)
-  --     print("obj", vim.inspect(obj))
-  --   end
-  --
-  --   -- Runs asynchronously:
-  --   vim.system({'wc', '-l', history_file}, { text = true }, on_exit)
-  -- end
-  -- opts.fn_post_fzf = function()
-  --   local nauniq = vim.system({ "nauniq" }, { stdin = true }, function(obj)
-  --     print("obj", vim.inspect(obj))
-  --   end)
-  --   local tac1 = vim.system({ "tac", history_file }, {
-  --     stdout = function(err, data)
-  --       assert(not err, string.format("Error running tac %s", history_file))
-  --       print("data", vim.inspect(data)) -- TODO debug
-  --       nauniq.write(data)
-  --     end,
-  --     text = true,
-  --   })
-  -- end
   opts.fn_post_fzf = function()
-    local on_exit = function(obj)
-      print("obj", vim.inspect(obj))
-    end
-
-    -- Runs asynchronously:
-    vim.system({"sh", "-c", cmd}, { text = true }, on_exit)
+    vim.system({"sh", "-c", cmd}, { text = true }, function(obj)
+      if obj.code ~= 0 then
+        vim.notify(string.format(
+          "Could not run '%s': %s", cmd, obj.stderr
+        ), vim.log.levels.ERROR)
+      end
+    end)
   end
 
   return opts
