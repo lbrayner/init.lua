@@ -23,8 +23,58 @@ local function get_history_file(suffix) -- {{{
   return vim.fs.joinpath(vim.fn.stdpath("cache"), history_file)
 end -- }}}
 
+local function make_opts(opts) -- {{{
+  opts = opts or {}
+
+  if vim.fn.executable("nauniq") == 0 then
+    return opts
+  end
+
+  local history_file = vim.tbl_get(opts, "fzf_opts", "--history")
+
+  if not history_file then return opts end
+
+  local cmd = "tac " .. history_file .. " | nauniq | tac | sponge " .. history_file
+  -- local cmd = "tac " .. history_file .. " | nauniq | tac"
+  print("cmd", vim.inspect(cmd)) -- TODO debug
+
+  -- opts.fn_post_fzf = function()
+  --   local on_exit = function(obj)
+  --     print("obj", vim.inspect(obj))
+  --   end
+  --
+  --   -- Runs asynchronously:
+  --   vim.system({'wc', '-l', history_file}, { text = true }, on_exit)
+  -- end
+  -- opts.fn_post_fzf = function()
+  --   local nauniq = vim.system({ "nauniq" }, { stdin = true }, function(obj)
+  --     print("obj", vim.inspect(obj))
+  --   end)
+  --   local tac1 = vim.system({ "tac", history_file }, {
+  --     stdout = function(err, data)
+  --       assert(not err, string.format("Error running tac %s", history_file))
+  --       print("data", vim.inspect(data)) -- TODO debug
+  --       nauniq.write(data)
+  --     end,
+  --     text = true,
+  --   })
+  -- end
+  opts.fn_post_fzf = function()
+    local on_exit = function(obj)
+      print("obj", vim.inspect(obj))
+    end
+
+    -- Runs asynchronously:
+    vim.system({"sh", "-c", cmd}, { text = true }, on_exit)
+  end
+
+  return opts
+end -- }}}
+
 -- register fzf-lua as the UI interface for `vim.ui.select`
-fzf.register_ui_select({ fzf_opts = { ["--history"] = get_history_file("ui_select") } })
+fzf.register_ui_select(make_opts({
+  fzf_opts = { ["--history"] = get_history_file("ui_select") }
+}))
 
 local function file_switch_or_edit_or_qf(selected, opts) -- {{{
   if #selected > 1 then
@@ -113,24 +163,24 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 local function buffers() -- {{{
-  fzf.buffers({ fzf_opts = { ["--history"] = get_history_file() } })
+  fzf.buffers(make_opts({ fzf_opts = { ["--history"] = get_history_file() } }))
 end -- }}}
 
-local function fzf_files(options) -- {{{
-  options = vim.tbl_deep_extend("keep", {
+local function fzf_files(opts) -- {{{
+  opts = vim.tbl_deep_extend("keep", {
     -- https://github.com/ibhagwan/fzf-lua/issues/996
     -- actions.files refers to all pickers that deal with files which also
     -- includes grep, etc. Toggle ignore action is defined specifically for
     -- files
     actions = { ["ctrl-g"] = false },
     fzf_opts = { ["--history"] = get_history_file() }
-  }, options)
+  }, opts)
 
-  if vim.startswith(options.cmd, "find_file_cache") then
-    options.git_icons = false
+  if vim.startswith(opts.cmd, "find_file_cache") then
+    opts.git_icons = false
   end
 
-  fzf.files(options)
+  fzf.files(make_opts(opts))
 end -- }}}
 
 local function files_clear_cache(opts) -- {{{
@@ -171,25 +221,25 @@ local function file_marks() -- {{{
   end
 
    -- Ignore error "No marks matching..."
-  pcall(fzf.marks, {
+  pcall(fzf.marks, make_opts({
     actions = {
       ["enter"] = file_mark_jump_to_location,
     },
     fzf_opts = { ["--history"] = get_history_file("file_marks") },
     marks = "[A-Z]",
     prompt = "File marks> "
-  })
+  }))
 end -- }}}
 
 local function help_tags() -- {{{
-  fzf.help_tags({
+  fzf.help_tags(make_opts({
     actions = { ["alt-s"] = actions.help_vert },
     fzf_opts = { ["--history"] = get_history_file("help_tags") },
-  })
+  }))
 end -- }}}
 
 local function tabs() -- {{{
-  fzf.tabs({
+  fzf.tabs(make_opts({
     fzf_opts = {
       ["--history"] = get_history_file(),
       ["--preview"] = 'echo "Tab #"{2}": $(echo {1} | base64 -d -)"',
@@ -197,7 +247,7 @@ local function tabs() -- {{{
     },
     show_quickfix = true,
     show_unlisted = true
-  })
+  }))
 end -- }}}
 
 vim.api.nvim_create_user_command("Buffers", buffers, { nargs = 0 })
