@@ -8,13 +8,16 @@ local fzf = require("fzf-lua")
 local actions = require("fzf-lua.actions")
 
 local function get_history_file(suffix) -- {{{
+  local history_file
+
   if vim.go.shadafile == "" then
-    return
+    history_file = "fzf_history_main"
+  else
+    local fnamemodify = vim.fn.fnamemodify
+    local shadafile = fnamemodify(fnamemodify(vim.go.shadafile, ":r"), ":t")
+
+    history_file = "fzf_history_" .. shadafile
   end
-
-  local shadafile = vim.fn.fnamemodify(vim.fn.fnamemodify(vim.go.shadafile, ":r"), ":t")
-
-  local history_file = "fzf_history_" .. shadafile
 
   if suffix then
     history_file = history_file .. "_" .. suffix
@@ -37,13 +40,13 @@ local function make_opts(opts) -- {{{
   local cmd = "tac " .. history_file .. " | nauniq | tac | sponge " .. history_file
 
   opts.fn_post_fzf = function()
-    vim.system({"sh", "-c", cmd}, { text = true }, function(obj)
+    vim.system({"sh", "-c", cmd}, { text = true }, vim.schedule_wrap(function(obj)
       if obj.code ~= 0 then
         vim.notify(string.format(
           "Could not run '%s': %s", cmd, obj.stderr
         ), vim.log.levels.ERROR)
       end
-    end)
+    end))
   end
 
   return opts
