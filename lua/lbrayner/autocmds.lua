@@ -270,7 +270,7 @@ vim.api.nvim_create_autocmd("Syntax", {
   end,
 })
 
-local package_manager = vim.api.nvim_create_augroup("package_manager", { clear = true })
+local protected_files = vim.api.nvim_create_augroup("protected_files", { clear = true })
 
 vim.api.nvim_create_autocmd("BufRead", {
   pattern = {
@@ -280,8 +280,8 @@ vim.api.nvim_create_autocmd("BufRead", {
     vim.fs.normalize("~/.m2/repository/*"),
     vim.fs.normalize("~/.pyenv/versions/*/lib/*"),
   },
-  group = package_manager,
-  desc = "Package manager controlled files should not be writeable",
+  group = protected_files,
+  desc = "Protected files (such as package manager controlled files) should not be writeable",
   callback = function()
     vim.bo.modifiable = false
   end,
@@ -413,7 +413,7 @@ local set_file_type = vim.api.nvim_create_augroup("set_file_type", { clear = tru
 
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = {
-    "*/host_vars/*", "*.redis", "*.wsdl", ".ignore", ".ripgreprc*", "/tmp/dir*", "ignore", "ripgreprc*"
+    "*/host_vars/*", "*.redis", "*.wsdl", ".ignore", ".ripgreprc*", "ignore", "ripgreprc*"
   },
   group = set_file_type,
   desc = "Setting filetype for various patterns",
@@ -430,10 +430,26 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
       vim.bo.filetype = "redis"
     elseif extension == "wsdl" then
       vim.bo.filetype = "xml"
-    elseif vim.fn.argc() == 1 and string.find(vim.fn.argv(0), "^/tmp/dir%w%w%w%w%w$") then
-      vim.bo.filetype = "vidir"
     elseif require("lbrayner").contains(file, "/host_vars/") then
       vim.bo.filetype = "yaml"
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("BufRead", {
+  pattern = {
+    "*/jre*/lib/security/java.policy", "/tmp/dir*"
+  },
+  group = set_file_type,
+  desc = "Setting filetype for files that users normally just edit or view",
+  callback = function(args)
+    local file = args.match
+    local filename = vim.fn.fnamemodify(file, ":t")
+
+    if filename == "java.policy" then
+      vim.bo.filetype = "groovy"
+    elseif vim.fn.argc() == 1 and string.find(vim.fn.argv(0), "^/tmp/dir%w%w%w%w%w$") then
+      vim.bo.filetype = "vidir"
     end
   end,
 })
