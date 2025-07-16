@@ -17,11 +17,7 @@ function M.java_go_to_top_level_declaration()
     return
   end
 
-  local params = { textDocument = vim.lsp.util.make_text_document_params(bufnr) }
-
-  client:request("textDocument/documentSymbol", params, function(err, result, ctx)
-    assert(not err, vim.inspect(err))
-
+  require("lbrayner.lsp").document_symbol(client, function(result, ctx)
     if vim.tbl_isempty(result) then
       vim.notify("Go to top level declaration: no document symbols found", vim.log.levels.ERROR)
       return
@@ -52,8 +48,62 @@ function M.java_go_to_top_level_declaration()
     end
 
     vim.lsp.util.show_document({
-      uri = params.textDocument.uri, range = top_level_symbols[1].selectionRange
+      uri = ctx.params.textDocument.uri, range = top_level_symbols[1].selectionRange
     }, offset_encoding)
+  end, bufnr)
+end
+
+function M.java_is_test_file(cb)
+  assert(type(cb) == "function", "'cb' must be a function")
+
+  -- From jdtls.util.with_classpaths
+  local bufnr = vim.api.nvim_get_current_buf()
+  local uri = vim.uri_from_bufnr(bufnr)
+
+  local is_test_file_cmd = {
+    command = "java.project.isTestFile",
+    arguments = { uri }
+  }
+
+  require("jdtls.util").execute_command(is_test_file_cmd, function(err, result)
+    assert(not err, vim.inspect(err))
+    cb(result)
+  end)
+end
+
+function M.java_main_symbols(cb)
+  assert(type(cb) == "function", "'cb' must be a function")
+
+  local bufnr = vim.api.nvim_get_current_buf()
+
+  local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "jdtls" })
+  local _, client = next(clients)
+
+  -- From nvim-jdtls
+  if not client then
+    vim.notify("No LSP client with name `jdtls` available", vim.log.levels.WARN)
+    return
+  end
+
+  require("lbrayner.lsp").document_symbol(client, function(result, ctx)
+    if vim.tbl_isempty(result) then
+      vim.notify("Get main symbol: no document symbols found", vim.log.levels.ERROR)
+      return
+    end
+
+    local mains = vim.iter(result):filter(
+      function(s)
+        return s.kind == SymbolKind.Class and s.children and not vim.tbl_isempty(s.children)
+      end
+    ):map(
+      function(s) return s.children end
+    ):flatten():filter(
+      function(s)
+        return s.kind == SymbolKind.Method and s.detail == " : void" and s.name == "main(String[])"
+      end
+    ):totable()
+
+    cb(mains)
   end, bufnr)
 end
 
