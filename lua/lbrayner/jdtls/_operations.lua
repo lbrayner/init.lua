@@ -24,11 +24,25 @@ function M.java_get_main_symbol()
     end
     -- print(vim.inspect(result)) -- TODO debug
 
-    local methods = vim.tbl_filter(function(symbol)
-      return symbol.kind == SymbolKind.Method
-    end, result)
+    -- local top_level_classes = vim.tbl_filter(function(symbol)
+    --   return symbol.kind == SymbolKind.Class
+    -- end, result)
 
-    print(vim.inspect(methods))
+    -- print(vim.inspect(methods)) -- TODO debug
+
+    -- local second_level = vim.tbl_get(result,)
+
+    local first_level_methods = vim.iter(result):filter(
+      function(s)
+        return s.kind == SymbolKind.Class and s.children and not vim.tbl_isempty(s.children)
+      end
+    ):map(
+      function(s) return s.children end
+    ):flatten():filter(
+      function(s) return s.kind == SymbolKind.Method end
+    ):totable()
+
+    print(vim.inspect(first_level_methods)) -- TODO debug
   end, bufnr)
 end
 
