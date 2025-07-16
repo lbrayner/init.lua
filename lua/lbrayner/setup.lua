@@ -56,26 +56,6 @@ if pcall(require, "dap") then
   end
 end
 
--- nvim-dap-ui
-
-function M.dapui()
-  require("dapui").setup()
-
-  vim.api.nvim_create_user_command("DapUiClose", function(command)
-    require("dapui").close({ layout = tonumber(command.args) })
-  end, { nargs = "?" })
-
-  vim.api.nvim_create_user_command("DapUiOpen", function(command)
-    require("dapui").open({ layout = tonumber(command.args) })
-  end, { nargs = "?" })
-
-  vim.api.nvim_create_user_command("DapUiReset", require("dapui").setup, { nargs = 0 })
-
-  vim.api.nvim_create_user_command("DapUiToggle", function(command)
-    require("dapui").toggle({ layout = tonumber(command.args) })
-  end, { nargs = "?" })
-end
-
 -- nvim-highlight-colors
 
 if pcall(require, "nvim-highlight-colors") then
