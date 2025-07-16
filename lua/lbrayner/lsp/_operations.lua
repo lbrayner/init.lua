@@ -11,6 +11,22 @@ function M.definition()
   vim.lsp.buf.definition({ on_list = on_list, reuse_win = true })
 end
 
+function M.document_symbol(client, handler, bufnr)
+  assert(type(handler) == "function", "'handler' must be a function")
+  assert(type(bufnr) == "number", "'bufnr' must be a number")
+  assert(
+    vim.tbl_get(client, "id") and vim.lsp.buf_is_attached(bufnr, client.id),
+    "'client' must be of type vim.lsp.Client and 'bufnr' must be attached to it"
+  )
+
+  local params = { textDocument = vim.lsp.util.make_text_document_params(bufnr) }
+
+  client:request("textDocument/documentSymbol", params, function(err, result, ctx)
+    assert(not err, vim.inspect(err))
+    handler(result, ctx)
+  end, bufnr)
+end
+
 function M.hover()
   vim.lsp.buf.hover({ close_events = require("lbrayner").get_close_events() })
 end

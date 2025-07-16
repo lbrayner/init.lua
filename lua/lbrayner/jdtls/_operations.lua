@@ -17,15 +17,13 @@ function M.java_go_to_top_level_declaration()
     return
   end
 
-  local params = { textDocument = vim.lsp.util.make_text_document_params(bufnr) }
-
-  client:request("textDocument/documentSymbol", params, function(err, result, ctx)
-    assert(not err, vim.inspect(err))
-
+  require("lbrayner.lsp").document_symbol(client, function(result, ctx)
     if vim.tbl_isempty(result) then
       vim.notify("Go to top level declaration: no document symbols found", vim.log.levels.ERROR)
       return
     end
+    -- print("result", vim.inspect(result)) -- TODO debug
+    -- print("ctx", vim.inspect(ctx)) -- TODO debug
 
     local top_level_symbols = vim.tbl_filter(function(symbol)
       return vim.tbl_contains({
@@ -52,7 +50,7 @@ function M.java_go_to_top_level_declaration()
     end
 
     vim.lsp.util.show_document({
-      uri = params.textDocument.uri, range = top_level_symbols[1].selectionRange
+      uri = ctx.params.textDocument.uri, range = top_level_symbols[1].selectionRange
     }, offset_encoding)
   end, bufnr)
 end

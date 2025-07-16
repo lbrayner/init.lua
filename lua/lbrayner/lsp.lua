@@ -116,6 +116,7 @@ return setmetatable(M, {
       {
         "declaration",
         "definition",
+        "document_symbol",
         "hover",
         "implementation",
         "references",
