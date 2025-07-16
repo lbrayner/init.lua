@@ -75,12 +75,10 @@ function M.dapui()
     local fargs = opts.fargs
     local reset = false
 
-    -- print("fargs before", vim.inspect(fargs)) -- TODO debug
     if fargs[1] == "--reset" then
       reset = true
       fargs = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
     end
-    -- print("fargs after", vim.inspect(fargs)) -- TODO debug
 
     assert(
       vim.tbl_isempty(fargs) or #fargs == 1,
@@ -101,12 +99,6 @@ function M.dapui()
   end,
   {
     complete = function(arg_lead, cmdline, cursor_pos)
-      print(
-        "arg_lead", vim.inspect(arg_lead),
-        "cmdline", vim.inspect(cmdline),
-        "cursor_pos", vim.inspect(cursor_pos)
-      ) -- TODO debug
-
       local fargs = vim.iter(string.gmatch(cmdline, "%s+(%S+)")):totable()
 
       if vim.tbl_isempty(fargs) or
