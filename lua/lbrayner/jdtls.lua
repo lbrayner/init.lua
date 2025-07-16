@@ -63,16 +63,6 @@ function M.get_config()
   }
 end
 
-M.operations = require("lbrayner").get_proxy_table_for_module("lbrayner.jdtls._operations")
-
-function M.java_go_to_top_level_declaration()
-  M.operations.java_go_to_top_level_declaration()
-end
-
-function M.java_type_hierarchy(opts)
-  M.operations.java_type_hierarchy(opts)
-end
-
 function M.setup(config)
   local jdtls_setup = vim.api.nvim_create_augroup("jdtls_setup", { clear = true })
 
@@ -150,4 +140,22 @@ function M.setup(config)
   require("jdtls").start_or_attach(config)
 end
 
-return M
+M.operations = require("lbrayner").get_proxy_table_for_module("lbrayner.jdtls._operations")
+
+local function get(proxy, key)
+  if not rawget(M, key) then
+    rawset(M, key, function(...)
+      return proxy[key](...)
+    end)
+  end
+  return rawget(M, key)
+end
+
+return setmetatable(M, {
+  __index = function(_, key)
+    return get(M.operations, key)
+  end,
+  __newindex = function()
+    error("Cannot add item")
+  end,
+})

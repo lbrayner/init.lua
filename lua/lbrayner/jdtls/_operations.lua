@@ -5,6 +5,33 @@ local SymbolKind = vim.lsp.protocol.SymbolKind
 
 local maximum_resolve_depth = 10
 
+function M.java_get_main_symbol()
+  local bufnr = vim.api.nvim_get_current_buf()
+
+  local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "jdtls" })
+  local _, client = next(clients)
+
+  -- From nvim-jdtls
+  if not client then
+    vim.notify("No LSP client with name `jdtls` available", vim.log.levels.WARN)
+    return
+  end
+
+  require("lbrayner.lsp").document_symbol(client, function(result, ctx)
+    if vim.tbl_isempty(result) then
+      vim.notify("Get main symbol: no document symbols found", vim.log.levels.ERROR)
+      return
+    end
+    -- print(vim.inspect(result)) -- TODO debug
+
+    local methods = vim.tbl_filter(function(symbol)
+      return symbol.kind == SymbolKind.Method
+    end, result)
+
+    print(vim.inspect(methods))
+  end, bufnr)
+end
+
 function M.java_go_to_top_level_declaration()
   local bufnr = vim.api.nvim_get_current_buf()
 
@@ -22,8 +49,6 @@ function M.java_go_to_top_level_declaration()
       vim.notify("Go to top level declaration: no document symbols found", vim.log.levels.ERROR)
       return
     end
-    -- print("result", vim.inspect(result)) -- TODO debug
-    -- print("ctx", vim.inspect(ctx)) -- TODO debug
 
     local top_level_symbols = vim.tbl_filter(function(symbol)
       return vim.tbl_contains({
