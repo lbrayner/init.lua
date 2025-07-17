@@ -142,18 +142,14 @@ end
 
 M.operations = require("lbrayner").get_proxy_table_for_module("lbrayner.jdtls._operations")
 
-local function get(proxy, key)
-  if not rawget(M, key) then
-    rawset(M, key, function(...)
-      return proxy[key](...)
-    end)
-  end
-  return rawget(M, key)
-end
-
 return setmetatable(M, {
   __index = function(_, key)
-    return get(M.operations, key)
+    if not rawget(M, key) then
+      rawset(M, key, function(...)
+        return M.operations[key](...)
+      end)
+    end
+  return rawget(M, key)
   end,
   __newindex = function()
     error("Cannot add item")
