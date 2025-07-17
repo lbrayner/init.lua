@@ -6,26 +6,21 @@ local M = {}
 local function rg(txt, opts) -- {{{
   opts = opts or {}
   assert(
-    opts.config_path and type(opts.config_path) == "string", "'config_path' must be a string"
+    not opts.config_path or type(opts.config_path) == "string",
+    "'config_path' must be a string"
   )
   assert(
-    opts.loclist and type(opts.loclist) == "boolean", "'loclist' must be a boolean"
+    not opts.loclist or type(opts.loclist) == "boolean", "'loclist' must be a boolean"
   )
 
-  local command = "grep!"
-
-  if opts.loclist then
-    command = "lgrep!"
-  end
-
-  local rgopts = " "
+  local rgopts = {}
 
   if vim.o.ignorecase then
-    rgopts = rgopts.."-i "
+    table.insert(rgopts, "-i")
   end
 
   if vim.o.smartcase then
-    rgopts = rgopts.."-S "
+    table.insert(rgopts, "-S")
   end
 
   if not vim.startswith(vim.o.grepprg, "rg") and
@@ -37,36 +32,29 @@ local function rg(txt, opts) -- {{{
     error("Rg: 'rg' not executable.")
   end
 
-  -- Escaping Command-line special characters '#', '%' (:h :_%), and '|' (:h :bar)
-  local grep = "silent "..command.." "..rgopts..vim.fn.escape(txt, "#%|")
+  local cmd = {
+    "rg", "--engine=auto", "--vimgrep",  "--sort", "path", unpack(rgopts),
+    string.format("'%s'", txt)
+  }
+  print("cmd", vim.inspect(cmd)) -- TODO debug
 
-  if opts.config_path and vim.uv.fs_stat(opts.config_path) then
-    if vim.bo.grepprg == "" then
-      vim.bo.grepprg = "RIPGREP_CONFIG_PATH=" .. opts.config_path .. " " .. vim.go.grepprg
+  -- vim.system(cmd, { text = true }, vim.schedule_wrap(function(obj)
+  --   if obj.code ~= 0 then
+  --     vim.notify(string.format(
+  --       "Could not run '%s': %s", cmd, obj.stderr
+  --     ), vim.log.levels.ERROR)
+  --   end
+  -- end))
 
-      local success, err = pcall(vim.cmd, grep)
-
-      vim.bo.grepprg = "" -- use global value
-
-      if not success then
-        error(err)
-      end
-
-      return
-    else
-      error("Rg: local 'grepprg' is set.")
-    end
-  end
-
-  vim.cmd(grep)
+  return true
 end -- }}}
 
 function M.lrg(txt, config_path)
-  rg(txt, { config_path = config_path, loclist = true })
+  return rg(txt, { config_path = config_path, loclist = true })
 end
 
 function M.rg(txt, config_path)
-  rg(txt, { config_path = config_path })
+  return rg(txt, { config_path = config_path })
 end
 
 function M.user_command_with_config_path(command_name, config_path)
@@ -113,7 +101,8 @@ function M.user_command_with_config_path(command_name, config_path)
       }, " "))
     end
 
-    local success, err = pcall(M.rg, txt, config_path)
+    local success, err = M.rg(txt, config_path)
+    print("success", success, "err", err) -- TODO debug
 
     if not success then
       vim.cmd.cclose()
@@ -136,10 +125,6 @@ function M.user_command_with_config_path(command_name, config_path)
     end
   end, { complete = "file", nargs = "*", range = -1 })
 end
-
-vim.go.grepformat = "%f:%l:%c:%m"
-vim.go.grepprg = "rg --engine=auto --vimgrep --sort path"
-vim.go.shellpipe = "&>"
 
 M.user_command_with_config_path("Rg")
 M.user_command_with_config_path("RgNoTests", ".ripgreprc-no-tests")
