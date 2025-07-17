@@ -5,6 +5,7 @@ vim.keymap.set("n", "<Leader>dw", function() -- toggle iwhite
     vim.notify("-iwhite")
     return
   end
+
   vim.opt.diffopt:append({ "iwhite" })
   vim.notify("+iwhite")
 end)
@@ -17,7 +18,9 @@ vim.api.nvim_create_autocmd("TabEnter" , {
   group = diffupdate,
   callback = function(args)
     local winid = vim.fn.bufwinid(args.buf)
+
     if not winid then return end
+
     if vim.wo[winid].diff then
       vim.cmd.diffupdate()
     end
@@ -25,12 +28,16 @@ vim.api.nvim_create_autocmd("TabEnter" , {
 })
 
 local function update_conflict_markers(bufnr)
-  require("lbrayner.ripgrep").lrg([["^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)" ]] ..
-  vim.fn.shellescape(vim.api.nvim_buf_get_name(0)))
+  require("lbrayner.ripgrep").lrg(
+    [["^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)" ]] ..
+    vim.fn.shellescape(vim.api.nvim_buf_get_name(0))
+  )
+
   if not vim.tbl_isempty(vim.fn.getloclist(0)) then
     vim.fn.setloclist(0, {}, "a", { title = "Conflict markers" })
     return true
   end
+
   return false
 end
 
@@ -54,18 +61,22 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
       buffer = bufnr,
       callback = function(args)
         local bufnr = args.buf
+
         if vim.api.nvim_get_current_buf() ~= bufnr then
           -- After a BufWritePost do nothing if bufnr is not current
           return
         end
+
         if vim.fn.getloclist(0, { title = 1 }).title == "Conflict markers" then
           local context = vim.fn.getloclist(0, { context = 1 }).context
+
           if context.conflict_markers.changedtick < vim.b.changedtick then
             if not update_conflict_markers(bufnr) then
               vim.cmd.lclose()
               clear_conflict_markers_autocmd(bufnr)
               return
             end
+
             update_context(vim.b.changedtick)
           end
         end
