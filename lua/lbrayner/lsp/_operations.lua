@@ -11,8 +11,8 @@ function M.definition()
   vim.lsp.buf.definition({ on_list = on_list, reuse_win = true })
 end
 
-function M.document_symbol(client, handler, bufnr)
-  assert(type(handler) == "function", "'handler' must be a function")
+function M.document_symbol(client, cb, bufnr)
+  assert(type(cb) == "function", "'cb' must be a function")
   assert(type(bufnr) == "number", "'bufnr' must be a number")
   assert(
     vim.tbl_get(client, "id") and vim.lsp.buf_is_attached(bufnr, client.id),
@@ -23,7 +23,7 @@ function M.document_symbol(client, handler, bufnr)
 
   client:request("textDocument/documentSymbol", params, function(err, result, ctx)
     assert(not err, vim.inspect(err))
-    handler(result, ctx)
+    cb(result, ctx)
   end, bufnr)
 end
 

@@ -1,3 +1,5 @@
+-- vim: fdm=marker
+
 local M = {}
 
 local offset_encoding = "utf-16"
@@ -5,7 +7,7 @@ local SymbolKind = vim.lsp.protocol.SymbolKind
 
 local maximum_resolve_depth = 10
 
-function M.java_go_to_top_level_declaration()
+local function with_jdtls(fn) -- {{{
   local bufnr = vim.api.nvim_get_current_buf()
 
   local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "jdtls" })
@@ -17,40 +19,46 @@ function M.java_go_to_top_level_declaration()
     return
   end
 
-  require("lbrayner.lsp").document_symbol(client, function(result, ctx)
-    if vim.tbl_isempty(result) then
-      vim.notify("Go to top level declaration: no document symbols found", vim.log.levels.ERROR)
-      return
-    end
+  fn(client, bufnr)
+end -- }}}
 
-    local top_level_symbols = vim.tbl_filter(function(symbol)
-      return vim.tbl_contains({
-        SymbolKind.Class,
-        SymbolKind.Enum,
-        SymbolKind.Interface
-      }, symbol.kind)
-    end, result)
+function M.java_go_to_top_level_declaration()
+  with_jdtls(function(client, bufnr)
+    require("lbrayner.lsp").document_symbol(client, function(result, ctx)
+      if vim.tbl_isempty(result) then
+        vim.notify("Go to top level declaration: no document symbols found", vim.log.levels.ERROR)
+        return
+      end
 
-    if vim.tbl_count(top_level_symbols) > 1 then
-      -- Removing children
-      top_level_symbols = vim.tbl_map(function(symbol)
-        symbol.children = nil
-        return symbol
-      end, top_level_symbols)
+      local top_level_symbols = vim.tbl_filter(function(symbol)
+        return vim.tbl_contains({
+          SymbolKind.Class,
+          SymbolKind.Enum,
+          SymbolKind.Interface
+        }, symbol.kind)
+      end, result)
 
-      local title = string.format("Top level symbols in %s",
+      if vim.tbl_count(top_level_symbols) > 1 then
+        -- Removing children
+        top_level_symbols = vim.tbl_map(function(symbol)
+          symbol.children = nil
+          return symbol
+        end, top_level_symbols)
+
+        local title = string.format("Top level symbols in %s",
         vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":."))
-      local items = vim.lsp.util.symbols_to_items(top_level_symbols, bufnr)
+        local items = vim.lsp.util.symbols_to_items(top_level_symbols, bufnr)
 
-      vim.fn.setqflist({}, " ", { title = title, items = items, context = ctx })
-      vim.api.nvim_command("botright copen")
-      return
-    end
+        vim.fn.setqflist({}, " ", { title = title, items = items, context = ctx })
+        vim.api.nvim_command("botright copen")
+        return
+      end
 
-    vim.lsp.util.show_document({
-      uri = ctx.params.textDocument.uri, range = top_level_symbols[1].selectionRange
-    }, offset_encoding)
-  end, bufnr)
+      vim.lsp.util.show_document({
+        uri = ctx.params.textDocument.uri, range = top_level_symbols[1].selectionRange
+      }, offset_encoding)
+    end, bufnr)
+  end)
 end
 
 function M.java_is_test_file(cb)
@@ -65,46 +73,37 @@ function M.java_is_test_file(cb)
     arguments = { uri }
   }
 
-  require("jdtls.util").execute_command(is_test_file_cmd, function(err, result)
+  require("jdtls.util").execute_command(is_test_file_cmd, function(err, result, ctx)
     assert(not err, vim.inspect(err))
-    cb(result)
+    cb(result, ctx)
   end)
 end
 
 function M.java_main_symbols(cb)
   assert(type(cb) == "function", "'cb' must be a function")
 
-  local bufnr = vim.api.nvim_get_current_buf()
-
-  local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "jdtls" })
-  local _, client = next(clients)
-
-  -- From nvim-jdtls
-  if not client then
-    vim.notify("No LSP client with name `jdtls` available", vim.log.levels.WARN)
-    return
-  end
-
-  require("lbrayner.lsp").document_symbol(client, function(result, ctx)
-    if vim.tbl_isempty(result) then
-      vim.notify("Get main symbol: no document symbols found", vim.log.levels.ERROR)
-      return
-    end
-
-    local mains = vim.iter(result):filter(
-      function(s)
-        return s.kind == SymbolKind.Class and s.children and not vim.tbl_isempty(s.children)
+  with_jdtls(function(client, bufnr)
+    require("lbrayner.lsp").document_symbol(client, function(result, ctx)
+      if vim.tbl_isempty(result) then
+        vim.notify("Get main symbols: no document symbols found", vim.log.levels.ERROR)
+        return
       end
-    ):map(
-      function(s) return s.children end
-    ):flatten():filter(
-      function(s)
-        return s.kind == SymbolKind.Method and s.detail == " : void" and s.name == "main(String[])"
-      end
-    ):totable()
 
-    cb(mains)
-  end, bufnr)
+      local mains = vim.iter(result):filter(
+        function(s)
+          return s.kind == SymbolKind.Class and s.children and not vim.tbl_isempty(s.children)
+        end
+      ):map(
+        function(s) return s.children end
+      ):flatten():filter(
+        function(s)
+          return s.kind == SymbolKind.Method and s.detail == " : void" and s.name == "main(String[])"
+        end
+      ):totable()
+
+      cb(mains, ctx)
+    end, bufnr)
+  end)
 end
 
 -- Type hierarchy on quickfix list
