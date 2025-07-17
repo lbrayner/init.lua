@@ -53,6 +53,24 @@ function M.java_go_to_top_level_declaration()
   end, bufnr)
 end
 
+function M.java_is_test_file(cb)
+  assert(type(cb) == "function", "'cb' must be a function")
+
+  -- From jdtls.util.with_classpaths
+  local bufnr = vim.api.nvim_get_current_buf()
+  local uri = vim.uri_from_bufnr(bufnr)
+
+  local is_test_file_cmd = {
+    command = "java.project.isTestFile",
+    arguments = { uri }
+  }
+
+  require("jdtls.util").execute_command(is_test_file_cmd, function(err, result)
+    assert(not err, vim.inspect(err))
+    cb(result)
+  end)
+end
+
 function M.java_main_symbols(cb)
   assert(type(cb) == "function", "'cb' must be a function")
 
