@@ -3,8 +3,9 @@
 
 local M = {}
 
-local function rg(txt, opts) -- {{{
+local function rg(args, opts) -- {{{
   opts = opts or {}
+  assert(vim.islist(args), "'args' must be a table")
   assert(
     not opts.config_path or type(opts.config_path) == "string",
     "'config_path' must be a string"
@@ -33,8 +34,7 @@ local function rg(txt, opts) -- {{{
   end
 
   local cmd = {
-    "rg", "--engine=auto", "--vimgrep",  "--sort", "path", unpack(rgopts),
-    string.format("'%s'", txt)
+    "rg", "--engine=auto", "--vimgrep",  "--sort", "path", unpack(rgopts), unpack(args)
   }
   print("cmd", vim.inspect(cmd)) -- TODO debug
 
@@ -49,27 +49,28 @@ local function rg(txt, opts) -- {{{
   return true
 end -- }}}
 
-function M.lrg(txt, config_path)
-  return rg(txt, { config_path = config_path, loclist = true })
+function M.lrg(args, config_path)
+  return rg(args, { config_path = config_path, loclist = true })
 end
 
-function M.rg(txt, config_path)
-  return rg(txt, { config_path = config_path })
+function M.rg(args, config_path)
+  return rg(args, { config_path = config_path })
 end
 
 function M.user_command_with_config_path(command_name, config_path)
-  vim.api.nvim_create_user_command(command_name, function(command)
-    local txt = command.args
-    local count = command.count
-    local line1 = command.line1
-    local line2 = command.line2
+  vim.api.nvim_create_user_command(command_name, function(opts)
+    -- print("opts", vim.inspect(opts)) -- TODO debug
+    local args = opts.fargs
+    local count = opts.count
+    local line1 = opts.line1
+    local line2 = opts.line2
 
     if count == 0 then -- :0Rg
       local context = vim.fn.getqflist({ context = 1 }).context
 
-      if vim.tbl_get(context, "ripgrep", "txt") then
+      if vim.tbl_get(context, "ripgrep", "args") then
         -- :0Rg performs a search with the last text juxtaposed with the new text
-        txt = vim.trim(table.concat({ context.ripgrep.txt, txt }, " "))
+        args = vim.list_extend(vim.deepcopy(context.ripgrep.args), args)
       else
         vim.notify("Could not find a ripgrep search context.")
         return
@@ -95,13 +96,10 @@ function M.user_command_with_config_path(command_name, config_path)
       local end_col = pos_end[2] + 1
       local visual_selection = vim.api.nvim_buf_get_text(0, start_row, start_col, end_row, end_col, {})[1]
 
-      txt = vim.trim(table.concat({
-        string.format("-s -F -e %s", vim.fn.shellescape(visual_selection)),
-        txt
-      }, " "))
+      args = { "-s", "-F", "-e", vim.fn.shellescape(visual_selection), unpack(args) }
     end
 
-    local success, err = M.rg(txt, config_path)
+    local success, err = M.rg(args, config_path)
     print("success", success, "err", err) -- TODO debug
 
     if not success then
@@ -111,17 +109,20 @@ function M.user_command_with_config_path(command_name, config_path)
         error(err)
       end
 
-      vim.notify(string.format("Error searching for “%s”. Unmatched quotes? Check your command.", txt))
+      vim.notify(string.format(
+        "Error searching for “%s”. Unmatched quotes? Check your command.",
+        table.concat(args, " ")
+      ))
       return
     end
 
-    vim.fn.setqflist({}, "a", { context = { ripgrep = { txt = txt } } })
+    vim.fn.setqflist({}, "a", { context = { ripgrep = { args = args } } })
 
     if not vim.tbl_isempty(vim.fn.getqflist()) then
       vim.cmd("botright copen")
     else
       vim.cmd.cclose()
-      vim.notify(string.format("No match found for “%s”.", txt))
+      vim.notify(string.format("No match found for “%s”.", table.concat(args, " ")))
     end
   end, { complete = "file", nargs = "*", range = -1 })
 end
