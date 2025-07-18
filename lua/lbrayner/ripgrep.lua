@@ -5,7 +5,7 @@ local M = {}
 
 local function rg(args, opts) -- {{{
   opts = opts or {}
-  assert(vim.islist(args), "'args' must be a table")
+  assert(type(args) == "string", "'args' must be a string")
   assert(
     not opts.config_path or type(opts.config_path) == "string",
     "'config_path' must be a string"
@@ -33,14 +33,11 @@ local function rg(args, opts) -- {{{
     error("Rg: 'rg' not executable.")
   end
 
-  local cmd = {
-    "rg", "--engine=auto", "--vimgrep",  "--sort", "path", unpack(rgopts),
-    unpack(vim.tbl_map(function(arg) return vim.fn.shellescape(arg) end, args))
-  }
+  local cmd = table.concat({ "rg --engine=auto --vimgrep --sort path", unpack(rgopts), args }, " ")
   print("cmd", vim.inspect(cmd)) -- TODO debug
 
   vim.system(
-    cmd,
+    { "sh", "-c", cmd },
     {
       cwd = vim.fn.getcwd(),
       stdout = function(err, data)
@@ -51,11 +48,10 @@ local function rg(args, opts) -- {{{
     },
     vim.schedule_wrap(function(obj)
       if obj.code == 1 then
-        vim.notify(string.format("No match found for “%s”.", table.concat(args, " ")))
+        vim.notify(string.format("No match found for “%s”.", args))
       elseif obj.code > 1 then
         vim.notify(string.format(
-          "Error searching for “%s”. Unmatched quotes? Check your command.",
-          table.concat(args, " ")
+          "Error searching for “%s”. Unmatched quotes? Check your command.", args
         ))
       end
     end)
@@ -73,7 +69,7 @@ end
 function M.user_command_with_config_path(command_name, config_path)
   vim.api.nvim_create_user_command(command_name, function(opts)
     -- print("opts", vim.inspect(opts)) -- TODO debug
-    local args = opts.fargs
+    local args = opts.args
     local count = opts.count
     local line1 = opts.line1
     local line2 = opts.line2
@@ -83,7 +79,7 @@ function M.user_command_with_config_path(command_name, config_path)
 
       if vim.tbl_get(context, "ripgrep", "args") then
         -- :0Rg performs a search with the last text juxtaposed with the new text
-        args = vim.list_extend(vim.deepcopy(context.ripgrep.args), args)
+        args = vim.trim(table.concat({ context.ripgrep.args, args }, " "))
       else
         vim.notify("Could not find a ripgrep search context.")
         return
@@ -109,7 +105,10 @@ function M.user_command_with_config_path(command_name, config_path)
       local end_col = pos_end[2] + 1
       local visual_selection = vim.api.nvim_buf_get_text(0, start_row, start_col, end_row, end_col, {})[1]
 
-      args = { "-s", "-F", "-e", vim.fn.shellescape(visual_selection), unpack(args) }
+      args = vim.trim(table.concat({
+        string.format("-s -F -e %s", vim.fn.shellescape(visual_selection)),
+        args
+      }, " "))
     end
 
     M.rg(args, config_path)
