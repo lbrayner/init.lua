@@ -40,10 +40,40 @@ local function rg(args, opts) -- {{{
     { "sh", "-c", cmd },
     {
       cwd = vim.fn.getcwd(),
-      stdout = function(err, data)
+      stdout = vim.schedule_wrap(function(err, data)
         assert(not err, err)
-        print("data", vim.inspect(data)) -- TODO debug
-      end,
+
+        if not data then return end
+
+        print("data", vim.inspect(vim.split(data, "\n"))) -- TODO debug
+
+        local lines = vim.split(data, "\n")
+        local last = lines[#lines]
+
+        if last == "" then
+          table.remove(lines) -- Pop the top
+        end
+
+        -- if vim.tbl_isempty(lines) then
+        --   vim.notify("Type lines: no results.")
+        --   return
+        -- end
+
+        local action = " "
+        local qflist = vim.fn.getqflist({ title = 1, winid = 1 })
+        local title = cmd
+
+        if qflist.title == title then
+          action = "a"
+        end
+
+        vim.fn.setqflist({}, action, {
+          efm = "%f:%l:%c:%m",
+          context = { ripgrep = { args = args } },
+          lines = lines,
+          title = title,
+        })
+      end),
       text = true,
     },
     vim.schedule_wrap(function(obj)
@@ -68,7 +98,6 @@ end
 
 function M.user_command_with_config_path(command_name, config_path)
   vim.api.nvim_create_user_command(command_name, function(opts)
-    -- print("opts", vim.inspect(opts)) -- TODO debug
     local args = opts.args
     local count = opts.count
     local line1 = opts.line1
