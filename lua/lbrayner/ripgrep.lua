@@ -34,7 +34,8 @@ local function rg(args, opts) -- {{{
   end
 
   local cmd = {
-    "rg", "--engine=auto", "--vimgrep",  "--sort", "path", unpack(rgopts), unpack(args)
+    "rg", "--engine=auto", "--vimgrep",  "--sort", "path", unpack(rgopts),
+    unpack(vim.tbl_map(function(arg) return vim.fn.shellescape(arg) end, args))
   }
   print("cmd", vim.inspect(cmd)) -- TODO debug
 
