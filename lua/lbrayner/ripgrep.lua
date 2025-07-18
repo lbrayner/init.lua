@@ -38,15 +38,27 @@ local function rg(args, opts) -- {{{
   }
   print("cmd", vim.inspect(cmd)) -- TODO debug
 
-  -- vim.system(cmd, { text = true }, vim.schedule_wrap(function(obj)
-  --   if obj.code ~= 0 then
-  --     vim.notify(string.format(
-  --       "Could not run '%s': %s", cmd, obj.stderr
-  --     ), vim.log.levels.ERROR)
-  --   end
-  -- end))
-
-  return true
+  vim.system(
+    cmd,
+    {
+      cwd = vim.fn.getcwd(),
+      stdout = function(err, data)
+        assert(not err, err)
+        print("data", vim.inspect(data)) -- TODO debug
+      end,
+      text = true,
+    },
+    vim.schedule_wrap(function(obj)
+      if obj.code == 1 then
+        vim.notify(string.format("No match found for “%s”.", table.concat(args, " ")))
+      elseif obj.code > 1 then
+        vim.notify(string.format(
+          "Error searching for “%s”. Unmatched quotes? Check your command.",
+          table.concat(args, " ")
+        ))
+      end
+    end)
+  )
 end -- }}}
 
 function M.lrg(args, config_path)
@@ -99,31 +111,7 @@ function M.user_command_with_config_path(command_name, config_path)
       args = { "-s", "-F", "-e", vim.fn.shellescape(visual_selection), unpack(args) }
     end
 
-    local success, err = M.rg(args, config_path)
-    print("success", success, "err", err) -- TODO debug
-
-    if not success then
-      vim.cmd.cclose()
-
-      if type(err) == "string" and require("lbrayner").contains(err, " Rg:") then
-        error(err)
-      end
-
-      vim.notify(string.format(
-        "Error searching for “%s”. Unmatched quotes? Check your command.",
-        table.concat(args, " ")
-      ))
-      return
-    end
-
-    vim.fn.setqflist({}, "a", { context = { ripgrep = { args = args } } })
-
-    if not vim.tbl_isempty(vim.fn.getqflist()) then
-      vim.cmd("botright copen")
-    else
-      vim.cmd.cclose()
-      vim.notify(string.format("No match found for “%s”.", table.concat(args, " ")))
-    end
+    M.rg(args, config_path)
   end, { complete = "file", nargs = "*", range = -1 })
 end
 
