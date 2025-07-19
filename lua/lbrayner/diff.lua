@@ -53,21 +53,25 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
       vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), {
         loclist = 0,
         on_exit = function(obj, args, qfid)
+          local function cleanup()
+            clear_conflict_markers_autocmd()
+
+            -- print("id", vim.inspect(id)) -- TODO debug
+            if id then
+              qflist = vim.fn.getloclist(0, { id = 0 })
+
+              if id == qflist.id then vim.cmd.lclose() end
+            end
+          end
+
           if obj.code == 0 then
             id = qfid
             update_context(vim.b[bufnr].changedtick)
           elseif obj.code == 1 then
-            clear_conflict_markers_autocmd()
+            cleanup()
             vim.notify("No conflict markers found.")
           elseif obj.code > 1 then
-            clear_conflict_markers_autocmd()
-
-            if qfid then
-              qflist = vim.fn.getloclist(0, { id = 0 })
-
-              if qfid == qflist.id then vim.fn.lclose() end
-            end
-
+            cleanup()
             vim.notify(string.format(
               "Error searching for “%s”. Unmatched quotes? Check your command.", args
             ))
