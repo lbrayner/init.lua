@@ -3,6 +3,11 @@
 
 local M = {}
 
+local function join(t) -- {{{
+  assert(type(t) == "table", "'t' must be a table")
+  return table.concat(t, " ")
+end -- }}}
+
 local function rg(args, opts) -- {{{
   opts = opts or {}
   assert(type(args) == "string", "'args' must be a string")
@@ -14,7 +19,15 @@ local function rg(args, opts) -- {{{
     not opts.loclist or type(opts.loclist) == "boolean", "'loclist' must be a boolean"
   )
 
-  local rgopts = {}
+  if vim.fn.executable("rg") == 0 then
+    error("Rg: 'rg' not executable.")
+  end
+
+  local grep, rgopts = "rg --engine=auto --vimgrep --sort path", {}
+
+  if opts.config_path and vim.uv.fs_stat(opts.config_path) then
+      grep = join({ "RIPGREP_CONFIG_PATH=" .. opts.config_path, grep })
+  end
 
   if vim.o.ignorecase then
     table.insert(rgopts, "-i")
@@ -24,17 +37,8 @@ local function rg(args, opts) -- {{{
     table.insert(rgopts, "-S")
   end
 
-  if not vim.startswith(vim.o.grepprg, "rg") and
-    not string.find(vim.o.grepprg, "^RIPGREP_CONFIG_PATH=.* rg") then
-    error("Rg: 'grepprg' not correctly set.")
-  end
-
-  if not vim.fn.executable("rg") then
-    error("Rg: 'rg' not executable.")
-  end
-
-  local cmd = table.concat({ "rg --engine=auto --vimgrep --sort path", unpack(rgopts), args }, " ")
-  print("cmd", vim.inspect(cmd)) -- TODO debug
+  local cmd, qfid = join({ grep, join(rgopts), args })
+  -- print("cmd", vim.inspect(cmd)) -- TODO debug
 
   vim.system(
     { "sh", "-c", cmd },
@@ -45,25 +49,20 @@ local function rg(args, opts) -- {{{
 
         if not data then return end
 
-        print("data", vim.inspect(vim.split(data, "\n"))) -- TODO debug
-
         local lines = vim.split(data, "\n")
+        -- print("lines", vim.inspect(lines)) -- TODO debug
         local last = lines[#lines]
 
         if last == "" then
           table.remove(lines) -- Pop the top
         end
 
-        -- if vim.tbl_isempty(lines) then
-        --   vim.notify("Type lines: no results.")
-        --   return
-        -- end
-
         local action = " "
-        local qflist = vim.fn.getqflist({ title = 1, winid = 1 })
+        local qflist = vim.fn.getqflist({ id = qfid, title = 1, winid = 1 })
         local title = cmd
 
-        if qflist.title == title then
+        -- Use title to update
+        if qflist.id == qfid then
           action = "a"
         end
 
@@ -73,6 +72,10 @@ local function rg(args, opts) -- {{{
           lines = lines,
           title = title,
         })
+
+        if not qfid then
+          qfid = qflist.id
+        end
       end),
       text = true,
     },
