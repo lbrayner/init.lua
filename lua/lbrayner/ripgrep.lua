@@ -9,23 +9,27 @@ local function join(t) -- {{{
 end -- }}}
 
 local function rg(args, opts) -- {{{
-  opts = opts or {}
-  assert(type(args) == "string", "'args' must be a string")
-  assert(
-    not opts.config_path or type(opts.config_path) == "string",
-    "'config_path' must be a string"
-  )
-  assert(
-    not opts.loclist or type(opts.loclist) == "boolean", "'loclist' must be a boolean"
-  )
-
   if vim.fn.executable("rg") == 0 then
     error("Rg: 'rg' not executable.")
   end
 
   local grep, rgopts = "rg --engine=auto --vimgrep --sort path", {}
-  local getqf = opts.loclist and vim.fn.getloclist or vim.fn.getqflist
-  local setqf = opts.loclist and vim.fn.setloclist or vim.fn.setqflist
+  local cclose, copen, getqf, setqf
+
+  if opts.loclist then
+    cclose, copen = vim.cmd.lclose, vim.cmd.lopen
+
+    getqf = function(...)
+      return vim.fn.getloclist(opts.loclist, ...)
+    end
+
+    setqf = function(...)
+      return vim.fn.setloclist(opts.loclist, ...)
+    end
+  else
+    cclose, copen = vim.cmd.cclose, vim.cmd.copen
+    getqf, setqf = vim.fn.getqflist, vim.fn.setqflist
+  end
 
   if opts.config_path and vim.uv.fs_stat(opts.config_path) then
     grep = join({ "RIPGREP_CONFIG_PATH=" .. opts.config_path, grep })
@@ -56,7 +60,7 @@ local function rg(args, opts) -- {{{
             setqf({}, "a", { id = qfid, title = title })
             qflist = getqf({ id = 0 })
 
-            if qfid == qflist.id then vim.cmd.copen() end
+            if qfid == qflist.id then copen() end
           end
 
           -- print("qfid", vim.inspect(qfid), "title", vim.inspect(title)) -- TODO debug
@@ -103,7 +107,7 @@ local function rg(args, opts) -- {{{
         if qfid then
           qflist = getqf({ id = 0 })
 
-          if qfid == qflist.id then vim.cmd.cclose() end
+          if qfid == qflist.id then cclose() end
         end
 
         vim.notify(string.format(
@@ -115,12 +119,18 @@ local function rg(args, opts) -- {{{
   )
 end -- }}}
 
-function M.lrg(args, config_path)
-  return rg(args, { config_path = config_path, loclist = true })
-end
+function M.rg(args, opts)
+  opts = opts or {}
+  assert(type(args) == "string", "'args' must be a string")
+  assert(
+    not opts.config_path or type(opts.config_path) == "string",
+    "'config_path' must be a string"
+  )
+  assert(
+    not opts.loclist or type(opts.loclist) == "number", "'loclist' must be a number (winid)"
+  )
 
-function M.rg(args, config_path)
-  return rg(args, { config_path = config_path })
+  return rg(args, opts)
 end
 
 function M.user_command_with_config_path(command_name, config_path)
