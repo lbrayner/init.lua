@@ -29,6 +29,7 @@ vim.api.nvim_create_autocmd("TabEnter" , {
 
 vim.api.nvim_create_user_command("ConflictMarkers", function()
   local bufnr, conflict_marker_autocmd, id = vim.api.nvim_get_current_buf()
+  local title = "Conflict markers"
 
   local function clear_conflict_markers_autocmd()
     pcall(vim.api.nvim_del_autocmd, conflict_marker_autocmd)
@@ -60,7 +61,10 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
             if id then
               qflist = vim.fn.getloclist(0, { id = 0 })
 
-              if id == qflist.id then vim.cmd.lclose() end
+              if id == qflist.id then
+                vim.cmd.lclose()
+                vim.fn.setloclist(0, {}, "u", { items = {}, title = title })
+              end
             end
           end
 
@@ -77,7 +81,7 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
             ))
           end
         end,
-        title = "Conflict markers"
+        title = title,
       }
     )
   end
