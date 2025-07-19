@@ -45,9 +45,6 @@ local function rg(args, opts, custom) -- {{{
 
   local cmd, qfid = join({ grep, join(rgopts), args })
   local code1 = custom.code1 or string.format("No match found for “%s”.", args)
-  local codegt1 = custom.codegt1 or string.format(
-    "Error searching for “%s”. Unmatched quotes? Check your command.", args
-  )
   local title = custom.title
   -- print("cmd", vim.inspect(cmd)) -- TODO debug
 
@@ -115,7 +112,9 @@ local function rg(args, opts, custom) -- {{{
           if qfid == qflist.id then cclose() end
         end
 
-        vim.notify(codegt1)
+        vim.notify(string.format(
+          "Error searching for “%s”. Unmatched quotes? Check your command.", args
+        ))
         -- else add to title (ERROR)
       end
     end)
@@ -146,10 +145,6 @@ function M.rg(args, opts, custom)
 
     if custom.code1 and type(custom.code1) ~= "string" then
       return false, "'code1' must be a string"
-    end
-
-    if custom.codegt1 and type(custom.codegt1) ~= "string" then
-      return false, "'codegt1' must be a string"
     end
 
     if custom.title and type(custom.title) ~= "string" then
