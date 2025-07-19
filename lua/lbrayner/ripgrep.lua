@@ -65,9 +65,9 @@ local function rg(args, opts) -- {{{
         local qflist = vim.fn.getqflist({ id = qfid, title = 1, winid = 1 })
         title = cmd
 
-        if qflist.id == qfid then
+        if qfid and qfid == qflist.id then
           action = "a"
-        elseif qflist.title == title then
+        elseif title == qflist.title then
           action = "u"
         end
 
