@@ -8,7 +8,7 @@ local function join(t) -- {{{
   return table.concat(t, " ")
 end -- }}}
 
-local function rg(args, opts, custom) -- {{{
+local function rg(args, opts) -- {{{
   if vim.fn.executable("rg") == 0 then
     error("Rg: 'rg' not executable.")
   end
@@ -44,8 +44,7 @@ local function rg(args, opts, custom) -- {{{
   end
 
   local cmd, qfid = join({ grep, join(rgopts), args })
-  local code1 = custom.code1 or string.format("No match found for “%s”.", args)
-  local title = custom.title
+  local title = opts.title
   -- print("cmd", vim.inspect(cmd)) -- TODO debug
 
   vim.system(
@@ -103,8 +102,10 @@ local function rg(args, opts, custom) -- {{{
       text = true,
     },
     vim.schedule_wrap(function(obj)
-      if obj.code == 1 then
-        vim.notify(code1)
+      if opts.on_exit then
+        opts.on_exit(obj, args, qfid)
+      elseif obj.code == 1 then
+        vim.notify(string.format("No match found for “%s”.", args))
       elseif obj.code > 1 then
         if qfid then
           qflist = getqf({ id = 0 })
@@ -121,11 +122,15 @@ local function rg(args, opts, custom) -- {{{
   )
 end -- }}}
 
-function M.rg(args, opts, custom)
+function M.rg(args, opts)
   assert(type(args) == "string", "'args' must be a string")
   vim.validate("opts", opts, function(opts)
     if type(opts) ~= "table" then
       return false, "'opts' must be a table"
+    end
+
+    if opts.on_exit and type(opts.on_exit) ~= "function" then
+      return false, "'on_exit' must be a function"
     end
 
     if opts.config_path and type(opts.config_path) ~= "string" then
@@ -136,28 +141,16 @@ function M.rg(args, opts, custom)
       return false, "'loclist' must be a number (winid)"
     end
 
-    return true
-  end, true, "'opts' table")
-  vim.validate("custom", custom, function(custom)
-    if type(custom) ~= "table" then
-      return false, "'custom' must be a table"
-    end
-
-    if custom.code1 and type(custom.code1) ~= "string" then
-      return false, "'code1' must be a string"
-    end
-
-    if custom.title and type(custom.title) ~= "string" then
+    if opts.title and type(opts.title) ~= "string" then
       return false, "'title' must be a string"
     end
 
     return true
-  end, true, "'custom' table")
+  end, true, "'opts' table")
 
-  custom = custom or {}
   opts = opts or {}
 
-  return rg(args, opts, custom)
+  return rg(args, opts)
 end
 
 function M.user_command_with_config_path(command_name, config_path)

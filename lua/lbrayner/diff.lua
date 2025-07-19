@@ -35,9 +35,25 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
   local function update_conflict_markers(bufnr)
     require("lbrayner.ripgrep").rg(
       [["^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)" ]] ..
-      vim.fn.shellescape(vim.api.nvim_buf_get_name(0)),
-      { loclist = 0 },
-      { code1 = "No conflict markers found.", title = "Conflict markers" }
+      vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), {
+        loclist = 0,
+        on_exit = function(obj, args, qfid)
+          if obj.code == 1 then
+            vim.notify("No conflict markers found.")
+          elseif obj.code > 1 then
+            if qfid then
+              qflist = vim.fn.getloclist(0, { id = 0 })
+
+              if qfid == qflist.id then vim.fn.lclose() end
+            end
+
+            vim.notify(string.format(
+              "Error searching for “%s”. Unmatched quotes? Check your command.", args
+            ))
+          end
+        end,
+        title = "Conflict markers"
+      }
     )
   end
 
