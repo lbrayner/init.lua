@@ -120,15 +120,24 @@ local function rg(args, opts) -- {{{
 end -- }}}
 
 function M.rg(args, opts)
-  opts = opts or {}
   assert(type(args) == "string", "'args' must be a string")
-  assert(
-    not opts.config_path or type(opts.config_path) == "string",
-    "'config_path' must be a string"
-  )
-  assert(
-    not opts.loclist or type(opts.loclist) == "number", "'loclist' must be a number (winid)"
-  )
+  vim.validate("opts", opts, function(opts)
+    if type(opts) ~= "table" then
+      return false, "'opts' must be a table"
+    end
+
+    if opts.config_path and type(opts.config_path) ~= "string" then
+      return false, "'config_path' must be a string"
+    end
+
+    if opts.loclist and type(opts.loclist) ~= "number" then
+      return false, "'loclist' must be a number (winid)"
+    end
+
+    return true
+  end, true, "'opts' table")
+
+  opts = opts or {}
 
   return rg(args, opts)
 end
