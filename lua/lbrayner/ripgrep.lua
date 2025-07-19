@@ -77,7 +77,7 @@ local function rg(args, opts) -- {{{
         end
 
         local action = " "
-        qflist = getqf({ id = qfid, title = 1, winid = 1 })
+        qflist = getqf({ id = qfid, title = 1 })
         title = title or cmd
 
         if qfid and qfid == qflist.id then
