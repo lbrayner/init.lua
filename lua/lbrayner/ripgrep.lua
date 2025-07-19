@@ -44,6 +44,10 @@ local function rg(args, opts, custom) -- {{{
   end
 
   local cmd, qfid = join({ grep, join(rgopts), args })
+  local code1 = custom.code1 or string.format("No match found for “%s”.", args)
+  local codegt1 = custom.codegt1 or string.format(
+    "Error searching for “%s”. Unmatched quotes? Check your command.", args
+  )
   local title = custom.title
   -- print("cmd", vim.inspect(cmd)) -- TODO debug
 
@@ -103,7 +107,7 @@ local function rg(args, opts, custom) -- {{{
     },
     vim.schedule_wrap(function(obj)
       if obj.code == 1 then
-        vim.notify(string.format("No match found for “%s”.", args))
+        vim.notify(code1)
       elseif obj.code > 1 then
         if qfid then
           qflist = getqf({ id = 0 })
@@ -111,9 +115,7 @@ local function rg(args, opts, custom) -- {{{
           if qfid == qflist.id then cclose() end
         end
 
-        vim.notify(string.format(
-          "Error searching for “%s”. Unmatched quotes? Check your command.", args
-        ))
+        vim.notify(codegt1)
         -- else add to title (ERROR)
       end
     end)
@@ -140,6 +142,14 @@ function M.rg(args, opts, custom)
   vim.validate("custom", custom, function(custom)
     if type(custom) ~= "table" then
       return false, "'custom' must be a table"
+    end
+
+    if custom.code1 and type(custom.code1) ~= "string" then
+      return false, "'code1' must be a string"
+    end
+
+    if custom.codegt1 and type(custom.codegt1) ~= "string" then
+      return false, "'codegt1' must be a string"
     end
 
     if custom.title and type(custom.title) ~= "string" then
@@ -199,7 +209,7 @@ function M.user_command_with_config_path(command_name, config_path)
       }))
     end
 
-    M.rg(args, config_path)
+    M.rg(args, { config_path = config_path })
   end, { complete = "file", nargs = "*", range = -1 })
 end
 
