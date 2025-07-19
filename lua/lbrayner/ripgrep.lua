@@ -47,10 +47,13 @@ local function rg(args, opts) -- {{{
       stdout = vim.schedule_wrap(function(err, data)
         assert(not err, err)
 
+        local qflist
+
         if not data then
           if qfid then
             vim.fn.setqflist({}, "a", { id = qfid, title = title })
-            vim.cmd.copen()
+            qflist = vim.fn.getqflist({ id = 0 })
+            if qfid == qflist.id then vim.cmd.copen() end
           end
           -- print("qfid", vim.inspect(qfid), "title", vim.inspect(title)) -- TODO debug
           return
@@ -65,7 +68,7 @@ local function rg(args, opts) -- {{{
         end
 
         local action = " "
-        local qflist = vim.fn.getqflist({ id = qfid, title = 1, winid = 1 })
+        qflist = vim.fn.getqflist({ id = qfid, title = 1, winid = 1 })
         title = cmd
 
         if qfid and qfid == qflist.id then
