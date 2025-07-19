@@ -47,7 +47,11 @@ local function rg(args, opts) -- {{{
       stdout = vim.schedule_wrap(function(err, data)
         assert(not err, err)
 
-        if not data then return end
+        if not data then
+          if qfid then vim.fn.setqflist({}, "a", { id = qfid, title = title }) end
+          -- print("qfid", vim.inspect(qfid), "title", vim.inspect(title)) -- TODO debug
+          return
+        end
 
         local lines = vim.split(data, "\n")
         -- print("lines", vim.inspect(lines)) -- TODO debug
@@ -75,6 +79,8 @@ local function rg(args, opts) -- {{{
         })
 
         if not qfid then
+          qflist = vim.fn.getqflist({ id = 0 })
+          -- print("qflist", vim.inspect(qflist)) -- TODO debug
           qfid = qflist.id
         end
       end),
@@ -87,8 +93,7 @@ local function rg(args, opts) -- {{{
         vim.notify(string.format(
           "Error searching for “%s”. Unmatched quotes? Check your command.", args
         ))
-      else
-        vim.fn.setqflist({}, "a", { id = qfid, title = title })
+        -- else add to title (ERROR)
       end
     end)
   )
