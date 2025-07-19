@@ -24,6 +24,8 @@ local function rg(args, opts) -- {{{
   end
 
   local grep, rgopts = "rg --engine=auto --vimgrep --sort path", {}
+  local getqf = opts.loclist and vim.fn.getloclist or vim.fn.getqflist
+  local setqf = opts.loclist and vim.fn.setloclist or vim.fn.setqflist
 
   if opts.config_path and vim.uv.fs_stat(opts.config_path) then
     grep = join({ "RIPGREP_CONFIG_PATH=" .. opts.config_path, grep })
@@ -51,8 +53,8 @@ local function rg(args, opts) -- {{{
 
         if not data then
           if qfid then
-            vim.fn.setqflist({}, "a", { id = qfid, title = title })
-            qflist = vim.fn.getqflist({ id = 0 })
+            setqf({}, "a", { id = qfid, title = title })
+            qflist = getqf({ id = 0 })
 
             if qfid == qflist.id then vim.cmd.copen() end
           end
@@ -70,7 +72,7 @@ local function rg(args, opts) -- {{{
         end
 
         local action = " "
-        qflist = vim.fn.getqflist({ id = qfid, title = 1, winid = 1 })
+        qflist = getqf({ id = qfid, title = 1, winid = 1 })
         title = cmd
 
         if qfid and qfid == qflist.id then
@@ -79,7 +81,7 @@ local function rg(args, opts) -- {{{
           action = "u"
         end
 
-        vim.fn.setqflist({}, action, {
+        setqf({}, action, {
           efm = "%f:%l:%c:%m",
           context = { ripgrep = { args = args } },
           lines = lines,
@@ -87,7 +89,7 @@ local function rg(args, opts) -- {{{
         })
 
         if not qfid then
-          qflist = vim.fn.getqflist({ id = 0 })
+          qflist = getqf({ id = 0 })
           -- print("qflist", vim.inspect(qflist)) -- TODO debug
           qfid = qflist.id
         end
@@ -99,7 +101,7 @@ local function rg(args, opts) -- {{{
         vim.notify(string.format("No match found for “%s”.", args))
       elseif obj.code > 1 then
         if qfid then
-          qflist = vim.fn.getqflist({ id = 0 })
+          qflist = getqf({ id = 0 })
 
           if qfid == qflist.id then vim.cmd.cclose() end
         end
