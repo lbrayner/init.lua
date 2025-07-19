@@ -26,7 +26,7 @@ local function rg(args, opts) -- {{{
   local grep, rgopts = "rg --engine=auto --vimgrep --sort path", {}
 
   if opts.config_path and vim.uv.fs_stat(opts.config_path) then
-      grep = join({ "RIPGREP_CONFIG_PATH=" .. opts.config_path, grep })
+    grep = join({ "RIPGREP_CONFIG_PATH=" .. opts.config_path, grep })
   end
 
   if vim.o.ignorecase then
@@ -37,7 +37,7 @@ local function rg(args, opts) -- {{{
     table.insert(rgopts, "-S")
   end
 
-  local cmd, qfid = join({ grep, join(rgopts), args })
+  local cmd, qfid, title = join({ grep, join(rgopts), args })
   -- print("cmd", vim.inspect(cmd)) -- TODO debug
 
   vim.system(
@@ -59,18 +59,19 @@ local function rg(args, opts) -- {{{
 
         local action = " "
         local qflist = vim.fn.getqflist({ id = qfid, title = 1, winid = 1 })
-        local title = cmd
+        title = cmd
 
-        -- Use title to update
         if qflist.id == qfid then
           action = "a"
+        elseif qflist.title == title then
+          action = "u"
         end
 
         vim.fn.setqflist({}, action, {
           efm = "%f:%l:%c:%m",
           context = { ripgrep = { args = args } },
           lines = lines,
-          title = title,
+          title = join({ title, "..." }),
         })
 
         if not qfid then
@@ -86,6 +87,8 @@ local function rg(args, opts) -- {{{
         vim.notify(string.format(
           "Error searching for “%s”. Unmatched quotes? Check your command.", args
         ))
+      else
+        vim.fn.setqflist({}, "a", { id = qfid, title = title })
       end
     end)
   )
