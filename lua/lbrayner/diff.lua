@@ -31,7 +31,7 @@ local function update_conflict_markers(bufnr)
   require("lbrayner.ripgrep").rg(
     [["^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)" ]] ..
     vim.fn.shellescape(vim.api.nvim_buf_get_name(0)),
-    { loclist = 0 }
+    { loclist = 0 }, { title = "Conflict markers" }
   )
 
   if not vim.tbl_isempty(vim.fn.getloclist(0)) then

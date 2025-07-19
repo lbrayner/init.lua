@@ -8,7 +8,7 @@ local function join(t) -- {{{
   return table.concat(t, " ")
 end -- }}}
 
-local function rg(args, opts) -- {{{
+local function rg(args, opts, custom) -- {{{
   if vim.fn.executable("rg") == 0 then
     error("Rg: 'rg' not executable.")
   end
@@ -43,7 +43,8 @@ local function rg(args, opts) -- {{{
     table.insert(rgopts, "-S")
   end
 
-  local cmd, qfid, title = join({ grep, join(rgopts), args })
+  local cmd, qfid = join({ grep, join(rgopts), args })
+  local title = custom.title
   -- print("cmd", vim.inspect(cmd)) -- TODO debug
 
   vim.system(
@@ -77,7 +78,7 @@ local function rg(args, opts) -- {{{
 
         local action = " "
         qflist = getqf({ id = qfid, title = 1, winid = 1 })
-        title = cmd
+        title = title or cmd
 
         if qfid and qfid == qflist.id then
           action = "a"
@@ -119,7 +120,7 @@ local function rg(args, opts) -- {{{
   )
 end -- }}}
 
-function M.rg(args, opts)
+function M.rg(args, opts, custom)
   assert(type(args) == "string", "'args' must be a string")
   vim.validate("opts", opts, function(opts)
     if type(opts) ~= "table" then
@@ -136,10 +137,22 @@ function M.rg(args, opts)
 
     return true
   end, true, "'opts' table")
+  vim.validate("custom", custom, function(custom)
+    if type(custom) ~= "table" then
+      return false, "'custom' must be a table"
+    end
 
+    if custom.title and type(custom.title) ~= "string" then
+      return false, "'title' must be a string"
+    end
+
+    return true
+  end, true, "'custom' table")
+
+  custom = custom or {}
   opts = opts or {}
 
-  return rg(args, opts)
+  return rg(args, opts, custom)
 end
 
 function M.user_command_with_config_path(command_name, config_path)
