@@ -53,8 +53,10 @@ local function rg(args, opts) -- {{{
           if qfid then
             vim.fn.setqflist({}, "a", { id = qfid, title = title })
             qflist = vim.fn.getqflist({ id = 0 })
+
             if qfid == qflist.id then vim.cmd.copen() end
           end
+
           -- print("qfid", vim.inspect(qfid), "title", vim.inspect(title)) -- TODO debug
           return
         end
@@ -98,6 +100,7 @@ local function rg(args, opts) -- {{{
       elseif obj.code > 1 then
         if qfid then
           qflist = vim.fn.getqflist({ id = 0 })
+
           if qfid == qflist.id then vim.cmd.cclose() end
         end
 
