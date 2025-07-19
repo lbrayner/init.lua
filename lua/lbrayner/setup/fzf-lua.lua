@@ -63,7 +63,7 @@ local function file_switch_or_edit_or_qf(selected, opts) -- {{{
     return
   else
     local file = require("fzf-lua.path").entry_to_file(selected[1])
-    require("lbrayner").jump_to_location(file.path, nil, { open_cmd = "buffer" })
+    require("lbrayner").jump_to_location(file.path, nil, { open_cmd = "" })
   end
 end -- }}}
 

@@ -140,6 +140,7 @@ function M.jump_to_location(filename, pos, opts)
     _jump_to_location(possibly_new_winid, bufnr, pos)
 
     if winid ~= possibly_new_winid and
+      vim.api.nvim_buf_is_valid(possibly_new_buf) and
       bufnr ~= possibly_new_buf and vim.api.nvim_buf_get_name(possibly_new_buf) == "" then
       -- Delete new empty buffer possibly created by command
       pcall(vim.api.nvim_buf_delete, possibly_new_buf, { force = force })
@@ -158,7 +159,7 @@ function M.jump_to_location(filename, pos, opts)
 
   vim.ui.select(
     {
-      { command = "buffer", description = "Current window" },
+      { command = "", description = "Current window" },
       { command = "new", description = "Horizontal split" },
       { command = "vnew", description = "Vertical split" },
       { command = "-tabnew", description = "Tab before" },
