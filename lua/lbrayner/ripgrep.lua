@@ -45,7 +45,6 @@ local function rg(args, opts) -- {{{
 
   local cmd, qfid = join({ grep, join(rgopts), args })
   local title = opts.title
-  -- print("cmd", vim.inspect(cmd)) -- TODO debug
 
   vim.system(
     { "sh", "-c", cmd },
@@ -64,12 +63,10 @@ local function rg(args, opts) -- {{{
             if qfid == qflist.id then copen() end
           end
 
-          -- print("qfid", vim.inspect(qfid), "title", vim.inspect(title)) -- TODO debug
           return
         end
 
         local lines = vim.split(data, "\n")
-        -- print("lines", vim.inspect(lines)) -- TODO debug
         local last = lines[#lines]
 
         if last == "" then
@@ -95,7 +92,6 @@ local function rg(args, opts) -- {{{
 
         if not qfid then
           qflist = getqf({ id = 0 })
-          -- print("qflist", vim.inspect(qflist)) -- TODO debug
           qfid = qflist.id
         end
       end),

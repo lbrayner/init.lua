@@ -44,7 +44,6 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
           local function cleanup()
             clear_conflict_markers_autocmd()
 
-            -- print("id", vim.inspect(id)) -- TODO debug
             if id then
               qflist = vim.fn.getloclist(0, { id = 0 })
 
@@ -103,7 +102,6 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
 
       if vim.fn.getloclist(0, { id = 0 }).id == id then
         local loclist = vim.fn.getloclist(0, { context = 1, id = 0 })
-        -- print("loclist", vim.inspect(loclist)) -- TODO debug
 
         if loclist.context.conflict_markers.changedtick < vim.b.changedtick then
           update_conflict_markers()
