@@ -35,19 +35,6 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
     pcall(vim.api.nvim_del_autocmd, conflict_marker_autocmd)
   end
 
-  local function update_context(changedtick)
-    if not id then error("'id' not set") end
-
-    local loclist = vim.fn.getloclist(0, { context = 1, id = id })
-    local context = vim.tbl_extend(
-      "keep",
-      { conflict_markers = { changedtick = changedtick } },
-      loclist.context
-    )
-
-    vim.fn.setloclist(0, {}, "a", { context = context, id = id })
-  end
-
   local function update_conflict_markers()
     require("lbrayner.ripgrep").rg(
       [["^(<<<<<<<|\|\|\|\|\|\|\||=======|>>>>>>>)" ]] ..
@@ -70,7 +57,14 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
 
           if obj.code == 0 then
             id = qfid
-            update_context(vim.b[bufnr].changedtick)
+            local loclist = vim.fn.getloclist(0, { context = 1, id = id })
+            local context = vim.tbl_extend(
+              "keep",
+              { conflict_markers = { changedtick = vim.b[bufnr].changedtick } },
+              loclist.context
+            )
+
+            vim.fn.setloclist(0, {}, "a", { context = context, id = id })
           elseif obj.code == 1 then
             cleanup()
             vim.notify("No conflict markers found.")
@@ -108,11 +102,10 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
       end
 
       if vim.fn.getloclist(0, { id = 0 }).id == id then
-        local loclist = vim.fn.getloclist(0, { context = 1, id = 0, items = 1 }) -- TODO items
+        local loclist = vim.fn.getloclist(0, { context = 1, id = 0 })
         -- print("loclist", vim.inspect(loclist)) -- TODO debug
 
         if loclist.context.conflict_markers.changedtick < vim.b.changedtick then
-          update_context(vim.b.changedtick)
           update_conflict_markers()
         end
       end
