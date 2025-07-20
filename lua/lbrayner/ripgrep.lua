@@ -3,8 +3,6 @@
 
 local M = {}
 
-local spinner = { "", "", "", "", "", "" }
-
 local function join(t) -- {{{
   assert(type(t) == "table", "'t' must be a table")
   return table.concat(t, " ")
@@ -45,22 +43,7 @@ local function rg(args, opts) -- {{{
     table.insert(rgopts, "-S")
   end
 
-  local loading = (function()
-    local i = 0
-
-    return function()
-      if i > #spinner then
-        i = 1
-      else
-        i = i + 1
-      end
-
-      return spinner[i]
-    end
-  end)()
-
   local cmd, qfid = join({ grep, join(rgopts), args })
-  -- local loading, title = { unpack(spinner) }, opts.title
   local title = opts.title
 
   vim.system(
@@ -104,7 +87,7 @@ local function rg(args, opts) -- {{{
           efm = "%f:%l:%c:%m",
           context = { ripgrep = { args = args } },
           lines = lines,
-          title = join({ title, loading() }),
+          title = join({ title, "" }),
         })
 
         if not qfid then
