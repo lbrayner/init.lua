@@ -1,4 +1,5 @@
 vim.keymap.set("n", "<Leader>di", "<Cmd>windo diffthis<CR>")
+vim.keymap.set("n", "<Leader>do", "<Cmd>diffoff!<CR>")
 vim.keymap.set("n", "<Leader>dw", function() -- toggle iwhite
   if require("lbrayner").contains(vim.go.diffopt, "iwhite") then
     vim.opt.diffopt:remove({ "iwhite" })
@@ -9,7 +10,6 @@ vim.keymap.set("n", "<Leader>dw", function() -- toggle iwhite
   vim.opt.diffopt:append({ "iwhite" })
   vim.notify("+iwhite")
 end)
-vim.keymap.set("n", "<Leader>do", "<Cmd>diffoff!<CR>")
 
 -- TODO for tackling a vim-fugitive bug, reproduce and submit a bug report
 local diffupdate = vim.api.nvim_create_augroup("diffupdate", { clear = false })
