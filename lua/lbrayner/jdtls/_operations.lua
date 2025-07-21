@@ -106,6 +106,21 @@ function M.java_main_symbols(cb)
   end)
 end
 
+-- From jdtls/setup.lua JdtUpdateHotcode
+function M.java_redefine_classes()
+  local session = require("dap").session()
+
+  if not session then
+    vim.notify("No active debug session")
+    return
+  end
+
+  vim.notify("Applying code changes")
+  session:request("redefineClasses", nil, function(err)
+    assert(not err, vim.inspect(err))
+  end)
+end
+
 -- Type hierarchy on quickfix list
 function M.java_type_hierarchy(opts)
   local function resolve_command(result)
