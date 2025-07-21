@@ -124,10 +124,10 @@ function M.setup(config)
       local bufnr = args.buf
       local bufname = args.match
 
-      local uri = vim.uri_from_bufnr(bufnr)
-      if not vim.startswith(uri, "file://") and not vim.startswith(uri, "jdt://") then
-        -- Don't attach to buffers such as Fugitive objects
-        return
+      if vim.fn.exists(":DapContinue") > 0 then
+        vim.api.nvim_buf_create_user_command(bufnr, "DapContinue", function()
+          require("lbrayner.jdtls.dap").continue()
+        end, { nargs = 0 })
       end
 
       -- Mappings
