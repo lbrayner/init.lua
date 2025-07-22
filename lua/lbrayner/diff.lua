@@ -85,7 +85,7 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
   vim.api.nvim_create_augroup("conflict_markers", { clear = false })
 
   conflict_marker_autocmd = vim.api.nvim_create_autocmd({ "BufWritePost", "WinEnter" }, {
-    group = conflict_markers,
+    group = "conflict_markers",
     buffer = bufnr,
     callback = function(args)
       local bufnr = args.buf
@@ -101,7 +101,7 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
       end
 
       if vim.fn.getloclist(0, { id = 0 }).id == id then
-        local loclist = vim.fn.getloclist(0, { context = 1, id = 0 })
+        local loclist = vim.fn.getloclist(0, { context = 1, id = id })
 
         if loclist.context.conflict_markers.changedtick < vim.b.changedtick then
           update_conflict_markers()
