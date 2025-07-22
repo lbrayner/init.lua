@@ -28,11 +28,21 @@ vim.api.nvim_create_autocmd("TabEnter" , {
 })
 
 vim.api.nvim_create_user_command("ConflictMarkers", function()
-  local bufnr, conflict_marker_autocmd, id = vim.api.nvim_get_current_buf()
+  local bufnr, conflict_marker_autocmd = vim.api.nvim_get_current_buf()
   local title = "Conflict markers"
 
   local function clear_conflict_markers_autocmd()
     pcall(vim.api.nvim_del_autocmd, conflict_marker_autocmd)
+  end
+
+  local function getcmllid()
+    local bcm = vim.b[bufnr].conflict_markers
+
+    if not bcm or not bcm.qfid then return end
+
+    local loclist = vim.fn.getloclist(0, { id = bcm.id })
+
+    if loclist.id > 0 then return loclist.id end
   end
 
   local function update_conflict_markers()
@@ -41,6 +51,8 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
       vim.fn.shellescape(vim.api.nvim_buf_get_name(0)), {
         loclist = 0,
         on_exit = function(obj, args, qfid)
+          local id = getcmllid()
+
           local function cleanup()
             clear_conflict_markers_autocmd()
 
@@ -55,15 +67,15 @@ vim.api.nvim_create_user_command("ConflictMarkers", function()
           end
 
           if obj.code == 0 then
-            id = qfid
-            local loclist = vim.fn.getloclist(0, { context = 1, id = id })
+            vim.b[bufnr].conflict_markers = { qfid = qfid }
+            local loclist = vim.fn.getloclist(0, { context = 1, id = qfid })
             local context = vim.tbl_extend(
               "keep",
               { conflict_markers = { changedtick = vim.b[bufnr].changedtick } },
               loclist.context
             )
 
-            vim.fn.setloclist(0, {}, "a", { context = context, id = id })
+            vim.fn.setloclist(0, {}, "a", { context = context, id = qfid })
           elseif obj.code == 1 then
             cleanup()
             vim.notify("No conflict markers found.")
