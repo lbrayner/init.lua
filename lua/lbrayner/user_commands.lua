@@ -23,13 +23,19 @@ vim.api.nvim_create_user_command("Filter", function(command)
   vim.api.nvim_win_set_cursor(0, { line_start, 0 })
 end, { nargs = 0, range = true })
 
-vim.api.nvim_create_user_command("LuaModuleReload", function(command)
-  local module, replacements
-  module = string.gsub(command.args, "^lua/", "")
+vim.api.nvim_create_user_command("LuaModuleReload", function(opts)
+  local module, replacements = string.gsub(opts.args, "^lua/", "")
+
+  if replacements == 0 then
+    module = string.gsub(module, "^vim/dot%-local/share/nvim/site/lua/", "")
+  end
+
   module, replacements = string.gsub(module, "/", ".")
+
   if replacements > 0 then
     module = string.gsub(module, "%.lua$", "")
   end
+
   package.loaded[module] = nil
   require(module)
   vim.notify(string.format("Reloaded '%s'.", module))
