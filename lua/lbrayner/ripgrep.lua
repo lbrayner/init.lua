@@ -160,7 +160,7 @@ function M.user_command_with_config_path(command_name, config_path)
 
       if vim.tbl_get(context, "ripgrep", "args") then
         -- :0Rg performs a search with the last text juxtaposed with the new text
-        args = vim.trim(join({ context.ripgrep.args, args }))
+        args = join({ context.ripgrep.args, args })
       else
         vim.notify("Could not find a ripgrep search context.")
         return
@@ -186,7 +186,7 @@ function M.user_command_with_config_path(command_name, config_path)
       local end_col = pos_end[2] + 1
       local visual_selection = vim.api.nvim_buf_get_text(0, start_row, start_col, end_row, end_col, {})[1]
 
-      args = vim.trim(join({ "-s -F -e", vim.fn.shellescape(visual_selection), args }))
+      args = join({ "-s -F -e", vim.fn.shellescape(visual_selection), args })
     end
 
     M.rg(args, { config_path = config_path })
