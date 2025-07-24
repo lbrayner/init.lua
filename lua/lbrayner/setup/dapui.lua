@@ -1,3 +1,5 @@
+local join = require("lbrayner").join
+
 require("dapui").setup({
   layouts = {
     {
@@ -54,7 +56,7 @@ vim.api.nvim_create_user_command("DapUiToggle", function(opts)
 
   assert(
     vim.tbl_isempty(fargs) or #fargs == 1,
-    string.format("Illegal arguments: %s", table.concat(opts.fargs, " "))
+    string.format("Illegal arguments: %s", join(opts.fargs))
   )
 
   local layout = tonumber(fargs[1])
@@ -63,7 +65,7 @@ vim.api.nvim_create_user_command("DapUiToggle", function(opts)
     vim.tbl_isempty(fargs) or type(layout) == "number",
     string.format(
       "Illegal arguments: %s. OpenArgs.layout must be a number.",
-      table.concat(opts.fargs, " ")
+      join(opts.fargs)
     )
   )
 

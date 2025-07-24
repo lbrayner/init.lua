@@ -1,6 +1,7 @@
 local M = {}
 
 local contains = require("lbrayner").contains
+local join = require("lbrayner").join
 
 function M.loop_buffers(force, predicate)
   local test = function(buf)
@@ -52,7 +53,7 @@ require("lbrayner.subcommands").create_user_command_and_subcommands("Wipe", subc
 
 subcommand_tbl.hidden = {
   optional = function(opts)
-    local text = table.concat(opts.args, " ")
+    local text = join(opts.args)
     wipe_buffers(opts.bang, function(buf)
       return buf.hidden == 1 and contains(buf.name, text)
     end)
@@ -77,7 +78,7 @@ subcommand_tbl.notReadable = {
 
 subcommand_tbl.pattern = {
   optional = function(opts)
-    local pattern = table.concat(opts.args, " ")
+    local pattern = join(opts.args)
     wipe_buffers(opts.bang, function(buf)
       return buf.listed == 1 and string.find(buf.name, pattern)
     end)
@@ -86,7 +87,7 @@ subcommand_tbl.pattern = {
 
 subcommand_tbl.text = {
   optional = function(opts)
-    local text = table.concat(opts.args, " ")
+    local text = join(opts.args)
     wipe_buffers(opts.bang, function(buf)
       return buf.listed == 1 and contains(buf.name, text)
     end)
@@ -95,7 +96,7 @@ subcommand_tbl.text = {
 
 subcommand_tbl.unlisted = {
   optional = function(opts)
-    local text = table.concat(opts.args, " ")
+    local text = join(opts.args)
     wipe_buffers(opts.bang, function(buf)
       return buf.listed == 0 and contains(buf.name, text)
     end)

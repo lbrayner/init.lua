@@ -1,3 +1,5 @@
+local join = require("lbrayner").join
+
 local function get_range(opts)
   local visual_selection = {
     start = vim.api.nvim_buf_get_mark(0, "<"),
@@ -27,7 +29,7 @@ require("lbrayner.subcommands").create_user_command_and_subcommands("Lsp", subco
 subcommand_tbl.addWorkspaceFolder = {
   complete = require("lbrayner.subcommands").complete_filename,
   optional = function(opts)
-    local dir = table.concat(opts.args, " ")
+    local dir = join(opts.args)
     if dir == "" then
       dir = vim.fn.getcwd()
     else
@@ -67,7 +69,7 @@ subcommand_tbl.diagnostic = {
 
     assert(
       vim.tbl_isempty(args) or #args == 1,
-      string.format("Illegal arguments: %s", table.concat(args, " "))
+      string.format("Illegal arguments: %s", join(args))
     )
 
     local _, arg = next(args)
@@ -79,7 +81,7 @@ subcommand_tbl.diagnostic = {
 
     assert(
       vim.list_contains(opts.subcommand.complete, arg),
-      string.format("Illegal arguments: %s", table.concat(args, " "))
+      string.format("Illegal arguments: %s", join(args))
     )
 
     if arg == "--error" then
@@ -120,7 +122,7 @@ subcommand_tbl.listWorkspaceFolders = {
 subcommand_tbl.references = {
   complete = { "--no-tests" },
   optional = function(opts)
-    local args = table.concat(opts.args, " ")
+    local args = join(opts.args)
     assert(args == "" or args == "--no-tests", string.format("Illegal arguments: %s", args))
     require("lbrayner.lsp").references({ no_tests = (args == "--no-tests") })
   end,
@@ -129,7 +131,7 @@ subcommand_tbl.references = {
 subcommand_tbl.removeWorkspaceFolder = {
   complete = require("lbrayner.subcommands").complete_filename,
   optional = function(opts)
-    local dir = table.concat(opts.args, " ")
+    local dir = join(opts.args)
     if dir == "" then
       dir = vim.fn.getcwd()
     end
@@ -139,7 +141,7 @@ subcommand_tbl.removeWorkspaceFolder = {
 
 subcommand_tbl.rename = {
   optional = function(opts)
-    local name = table.concat(opts.args, " ")
+    local name = join(opts.args)
     name = name ~= "" and name or nil
     vim.lsp.buf.rename(name)
   end,
@@ -151,7 +153,7 @@ subcommand_tbl.typeDefinition = {
 
 subcommand_tbl.workspaceSymbol = {
   optional = function(opts)
-    local name = table.concat(opts.args, " ")
+    local name = join(opts.args)
     name = name ~= "" and name or nil
     vim.lsp.buf.workspace_symbol(name)
   end,

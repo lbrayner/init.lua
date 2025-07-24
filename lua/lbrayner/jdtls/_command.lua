@@ -1,3 +1,5 @@
+local join = require("lbrayner").join
+
 ---@type table<string, MyCmdSubcommand>
 local subcommand_tbl = {}
 require("lbrayner.subcommands").create_user_command_and_subcommands("Jdt", subcommand_tbl, {
@@ -9,7 +11,7 @@ require("lbrayner.subcommands").create_user_command_and_subcommands("Jdt", subco
 subcommand_tbl.compile = {
   complete = { "--full" },
   optional = function(opts)
-    local args = table.concat(opts.args, " ")
+    local args = join(opts.args)
     assert(args == "" or args == "--full", string.format("Illegal arguments: %s", args))
     require("jdtls").compile(args == "--full" and "full") -- Incremental by default
   end,
@@ -116,7 +118,7 @@ subcommand_tbl.updateProjectsConfig = {
 
     assert(
       vim.tbl_isempty(args) or #args == 1,
-      string.format("Illegal arguments: %s", table.concat(args, " "))
+      string.format("Illegal arguments: %s", join(args))
     )
 
     local _, arg = next(args)
@@ -128,7 +130,7 @@ subcommand_tbl.updateProjectsConfig = {
 
     assert(
       vim.list_contains(opts.subcommand.complete, arg),
-      string.format("Illegal arguments: %s", table.concat(args, " "))
+      string.format("Illegal arguments: %s", join(args))
     )
 
     local select_mode = arg:match("--(%a+)")
