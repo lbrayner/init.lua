@@ -3,10 +3,7 @@
 
 local M = {}
 
-local function join(t) -- {{{
-  assert(type(t) == "table", "'t' must be a table")
-  return table.concat(t, " ")
-end -- }}}
+local join = require("lbrayner").join
 
 local function rg(args, opts) -- {{{
   if vim.fn.executable("rg") == 0 then

@@ -112,6 +112,11 @@ function M.is_quickfix_or_location_list(winid)
   return vim.fn.getwininfo(winid)[1]["quickfix"] == 1
 end
 
+function M.join(col)
+  assert(type(col) == "table", "Bad argument; 'col' must be a table.")
+  return table.concat(col, " ")
+end
+
 function M.jump_to_buffer(bufnr, pos)
   assert(type(bufnr) == "number", "Bad argument; 'bufnr' must be a number.")
   if not vim.api.nvim_buf_is_valid(bufnr) then
