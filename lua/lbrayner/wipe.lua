@@ -5,7 +5,7 @@ local join = require("lbrayner").join
 
 function M.loop_buffers(force, predicate)
   local test = function(buf)
-    return vim.api.nvim_buf_is_valid(buf.bufnr) and vim.bo[buf.bufnr].buftype ~= "terminal" and predicate(buf)
+    return vim.api.nvim_buf_is_valid(buf.bufnr) and predicate(buf)
   end
   local buffer_count = 0
   local error_count = 0
@@ -71,7 +71,11 @@ subcommand_tbl.notLoaded = {
 subcommand_tbl.notReadable = {
   simple = function(opts)
     wipe_buffers(opts.bang, function(buf)
-      return buf.listed == 1 and not vim.uv.fs_stat(buf.name)
+      return (
+        buf.listed == 1 and
+        vim.bo[buf.bufnr].buftype ~= "terminal" and
+        not vim.uv.fs_stat(buf.name)
+      )
     end)
   end,
 }
