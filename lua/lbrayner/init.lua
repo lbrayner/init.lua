@@ -233,6 +233,12 @@ function M.preserve_view_port(command)
   end
 end
 
+-- https://docs.otland.net/lua-guide/auxiliary/optimizations
+function M.push(t, e)
+  assert(type(t) == "table", "Bad argument; 't' must be a table.")
+  t[#t+1] = e
+end
+
 function M.set_number()
   vim.wo.number = true
   vim.wo.relativenumber = true
