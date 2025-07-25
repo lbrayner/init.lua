@@ -33,7 +33,11 @@ vim.api.nvim_create_user_command("LuaModuleReload", function(opts)
   module, replacements = string.gsub(module, "/", ".")
 
   if replacements > 0 then
-    module = string.gsub(module, "%.lua$", "")
+    module, replacements = string.gsub(module, "%.init%.lua$", "")
+
+    if replacements == 0 then
+      module = string.gsub(module, "%.lua$", "")
+    end
   end
 
   package.loaded[module] = nil
