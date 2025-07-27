@@ -13,6 +13,7 @@
 [plugins]
 "colorbuddy.nvim" = "scm"
 "lir.nvim" = "scm"
+"lz.n" = "2.11.4"
 "mini.nvim" = "scm"
 "rocks-git.nvim" = "2.5.3"
 "rocks.nvim" = "2.45.0"

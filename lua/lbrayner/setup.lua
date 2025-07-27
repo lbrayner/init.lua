@@ -3,7 +3,14 @@ local M = {}
 -- fidget.nvim (installed as a dependency of rocks.nvim)
 
 if pcall(require, "fidget") then
-  require("fidget").setup()
+  require("lz.n").load({
+    "fidget.nvim",
+    after = function()
+      require("fidget").setup()
+    end,
+    event = "LspAttach",
+    load = function() end
+  })
 end
 
 -- fzf-lua
