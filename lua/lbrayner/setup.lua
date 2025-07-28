@@ -83,6 +83,17 @@ if pcall(require, "dap") then
   end
 end
 
+-- nvim-dap-ui
+
+require("lz.n").load({
+  "nvim-dap-ui",
+  after = function()
+    require("dapui").setup()
+    require("lbrayner.setup.dapui")
+  end,
+  cmd = "DapUiToggle",
+})
+
 -- nvim-highlight-colors
 
 if pcall(require, "nvim-highlight-colors") then
