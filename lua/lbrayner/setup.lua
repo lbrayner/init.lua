@@ -63,6 +63,7 @@ if pcall(require, "colorizer") then
 end
 
 -- nvim-dap
+
 if pcall(require, "dap") then
   local dap_custom = vim.api.nvim_create_augroup("dap_custom", { clear = true })
 
