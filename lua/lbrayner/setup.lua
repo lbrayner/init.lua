@@ -8,7 +8,7 @@ end
 
 -- fzf-lua
 
-do
+if pcall(require, "lz.n") then
   local keymap = require("lz.n").keymap({
     "fzf-lua",
     after = function()
@@ -85,14 +85,16 @@ end
 
 -- nvim-dap-ui
 
-require("lz.n").load({
-  "nvim-dap-ui",
-  after = function()
-    require("lbrayner.dapui").create_user_commands()
-    require("dapui").setup()
-  end,
-  cmd = "DapUiToggle",
-})
+if pcall(require, "lz.n") then
+  require("lz.n").load({
+    "nvim-dap-ui",
+    after = function()
+      require("lbrayner.dapui").create_user_commands()
+      require("dapui").setup()
+    end,
+    cmd = "DapUiToggle",
+  })
+end
 
 -- nvim-highlight-colors
 
