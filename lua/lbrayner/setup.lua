@@ -88,8 +88,8 @@ end
 require("lz.n").load({
   "nvim-dap-ui",
   after = function()
+    require("lbrayner.dapui").create_user_commands()
     require("dapui").setup()
-    require("lbrayner.setup.dapui")
   end,
   cmd = "DapUiToggle",
 })
