@@ -4,6 +4,14 @@ function M.create_user_command()
   require("lbrayner.jdtls._command")
 end
 
+function M.get_buffer_name(bufnr)
+  local bufname = vim.api.nvim_buf_get_name(bufnr)
+
+  if vim.startswith(bufname, "jdt://") then
+    return string.gsub(bufname, "%?.*", "")
+  end
+end
+
 function M.get_config()
   local capabilities = vim.tbl_deep_extend("keep", {
     textDocument = {

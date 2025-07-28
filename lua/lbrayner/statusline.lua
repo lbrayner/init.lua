@@ -57,7 +57,7 @@ function M.get_buffer_name(opts)
   if require("lbrayner.fugitive").get_fugitive_object() then
     path = require("lbrayner.fugitive").get_fugitive_object()
   elseif vim.startswith(vim.api.nvim_buf_get_name(0), "jdt://") then -- jdtls
-    path = string.gsub(vim.api.nvim_buf_get_name(0), "%?.*", "")
+    path = require("lbrayner.jdtls").get_buffer_name(0)
   else
     path = require("lbrayner.path").path()
   end
