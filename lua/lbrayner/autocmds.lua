@@ -401,7 +401,11 @@ vim.api.nvim_create_autocmd("VimEnter", {
     if vim.v.this_session == "" then return end
 
     require("lbrayner.wipe").loop_buffers(true, function(buf) -- BWipeNotReadable!
-      return buf.listed == 1 and not vim.uv.fs_stat(buf.name)
+      return (
+        buf.listed == 1 and
+        vim.bo[buf.bufnr].buftype ~= "terminal" and
+        not vim.uv.fs_stat(buf.name)
+      )
     end)
 
     pcall(vim.cmd.exe, [["normal! \<C-W>="]]) -- Equalize windows
