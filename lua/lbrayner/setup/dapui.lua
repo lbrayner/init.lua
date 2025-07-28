@@ -43,8 +43,6 @@ vim.api.nvim_create_user_command("DapUiOpen", function(opts)
   require("dapui").open({ layout = tonumber(opts.args) })
 end, { nargs = "?" })
 
-vim.api.nvim_create_user_command("DapUiSetup", require("dapui").setup, { nargs = 0 })
-
 vim.api.nvim_create_user_command("DapUiToggle", function(opts)
   local fargs = opts.fargs
   local reset = false
