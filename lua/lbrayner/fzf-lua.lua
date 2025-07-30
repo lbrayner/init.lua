@@ -1,12 +1,14 @@
+-- vim: fdm=marker
+
 local M = {}
 
-local fzf = require("fzf-lua")
-
 function M.buffers()
-  fzf.buffers(M.make_opts({ fzf_opts = { ["--history"] = M.get_history_file() } }))
+  require("fzf-lua").buffers(
+    M.make_opts({ fzf_opts = { ["--history"] = M.get_history_file() } })
+  )
 end
 
-local function fzf_files(opts)
+local function fzf_files(opts) -- {{{
   opts = vim.tbl_deep_extend("keep", {
     -- https://github.com/ibhagwan/fzf-lua/issues/996
     -- actions.files refers to all pickers that deal with files which also
@@ -20,8 +22,8 @@ local function fzf_files(opts)
     opts.git_icons = false
   end
 
-  fzf.files(M.make_opts(opts))
-end
+  require("fzf-lua").files(M.make_opts(opts))
+end -- }}}
 
 function M.files_clear_cache(opts)
   opts = opts or {}
@@ -61,7 +63,7 @@ function M.file_marks()
   end
 
    -- Ignore error "No marks matching..."
-  pcall(fzf.marks, M.make_opts({
+  pcall(require("fzf-lua").marks, M.make_opts({
     actions = {
       ["enter"] = file_mark_jump_to_location,
     },
@@ -93,7 +95,7 @@ function M.get_history_file(suffix)
 end
 
 function M.help_tags()
-  fzf.help_tags(M.make_opts({
+  require("fzf-lua").help_tags(M.make_opts({
     actions = { ["alt-s"] = actions.help_vert },
     fzf_opts = { ["--history"] = M.get_history_file("help_tags") },
   }))
@@ -126,7 +128,7 @@ function M.make_opts(opts)
 end
 
 function M.tabs()
-  fzf.tabs(M.make_opts({
+  require("fzf-lua").tabs(M.make_opts({
     fzf_opts = {
       ["--history"] = M.get_history_file(),
       ["--preview"] = 'echo "Tab #"{2}": $(echo {1} | base64 -d -)"',
