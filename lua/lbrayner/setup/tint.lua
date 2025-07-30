@@ -5,12 +5,7 @@ local function window_ignore_function(winid)
   local bufnr = vim.api.nvim_win_get_buf(winid)
   local buftype = vim.bo[bufnr].buftype
 
-  return diff or preview or floating or vim.tbl_contains({
-    "help",
-    "quickfix",
-    "terminal",
-    "prompt",
-  }, buftype)
+  return diff or preview or floating or buftype ~= ""
 end
 
 require("tint").setup({
