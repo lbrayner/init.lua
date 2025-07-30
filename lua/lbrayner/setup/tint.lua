@@ -1,11 +1,30 @@
 local function window_ignore_function(winid)
   local diff = vim.wo[winid].diff
   local preview = vim.wo[winid].previewwindow
+
+  if diff or preview then
+    return true
+  end
+
   local floating = vim.api.nvim_win_get_config(winid).relative ~= ""
+
+  if floating then
+    return true
+  end
+
   local bufnr = vim.api.nvim_win_get_buf(winid)
+
+  if vim.startswith(vim.api.nvim_buf_get_name(bufnr), "jdt://") then -- jdtls
+    return false
+  end
+
   local buftype = vim.bo[bufnr].buftype
 
-  return diff or preview or floating or buftype ~= ""
+  if buftype ~= "" then
+    return true
+  end
+
+  return false
 end
 
 require("tint").setup({
