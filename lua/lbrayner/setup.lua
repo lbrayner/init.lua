@@ -6,42 +6,16 @@ if pcall(require, "fidget") then
   require("fidget").setup()
 end
 
--- fzf-lua
-
-if pcall(require, "lz.n") then
-  local keymap = require("lz.n").keymap({
-    "fzf-lua",
-    after = function()
-      require("lbrayner.setup.fzf-lua")
-    end,
-  })
-
-  local opts = { silent = true }
-
-  keymap.set("n", "<F1>", function()
-    require("lbrayner.fzf-lua").help_tags()
-  end, opts)
-  keymap.set("n", "<F4>", function()
-    require("lbrayner.fzf-lua").file_marks()
-  end, opts)
-  keymap.set("n", "<F5>", function()
-    require("lbrayner.fzf-lua").buffers()
-  end, opts)
-  keymap.set("n", "<Leader><F7>", function()
-    require("lbrayner.fzf-lua").files_clear_cache()
-  end, opts)
-  keymap.set("n", "<F7>", function()
-    require("lbrayner.fzf-lua").files()
-  end, opts)
-  keymap.set("n", "<F8>", function()
-    require("lbrayner.fzf-lua").tabs()
-  end, opts)
-end
-
 -- lir.nvim
 
 if pcall(require, "lir") then
   require("lbrayner.setup.lir")
+end
+
+-- lz.n
+
+if pcall(require, "lz.n") then
+  require("lbrayner.setup.lz")
 end
 
 -- mini.nvim
@@ -81,19 +55,6 @@ if pcall(require, "dap") then
   if vim.v.vim_did_enter == 1 then
     vim.api.nvim_exec_autocmds("VimEnter", { group = dap_custom })
   end
-end
-
--- nvim-dap-ui
-
-if pcall(require, "lz.n") then
-  require("lz.n").load({
-    "nvim-dap-ui",
-    after = function()
-      require("lbrayner.dapui").create_user_commands()
-      require("dapui").setup()
-    end,
-    cmd = "DapUiToggle",
-  })
 end
 
 -- nvim-highlight-colors
