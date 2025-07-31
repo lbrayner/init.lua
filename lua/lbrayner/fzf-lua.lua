@@ -114,7 +114,9 @@ function M.make_opts(opts)
 
   local cmd = "tac " .. history_file .. " | nauniq | tac | sponge " .. history_file
 
-  opts.fn_post_fzf = function()
+  opts.winopts = opts.winopts or {}
+
+  opts.winopts.on_close = function()
     vim.system({ "sh", "-c", cmd }, { text = true }, vim.schedule_wrap(function(obj)
       if obj.code ~= 0 then
         vim.notify(string.format(
