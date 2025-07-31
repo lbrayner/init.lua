@@ -115,7 +115,7 @@ function M.working_directory_name()
 end
 
 -- Insert path (use i_CTRL-R)
-vim.cmd [[
+vim.cmd([[
 function! Cwd()
   return v:lua.require'lbrayner.path'.cwd()
 endfunction
@@ -155,6 +155,6 @@ endfunction
 function! WorkingDirectoryName()
   return v:lua.require'lbrayner.path'.working_directory_name()
 endfunction
-]]
+]])
 
 return M

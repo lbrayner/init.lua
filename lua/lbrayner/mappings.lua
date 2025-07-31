@@ -68,14 +68,14 @@ vim.keymap.set("c", "<C-R><C-L>", [[<C-R>=getline(".")<CR>]])
 vim.keymap.set("c", "<C-R><C-N>", [[<C-R>=line(".")<CR>]])
 
 -- Insert timestamps (use i_CTRL-R)
-vim.cmd [[
+vim.cmd([[
 function! Timestamp(...)
   if a:0
     return strftime("%Y_%m_%d_%a_%0H_%M")
   endif
   return strftime("%Y-%m-%d %a %0H:%M")
 endfunction
-]]
+]])
 
 -- Rename word
 vim.keymap.set("n", "<Leader>a", [[:keepp %s/\C\V\<<C-R><C-W>\>//gc<Left><Left><Left>]])
