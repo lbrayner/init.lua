@@ -67,11 +67,15 @@ local files = {
   vim.fs.joinpath(vim_dir, "local.lua"),
 }
 
-for _, init in ipairs(files) do
-  if vim.uv.fs_stat(init) then
-    vim.cmd.source(init)
+vim.iter(files):filter(
+  function(f)
+    return vim.uv.fs_stat(f)
   end
-end
+):each(
+  function(f)
+    vim.cmd.source(f)
+  end
+)
 
 -- Configure Neovim Lua plugins
 
