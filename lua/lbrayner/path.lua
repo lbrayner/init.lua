@@ -114,4 +114,47 @@ function M.working_directory_name()
   return fnamemodify(vim.fn.getcwd(), ":p:h:t")
 end
 
+-- Insert path (use i_CTRL-R)
+vim.cmd [[
+function! Cwd()
+  return v:lua.require'lbrayner.path'.cwd()
+endfunction
+
+function! Directory()
+  return v:lua.require'lbrayner.path'.directory()
+endfunction
+
+function! FirstLevel()
+  return v:lua.require'lbrayner.path'.first_level()
+endfunction
+
+function! FirstLevelName()
+  return v:lua.require'lbrayner.path'.first_level_name()
+endfunction
+
+function! FolderName()
+  return v:lua.require'lbrayner.path'.folder_name()
+endfunction
+
+function! FullPath()
+  return v:lua.require'lbrayner.path'.full_path()
+endfunction
+
+function! Name()
+  return v:lua.require'lbrayner.path'.name()
+endfunction
+
+function! Path()
+  return v:lua.require'lbrayner.path'.path()
+endfunction
+
+function! RelativeDirectory()
+  return v:lua.require'lbrayner.path'.relative_directory()
+endfunction
+
+function! WorkingDirectoryName()
+  return v:lua.require'lbrayner.path'.working_directory_name()
+endfunction
+]]
+
 return M
