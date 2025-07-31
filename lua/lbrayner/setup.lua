@@ -1,79 +1,5 @@
 local M = {}
 
--- fidget.nvim (installed as a dependency of rocks.nvim)
-
-if pcall(require, "fidget") then
-  require("fidget").setup()
-end
-
--- lir.nvim
-
-if pcall(require, "lir") then
-  require("lbrayner.setup.lir")
-end
-
--- lz.n
-
-if pcall(require, "lz.n") then
-  require("lbrayner.setup.lz")
-end
-
--- mini.nvim
-
-if pcall(require, "mini.align") then
-  require("lbrayner.setup.mini")
-end
-
--- neosolarized.nvim
-
-if pcall(require, "neosolarized") then
-  require("lbrayner.setup.neosolarized")
-end
-
--- nvim-colorizer.lua
-
-if pcall(require, "colorizer") then
-  require("colorizer").setup()
-end
-
--- nvim-dap
-
-if pcall(require, "dap") then
-  local dap_custom = vim.api.nvim_create_augroup("dap_custom", { clear = true })
-
-  -- Redefine DapContinue
-  vim.api.nvim_create_autocmd("VimEnter", {
-    group = dap_custom,
-    once = true,
-    callback = function()
-      vim.api.nvim_create_user_command("DapContinue", function()
-        require("lbrayner.dap").continue()
-      end, { nargs = 0 })
-    end,
-  })
-
-  if vim.v.vim_did_enter == 1 then
-    vim.api.nvim_exec_autocmds("VimEnter", { group = dap_custom })
-  end
-end
-
--- nvim-highlight-colors
-
-if pcall(require, "nvim-highlight-colors") then
-  require("nvim-highlight-colors").setup({ enable_hsl_without_function = false })
-end
-
--- nvim-jdtls
-
-vim.g.nvim_jdtls = 1 -- skipping autocmds and commands
-require("lbrayner.jdtls").create_user_command()
-
--- tint.nvim
-
-if pcall(require, "tint") then
-  require("lbrayner.setup.tint")
-end
-
 -- typescript-tools.nvim
 
 function M.typescript_tools()
@@ -96,5 +22,26 @@ function M.typescript_tools()
     autostart = false,
   })
 end
+
+if not pcall(require, "lz.n") then
+  -- rocks.nvim wasn't synced at least once
+  return M
+end
+
+require("fidget").setup() -- fidget.nvim (installed as a dependency of rocks.nvim)
+require("lbrayner.setup.dap") -- nvim-dap
+require("lbrayner.setup.lir") -- lir.nvim
+require("lbrayner.setup.lz") -- lz.n
+require("lbrayner.setup.mini") -- mini.nvim
+require("lbrayner.setup.neosolarized") -- neosolarized.nvim
+require("lbrayner.setup.tint") -- tint.nvim
+require("nvim-highlight-colors").setup({ -- nvim-highlight-colors
+  enable_hsl_without_function = false
+})
+
+-- nvim-jdtls
+
+vim.g.nvim_jdtls = 1 -- skipping autocmds and commands
+require("lbrayner.jdtls").create_user_command()
 
 return M
