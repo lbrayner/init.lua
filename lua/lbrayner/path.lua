@@ -39,7 +39,7 @@ function M.first_level_name()
 end
 
 function M.folder_name()
-  return fnamemodify(M.path(), "%:p:h:t")
+  return fnamemodify(M.path(), ":p:h:t")
 end
 
 function M.full_path(path)
