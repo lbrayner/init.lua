@@ -20,11 +20,7 @@ local function window_ignore_function(winid)
 
   local buftype = vim.bo[bufnr].buftype
 
-  if buftype ~= "" then
-    return true
-  end
-
-  return false
+  return buftype ~= ""
 end
 
 require("tint").setup({
