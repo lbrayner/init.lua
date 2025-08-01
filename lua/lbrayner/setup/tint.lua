@@ -54,7 +54,7 @@ if vim.v.vim_did_enter == 1 then
   vim.api.nvim_exec_autocmds("VimEnter", { group = tint_custom })
 end
 
-vim.api.nvim_create_user_command("UntintTab", function()
+vim.api.nvim_create_user_command("TintUnTab", function()
   for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
     require("tint").untint(w)
   end
