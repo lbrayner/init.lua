@@ -4,7 +4,10 @@ local M = {}
 
 function M.buffers()
   require("fzf-lua").buffers(
-    M.make_opts({ fzf_opts = { ["--history"] = M.get_history_file() } })
+    M.make_opts({
+      fzf_opts = { ["--history"] = M.get_history_file() },
+      show_unlisted = true,
+    })
   )
 end
 
