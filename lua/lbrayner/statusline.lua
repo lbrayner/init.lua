@@ -2,16 +2,24 @@
 
 -- {{{ Helper functions
 
+local FugitiveResult = vim.fn.FugitiveResult
+local exists = vim.fn.exists
+local fnamemodify = vim.fn.fnamemodify
+local hlID = vim.fn.hlID
+local pathshorten = vim.fn.pathshorten
+local synIDattr = vim.fn.synIDattr
+local synIDtrans = vim.fn.synIDtrans
+
 local function get_fugitive_git_dir()
   local fugitive_dir = require("lbrayner.fugitive").get_fugitive_git_dir()
 
   if fugitive_dir then
-    return vim.fn.fnamemodify(fugitive_dir, ":~")
+    return fnamemodify(fugitive_dir, ":~")
   end
 end
 
 local function get_fugitive_temporary_buffer_name()
-  return "Git " .. table.concat(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf()).args, " ")
+  return "Git " .. table.concat(FugitiveResult(vim.api.nvim_get_current_buf()).args, " ")
 end
 
 local function get_line_format()
@@ -65,7 +73,7 @@ function M.get_buffer_name(opts)
   local buffer_name = path
 
   if opts.tail then -- default is relative
-    buffer_name = vim.fn.fnamemodify(path, ":t")
+    buffer_name = fnamemodify(path, ":t")
   end
 
   if buffer_name == "" then
@@ -79,7 +87,7 @@ function M.get_buffer_status()
   local status = vim.bo.modified and "%1*" or ""
 
   if vim.wo.previewwindow then
-    status = status .. "%<" .. vim.fn.pathshorten(require("lbrayner.path").full_path())
+    status = status .. "%<" .. pathshorten(require("lbrayner.path").full_path())
   elseif require("lbrayner").buf_is_scratch() and vim.api.nvim_buf_get_name(0) == "" then
     status = status .. "%<%5*%f%*"
   elseif vim.bo.buftype ~= "" then
@@ -154,13 +162,13 @@ function M.get_statusline()
   end
 
   if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
-    local dir = vim.fn.pathshorten(get_fugitive_git_dir())
+    local dir = pathshorten(get_fugitive_git_dir())
     leftline = leftline .. "%6*" .. dir .. "$%* %<" .. "Fugitive summary " ..
     "%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
-  elseif vim.fn.exists("*FugitiveResult") == 1 and
-    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
+  elseif exists("*FugitiveResult") == 1 and
+    not vim.tbl_isempty(FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
     local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
-    local dir = vim.fn.pathshorten(get_fugitive_git_dir())
+    local dir = pathshorten(get_fugitive_git_dir())
     leftline = leftline .. "%6*" .. dir .. "$%* %<" .. fugitive_temp_buf ..
     " %1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
   elseif require("lbrayner").is_quickfix_or_location_list() then
@@ -190,7 +198,7 @@ function M.get_statusline()
 end
 
 function M.get_version_control()
-  if vim.fn.exists("*FugitiveHead") == 0 then
+  if exists("*FugitiveHead") == 0 then
     return ""
   end
 
@@ -222,13 +230,13 @@ function M.get_winbar()
   end
 
   if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
-    local dir = vim.fn.pathshorten(get_fugitive_git_dir())
+    local dir = pathshorten(get_fugitive_git_dir())
     statusline = statusline .. dir .. "$ %<" .. "Fugitive summary " ..
     "%{v:lua.require'lbrayner.statusline'.get_status_flag()}"
-  elseif vim.fn.exists("*FugitiveResult") == 1 and
-    not vim.tbl_isempty(vim.fn.FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
+  elseif exists("*FugitiveResult") == 1 and
+    not vim.tbl_isempty(FugitiveResult(vim.api.nvim_get_current_buf())) then -- Fugitive temporary buffers
     local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
-    local dir = vim.fn.pathshorten(get_fugitive_git_dir())
+    local dir = pathshorten(get_fugitive_git_dir())
     statusline = statusline .. dir .. "$ %<" .. fugitive_temp_buf ..
     " %{v:lua.require'lbrayner.statusline'.get_status_flag()}"
   elseif require("lbrayner").is_quickfix_or_location_list() then
@@ -237,7 +245,7 @@ function M.get_winbar()
     statusline = ""
   else
     if vim.wo.previewwindow then
-      statusline = statusline .. "%<" .. vim.fn.pathshorten(require("lbrayner.path").full_path())
+      statusline = statusline .. "%<" .. pathshorten(require("lbrayner.path").full_path())
     else
       -- margins of 1 column, space and status flag
       statusline = statusline ..
@@ -278,8 +286,8 @@ function M.load_theme(name)
   mapping = theme.get_color_mapping()
   for mode, hl_map_by_group in pairs(mapping) do
     for group, hl_map in pairs(hl_map_by_group) do
-      local guibg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl_map.bg)), "fg", "gui")
-      local guifg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl_map.fg)), "fg", "gui")
+      local guibg = synIDattr(synIDtrans(hlID(hl_map.bg)), "fg", "gui")
+      local guifg = synIDattr(synIDtrans(hlID(hl_map.fg)), "fg", "gui")
       mapping[mode][group] = { bg = (hl_map.bg and guibg), fg = (hl_map.fg and guifg) }
     end
   end
