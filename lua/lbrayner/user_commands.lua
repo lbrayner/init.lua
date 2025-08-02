@@ -64,6 +64,11 @@ nvim_create_user_command("RedirMessages", function(opts)
   cmd("silent put=message")
 end, { complete = "command", nargs = "+" })
 
+nvim_create_user_command("Read", function(opts)
+  cmd(format("1,$delete|0read %s", fnameescape(opts.args)))
+  vim.api.nvim_buf_set_lines(0, -2, -1, true, {}) -- delete extra line (last line)
+end, { complete = "file", nargs = 1 })
+
 -- https://vi.stackexchange.com/a/36414
 local function source(line_start, line_end, vimscript)
   local tempfile = vim.fn.tempname()
