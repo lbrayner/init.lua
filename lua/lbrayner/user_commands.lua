@@ -1,13 +1,17 @@
-vim.api.nvim_create_user_command("DeleteTrailingWhitespace", function(opts)
+local fnameescape = vim.fn.fnameescape
+local nvim_create_user_command = vim.api.nvim_create_user_command
+local format = string.format
+
+nvim_create_user_command("DeleteTrailingWhitespace", function(opts)
   require("lbrayner").preserve_view_port(function()
-    vim.cmd(string.format([[keeppatterns %d,%ds/\s\+$//e]], opts.line1, opts.line2))
+    vim.cmd(format([[keeppatterns %d,%ds/\s\+$//e]], opts.line1, opts.line2))
   end)
 end, { bar = true, nargs = 0, range = "%" })
 vim.keymap.set("ca", "D", "DeleteTrailingWhitespace")
 
-vim.api.nvim_create_user_command("Number", require("lbrayner").set_number, { nargs = 0 })
+nvim_create_user_command("Number", require("lbrayner").set_number, { nargs = 0 })
 
-vim.api.nvim_create_user_command("Filter", function(opts)
+nvim_create_user_command("Filter", function(opts)
   local line_start = opts.line1
   local line_end = opts.line2
   local offset = 0
@@ -23,7 +27,7 @@ vim.api.nvim_create_user_command("Filter", function(opts)
   vim.api.nvim_win_set_cursor(0, { line_start, 0 })
 end, { nargs = 0, range = true })
 
-vim.api.nvim_create_user_command("LuaModuleReload", function(opts)
+nvim_create_user_command("LuaModuleReload", function(opts)
   local module, replacements = string.gsub(opts.args, "^lua/", "")
 
   if replacements == 0 then
@@ -42,14 +46,14 @@ vim.api.nvim_create_user_command("LuaModuleReload", function(opts)
 
   package.loaded[module] = nil
   require(module)
-  vim.notify(string.format("Reloaded '%s'.", module))
+  vim.notify(format("Reloaded '%s'.", module))
 end, { bar = true, nargs = 1 })
 
 -- https://stackoverflow.com/a/2573758
 -- Inspired by the TabMessage function/command combo found at <http://www.jukie.net/~bart/conf/vimrc>.
-vim.api.nvim_create_user_command("RedirMessages", function(opts)
+nvim_create_user_command("RedirMessages", function(opts)
   vim.cmd("redir => message")
-  vim.cmd(string.format("silent %s", opts.args))
+  vim.cmd(format("silent %s", opts.args))
   vim.cmd("redir END")
   vim.cmd("silent put=message")
 end, { complete = "command", nargs = "+" })
@@ -62,22 +66,22 @@ local function source(line_start, line_end, vimscript)
     tempfile = tempfile..".lua"
   end
 
-  vim.cmd(string.format("silent %d,%dwrite %s", line_start, line_end, vim.fn.fnameescape(tempfile)))
-  vim.cmd.source(vim.fn.fnameescape(tempfile))
+  vim.cmd(format("silent %d,%dwrite %s", line_start, line_end, fnameescape(tempfile)))
+  vim.cmd.source(fnameescape(tempfile))
   vim.fn.delete(tempfile)
 
   if line_start == line_end then
-    vim.cmd.echomsg(string.format("'Sourced line %d.'", line_start))
+    vim.cmd.echomsg(format("'Sourced line %d.'", line_start))
     return
   end
 
-  vim.cmd.echomsg(string.format("'Sourced lines %d to %d.'", line_start, line_end))
+  vim.cmd.echomsg(format("'Sourced lines %d to %d.'", line_start, line_end))
 end
 
-vim.api.nvim_create_user_command("Source", function(opts)
+nvim_create_user_command("Source", function(opts)
   source(opts.line1, opts.line2)
 end, { nargs = 0, range = true })
 
-vim.api.nvim_create_user_command("VimscriptSource", function(opts)
+nvim_create_user_command("VimscriptSource", function(opts)
   source(opts.line1, opts.line2, true)
 end, { nargs = 0, range = true })
