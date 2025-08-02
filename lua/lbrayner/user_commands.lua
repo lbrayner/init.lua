@@ -9,7 +9,12 @@ nvim_create_user_command("DeleteTrailingWhitespace", function(opts)
 end, { bar = true, nargs = 0, range = "%" })
 vim.keymap.set("ca", "D", "DeleteTrailingWhitespace")
 
-nvim_create_user_command("Number", require("lbrayner").set_number, { nargs = 0 })
+nvim_create_user_command("Number", function()
+  if not require("lbrayner").set_number() then
+    vim.wo.number = false
+    vim.wo.relativenumber = false
+  end
+end, { nargs = 0 })
 
 nvim_create_user_command("Filter", function(opts)
   local line_start = opts.line1

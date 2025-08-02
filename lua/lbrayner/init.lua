@@ -240,12 +240,16 @@ function M.push(t, e)
 end
 
 function M.set_number()
+  local number = vim.wo.number
+  local relativenumber = vim.wo.relativenumber
   vim.wo.number = true
   vim.wo.relativenumber = true
   -- setting nonumber if length of line count is greater than 3
   if #tostring(vim.fn.line("$")) > 3 then
     vim.wo.number = false
   end
+
+  return number ~= vim.wo.relativenumber or relativenumber ~= vim.wo.relativenumber
 end
 
 function M.setup_xml_matchit()
