@@ -93,3 +93,46 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
     )
   end,
 })
+
+-- Redefine DB
+vim.api.nvim_create_autocmd("VimEnter", {
+  once = true,
+  callback = function()
+    vim.api.nvim_create_user_command("DB", function(opts)
+      local args = opts.args
+      local count = opts.count
+      local line1 = opts.line1
+      local line2 = opts.line2
+
+      if count > 0 then
+        local pos_start = vim.api.nvim_buf_get_mark(0, "<")
+        local pos_end = vim.api.nvim_buf_get_mark(0, ">")
+
+        if line1 == pos_start[1] and line2 == pos_end[1] then
+          -- Confirmed visual selection
+          local start_row = pos_start[1] - 1
+          local start_col = pos_start[2]
+          local end_row = pos_end[1] - 1
+          local end_col = pos_end[2] + 1
+          local visual_selection = vim.api.nvim_buf_get_text(
+            0, start_row, start_col, end_row, end_col, {}
+          )[1]
+
+          args = require("lbrayner").join({ visual_selection, args })
+          count = -1 -- else vim-dadbod will add visual linewise selection on top of args
+        end
+      end
+
+      vim.fn["db#execute_command"](
+        "<mods>", opts.bang and 1 or 0, line1, count,
+        vim.fn.substitute(
+          args, "^[al]:\\w\\+\\>\\ze\\s*\\%($\\|[^[:space:]=]\\)",
+          "\\=eval(submatch(0))", ""
+        )
+      )
+    end, {
+    desc = "Make DB support true visual selection (not linewise)",
+    bang = true, complete = "custom,db#command_complete", nargs = "?", range = -1
+  })
+  end,
+})
