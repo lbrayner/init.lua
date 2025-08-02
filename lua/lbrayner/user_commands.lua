@@ -1,15 +1,15 @@
-vim.api.nvim_create_user_command("DeleteTrailingWhitespace", function(command)
+vim.api.nvim_create_user_command("DeleteTrailingWhitespace", function(opts)
   require("lbrayner").preserve_view_port(function()
-    vim.cmd(string.format([[keeppatterns %d,%ds/\s\+$//e]], command.line1, command.line2))
+    vim.cmd(string.format([[keeppatterns %d,%ds/\s\+$//e]], opts.line1, opts.line2))
   end)
 end, { bar = true, nargs = 0, range = "%" })
 vim.keymap.set("ca", "D", "DeleteTrailingWhitespace")
 
 vim.api.nvim_create_user_command("Number", require("lbrayner").set_number, { nargs = 0 })
 
-vim.api.nvim_create_user_command("Filter", function(command)
-  local line_start = command.line1
-  local line_end = command.line2
+vim.api.nvim_create_user_command("Filter", function(opts)
+  local line_start = opts.line1
+  local line_end = opts.line2
   local offset = 0
   for linenr = line_start, line_end do
     vim.api.nvim_win_set_cursor(0, { linenr + offset, 0 })
@@ -47,9 +47,9 @@ end, { bar = true, nargs = 1 })
 
 -- https://stackoverflow.com/a/2573758
 -- Inspired by the TabMessage function/command combo found at <http://www.jukie.net/~bart/conf/vimrc>.
-vim.api.nvim_create_user_command("RedirMessages", function(command)
+vim.api.nvim_create_user_command("RedirMessages", function(opts)
   vim.cmd("redir => message")
-  vim.cmd(string.format("silent %s", command.args))
+  vim.cmd(string.format("silent %s", opts.args))
   vim.cmd("redir END")
   vim.cmd("silent put=message")
 end, { complete = "command", nargs = "+" })
@@ -74,10 +74,10 @@ local function source(line_start, line_end, vimscript)
   vim.cmd.echomsg(string.format("'Sourced lines %d to %d.'", line_start, line_end))
 end
 
-vim.api.nvim_create_user_command("Source", function(command)
-  source(command.line1, command.line2)
+vim.api.nvim_create_user_command("Source", function(opts)
+  source(opts.line1, opts.line2)
 end, { nargs = 0, range = true })
 
-vim.api.nvim_create_user_command("VimscriptSource", function(command)
-  source(command.line1, command.line2, true)
+vim.api.nvim_create_user_command("VimscriptSource", function(opts)
+  source(opts.line1, opts.line2, true)
 end, { nargs = 0, range = true })
