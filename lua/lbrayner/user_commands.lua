@@ -1,10 +1,11 @@
+local cmd = vim.cmd
 local fnameescape = vim.fn.fnameescape
 local nvim_create_user_command = vim.api.nvim_create_user_command
 local format = string.format
 
 nvim_create_user_command("DeleteTrailingWhitespace", function(opts)
   require("lbrayner").preserve_view_port(function()
-    vim.cmd(format([[keeppatterns %d,%ds/\s\+$//e]], opts.line1, opts.line2))
+    cmd(format([[keeppatterns %d,%ds/\s\+$//e]], opts.line1, opts.line2))
   end)
 end, { bar = true, nargs = 0, range = "%" })
 vim.keymap.set("ca", "D", "DeleteTrailingWhitespace")
@@ -16,7 +17,7 @@ nvim_create_user_command("Filter", function(opts)
   for linenr = line_start, line_end do
     vim.api.nvim_win_set_cursor(0, { linenr + offset, 0 })
     local output = vim.fn.systemlist(vim.fn.getline(linenr + offset))
-    vim.cmd.delete()
+    cmd.delete()
     vim.fn.append(linenr + offset - 1, output)
     if not vim.tbl_isempty(output) then
       offset = offset + #output - 1
@@ -57,10 +58,10 @@ end, { nargs = 0 })
 -- https://stackoverflow.com/a/2573758
 -- Inspired by the TabMessage function/command combo found at <http://www.jukie.net/~bart/conf/vimrc>.
 nvim_create_user_command("RedirMessages", function(opts)
-  vim.cmd("redir => message")
-  vim.cmd(format("silent %s", opts.args))
-  vim.cmd("redir END")
-  vim.cmd("silent put=message")
+  cmd("redir => message")
+  cmd(format("silent %s", opts.args))
+  cmd("redir END")
+  cmd("silent put=message")
 end, { complete = "command", nargs = "+" })
 
 -- https://vi.stackexchange.com/a/36414
@@ -71,16 +72,16 @@ local function source(line_start, line_end, vimscript)
     tempfile = tempfile..".lua"
   end
 
-  vim.cmd(format("silent %d,%dwrite %s", line_start, line_end, fnameescape(tempfile)))
-  vim.cmd.source(fnameescape(tempfile))
+  cmd(format("silent %d,%dwrite %s", line_start, line_end, fnameescape(tempfile)))
+  cmd.source(fnameescape(tempfile))
   vim.fn.delete(tempfile)
 
   if line_start == line_end then
-    vim.cmd.echomsg(format("'Sourced line %d.'", line_start))
+    cmd.echomsg(format("'Sourced line %d.'", line_start))
     return
   end
 
-  vim.cmd.echomsg(format("'Sourced lines %d to %d.'", line_start, line_end))
+  cmd.echomsg(format("'Sourced lines %d to %d.'", line_start, line_end))
 end
 
 nvim_create_user_command("Source", function(opts)
