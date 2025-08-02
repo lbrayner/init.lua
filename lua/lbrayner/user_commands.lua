@@ -9,13 +9,6 @@ nvim_create_user_command("DeleteTrailingWhitespace", function(opts)
 end, { bar = true, nargs = 0, range = "%" })
 vim.keymap.set("ca", "D", "DeleteTrailingWhitespace")
 
-nvim_create_user_command("Number", function()
-  if not require("lbrayner").set_number() then
-    vim.wo.number = false
-    vim.wo.relativenumber = false
-  end
-end, { nargs = 0 })
-
 nvim_create_user_command("Filter", function(opts)
   local line_start = opts.line1
   local line_end = opts.line2
@@ -53,6 +46,13 @@ nvim_create_user_command("LuaModuleReload", function(opts)
   require(module)
   vim.notify(format("Reloaded '%s'.", module))
 end, { bar = true, nargs = 1 })
+
+nvim_create_user_command("Number", function()
+  if not require("lbrayner").set_number() then
+    vim.wo.number = false
+    vim.wo.relativenumber = false
+  end
+end, { nargs = 0 })
 
 -- https://stackoverflow.com/a/2573758
 -- Inspired by the TabMessage function/command combo found at <http://www.jukie.net/~bart/conf/vimrc>.
