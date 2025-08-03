@@ -2,8 +2,10 @@
 
 local M = {}
 
+local fzf = require("fzf-lua")
+
 function M.buffers()
-  require("fzf-lua").buffers(
+  fzf.buffers(
     M.make_opts({
       fzf_opts = { ["--history"] = M.get_history_file() },
       show_unlisted = true,
@@ -25,7 +27,7 @@ local function fzf_files(opts) -- {{{
     opts.git_icons = false
   end
 
-  require("fzf-lua").files(M.make_opts(opts))
+  fzf.files(M.make_opts(opts))
 end -- }}}
 
 function M.files_clear_cache(opts)
@@ -66,7 +68,7 @@ function M.file_marks()
   end
 
    -- Ignore error "No marks matching..."
-  pcall(require("fzf-lua").marks, M.make_opts({
+  pcall(fzf.marks, M.make_opts({
     actions = {
       ["enter"] = file_mark_jump_to_location,
     },
@@ -98,7 +100,7 @@ function M.get_history_file(suffix)
 end
 
 function M.help_tags()
-  require("fzf-lua").help_tags(M.make_opts({
+  fzf.help_tags(M.make_opts({
     actions = { ["alt-s"] = actions.help_vert },
     fzf_opts = { ["--history"] = M.get_history_file("help_tags") },
   }))
@@ -133,7 +135,7 @@ function M.make_opts(opts)
 end
 
 function M.tabs()
-  require("fzf-lua").tabs(M.make_opts({
+  fzf.tabs(M.make_opts({
     fzf_opts = {
       ["--history"] = M.get_history_file(),
       ["--preview"] = 'echo "Tab #"{2}": $(echo {1} | base64 -d -)"',
