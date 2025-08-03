@@ -2,6 +2,9 @@
 
 local actions = require("fzf-lua.actions")
 local fzf = require("fzf-lua")
+local nvim_create_augroup = vim.api.nvim_create_augroup
+local nvim_create_autocmd = vim.api.nvim_create_autocmd
+local nvim_create_user_command = vim.api.nvim_create_user_command
 
 -- register fzf-lua as the UI interface for `vim.ui.select`
 fzf.register_ui_select(require("lbrayner.fzf-lua").make_opts({
@@ -75,17 +78,17 @@ fzf.setup({
   },
 })
 
-local fzf_lua_highlights = vim.api.nvim_create_augroup("fzf_lua_highlights", { clear = true })
+local fzf_lua_highlights = nvim_create_augroup("fzf_lua_highlights", { clear = true })
 
-vim.api.nvim_create_autocmd("ColorScheme", {
+nvim_create_autocmd("ColorScheme", {
   group = fzf_lua_highlights,
   desc = "Setup fzf-lua highlights after a colorscheme change",
   callback = require("fzf-lua").setup_highlights,
 })
 
-local fzf_lua_qf = vim.api.nvim_create_augroup("fzf_lua_qf", { clear = true })
+local fzf_lua_qf = nvim_create_augroup("fzf_lua_qf", { clear = true })
 
-vim.api.nvim_create_autocmd("FileType", {
+nvim_create_autocmd("FileType", {
   group = fzf_lua_qf,
   desc = "Fzf-lua quickfix setup",
   pattern = "qf",
