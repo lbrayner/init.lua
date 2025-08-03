@@ -2,12 +2,12 @@
 
 local actions = require("fzf-lua.actions")
 local fzf = require("fzf-lua")
-local get_history_file = require("lbrayner.fzf-lua").get_history_file
-local make_opts = require("lbrayner.fzf-lua").make_opts
 
 -- register fzf-lua as the UI interface for `vim.ui.select`
-fzf.register_ui_select(make_opts({
-  fzf_opts = { ["--history"] = get_history_file("ui_select") }
+fzf.register_ui_select(require("lbrayner.fzf-lua").make_opts({
+  fzf_opts = {
+    ["--history"] = require("lbrayner.fzf-lua").get_history_file("ui_select")
+  }
 }))
 
 local function file_switch_or_edit_or_qf(selected, opts) -- {{{
