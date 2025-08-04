@@ -83,7 +83,7 @@ local fzf_lua_highlights = nvim_create_augroup("fzf_lua_highlights", { clear = t
 nvim_create_autocmd("ColorScheme", {
   group = fzf_lua_highlights,
   desc = "Setup fzf-lua highlights after a colorscheme change",
-  callback = require("fzf-lua").setup_highlights,
+  callback = fzf.setup_highlights,
 })
 
 local fzf_lua_qf = nvim_create_augroup("fzf_lua_qf", { clear = true })
