@@ -1,5 +1,6 @@
 -- Backend is vim-dadbod
 
+local join = require("lbrayner").join
 local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
 local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
 local nvim_buf_get_text = vim.api.nvim_buf_get_text
@@ -124,9 +125,9 @@ nvim_create_autocmd("VimEnter", {
           local end_col = pos_end[2] + 1
           local visual_selection = nvim_buf_get_text(
             0, start_row, start_col, end_row, end_col, {}
-          )[1]
+          )
 
-          args = require("lbrayner").join({ visual_selection, args })
+          args = join({ join(visual_selection), args })
           count = -1 -- else vim-dadbod will add visual linewise selection on top of args
         end
       end
