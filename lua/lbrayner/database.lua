@@ -1,14 +1,22 @@
 -- Backend is vim-dadbod
 
-local database_access = vim.api.nvim_create_augroup("database_access", { clear = true })
+local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
+local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
+local nvim_buf_get_text = vim.api.nvim_buf_get_text
+local nvim_buf_is_valid = vim.api.nvim_buf_is_valid
+local nvim_create_augroup = vim.api.nvim_create_augroup
+local nvim_create_autocmd = vim.api.nvim_create_autocmd
+local nvim_create_user_command = vim.api.nvim_create_user_command
 
-vim.api.nvim_create_autocmd("FileType", {
+local database_access = nvim_create_augroup("database_access", { clear = true })
+
+nvim_create_autocmd("FileType", {
   pattern = { "redis", "sql" },
   group = database_access,
   callback = function(args)
     local bufnr = args.buf
     vim.schedule(function()
-      if not vim.api.nvim_buf_is_valid(bufnr) then
+      if not nvim_buf_is_valid(bufnr) then
         return
       end
 
@@ -17,7 +25,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
       require("lbrayner.statusline").set_minor_modes(bufnr, "dadbod", "append")
 
-      vim.api.nvim_buf_create_user_command(bufnr, "DatabaseAccessClear", function()
+      nvim_buf_create_user_command(bufnr, "DatabaseAccessClear", function()
         vim.b[bufnr].db = nil
         -- postgresql
         pcall(vim.keymap.del, "n", "<Leader>dt", bufopts)
@@ -27,15 +35,15 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-local sql_database_access = vim.api.nvim_create_augroup("sql_database_access", { clear = true })
+local sql_database_access = nvim_create_augroup("sql_database_access", { clear = true })
 
-vim.api.nvim_create_autocmd("FileType", {
+nvim_create_autocmd("FileType", {
   pattern = "sql",
   group = sql_database_access,
   callback = function(args)
     local bufnr = args.buf
     vim.schedule(function()
-      if not vim.api.nvim_buf_is_valid(bufnr) then
+      if not nvim_buf_is_valid(bufnr) then
         return
       end
 
@@ -47,9 +55,9 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-local database_connection = vim.api.nvim_create_augroup("database_connection", { clear = true })
+local database_connection = nvim_create_augroup("database_connection", { clear = true })
 
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
+nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   pattern = "mysql:*@*:*.sql",
   group = database_connection,
   desc = "Set up buffer MySQL database connection parameters",
@@ -59,7 +67,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
+nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   pattern = "postgresql:*@*:*.sql",
   group = database_connection,
   desc = "Set up buffer PostgreSQL database connection parameters",
@@ -69,7 +77,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
+nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   pattern = "redis:*:*.redis",
   group = database_connection,
   desc = "Set up buffer Redis database connection parameters",
@@ -79,7 +87,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
+nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   pattern = "sqlserver:*:*@*:*.sql",
   group = database_connection,
   desc = "Set up buffer SQL Server database connection parameters",
@@ -95,18 +103,18 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
 })
 
 -- Redefine DB
-vim.api.nvim_create_autocmd("VimEnter", {
+nvim_create_autocmd("VimEnter", {
   once = true,
   callback = function()
-    vim.api.nvim_create_user_command("DB", function(opts)
+    nvim_create_user_command("DB", function(opts)
       local args = opts.args
       local count = opts.count
       local line1 = opts.line1
       local line2 = opts.line2
 
       if count > 0 then
-        local pos_start = vim.api.nvim_buf_get_mark(0, "<")
-        local pos_end = vim.api.nvim_buf_get_mark(0, ">")
+        local pos_start = nvim_buf_get_mark(0, "<")
+        local pos_end = nvim_buf_get_mark(0, ">")
 
         if line1 == pos_start[1] and line2 == pos_end[1] then
           -- Confirmed visual selection
@@ -114,7 +122,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
           local start_col = pos_start[2]
           local end_row = pos_end[1] - 1
           local end_col = pos_end[2] + 1
-          local visual_selection = vim.api.nvim_buf_get_text(
+          local visual_selection = nvim_buf_get_text(
             0, start_row, start_col, end_row, end_col, {}
           )[1]
 
