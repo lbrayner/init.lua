@@ -3,10 +3,17 @@
 -- {{{ Helper functions
 
 local FugitiveResult = vim.fn.FugitiveResult
+local buf_is_scratch = require("lbrayner").buf_is_scratch
 local concat = table.concat
 local exists = vim.fn.exists
 local fnamemodify = vim.fn.fnamemodify
+local get_fugitive_git_dir_ = require("lbrayner.fugitive").get_fugitive_git_dir
+local get_fugitive_object = require("lbrayner.fugitive").get_fugitive_object
+local get_full_path = require("lbrayner.path").get_full_path
+local get_jdtls_buffer_name = require("lbrayner.jdtls").get_buffer_name
 local hlID = vim.fn.hlID
+local is_fugitive_blame = require("lbrayner.fugitive").is_fugitive_blame
+local is_quickfix_or_location_list = require("lbrayner").is_quickfix_or_location_list
 local join = function(t) -- maximum effieciency
   return concat(t, "")
 end
@@ -15,12 +22,15 @@ local nvim_create_autocmd = vim.api.nvim_create_autocmd
 local nvim_get_current_buf = vim.api.nvim_get_current_buf
 local nvim_get_hl = vim.api.nvim_get_hl
 local nvim_set_hl = vim.api.nvim_set_hl
+local get_path = require("lbrayner.path").get_path
 local pathshorten = vim.fn.pathshorten
 local synIDattr = vim.fn.synIDattr
 local synIDtrans = vim.fn.synIDtrans
+local win_is_actual_curwin = require("lbrayner").win_is_actual_curwin
+local win_is_floating = require("lbrayner").win_is_floating
 
 local function get_fugitive_git_dir()
-  local fugitive_dir = require("lbrayner.fugitive").get_fugitive_git_dir()
+  local fugitive_dir = get_fugitive_git_dir_()
 
   if fugitive_dir then
     return fnamemodify(fugitive_dir, ":~")
@@ -71,12 +81,12 @@ function M.get_buffer_name(opts)
   opts = opts or {}
   local path
 
-  if require("lbrayner.fugitive").get_fugitive_object() then
-    path = require("lbrayner.fugitive").get_fugitive_object()
+  if get_fugitive_object() then
+    path = get_fugitive_object()
   elseif vim.startswith(nvim_buf_get_name(0), "jdt://") then -- jdtls
-    path = require("lbrayner.jdtls").get_buffer_name(0)
+    path = get_jdtls_buffer_name(0)
   else
-    path = require("lbrayner.path").path()
+    path = get_path()
   end
 
   local buffer_name = path
@@ -96,8 +106,8 @@ function M.get_buffer_status()
   local status = vim.bo.modified and "%1*" or ""
 
   if vim.wo.previewwindow then
-    status = join({ status, "%<", pathshorten(require("lbrayner.path").full_path()) })
-  elseif require("lbrayner").buf_is_scratch() and nvim_buf_get_name(0) == "" then
+    status = join({ status, "%<", pathshorten(get_full_path()) })
+  elseif buf_is_scratch() and nvim_buf_get_name(0) == "" then
     status = join({ status, "%<%5*%f%*" })
   elseif vim.bo.buftype ~= "" then
     status = join({ status, "%<%5*", M.get_buffer_name({ tail = true }), "%*" })
@@ -160,7 +170,7 @@ end
 
 -- margins of 1 column (on both sides)
 function M.get_statusline()
-  if require("lbrayner.fugitive").is_fugitive_blame() then
+  if is_fugitive_blame() then
     return join({
       " Fugitive blame ",
       "%<%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*%=",
@@ -187,7 +197,7 @@ function M.get_statusline()
       leftline, "%6*", dir, "$%* %<", fugitive_temp_buf,
       " %1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
     })
-  elseif require("lbrayner").is_quickfix_or_location_list() then
+  elseif is_quickfix_or_location_list() then
     leftline = join({
       leftline,
       "%<%5*%f%* %{v:lua.require'lbrayner'.get_quickfix_or_location_list_title()}"
@@ -247,7 +257,7 @@ function M.get_version_control()
 end
 
 function M.get_winbar()
-  if require("lbrayner.fugitive").is_fugitive_blame() then
+  if is_fugitive_blame() then
     return " Fugitive blame %<%{v:lua.require'lbrayner.statusline'.get_status_flag()}"
   end
 
@@ -270,7 +280,7 @@ function M.get_winbar()
       statusline, dir, "$ %<", fugitive_temp_buf,
       " %{v:lua.require'lbrayner.statusline'.get_status_flag()}"
     })
-  elseif require("lbrayner").is_quickfix_or_location_list() then
+  elseif is_quickfix_or_location_list() then
     statusline = join({
       statusline, "%<%f %{v:lua.require'lbrayner'.get_quickfix_or_location_list_title()}"
     })
@@ -279,7 +289,7 @@ function M.get_winbar()
   else
     if vim.wo.previewwindow then
       statusline = join({
-        statusline, "%<", pathshorten(require("lbrayner.path").full_path())
+        statusline, "%<", pathshorten(get_full_path())
       })
     else
       -- margins of 1 column, space and status flag
@@ -380,7 +390,7 @@ vim.g.qf_disable_statusline = 1
 -- Autocmds
 
 local function define_status_line() -- {{{
-  if require("lbrayner").win_is_actual_curwin() then
+  if win_is_actual_curwin() then
     vim.wo.statusline = M.get_statusline()
   end
 end -- }}}
@@ -522,7 +532,7 @@ nvim_create_autocmd("VimEnter", {
       group = statusline,
       desc = "Define window local statusline, buffer-local diagnostic autocmd",
       callback = function(args)
-        if require("lbrayner").win_is_floating() then
+        if win_is_floating() then
           -- Statusline is not allowed in floating windows (see :h
           -- api-floatwin). Moreover BufWinEnter and WinEnter are triggered
           -- even when {enter} is false (see :h nvim_open_win).

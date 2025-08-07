@@ -11,7 +11,7 @@ function M.redefine_tabline()
   local session_name = require("lbrayner").get_session()
   local session = session_name == "" and "" or string.format("%%#Question#(%s)%%#Normal# ", session_name)
   -- To be displayed on the left side
-  local cwd = require("lbrayner.path").cwd()
+  local cwd = require("lbrayner.path").get_cwd()
   local tabline = string.format("%%#Title#%%4.{tabpagenr()} %s%%#Directory#%s", session, cwd)
   -- 1 column margins, 3 columns for tab number, spaces between tab, session, cwd etc.
   local max_length = vim.go.columns - 1 - 3 - 1 -
@@ -51,7 +51,7 @@ function M.redefine_tabline()
   elseif not vim.startswith(bufname, "jdt://") and -- jdtls
     not vim.startswith(bufname, "term://") then -- buftype set to "terminal" too late, check bufname
     if bufname ~= "" and not is_in_directory(bufname, vim.fn.getcwd()) then -- It's an absolute path
-      bufname = require("lbrayner.path").full_path()
+      bufname = require("lbrayner.path").get_full_path()
       max_length = max_length - 1 -- a space
       local absolute_path = truncate_filename(bufname, max_length)
       tabline = tabline .. string.format(" %%=%%#WarningMsg#%s ", absolute_path)

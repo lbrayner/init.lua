@@ -2,17 +2,17 @@ local M = {}
 
 local fnamemodify = vim.fn.fnamemodify
 
-function M.cwd()
+function M.get_cwd()
   return fnamemodify(vim.fn.getcwd(), ":~")
 end
 
-function M.directory()
-  return fnamemodify(M.path(), ":p:~:h")
+function M.get_directory()
+  return fnamemodify(M.get_path(), ":p:~:h")
 end
 
 ---@return string?
-function M.first_level()
-  local directory = M.directory()
+function M.get_first_level()
+  local directory = M.get_directory()
 
   if not M.is_in_directory(directory, vim.fn.getcwd()) then
     return
@@ -28,8 +28,8 @@ function M.first_level()
 end
 
 ---@return string?
-function M.first_level_name()
-  local first_level = M.first_level()
+function M.get_first_level_name()
+  local first_level = M.get_first_level()
 
   if not first_level then
     return
@@ -38,11 +38,11 @@ function M.first_level_name()
   return fnamemodify(first_level, ":t")
 end
 
-function M.folder_name()
-  return fnamemodify(M.path(), ":p:h:t")
+function M.get_folder_name()
+  return fnamemodify(M.get_path(), ":p:h:t")
 end
 
-function M.full_path(path)
+function M.get_full_path(path)
   assert(not path or type(path) == "string", "'path' must be a string")
 
   if not path then
@@ -57,7 +57,7 @@ function M.full_path(path)
       return bufname
     end
 
-    path = M.path()
+    path = M.get_path()
   end
 
   return fnamemodify(path, ":p:~")
@@ -75,11 +75,11 @@ function M.is_in_directory(node, directory, opts)
   return vim.startswith(node, directory)
 end
 
-function M.name()
-  return fnamemodify(M.path(), ":t")
+function M.get_name()
+  return fnamemodify(M.get_path(), ":t")
 end
 
-function M.path()
+function M.get_path()
   local bufnr = 0
   local bufname = vim.api.nvim_buf_get_name(bufnr)
 
@@ -100,17 +100,17 @@ function M.path()
   end
 
   if not M.is_in_directory(bufname, vim.fn.getcwd(), { exclusive = true }) then
-    return M.full_path(bufname) -- In case buffer represents a directory
+    return M.get_full_path(bufname) -- In case buffer represents a directory
   end
 
   return fnamemodify(bufname, ":.")
 end
 
-function M.relative_directory()
-  return fnamemodify(M.path(), ":h")
+function M.get_relative_directory()
+  return fnamemodify(M.get_path(), ":h")
 end
 
-function M.working_directory_name()
+function M.get_working_directory_name()
   return fnamemodify(vim.fn.getcwd(), ":p:h:t")
 end
 
