@@ -44,6 +44,27 @@ vim.api.nvim_create_autocmd("SwapExists", {
   end,
 })
 
+local buffer_setup = vim.api.nvim_create_augroup("buffer_setup", { clear = true })
+
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  pattern = "COMMIT_EDITMSG",
+  group = buffer_setup,
+  desc = "Set up COMMIT_EDITMSG buffer",
+  callback = function(args)
+    local bufnr = args.buf
+    vim.schedule(function()
+      vim.api.nvim_buf_call(bufnr, function()
+        local line = vim.api.nvim_buf_get_lines(bufnr, 0, 1, true)[1]
+        -- If editing a commit message, do not start in insert mode
+        if line == "" then
+          vim.cmd.startinsert()
+        end
+      end)
+    end)
+    vim.wo.spell = true
+  end,
+})
+
 local checktime = vim.api.nvim_create_augroup("checktime", { clear = true })
 
 vim.api.nvim_create_autocmd("VimEnter", {
@@ -215,25 +236,6 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.bo.textwidth = 80
       end
     end
-  end,
-})
-
-vim.api.nvim_create_autocmd("BufWinEnter", {
-  pattern = "COMMIT_EDITMSG",
-  group = file_type_setup,
-  desc = "Set up COMMIT_EDITMSG buffer",
-  callback = function(args)
-    local bufnr = args.buf
-    vim.schedule(function()
-      vim.api.nvim_buf_call(bufnr, function()
-        local line = vim.api.nvim_buf_get_lines(bufnr, 0, 1, true)[1]
-        -- If editing a commit message, do not start in insert mode
-        if line == "" then
-          vim.cmd.startinsert()
-        end
-      end)
-    end)
-    vim.wo.spell = true
   end,
 })
 
