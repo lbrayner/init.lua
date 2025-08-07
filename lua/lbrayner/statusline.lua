@@ -11,18 +11,22 @@ local get_fugitive_git_dir_ = require("lbrayner.fugitive").get_fugitive_git_dir
 local get_fugitive_object = require("lbrayner.fugitive").get_fugitive_object
 local get_full_path = require("lbrayner.path").get_full_path
 local get_jdtls_buffer_name = require("lbrayner.jdtls").get_buffer_name
+local get_path = require("lbrayner.path").get_path
 local hlID = vim.fn.hlID
 local is_fugitive_blame = require("lbrayner.fugitive").is_fugitive_blame
 local is_quickfix_or_location_list = require("lbrayner").is_quickfix_or_location_list
-local join = function(t) -- maximum effieciency
-  return concat(t, "")
-end
+local nvim__redraw = vim.api.nvim__redraw
 local nvim_buf_get_name = vim.api.nvim_buf_get_name
+local nvim_create_augroup = vim.api.nvim_create_augroup
 local nvim_create_autocmd = vim.api.nvim_create_autocmd
+local nvim_del_autocmd = vim.api.nvim_del_autocmd
+local nvim_exec_autocmds = vim.api.nvim_exec_autocmds
 local nvim_get_current_buf = vim.api.nvim_get_current_buf
+local nvim_get_current_win = vim.api.nvim_get_current_win
 local nvim_get_hl = vim.api.nvim_get_hl
 local nvim_set_hl = vim.api.nvim_set_hl
-local get_path = require("lbrayner.path").get_path
+local nvim_win_call = vim.api.nvim_win_call
+local nvim_win_is_valid = vim.api.nvim_win_is_valid
 local pathshorten = vim.fn.pathshorten
 local synIDattr = vim.fn.synIDattr
 local synIDtrans = vim.fn.synIDtrans
@@ -39,6 +43,10 @@ end
 
 local function get_fugitive_temporary_buffer_name()
   return concat({ "Git", concat(FugitiveResult(nvim_get_current_buf()).args, " ")}, " ")
+end
+
+local function join(t) -- maximum effieciency
+  return concat(t, "")
 end
 
 local function get_line_format()
@@ -395,7 +403,7 @@ local function define_status_line() -- {{{
   end
 end -- }}}
 
-local statusline = vim.api.nvim_create_augroup("statusline", { clear = true })
+local statusline = nvim_create_augroup("statusline", { clear = true })
 
 nvim_create_autocmd("CmdlineEnter", {
   pattern = { ":", "/", "?" },
@@ -417,7 +425,7 @@ nvim_create_autocmd("CmdlineEnter", {
       M.highlight_mode("command")
     end
 
-    vim.api.nvim__redraw({ statusline = true })
+    nvim__redraw({ statusline = true })
   end,
 })
 
@@ -462,10 +470,10 @@ nvim_create_autocmd("TermEnter", {
   desc = "Terminal mode statusline definition and highlight",
   callback = function()
     M.highlight_mode("terminal")
-    local winid = vim.api.nvim_get_current_win()
+    local winid = nvim_get_current_win()
     vim.schedule(function()
-      if vim.api.nvim_win_is_valid(winid) then
-        vim.api.nvim_win_call(winid, function()
+      if nvim_win_is_valid(winid) then
+        nvim_win_call(winid, function()
           vim.wo.statusline = ""
         end)
       end
@@ -515,7 +523,7 @@ nvim_create_autocmd("VimEnter", {
 
       highlight_severity(bufnr)
 
-      pcall(vim.api.nvim_del_autocmd, diagnostic_changed_autocmd)
+      pcall(nvim_del_autocmd, diagnostic_changed_autocmd)
 
       diagnostic_changed_autocmd = nvim_create_autocmd("DiagnosticChanged", {
         group = statusline,
@@ -577,7 +585,7 @@ if not pcall(require, "neosolarized") then
 end
 
 if vim.v.vim_did_enter == 1 then
-  vim.api.nvim_exec_autocmds("VimEnter", { group = statusline })
+  nvim_exec_autocmds("VimEnter", { group = statusline })
 end
 
 return M
