@@ -2,16 +2,23 @@
 
 -- {{{ Helper functions
 
+local FugitiveHead = vim.fn.FugitiveHead
 local FugitiveResult = vim.fn.FugitiveResult
 local buf_is_scratch = require("lbrayner").buf_is_scratch
 local concat = table.concat
+local empty_dict = vim.empty_dict
+local endswith = vim.fn.endswith
 local exists = vim.fn.exists
 local fnamemodify = vim.fn.fnamemodify
+local fugitiveHead = vim.fn["fugitive#Head"]
+local get_diagnostic = vim.diagnostic.get
 local get_fugitive_git_dir_ = require("lbrayner.fugitive").get_fugitive_git_dir
 local get_fugitive_object = require("lbrayner.fugitive").get_fugitive_object
 local get_full_path = require("lbrayner.path").get_full_path
 local get_jdtls_buffer_name = require("lbrayner.jdtls").get_buffer_name
+local get_line = vim.fn.line
 local get_path = require("lbrayner.path").get_path
+local get_state = vim.fn.state
 local hlID = vim.fn.hlID
 local is_fugitive_blame = require("lbrayner.fugitive").is_fugitive_blame
 local is_quickfix_or_location_list = require("lbrayner").is_quickfix_or_location_list
@@ -28,8 +35,19 @@ local nvim_set_hl = vim.api.nvim_set_hl
 local nvim_win_call = vim.api.nvim_win_call
 local nvim_win_is_valid = vim.api.nvim_win_is_valid
 local pathshorten = vim.fn.pathshorten
+local schedule = vim.schedule
+local severities = vim.diagnostic.severity
+local startswith = vim.startswith
+local string_len = string.len
+local string_lower = string.lower
+local string_sub = string.sub
 local synIDattr = vim.fn.synIDattr
 local synIDtrans = vim.fn.synIDtrans
+local tbl_contains = vim.tbl_contains
+local tbl_deep_extend = vim.tbl_deep_extend
+local tbl_get = vim.tbl_get
+local tbl_isempty = vim.tbl_isempty
+local tbl_keys = vim.tbl_keys
 local win_is_actual_curwin = require("lbrayner").win_is_actual_curwin
 local win_is_floating = require("lbrayner").win_is_floating
 
@@ -54,7 +72,7 @@ local function get_line_format()
     return join({ "%", (#tostring(vim.bo.scrollback)+1), "l" })
   end
 
-  local length = #tostring(vim.fn.line("$"))
+  local length = #tostring(get_line("$"))
 
   if length < 5 then
     length = 5
@@ -68,7 +86,7 @@ local function get_number_of_lines()
     return join({ "%", (#tostring(vim.bo.scrollback)+1), "L" })
   end
 
-  local length = #tostring(vim.fn.line("$"))
+  local length = #tostring(get_line("$"))
 
   if length < 5 then
     length = 5
@@ -91,7 +109,7 @@ function M.get_buffer_name(opts)
 
   if get_fugitive_object() then
     path = get_fugitive_object()
-  elseif vim.startswith(nvim_buf_get_name(0), "jdt://") then -- jdtls
+  elseif startswith(nvim_buf_get_name(0), "jdt://") then -- jdtls
     path = get_jdtls_buffer_name(0)
   else
     path = get_path()
@@ -131,7 +149,7 @@ end
 function M.get_diagnostics()
   local bufnr = nvim_get_current_buf()
 
-  if vim.tbl_isempty(vim.diagnostic.get(bufnr)) then
+  if tbl_isempty(get_diagnostic(bufnr)) then
     return " "
   end
 
@@ -144,7 +162,7 @@ end
 
 function M.get_minor_modes()
   local bufnr = nvim_get_current_buf()
-  local modes = vim.tbl_get(vim.b[bufnr], "lbrayner", "statusline", "modes", "str")
+  local modes = tbl_get(vim.b[bufnr], "lbrayner", "statusline", "modes", "str")
 
   if modes and modes ~= "" then
     return join({ "%9*", modes, "%* " })
@@ -198,7 +216,7 @@ function M.get_statusline()
       "%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
     })
   elseif exists("*FugitiveResult") == 1 and
-    not vim.tbl_isempty(FugitiveResult(nvim_get_current_buf())) then -- Fugitive temporary buffers
+    not tbl_isempty(FugitiveResult(nvim_get_current_buf())) then -- Fugitive temporary buffers
     local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
     local dir = pathshorten(get_fugitive_git_dir())
     leftline = join({
@@ -247,18 +265,18 @@ function M.get_version_control()
     return ""
   end
 
-  local branch = vim.fn.FugitiveHead()
+  local branch = FugitiveHead()
 
   if branch == "" then
-    branch = vim.fn["fugitive#Head"](7)
+    branch = fugitiveHead(7)
   end
 
   if branch == "" then
     return ""
   end
 
-  if string.len(branch) > 60 then
-    return join({ string.sub(branch, 1, 54), "…", string.sub(branch, -5) })
+  if string_len(branch) > 60 then
+    return join({ string_sub(branch, 1, 54), "…", string_sub(branch, -5) })
   end
 
   return branch
@@ -281,7 +299,7 @@ function M.get_winbar()
       "%{v:lua.require'lbrayner.statusline'.get_status_flag()}"
     })
   elseif exists("*FugitiveResult") == 1 and
-    not vim.tbl_isempty(FugitiveResult(nvim_get_current_buf())) then -- Fugitive temporary buffers
+    not tbl_isempty(FugitiveResult(nvim_get_current_buf())) then -- Fugitive temporary buffers
     local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
     local dir = pathshorten(get_fugitive_git_dir())
     statusline = join({
@@ -319,7 +337,7 @@ function M.highlight_mode(mode)
   local hl_map_by_group = mapping[mode]
   for group, hl_map in pairs(hl_map_by_group) do
     current_hl_map = nvim_get_hl(0, { name = group })
-    hl_map = vim.tbl_deep_extend("keep", { bold = true }, hl_map, {
+    hl_map = tbl_deep_extend("keep", { bold = true }, hl_map, {
       bg = current_hl_map.bg,
       fg = current_hl_map.fg
     })
@@ -355,8 +373,8 @@ function M.set_minor_modes(bufnr, mode, action)
   assert(type(mode) == "string", "'mode' must be a string")
   assert(action == "append" or action == "remove", join({ "invalid 'action': ", tostring(action) }))
 
-  local lbrayner = vim.b[bufnr].lbrayner or vim.empty_dict()
-  local data = vim.tbl_get(lbrayner, "statusline", "modes", "data") or vim.empty_dict()
+  local lbrayner = vim.b[bufnr].lbrayner or empty_dict()
+  local data = tbl_get(lbrayner, "statusline", "modes", "data") or empty_dict()
 
   if action == "append" then
     data[mode] = true
@@ -364,10 +382,10 @@ function M.set_minor_modes(bufnr, mode, action)
     data[mode] = nil
   end
 
-  local keys = vim.tbl_keys(data)
+  local keys = tbl_keys(data)
   table.sort(keys)
 
-  lbrayner = vim.tbl_deep_extend("keep", {
+  lbrayner = tbl_deep_extend("keep", {
     statusline = {
       modes = {
         str = table.concat(keys, ",")
@@ -415,11 +433,11 @@ nvim_create_autocmd("CmdlineEnter", {
     -- cmdline-char "@": do not redraw if waiting for input after input()
     -- state() "s": screen has scrolled for messages (multi-line input prompt)
     -- See https://github.com/neovim/neovim/issues/34662
-    if cmdline_char == "@" and vim.endswith(vim.fn.state(), "s") then
+    if cmdline_char == "@" and endswith(get_state(), "s") then
       return
     end
 
-    if vim.tbl_contains({ "/", "?" }, cmdline_char) then
+    if tbl_contains({ "/", "?" }, cmdline_char) then
       M.highlight_mode("search")
     else
       M.highlight_mode("command")
@@ -471,7 +489,7 @@ nvim_create_autocmd("TermEnter", {
   callback = function()
     M.highlight_mode("terminal")
     local winid = nvim_get_current_win()
-    vim.schedule(function()
+    schedule(function()
       if nvim_win_is_valid(winid) then
         nvim_win_call(winid, function()
           vim.wo.statusline = ""
@@ -496,12 +514,12 @@ nvim_create_autocmd("VimEnter", {
     local function diagnostic_changed(bufnr)
       local function highlight_severity(bufnr)
         local severity = (function(bufnr)
-          if vim.tbl_isempty(vim.diagnostic.get(bufnr)) then
+          if tbl_isempty(get_diagnostic(bufnr)) then
             return nil
           end
-          for _, level in ipairs(vim.diagnostic.severity) do
-            local items =  vim.diagnostic.get(bufnr, { severity = level })
-            if not vim.tbl_isempty(items) then
+          for _, level in ipairs(severities) do
+            local items =  get_diagnostic(bufnr, { severity = level })
+            if not tbl_isempty(items) then
               return level
             end
           end
@@ -510,15 +528,15 @@ nvim_create_autocmd("VimEnter", {
         local user7 = nvim_get_hl(0, { name = "User7" })
 
         if not severity then
-          nvim_set_hl(0, "User7", vim.tbl_deep_extend("keep", { fg = "NONE" }, user7))
+          nvim_set_hl(0, "User7", tbl_deep_extend("keep", { fg = "NONE" }, user7))
           return
         end
 
         local group = join({
-          "Diagnostic", string.sub(severity, 1, 1), string.lower(string.sub(severity, 2))
+          "Diagnostic", string_sub(severity, 1, 1), string_lower(string_sub(severity, 2))
         })
         local severity_hl = nvim_get_hl(0, { name = group })
-        nvim_set_hl(0, "User7", vim.tbl_deep_extend("keep", { fg = severity_hl.fg }, user7))
+        nvim_set_hl(0, "User7", tbl_deep_extend("keep", { fg = severity_hl.fg }, user7))
       end
 
       highlight_severity(bufnr)
@@ -552,7 +570,7 @@ nvim_create_autocmd("VimEnter", {
         diagnostic_changed(bufnr)
 
         if vim.go.statusline == vim.wo.statusline then
-          vim.schedule(define_status_line)
+          schedule(define_status_line)
         end
       end,
     })
@@ -570,8 +588,8 @@ nvim_create_autocmd("VimEnter", {
       M.load_theme("neosolarized")
     end
 
-    vim.schedule(define_status_line)
-    vim.schedule(function()
+    schedule(define_status_line)
+    schedule(function()
       diagnostic_changed(nvim_get_current_buf())
     end)
   end,
