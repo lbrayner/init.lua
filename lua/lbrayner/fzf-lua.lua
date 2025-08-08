@@ -2,6 +2,7 @@
 
 local M = {}
 
+local actions = require("fzf-lua.actions")
 local fzf = require("fzf-lua")
 
 function M.buffers()
