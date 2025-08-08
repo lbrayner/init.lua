@@ -1,5 +1,8 @@
 local M = {}
 
+local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
+local nvim_buf_get_text = vim.api.nvim_buf_get_text
+
 function M.buf_is_scratch(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
   return vim.bo[bufnr].buftype == "nofile" and
@@ -50,6 +53,31 @@ function M.get_session()
     return vim.fn.fnamemodify(session, ":t:r")
   end
   return ""
+end
+
+function M.get_visual_selection(opts)
+  if opts.count <= 0 then
+    return
+  end
+
+  local line1 = opts.line1
+  local line2 = opts.line2
+  local pos_start = nvim_buf_get_mark(0, "<")
+  local pos_end = nvim_buf_get_mark(0, ">")
+
+  if line1 ~= pos_start[1] or line2 ~= pos_end[1] then
+    return false, 1 -- line range was supplied
+  end
+
+  local start_row = pos_start[1] - 1
+  local start_col = pos_start[2]
+  local end_row = pos_end[1] - 1
+  local end_col = pos_end[2] + 1
+  local visual_selection = nvim_buf_get_text(
+    0, start_row, start_col, end_row, end_col, {}
+  )
+
+  return true, visual_selection
 end
 
 local function _jump_to_location(winid, bufnr, pos)

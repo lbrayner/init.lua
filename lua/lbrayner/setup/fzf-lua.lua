@@ -2,6 +2,9 @@
 
 local actions = require("fzf-lua.actions")
 local fzf = require("fzf-lua")
+local get_visual_selection = require("lbrayner").get_visual_selection
+local notify = vim.notify
+local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
 local nvim_create_augroup = vim.api.nvim_create_augroup
 local nvim_create_autocmd = vim.api.nvim_create_autocmd
 local nvim_create_user_command = vim.api.nvim_create_user_command
@@ -99,15 +102,47 @@ nvim_create_autocmd("FileType", {
   end,
 })
 
+local function get_visual_selection_query(opts)
+  local pos_start = nvim_buf_get_mark(0, "<")
+  local pos_end = nvim_buf_get_mark(0, ">")
+
+  if pos_start[1] ~= pos_end[1] then
+    notify("Visual selection query cannot span multiple lines.")
+    return
+  end
+
+  local success, result = get_visual_selection(opts)
+
+  if not success then
+    if result == 1 then
+      notify("Line range not allowed, only visual selection.")
+    end
+
+    return
+  end
+
+  return result[1]
+end
+
 nvim_create_user_command("Buffers", function()
   require("lbrayner.fzf-lua").buffers()
 end, { nargs = 0 })
 nvim_create_user_command("FilesClearCache", function(opts)
-  require("lbrayner.fzf-lua").files_clear_cache(opts)
+  local args = opts.args
+  local query = get_visual_selection_query(opts)
+
+  require("lbrayner.fzf-lua").files_clear_cache({
+    lbrayner = { args = args }, query = query
+  })
 end, { complete = "file", nargs = "*" })
 nvim_create_user_command("Files", function(opts)
-  require("lbrayner.fzf-lua").files(opts)
-end, { complete = "file", nargs = "*" })
+  local args = opts.args
+  local query = get_visual_selection_query(opts)
+
+  require("lbrayner.fzf-lua").files({
+    lbrayner = { args = args }, query = query
+  })
+end, { complete = "file", nargs = "*", range = -1 })
 nvim_create_user_command("HelpTags", function()
   require("lbrayner.fzf-lua").help_tags()
 end, { nargs = 0 })

@@ -4,6 +4,7 @@ local M = {}
 
 local actions = require("fzf-lua.actions")
 local fzf = require("fzf-lua")
+local join = require("lbrayner").join
 
 function M.buffers()
   fzf.buffers(
@@ -14,7 +15,9 @@ function M.buffers()
   )
 end
 
-local function fzf_files(opts) -- {{{
+local function fzf_files(base, opts) -- {{{
+  base = base or {}
+  opts = opts or {}
   opts = vim.tbl_deep_extend("keep", {
     -- https://github.com/ibhagwan/fzf-lua/issues/996
     -- actions.files refers to all pickers that deal with files which also
@@ -22,7 +25,7 @@ local function fzf_files(opts) -- {{{
     -- files
     actions = { ["ctrl-g"] = false },
     fzf_opts = { ["--history"] = M.get_history_file() }
-  }, opts)
+  }, base, opts)
 
   if vim.startswith(opts.cmd, "find_file_cache") then
     opts.git_icons = false
@@ -33,21 +36,21 @@ end -- }}}
 
 function M.files_clear_cache(opts)
   opts = opts or {}
-  local args = opts.args or ""
-  local cmd = string.format("%s %s", "find_file_cache -C", args)
+  local args = vim.tbl_get(opts, "lbrayner", "args") or ""
+  local cmd = join({ "find_file_cache -C", args })
 
   if vim.fn.executable("find_file_cache") == 0 then
     vim.notify("find_file_cache not executable.", vim.log.levels.ERROR)
     return
   end
 
-  fzf_files({ cmd = cmd })
+  fzf_files({ cmd = cmd }, opts)
   vim.notify("Cleared FZF cache.")
 end
 
 function M.files(opts)
   opts = opts or {}
-  local args = opts.args or ""
+  local args = vim.tbl_get(opts, "lbrayner", "args") or ""
   local cmd
 
   if vim.fn.executable("find_file_cache") == 1 then
@@ -56,9 +59,11 @@ function M.files(opts)
     cmd = "rg --files --sort path"
   end
 
-  cmd = string.format("%s %s", cmd, args)
+  if cmd then
+    cmd = join({ cmd, args })
+  end
 
-  fzf_files({ cmd = cmd })
+  fzf_files({ cmd = cmd }, opts)
 end
 
 function M.file_marks()
@@ -107,8 +112,10 @@ function M.help_tags()
   }))
 end
 
-function M.make_opts(opts)
+function M.make_opts(base, opts)
+  base = base or {}
   opts = opts or {}
+  opts = vim.tbl_deep_extend("keep", base, opts)
 
   local history_file = vim.tbl_get(opts, "fzf_opts", "--history")
 
