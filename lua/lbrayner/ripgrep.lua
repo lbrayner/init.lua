@@ -3,7 +3,10 @@
 
 local M = {}
 
+local concat = require("lbrayner").concat
+local format = string.format
 local join = require("lbrayner").join
+local notify = vim.notify
 
 local function rg(args, opts) -- {{{
   if vim.fn.executable("rg") == 0 then
@@ -97,7 +100,7 @@ local function rg(args, opts) -- {{{
       if opts.on_exit then
         opts.on_exit(obj, args, qfid)
       elseif obj.code == 1 then
-        vim.notify(string.format("No match found for “%s”.", args))
+        notify(format("No match found for “%s”.", args))
       elseif obj.code > 1 then
         if qfid then
           qflist = getqf({ id = 0 })
@@ -105,10 +108,10 @@ local function rg(args, opts) -- {{{
           if qfid == qflist.id then cclose() end
         end
 
-        vim.notify(string.format(
-          "Error searching for “%s”. Unmatched quotes? Check your command.", args
+        notify(format(
+          "Error searching for “%s”.%s",
+          args, obj.stderr and obj.stderr ~= "" and concat({ "\n", obj.stderr }) or ""
         ))
-        -- else add to title (ERROR)
       end
     end)
   )
@@ -159,7 +162,7 @@ function M.user_command_with_config_path(command_name, config_path)
         -- :0Rg performs a search with the last text juxtaposed with the new text
         args = join({ context.ripgrep.args, args })
       else
-        vim.notify("Could not find a ripgrep search context.")
+        notify("Could not find a ripgrep search context.")
         return
       end
     elseif count > 0 then -- :'<,'>Rg
@@ -168,12 +171,12 @@ function M.user_command_with_config_path(command_name, config_path)
       local pos_end = vim.api.nvim_buf_get_mark(0, ">")
 
       if line1 ~= pos_start[1] or line2 ~= pos_end[1] then
-        vim.notify("Line range not allowed, only visual selection.")
+        notify("Line range not allowed, only visual selection.")
         return
       end
 
       if pos_start[1] ~= pos_end[1] then
-        vim.notify("Visual selection pattern cannot span multiple lines.")
+        notify("Visual selection pattern cannot span multiple lines.")
         return
       end
 

@@ -7,6 +7,11 @@ function M.buf_is_scratch(bufnr)
   vim.bo[bufnr].swapfile == false
 end
 
+function M.concat(col)
+  assert(type(col) == "table", "Bad argument; 'col' must be a table.")
+  return table.concat(col, "")
+end
+
 function M.contains(s, text)
   vim.validate({ s = { s, 's' }, text = { text, 's' } })
   return string.find(s, text, 1, true)
