@@ -102,7 +102,7 @@ nvim_create_autocmd("FileType", {
   end,
 })
 
-local function get_visual_selection_query(opts)
+local function get_visual_selection_query(opts) -- {{{
   local success, result = get_visual_selection(opts)
 
   if success then
@@ -114,7 +114,7 @@ local function get_visual_selection_query(opts)
   elseif result == 2 then
     notify("Visual selection query cannot span multiple lines.")
   end
-end
+end -- }}}
 
 nvim_create_user_command("Buffers", function()
   require("lbrayner.fzf-lua").buffers()
