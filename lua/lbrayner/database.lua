@@ -115,7 +115,7 @@ nvim_create_autocmd("VimEnter", {
       local line2 = opts.line2
 
       if count > 0 then
-        local success, result = get_visual_selection(opts)
+        local success, result = get_visual_selection(opts, { multi_line = true })
 
         if success then
           args = join({ join(result), args })
