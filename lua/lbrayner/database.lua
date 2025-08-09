@@ -1,5 +1,6 @@
 -- Backend is vim-dadbod
 
+local get_visual_selection = require("lbrayner").get_visual_selection
 local join = require("lbrayner").join
 local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
 local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
@@ -114,20 +115,10 @@ nvim_create_autocmd("VimEnter", {
       local line2 = opts.line2
 
       if count > 0 then
-        local pos_start = nvim_buf_get_mark(0, "<")
-        local pos_end = nvim_buf_get_mark(0, ">")
+        local success, result = get_visual_selection(opts)
 
-        if line1 == pos_start[1] and line2 == pos_end[1] then
-          -- Confirmed visual selection
-          local start_row = pos_start[1] - 1
-          local start_col = pos_start[2]
-          local end_row = pos_end[1] - 1
-          local end_col = pos_end[2] + 1
-          local visual_selection = nvim_buf_get_text(
-            0, start_row, start_col, end_row, end_col, {}
-          )
-
-          args = join({ join(visual_selection), args })
+        if success then
+          args = join({ join(result), args })
           count = -1 -- else vim-dadbod will add visual linewise selection on top of args
         end
       end
