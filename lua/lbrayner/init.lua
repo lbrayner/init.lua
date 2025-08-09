@@ -55,18 +55,28 @@ function M.get_session()
   return ""
 end
 
-function M.get_visual_selection(opts)
-  if opts.count <= 0 then
+function M.get_visual_selection(usr_cmd, opts)
+  assert(type(usr_cmd) == "table", "'usr_cmd' must be a table")
+  assert(not opts or type(opts) == "table", "'opts' must be a table")
+  opts = opts or {}
+
+  if usr_cmd.count <= 0 then
     return
   end
 
-  local line1 = opts.line1
-  local line2 = opts.line2
+  local line1 = usr_cmd.line1
+  local line2 = usr_cmd.line2
   local pos_start = nvim_buf_get_mark(0, "<")
   local pos_end = nvim_buf_get_mark(0, ">")
 
   if line1 ~= pos_start[1] or line2 ~= pos_end[1] then
-    return false, 1 -- line range was supplied
+    -- line range was supplied
+    return false, 1
+  end
+
+  if not opts.multi_line and pos_start[1] ~= pos_end[1] then
+    -- multi-line selection
+    return false, 2
   end
 
   local start_row = pos_start[1] - 1

@@ -169,19 +169,13 @@ function M.user_command_with_config_path(command_name, config_path)
       end
     elseif count > 0 then -- :'<,'>Rg
       -- https://neovim.discourse.group/t/function-that-return-visually-selected-text/1601
-      local pos_start = nvim_buf_get_mark(0, "<")
-      local pos_end = nvim_buf_get_mark(0, ">")
-
-      if pos_start[1] ~= pos_end[1] then
-        notify("Visual selection pattern cannot span multiple lines.")
-        return
-      end
-
       local success, result = get_visual_selection(opts)
 
       if not success then
         if result == 1 then
           notify("Line range not allowed, only visual selection.")
+        elseif result == 2 then
+          notify("Visual selection pattern cannot span multiple lines.")
         end
 
         return
