@@ -103,25 +103,17 @@ nvim_create_autocmd("FileType", {
 })
 
 local function get_visual_selection_query(opts)
-  local pos_start = nvim_buf_get_mark(0, "<")
-  local pos_end = nvim_buf_get_mark(0, ">")
-
-  if pos_start[1] ~= pos_end[1] then
-    notify("Visual selection query cannot span multiple lines.")
-    return
-  end
-
   local success, result = get_visual_selection(opts)
 
-  if not success then
-    if result == 1 then
-      notify("Line range not allowed, only visual selection.")
-    end
-
-    return
+  if success then
+    return result[1]
   end
 
-  return result[1]
+  if result == 1 then
+    notify("Line range not allowed, only visual selection.")
+  elseif result == 2 then
+    notify("Visual selection query cannot span multiple lines.")
+  end
 end
 
 nvim_create_user_command("Buffers", function()
@@ -149,6 +141,8 @@ end, { nargs = 0 })
 nvim_create_user_command("Marks", function()
   require("lbrayner.fzf-lua").file_marks()
 end, { nargs = 0 })
-nvim_create_user_command("Tabs", function()
-  require("lbrayner.fzf-lua").tabs()
-end, { nargs = 0 })
+nvim_create_user_command("Tabs", function(opts)
+  local query = get_visual_selection_query(opts)
+
+  require("lbrayner.fzf-lua").tabs({ query = query })
+end, { nargs = 0, range = -1 })

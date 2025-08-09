@@ -142,7 +142,7 @@ function M.make_opts(base, opts)
   return opts
 end
 
-function M.tabs()
+function M.tabs(opts)
   fzf.tabs(M.make_opts({
     fzf_opts = {
       ["--history"] = M.get_history_file(),
@@ -151,7 +151,7 @@ function M.tabs()
     },
     show_quickfix = true,
     show_unlisted = true
-  }))
+  }, opts))
 end
 
 return M
