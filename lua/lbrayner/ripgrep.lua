@@ -5,8 +5,10 @@ local M = {}
 
 local concat = require("lbrayner").concat
 local format = string.format
+local get_visual_selection = require("lbrayner").get_visual_selection
 local join = require("lbrayner").join
 local notify = vim.notify
+local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
 
 local function rg(args, opts) -- {{{
   if vim.fn.executable("rg") == 0 then
@@ -167,26 +169,25 @@ function M.user_command_with_config_path(command_name, config_path)
       end
     elseif count > 0 then -- :'<,'>Rg
       -- https://neovim.discourse.group/t/function-that-return-visually-selected-text/1601
-      local pos_start = vim.api.nvim_buf_get_mark(0, "<")
-      local pos_end = vim.api.nvim_buf_get_mark(0, ">")
-
-      if line1 ~= pos_start[1] or line2 ~= pos_end[1] then
-        notify("Line range not allowed, only visual selection.")
-        return
-      end
+      local pos_start = nvim_buf_get_mark(0, "<")
+      local pos_end = nvim_buf_get_mark(0, ">")
 
       if pos_start[1] ~= pos_end[1] then
         notify("Visual selection pattern cannot span multiple lines.")
         return
       end
 
-      local start_row = pos_start[1] - 1
-      local start_col = pos_start[2]
-      local end_row = pos_end[1] - 1
-      local end_col = pos_end[2] + 1
-      local visual_selection = vim.api.nvim_buf_get_text(0, start_row, start_col, end_row, end_col, {})[1]
+      local success, result = get_visual_selection(opts)
 
-      args = join({ "-s -F -e", vim.fn.shellescape(visual_selection), args })
+      if not success then
+        if result == 1 then
+          notify("Line range not allowed, only visual selection.")
+        end
+
+        return
+      end
+
+      args = join({ "-s -F -e", vim.fn.shellescape(result[1]), args })
     end
 
     M.rg(args, { config_path = config_path })
