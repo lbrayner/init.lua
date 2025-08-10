@@ -105,14 +105,14 @@ local M = {}
 
 function M.get_buffer_name(opts)
   opts = opts or {}
-  local path
+  local path = get_fugitive_object()
 
-  if get_fugitive_object() then
-    path = get_fugitive_object()
-  elseif startswith(nvim_buf_get_name(0), "jdt://") then -- jdtls
-    path = get_jdtls_buffer_name(0)
-  else
-    path = get_path()
+  if not path then
+    if startswith(nvim_buf_get_name(0), "jdt://") then -- jdtls
+      path = get_jdtls_buffer_name(0)
+    else
+      path = get_path()
+    end
   end
 
   local buffer_name = path
