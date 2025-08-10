@@ -119,14 +119,6 @@ end -- }}}
 nvim_create_user_command("Buffers", function()
   require("lbrayner.fzf-lua").buffers()
 end, { nargs = 0 })
-nvim_create_user_command("FilesClearCache", function(opts)
-  local args = opts.args
-  local query = get_visual_selection_query(opts)
-
-  require("lbrayner.fzf-lua").files_clear_cache({
-    lbrayner = { args = args }, query = query
-  })
-end, { complete = "file", nargs = "*" })
 nvim_create_user_command("Files", function(opts)
   local args = opts.args
   local query = get_visual_selection_query(opts)

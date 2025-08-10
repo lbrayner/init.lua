@@ -15,55 +15,22 @@ function M.buffers()
   )
 end
 
-local function fzf_files(base, opts) -- {{{
-  base = base or {}
+function M.files(opts)
   opts = opts or {}
+  local args = vim.tbl_get(opts, "lbrayner", "args") or ""
+  local cmd = join({ "rg --files --sort path", args })
+
   opts = vim.tbl_deep_extend("keep", {
     -- https://github.com/ibhagwan/fzf-lua/issues/996
     -- actions.files refers to all pickers that deal with files which also
     -- includes grep, etc. Toggle ignore action is defined specifically for
     -- files
     actions = { ["ctrl-g"] = false },
+    cmd = cmd,
     fzf_opts = { ["--history"] = M.get_history_file() }
-  }, base, opts)
-
-  if vim.startswith(opts.cmd, "find_file_cache") then
-    opts.git_icons = false
-  end
+  }, opts)
 
   fzf.files(M.make_opts(opts))
-end -- }}}
-
-function M.files_clear_cache(opts)
-  opts = opts or {}
-  local args = vim.tbl_get(opts, "lbrayner", "args") or ""
-  local cmd = join({ "find_file_cache -C", args })
-
-  if vim.fn.executable("find_file_cache") == 0 then
-    vim.notify("find_file_cache not executable.", vim.log.levels.ERROR)
-    return
-  end
-
-  fzf_files({ cmd = cmd }, opts)
-  vim.notify("Cleared FZF cache.")
-end
-
-function M.files(opts)
-  opts = opts or {}
-  local args = vim.tbl_get(opts, "lbrayner", "args") or ""
-  local cmd
-
-  if vim.fn.executable("find_file_cache") == 1 then
-    cmd = "find_file_cache"
-  elseif vim.fn.executable("rg") == 1 then
-    cmd = "rg --files --sort path"
-  end
-
-  if cmd then
-    cmd = join({ cmd, args })
-  end
-
-  fzf_files({ cmd = cmd }, opts)
 end
 
 function M.file_marks()
