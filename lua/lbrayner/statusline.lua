@@ -388,7 +388,7 @@ function M.set_minor_modes(bufnr, mode, action)
   lbrayner = tbl_deep_extend("keep", {
     statusline = {
       modes = {
-        str = table.concat(keys, ",")
+        str = concat(keys, ",")
       }
     }
   }, lbrayner)
