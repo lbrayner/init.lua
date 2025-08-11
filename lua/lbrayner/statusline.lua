@@ -178,20 +178,26 @@ function M.get_status_flag()
     if vim.bo.readonly then
       return "󰷢"
     end
+
     return "󱦹"
   end
+
   if vim.bo.buftype == "help" then
     return ""
   end
+
   if vim.bo.buftype == "terminal" then
     return ""
   end
+
   if not vim.bo.modifiable then
     return "󰷤"
   end
+
   if vim.bo.readonly then
     return "󰌾"
   end
+
   return " "
 end
 
@@ -206,12 +212,14 @@ function M.get_statusline()
   end
 
   local leftline = " "
+
   if vim.wo.previewwindow then
     leftline = concat({ leftline, "%5*%w%* " })
   end
 
   if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
     local dir = pathshorten(get_fugitive_git_dir())
+
     leftline = concat({
       leftline, "%6*", dir, "$%* %<", "Fugitive summary ",
       "%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
@@ -220,6 +228,7 @@ function M.get_statusline()
     not tbl_isempty(FugitiveResult(nvim_get_current_buf())) then -- Fugitive temporary buffers
     local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
     local dir = pathshorten(get_fugitive_git_dir())
+
     leftline = concat({
       leftline, "%6*", dir, "$%* %<", fugitive_temp_buf,
       " %1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
@@ -295,6 +304,7 @@ function M.get_winbar()
 
   if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
     local dir = pathshorten(get_fugitive_git_dir())
+
     statusline = concat({
       statusline, dir, "$ %<", "Fugitive summary ",
       "%{v:lua.require'lbrayner.statusline'.get_status_flag()}"
@@ -303,6 +313,7 @@ function M.get_winbar()
     not tbl_isempty(FugitiveResult(nvim_get_current_buf())) then -- Fugitive temporary buffers
     local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
     local dir = pathshorten(get_fugitive_git_dir())
+
     statusline = concat({
       statusline, dir, "$ %<", fugitive_temp_buf,
       " %{v:lua.require'lbrayner.statusline'.get_status_flag()}"
@@ -336,35 +347,43 @@ local mapping
 
 function M.highlight_mode(mode)
   local hl_map_by_group = mapping[mode]
+
   for group, hl_map in pairs(hl_map_by_group) do
     current_hl_map = nvim_get_hl(0, { name = group })
     hl_map = tbl_deep_extend("keep", { bold = true }, hl_map, {
       bg = current_hl_map.bg,
       fg = current_hl_map.fg
     })
+
     nvim_set_hl(0, group, hl_map)
   end
 end
 
 function M.highlight_winbar()
   local normal = nvim_get_hl(0, { name = "Normal" })
+
   nvim_set_hl(0, "WinBar", { bold = true, fg = normal.fg })
   nvim_set_hl(0, "WinBarNC", { bold = true, fg = normal.fg })
 end
 
 function M.load_theme(name)
   local success, theme = pcall(require, concat({ "lbrayner.statusline.themes.", name }))
+
   if not success then
     theme = require("lbrayner.statusline.themes.neosolarized")
   end
+
   mapping = theme.get_color_mapping()
+
   for mode, hl_map_by_group in pairs(mapping) do
     for group, hl_map in pairs(hl_map_by_group) do
       local guibg = synIDattr(synIDtrans(hlID(hl_map.bg)), "fg", "gui")
       local guifg = synIDattr(synIDtrans(hlID(hl_map.fg)), "fg", "gui")
+
       mapping[mode][group] = { bg = (hl_map.bg and guibg), fg = (hl_map.fg and guifg) }
     end
   end
+
   M.highlight_mode("normal")
   M.highlight_winbar()
 end
@@ -518,8 +537,10 @@ nvim_create_autocmd("VimEnter", {
           if tbl_isempty(get_diagnostic(bufnr)) then
             return nil
           end
+
           for _, level in ipairs(severities) do
             local items =  get_diagnostic(bufnr, { severity = level })
+
             if not tbl_isempty(items) then
               return level
             end
@@ -530,6 +551,7 @@ nvim_create_autocmd("VimEnter", {
 
         if not severity then
           nvim_set_hl(0, "User7", tbl_deep_extend("keep", { fg = "NONE" }, user7))
+
           return
         end
 
@@ -537,6 +559,7 @@ nvim_create_autocmd("VimEnter", {
           "Diagnostic", string_sub(severity, 1, 1), string_lower(string_sub(severity, 2))
         })
         local severity_hl = nvim_get_hl(0, { name = group })
+
         nvim_set_hl(0, "User7", tbl_deep_extend("keep", { fg = severity_hl.fg }, user7))
       end
 
@@ -550,6 +573,7 @@ nvim_create_autocmd("VimEnter", {
         desc = "Diagnostic severity statusline highlight",
         callback = function(args)
           local bufnr = args.buf
+
           highlight_severity(bufnr)
         end,
       })
@@ -580,6 +604,7 @@ nvim_create_autocmd("VimEnter", {
     if not mapping and
       vim.g.colors_name and
       vim.g.colors_name ~= "" then
+
       M.load_theme(vim.g.colors_name)
     end
 
