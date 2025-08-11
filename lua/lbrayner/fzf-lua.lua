@@ -17,10 +17,13 @@ end
 
 function M.files(opts)
   opts = opts or {}
-  local args = vim.tbl_get(opts, "lbrayner", "args") or ""
-  local cmd = join({ "rg --files --sort path", args })
+  local cmd = "rg --files --sort path"
 
-  opts = vim.tbl_deep_extend("keep", {
+  if vim.tbl_get(opts, "lbrayner", "args") then
+    cmd = join({ "rg --files --sort path", opts.lbrayner.args })
+  end
+
+  fzf.files(M.make_opts({
     -- https://github.com/ibhagwan/fzf-lua/issues/996
     -- actions.files refers to all pickers that deal with files which also
     -- includes grep, etc. Toggle ignore action is defined specifically for
@@ -28,9 +31,7 @@ function M.files(opts)
     actions = { ["ctrl-g"] = false },
     cmd = cmd,
     fzf_opts = { ["--history"] = M.get_history_file() }
-  }, opts)
-
-  fzf.files(M.make_opts(opts))
+  }, opts))
 end
 
 function M.file_marks()
