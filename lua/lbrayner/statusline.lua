@@ -5,7 +5,6 @@
 local FugitiveHead = vim.fn.FugitiveHead
 local FugitiveResult = vim.fn.FugitiveResult
 local buf_is_scratch = require("lbrayner").buf_is_scratch
-local concat = table.concat
 local empty_dict = vim.empty_dict
 local endswith = vim.endswith
 local exists = vim.fn.exists
@@ -22,6 +21,7 @@ local get_state = vim.fn.state
 local hlID = vim.fn.hlID
 local is_fugitive_blame = require("lbrayner.fugitive").is_fugitive_blame
 local is_quickfix_or_location_list = require("lbrayner").is_quickfix_or_location_list
+local join = table.concat
 local nvim__redraw = vim.api.nvim__redraw
 local nvim_buf_get_name = vim.api.nvim_buf_get_name
 local nvim_create_augroup = vim.api.nvim_create_augroup
@@ -61,16 +61,16 @@ local function get_fugitive_git_dir()
 end
 
 local function get_fugitive_temporary_buffer_name()
-  return concat({ "Git", concat(FugitiveResult(nvim_get_current_buf()).args, " ")}, " ")
+  return join({ "Git", join(FugitiveResult(nvim_get_current_buf()).args, " ")}, " ")
 end
 
-local function join(t) -- maximum effieciency
-  return concat(t, "")
+local function concat(t) -- maximum effieciency
+  return join(t, "")
 end
 
 local function get_line_format()
   if vim.bo.buftype == "terminal" then
-    return join({ "%", (#tostring(vim.bo.scrollback)+1), "l" })
+    return concat({ "%", (#tostring(vim.bo.scrollback)+1), "l" })
   end
 
   local length = #tostring(get_line("$"))
@@ -79,12 +79,12 @@ local function get_line_format()
     length = 5
   end
 
-  return join({ "%", length, "l" })
+  return concat({ "%", length, "l" })
 end
 
 local function get_number_of_lines()
   if vim.bo.buftype == "terminal" then
-    return join({ "%", (#tostring(vim.bo.scrollback)+1), "L" })
+    return concat({ "%", (#tostring(vim.bo.scrollback)+1), "L" })
   end
 
   local length = #tostring(get_line("$"))
@@ -93,13 +93,13 @@ local function get_number_of_lines()
     length = 5
   end
 
-  return join({ "%-", length, "L" })
+  return concat({ "%-", length, "L" })
 end
 
 -- }}}
 
 local function get_buffer_position() -- {{{
-  return join({ get_line_format(), ",%-3.v %3.P ", get_number_of_lines() })
+  return concat({ get_line_format(), ",%-3.v %3.P ", get_number_of_lines() })
 end -- }}}
 
 local M = {}
@@ -123,7 +123,7 @@ function M.get_buffer_name(opts)
   end
 
   if buffer_name == "" then
-    return join({ "#", nvim_get_current_buf() })
+    return concat({ "#", nvim_get_current_buf() })
   end
 
   return buffer_name
@@ -133,16 +133,16 @@ function M.get_buffer_status()
   local status = vim.bo.modified and "%1*" or ""
 
   if vim.wo.previewwindow then
-    status = join({ status, "%<", pathshorten(get_full_path()) })
+    status = concat({ status, "%<", pathshorten(get_full_path()) })
   elseif buf_is_scratch() and nvim_buf_get_name(0) == "" then
-    status = join({ status, "%<%5*%f%*" })
+    status = concat({ status, "%<%5*%f%*" })
   elseif vim.bo.buftype ~= "" then
-    status = join({ status, "%<%5*", M.get_buffer_name({ tail = true }), "%*" })
+    status = concat({ status, "%<%5*", M.get_buffer_name({ tail = true }), "%*" })
   else
-    status = join({ status, "%<", M.get_buffer_name({ tail = true }) })
+    status = concat({ status, "%<", M.get_buffer_name({ tail = true }) })
   end
 
-  status = join({ status, (vim.bo.modified and " " or " %1*"), M.get_status_flag(), "%*" })
+  status = concat({ status, (vim.bo.modified and " " or " %1*"), M.get_status_flag(), "%*" })
 
   return status
 end
@@ -166,7 +166,7 @@ function M.get_minor_modes()
   local modes = tbl_get(vim.b[bufnr], "lbrayner", "statusline", "modes", "str")
 
   if modes and modes ~= "" then
-    return join({ "%9*", modes, "%* " })
+    return concat({ "%9*", modes, "%* " })
   end
 
   return ""
@@ -198,7 +198,7 @@ end
 -- margins of 1 column (on both sides)
 function M.get_statusline()
   if is_fugitive_blame() then
-    return join({
+    return concat({
       " Fugitive blame ",
       "%<%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*%=",
       get_buffer_position()
@@ -207,12 +207,12 @@ function M.get_statusline()
 
   local leftline = " "
   if vim.wo.previewwindow then
-    leftline = join({ leftline, "%5*%w%* " })
+    leftline = concat({ leftline, "%5*%w%* " })
   end
 
   if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
     local dir = pathshorten(get_fugitive_git_dir())
-    leftline = join({
+    leftline = concat({
       leftline, "%6*", dir, "$%* %<", "Fugitive summary ",
       "%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
     })
@@ -220,35 +220,35 @@ function M.get_statusline()
     not tbl_isempty(FugitiveResult(nvim_get_current_buf())) then -- Fugitive temporary buffers
     local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
     local dir = pathshorten(get_fugitive_git_dir())
-    leftline = join({
+    leftline = concat({
       leftline, "%6*", dir, "$%* %<", fugitive_temp_buf,
       " %1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
     })
   elseif is_quickfix_or_location_list() then
-    leftline = join({
+    leftline = concat({
       leftline,
       "%<%5*%f%* %{v:lua.require'lbrayner'.get_quickfix_or_location_list_title()}"
     })
   elseif vim.w.cmdline then
-    leftline = join({ leftline, "%<%5*[Command Line]%*" })
+    leftline = concat({ leftline, "%<%5*[Command Line]%*" })
   else
-    leftline = join({
+    leftline = concat({
       leftline, "%{%v:lua.require'lbrayner.statusline'.get_buffer_status()%}"
     })
   end
 
-  local rightline = join({
+  local rightline = concat({
     "%{%v:lua.require'lbrayner.statusline'.get_minor_modes()%}",
     get_buffer_position()
   })
 
   if vim.bo.buftype ~= "" then
-    rightline = join({
+    rightline = concat({
       rightline,
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%) %2*%{&filetype}%* "
     })
   else
-    rightline = join({
+    rightline = concat({
       rightline,
       " %{%v:lua.require'lbrayner.statusline'.get_diagnostics()%}",
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
@@ -258,7 +258,7 @@ function M.get_statusline()
     })
   end
 
-  return join({ leftline, " %=", rightline })
+  return concat({ leftline, " %=", rightline })
 end
 
 function M.get_version_control()
@@ -277,7 +277,7 @@ function M.get_version_control()
   end
 
   if string_len(branch) > 60 then
-    return join({ string_sub(branch, 1, 54), "…", string_sub(branch, -5) })
+    return concat({ string_sub(branch, 1, 54), "…", string_sub(branch, -5) })
   end
 
   return branch
@@ -290,12 +290,12 @@ function M.get_winbar()
 
   local statusline = " "
   if vim.wo.previewwindow then
-    statusline = join({ statusline, "%w " })
+    statusline = concat({ statusline, "%w " })
   end
 
   if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
     local dir = pathshorten(get_fugitive_git_dir())
-    statusline = join({
+    statusline = concat({
       statusline, dir, "$ %<", "Fugitive summary ",
       "%{v:lua.require'lbrayner.statusline'.get_status_flag()}"
     })
@@ -303,30 +303,30 @@ function M.get_winbar()
     not tbl_isempty(FugitiveResult(nvim_get_current_buf())) then -- Fugitive temporary buffers
     local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
     local dir = pathshorten(get_fugitive_git_dir())
-    statusline = join({
+    statusline = concat({
       statusline, dir, "$ %<", fugitive_temp_buf,
       " %{v:lua.require'lbrayner.statusline'.get_status_flag()}"
     })
   elseif is_quickfix_or_location_list() then
-    statusline = join({
+    statusline = concat({
       statusline, "%<%f %{v:lua.require'lbrayner'.get_quickfix_or_location_list_title()}"
     })
   elseif vim.w.cmdline then
     statusline = ""
   else
     if vim.wo.previewwindow then
-      statusline = join({
+      statusline = concat({
         statusline, "%<", pathshorten(get_full_path())
       })
     else
       -- margins of 1 column, space and status flag
-      statusline = join({
+      statusline = concat({
         statusline,
         "%<%{v:lua.require'lbrayner'.truncate_filename(",
         "v:lua.require'lbrayner.statusline'.get_buffer_name(), winwidth('%') - 4)}"
       })
     end
-    statusline = join({ statusline, " %{v:lua.require'lbrayner.statusline'.get_status_flag()}" })
+    statusline = concat({ statusline, " %{v:lua.require'lbrayner.statusline'.get_status_flag()}" })
   end
 
   return statusline
@@ -353,7 +353,7 @@ function M.highlight_winbar()
 end
 
 function M.load_theme(name)
-  local success, theme = pcall(require, join({ "lbrayner.statusline.themes.", name }))
+  local success, theme = pcall(require, concat({ "lbrayner.statusline.themes.", name }))
   if not success then
     theme = require("lbrayner.statusline.themes.neosolarized")
   end
@@ -372,7 +372,7 @@ end
 function M.set_minor_modes(bufnr, mode, action)
   assert(type(bufnr) == "number" and bufnr > 0, "'bufnr' must be a positive number")
   assert(type(mode) == "string", "'mode' must be a string")
-  assert(action == "append" or action == "remove", join({ "invalid 'action': ", tostring(action) }))
+  assert(action == "append" or action == "remove", concat({ "invalid 'action': ", tostring(action) }))
 
   local lbrayner = vim.b[bufnr].lbrayner or empty_dict()
   local data = tbl_get(lbrayner, "statusline", "modes", "data") or empty_dict()
@@ -389,7 +389,7 @@ function M.set_minor_modes(bufnr, mode, action)
   lbrayner = tbl_deep_extend("keep", {
     statusline = {
       modes = {
-        str = concat(keys, ",")
+        str = join(keys, ",")
       }
     }
   }, lbrayner)
@@ -533,7 +533,7 @@ nvim_create_autocmd("VimEnter", {
           return
         end
 
-        local group = join({
+        local group = concat({
           "Diagnostic", string_sub(severity, 1, 1), string_lower(string_sub(severity, 2))
         })
         local severity_hl = nvim_get_hl(0, { name = group })
