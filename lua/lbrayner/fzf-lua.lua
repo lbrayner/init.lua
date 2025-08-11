@@ -3,8 +3,10 @@
 local M = {}
 
 local actions = require("fzf-lua.actions")
+local concat = require("lbrayner").concat
 local fzf = require("fzf-lua")
 local join = require("lbrayner").join
+local shellescape = vim.fn.shellescape
 
 function M.buffers()
   fzf.buffers(
@@ -63,11 +65,11 @@ function M.get_history_file(suffix)
     local fnamemodify = vim.fn.fnamemodify
     local shadafile = fnamemodify(fnamemodify(vim.go.shadafile, ":r"), ":t")
 
-    history_file = "fzf_history_" .. shadafile
+    history_file = concat({ "fzf_history_", shadafile })
   end
 
   if suffix then
-    history_file = history_file .. "_" .. suffix
+    history_file = concat({ history_file, "_", suffix })
   end
 
   return vim.fs.joinpath(vim.fn.stdpath("cache"), history_file)
@@ -93,7 +95,8 @@ function M.make_opts(base, opts)
     return opts
   end
 
-  local cmd = "tac " .. history_file .. " | nauniq | tac | sponge " .. history_file
+  history_file = shellescape(history_file)
+  local cmd = join({ "tac", history_file, "| nauniq | tac | sponge", history_file })
 
   opts.winopts = opts.winopts or {}
 
