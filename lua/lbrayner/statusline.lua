@@ -367,7 +367,7 @@ function M.highlight_winbar()
 end
 
 function M.load_theme(name)
-  local success, theme = pcall(require, concat({ "lbrayner.statusline.themes.", name }))
+  local success, theme = pcall(require, join({ "lbrayner.statusline.themes", name }, "."))
 
   if not success then
     theme = require("lbrayner.statusline.themes.neosolarized")
