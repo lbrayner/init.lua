@@ -154,8 +154,6 @@ function M.user_command_with_config_path(command_name, config_path)
   vim.api.nvim_create_user_command(command_name, function(opts)
     local args = opts.args
     local count = opts.count
-    local line1 = opts.line1
-    local line2 = opts.line2
 
     if count == 0 then -- :0Rg
       local context = vim.fn.getqflist({ context = 1 }).context

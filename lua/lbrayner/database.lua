@@ -111,8 +111,6 @@ nvim_create_autocmd("VimEnter", {
     nvim_create_user_command("DB", function(opts)
       local args = opts.args
       local count = opts.count
-      local line1 = opts.line1
-      local line2 = opts.line2
 
       if count > 0 then
         local success, result = get_visual_selection(opts, { multi_line = true })
@@ -124,7 +122,7 @@ nvim_create_autocmd("VimEnter", {
       end
 
       vim.fn["db#execute_command"](
-        "<mods>", opts.bang and 1 or 0, line1, count,
+        "<mods>", opts.bang and 1 or 0, opts.line1, count,
         vim.fn.substitute(
           args, "^[al]:\\w\\+\\>\\ze\\s*\\%($\\|[^[:space:]=]\\)",
           "\\=eval(submatch(0))", ""
