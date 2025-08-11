@@ -34,7 +34,7 @@ local function rg(args, opts) -- {{{
   end
 
   if opts.config_path and vim.uv.fs_stat(opts.config_path) then
-    grep = join({ "RIPGREP_CONFIG_PATH=" .. opts.config_path, grep })
+    grep = join({ concat({ "RIPGREP_CONFIG_PATH=", opts.config_path }), grep })
   end
 
   if vim.o.ignorecase then
