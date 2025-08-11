@@ -37,6 +37,7 @@ local nvim_win_is_valid = vim.api.nvim_win_is_valid
 local pathshorten = vim.fn.pathshorten
 local schedule = vim.schedule
 local severities = vim.diagnostic.severity
+local sort = table.sort
 local startswith = vim.startswith
 local string_len = string.len
 local string_lower = string.lower
@@ -383,7 +384,7 @@ function M.set_minor_modes(bufnr, mode, action)
   end
 
   local keys = tbl_keys(data)
-  table.sort(keys)
+  sort(keys)
 
   lbrayner = tbl_deep_extend("keep", {
     statusline = {
