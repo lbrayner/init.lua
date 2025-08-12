@@ -51,7 +51,8 @@ function M.set_up_sql_database_access(bufnr)
 
   M.set_up_database_access(bufnr)
 
-  if vim.b[bufnr].db and startswith(vim.b[bufnr].db, "postgresql") then
+  if vim.b[bufnr].db and type(vim.b[bufnr].db) == "string" and
+    startswith(vim.b[bufnr].db, "postgresql") then
     -- Describe this object
     vim_keymap_set("n", "<Leader>dt", [[<Cmd>exe 'DB \d ' . expand("<cWORD>")<CR>]], { buffer = bufnr })
   end
