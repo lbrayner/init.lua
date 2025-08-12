@@ -1,7 +1,18 @@
+-- vim: fdm=marker
+
 -- Backend is vim-dadbod
 
+local M = {}
+
+-- Local variables -- {{{
+
+local fnamemodify = vim.fn.fnamemodify
+local format = string.format
 local get_visual_selection = require("lbrayner").get_visual_selection
+local getenv = os.getenv
+local gsub = string.gsub -- TODO remove
 local join = require("lbrayner").join
+local match = string.match
 local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
 local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
 local nvim_buf_get_text = vim.api.nvim_buf_get_text
@@ -9,63 +20,60 @@ local nvim_buf_is_valid = vim.api.nvim_buf_is_valid
 local nvim_create_augroup = vim.api.nvim_create_augroup
 local nvim_create_autocmd = vim.api.nvim_create_autocmd
 local nvim_create_user_command = vim.api.nvim_create_user_command
+local nvim_get_current_buf = vim.api.nvim_get_current_buf
+local set_minor_modes = require("lbrayner.statusline").set_minor_modes
+local substitute = vim.fn.substitute
+local uri_encode = vim.uri_encode
+local vim_keymap_del = vim.keymap.del
+local vim_keymap_set = vim.keymap.set
+local startswith = vim.startswith
 
-local database_access = nvim_create_augroup("database_access", { clear = true })
+-- }}}
 
-nvim_create_autocmd("FileType", {
-  pattern = "sql",
-  group = database_access,
-  callback = function(args)
-    local bufnr = args.buf
-    vim.schedule(function()
-      if not nvim_buf_is_valid(bufnr) then
-        return
-      end
+-- NoSQL databases
+function M.set_up_database_access(bufnr)
+  bufnr = bufnr or nvim_get_current_buf()
+  local bufopts = { buffer = bufnr }
+  vim_keymap_set("n", "<Enter>", "<Cmd>'{,'}DB<CR>", bufopts)
 
-      local bufopts = { buffer = bufnr }
-      vim.keymap.set("n", "<Enter>", "<Cmd>'{,'}DB<CR>", bufopts)
+  set_minor_modes(bufnr, "dadbod", "append")
 
-      require("lbrayner.statusline").set_minor_modes(bufnr, "dadbod", "append")
+  nvim_buf_create_user_command(bufnr, "DatabaseAccessClear", function()
+    vim.b[bufnr].db = nil
+    -- postgresql
+    pcall(vim_keymap_del, "n", "<Leader>dt", bufopts)
+    set_minor_modes(bufnr, "dadbod", "remove")
+  end, { nargs = 0 })
+end
 
-      nvim_buf_create_user_command(bufnr, "DatabaseAccessClear", function()
-        vim.b[bufnr].db = nil
-        -- postgresql
-        pcall(vim.keymap.del, "n", "<Leader>dt", bufopts)
-        require("lbrayner.statusline").set_minor_modes(bufnr, "dadbod", "remove")
-      end, { nargs = 0 })
-    end)
-  end,
-})
+function M.set_up_sql_database_access(bufnr)
+  bufnr = bufnr or nvim_get_current_buf()
 
-local sql_database_access = nvim_create_augroup("sql_database_access", { clear = true })
+  M.set_up_database_access(bufnr)
 
-nvim_create_autocmd("FileType", {
-  pattern = "sql",
-  group = sql_database_access,
-  callback = function(args)
-    local bufnr = args.buf
-    vim.schedule(function()
-      if not nvim_buf_is_valid(bufnr) then
-        return
-      end
-
-      if vim.b[bufnr].db and vim.startswith(vim.b[bufnr].db, "postgresql") then
-        -- Describe this object
-        vim.keymap.set("n", "<Leader>dt", [[<Cmd>exe 'DB \d ' . expand("<cWORD>")<CR>]], { buffer = bufnr })
-      end
-    end)
-  end,
-})
+  if vim.b[bufnr].db and startswith(vim.b[bufnr].db, "postgresql") then
+    -- Describe this object
+    vim_keymap_set("n", "<Leader>dt", [[<Cmd>exe 'DB \d ' . expand("<cWORD>")<CR>]], { buffer = bufnr })
+  end
+end
 
 local database_connection = nvim_create_augroup("database_connection", { clear = true })
 
 nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
-  pattern = "mysql:*@*:*.sql",
+  pattern = "mysql:*:*@*:*.sql",
   group = database_connection,
   desc = "Set up buffer MySQL database connection parameters",
   callback = function(args)
-    local name = vim.fn.fnamemodify(args.match, ":t")
-    vim.b.db = string.gsub(name, "^mysql:(.*)@.*:(%d+)%.sql$", "mysql://%1@localhost:%2")
+    local name = fnamemodify(args.match, ":t")
+    local user, pwd_var, host, port = match(name, "^mysql:(.*):(.*)@(.*):(%d+)%.sql$")
+    local password = pwd_var ~= "" and getenv(pwd_var) or ""
+
+    vim.b.db = format(
+      "mysql://%s@%s:%s?password=%s",
+      user, host, port, uri_encode(password)
+    )
+
+    M.set_up_sql_database_access()
   end,
 })
 
@@ -74,8 +82,15 @@ nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   group = database_connection,
   desc = "Set up buffer PostgreSQL database connection parameters",
   callback = function(args)
-    local name = vim.fn.fnamemodify(args.match, ":t")
-    vim.b.db = string.gsub(name, "^postgresql:(.*)@.*:(%d+)%.sql$", "postgresql://%1@localhost:%2")
+    local name = fnamemodify(args.match, ":t")
+    local user, host, port = match(name, "^postgresql:(.*)@(.*):(%d+)%.sql$")
+
+    -- psql derives password from .pgpass
+    vim.b.db = format(
+      "postgresql://%s@%s:%s", user, host, port
+    )
+
+    M.set_up_sql_database_access()
   end,
 })
 
@@ -84,13 +99,16 @@ nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   group = database_connection,
   desc = "Set up buffer SQL Server database connection parameters",
   callback = function(args)
-    local name = vim.fn.fnamemodify(args.match, ":t")
-    local user, pwd_var, host, port = string.match(name, "^sqlserver:(.*):(.*)@(.*):(%d+)%.sql$")
-    local password = pwd_var ~= "" and os.getenv(pwd_var) or ""
-    vim.b.db = string.format(
+    local name = fnamemodify(args.match, ":t")
+    local user, pwd_var, host, port = match(name, "^sqlserver:(.*):(.*)@(.*):(%d+)%.sql$")
+    local password = pwd_var ~= "" and getenv(pwd_var) or ""
+
+    vim.b.db = format(
       "sqlserver://%s@%s:%s?password=%s&trustServerCertificate=true",
-      user, host, port, vim.uri_encode(password)
+      user, host, port, uri_encode(password)
     )
+
+    M.set_up_sql_database_access()
   end,
 })
 
@@ -113,7 +131,7 @@ nvim_create_autocmd("VimEnter", {
 
       vim.fn["db#execute_command"](
         "<mods>", opts.bang and 1 or 0, opts.line1, count,
-        vim.fn.substitute(
+        substitute(
           args, "^[al]:\\w\\+\\>\\ze\\s*\\%($\\|[^[:space:]=]\\)",
           "\\=eval(submatch(0))", ""
         )
@@ -124,3 +142,5 @@ nvim_create_autocmd("VimEnter", {
   })
   end,
 })
+
+return M
