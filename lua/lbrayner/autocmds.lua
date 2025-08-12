@@ -418,7 +418,7 @@ local set_file_type = vim.api.nvim_create_augroup("set_file_type", { clear = tru
 
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = {
-    "*/host_vars/*", "*.redis", "*.wsdl", ".ignore", ".ripgreprc*", "ignore", "ripgreprc*"
+    "*/host_vars/*", "*.wsdl", ".ignore", ".ripgreprc*", "ignore", "ripgreprc*"
   },
   group = set_file_type,
   desc = "Setting filetype for various patterns",
@@ -431,8 +431,6 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
       vim.bo.filetype = "gitignore"
     elseif string.find(filename, "^%.?ripgreprc") then
       vim.bo.filetype = "shell"
-    elseif extension == "redis" then
-      vim.bo.filetype = "redis"
     elseif extension == "wsdl" then
       vim.bo.filetype = "xml"
     elseif require("lbrayner").contains(file, "/host_vars/") then

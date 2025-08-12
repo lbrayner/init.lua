@@ -13,7 +13,7 @@ local nvim_create_user_command = vim.api.nvim_create_user_command
 local database_access = nvim_create_augroup("database_access", { clear = true })
 
 nvim_create_autocmd("FileType", {
-  pattern = { "redis", "sql" },
+  pattern = "sql",
   group = database_access,
   callback = function(args)
     local bufnr = args.buf
@@ -76,16 +76,6 @@ nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   callback = function(args)
     local name = vim.fn.fnamemodify(args.match, ":t")
     vim.b.db = string.gsub(name, "^postgresql:(.*)@.*:(%d+)%.sql$", "postgresql://%1@localhost:%2")
-  end,
-})
-
-nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
-  pattern = "redis:*:*.redis",
-  group = database_connection,
-  desc = "Set up buffer Redis database connection parameters",
-  callback = function(args)
-    local name = vim.fn.fnamemodify(args.match, ":t")
-    vim.b.db = string.gsub(name, "^redis:.*:(%d+)%.redis$", "redis://:%1")
   end,
 })
 
