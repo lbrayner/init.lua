@@ -121,13 +121,11 @@ nvim_create_autocmd("VimEnter", {
       local args = opts.args
       local count = opts.count
 
-      if count > 0 then
-        local success, result = get_visual_selection(opts, { multi_line = true })
+      local success, result = get_visual_selection(opts, { multi_line = true })
 
-        if success then
-          args = join({ join(result), args })
-          count = -1 -- else vim-dadbod will add visual linewise selection on top of args
-        end
+      if success then
+        args = join({ join(result), args })
+        count = -1 -- else vim-dadbod will add visual linewise selection on top of args
       end
 
       vim.fn["db#execute_command"](
