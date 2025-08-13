@@ -96,17 +96,19 @@ nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
 })
 
 nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
-  pattern = "sqlserver:*:*@*:*.sql",
+  pattern = "sqlserver:*:*@*:*:*.sql",
   group = database_connection,
   desc = "Set up buffer SQL Server database connection parameters",
   callback = function(args)
     local name = fnamemodify(args.match, ":t")
-    local user, pwd_var, host, port = match(name, "^sqlserver:(.*):(.*)@(.*):(%d+)%.sql$")
+    local user, pwd_var, host, port, database = string.match(
+      name, "^sqlserver:(.+):(.+)@(.+):(%d+):(.*)%.sql$"
+    )
     local password = pwd_var ~= "" and getenv(pwd_var) or ""
 
     vim.b.db = format(
-      "sqlserver://%s@%s:%s?password=%s&trustServerCertificate=true",
-      user, host, port, uri_encode(password)
+      "sqlserver://%s@%s:%s/%s?password=%s&trustServerCertificate=true",
+      user, host, port, database, uri_encode(password)
     )
 
     M.set_up_sql_database_access()
