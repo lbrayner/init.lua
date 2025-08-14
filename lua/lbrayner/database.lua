@@ -6,6 +6,7 @@ local M = {}
 
 -- Local variables -- {{{
 
+local cmd = vim.cmd
 local fnamemodify = vim.fn.fnamemodify
 local format = string.format
 local get_visual_selection = require("lbrayner").get_visual_selection
@@ -51,10 +52,18 @@ function M.set_up_sql_database_access(bufnr)
 
   M.set_up_database_access(bufnr)
 
-  if vim.b[bufnr].db and type(vim.b[bufnr].db) == "string" and
-    startswith(vim.b[bufnr].db, "postgresql") then
-    -- Describe this object
-    vim_keymap_set("n", "<Leader>dt", [[<Cmd>exe 'DB \d ' . expand("<cWORD>")<CR>]], { buffer = bufnr })
+  local db = vim.b[bufnr].db
+
+  if db and type(db) == "string" then
+    if startswith(db, "postgresql") then
+      -- Describe this object
+      vim_keymap_set("n", "<Leader>dt", [[<Cmd>exe 'DB \d ' . expand("<cWORD>")<CR>]], { buffer = bufnr })
+    elseif startswith(db, "sqlserver") then
+      nvim_buf_create_user_command(bufnr, "Describe", function()
+        -- Describe this object
+        cmd([[exe "DB exec sp_help '" . expand("<cWORD>") . "'"]])
+      end, { nargs = 0 })
+    end
   end
 end
 
