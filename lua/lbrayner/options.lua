@@ -28,3 +28,7 @@ vim.o.termguicolors = true
 vim.o.title = true
 vim.o.wildmenu = true
 vim.o.wildmode = "longest:full"
+
+-- https://vi.stackexchange.com/a/22424
+-- @ in isfname, iskeyword etc. actually means "all alphas", not literal "@"
+vim.opt.isfname:append("@-@")
