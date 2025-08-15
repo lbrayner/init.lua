@@ -49,7 +49,7 @@ local buffer_setup = vim.api.nvim_create_augroup("buffer_setup", { clear = true 
 vim.api.nvim_create_autocmd("BufWinEnter", {
   pattern = "COMMIT_EDITMSG",
   group = buffer_setup,
-  desc = "Set up COMMIT_EDITMSG buffer",
+  desc = "Buffer setup",
   callback = function(args)
     local bufnr = args.buf
     vim.schedule(function()
