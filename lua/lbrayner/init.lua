@@ -2,12 +2,17 @@ local M = {}
 
 local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
 local nvim_buf_get_text = vim.api.nvim_buf_get_text
+local nvim_get_current_buf = vim.api.nvim_get_current_buf
+local tbl_contains = vim.tbl_contains
 
 function M.buf_is_scratch(bufnr)
-  bufnr = bufnr or vim.api.nvim_get_current_buf()
-  return vim.bo[bufnr].buftype == "nofile" and
-  vim.tbl_contains({ "hide", "wipe" }, vim.bo[bufnr].bufhidden) and
-  vim.bo[bufnr].swapfile == false
+  bufnr = bufnr or nvim_get_current_buf()
+
+  return (
+    vim.bo[bufnr].buftype == "nofile" and
+    tbl_contains({ "hide", "wipe" }, vim.bo[bufnr].bufhidden) and
+    vim.bo[bufnr].swapfile == false
+  )
 end
 
 function M.concat(col)
