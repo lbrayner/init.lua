@@ -117,43 +117,43 @@ end
 -- Insert path (use i_CTRL-R)
 vim.cmd([[
 function! Cwd()
-  return v:lua.require'lbrayner.path'.cwd()
+  return v:lua.require'lbrayner.path'.get_cwd()
 endfunction
 
 function! Directory()
-  return v:lua.require'lbrayner.path'.directory()
+  return v:lua.require'lbrayner.path'.get_directory()
 endfunction
 
 function! FirstLevel()
-  return v:lua.require'lbrayner.path'.first_level()
+  return v:lua.require'lbrayner.path'.get_first_level()
 endfunction
 
 function! FirstLevelName()
-  return v:lua.require'lbrayner.path'.first_level_name()
+  return v:lua.require'lbrayner.path'.get_first_level_name()
 endfunction
 
 function! FolderName()
-  return v:lua.require'lbrayner.path'.folder_name()
+  return v:lua.require'lbrayner.path'.get_folder_name()
 endfunction
 
 function! FullPath()
-  return v:lua.require'lbrayner.path'.full_path()
+  return v:lua.require'lbrayner.path'.get_full_path()
 endfunction
 
 function! Name()
-  return v:lua.require'lbrayner.path'.name()
+  return v:lua.require'lbrayner.path'.get_name()
 endfunction
 
 function! Path()
-  return v:lua.require'lbrayner.path'.path()
+  return v:lua.require'lbrayner.path'.get_path()
 endfunction
 
 function! RelativeDirectory()
-  return v:lua.require'lbrayner.path'.relative_directory()
+  return v:lua.require'lbrayner.path'.get_relative_directory()
 endfunction
 
 function! WorkingDirectoryName()
-  return v:lua.require'lbrayner.path'.working_directory_name()
+  return v:lua.require'lbrayner.path'.get_working_directory_name()
 endfunction
 ]])
 
