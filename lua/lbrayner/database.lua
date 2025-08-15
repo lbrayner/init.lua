@@ -15,6 +15,7 @@ local gsub = string.gsub -- TODO remove
 local join = require("lbrayner").join
 local match = string.match
 local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
+local nvim_buf_del_user_command = vim.api.nvim_buf_del_user_command
 local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
 local nvim_buf_get_text = vim.api.nvim_buf_get_text
 local nvim_buf_is_valid = vim.api.nvim_buf_is_valid
@@ -23,11 +24,11 @@ local nvim_create_autocmd = vim.api.nvim_create_autocmd
 local nvim_create_user_command = vim.api.nvim_create_user_command
 local nvim_get_current_buf = vim.api.nvim_get_current_buf
 local set_minor_modes = require("lbrayner.statusline").set_minor_modes
+local startswith = vim.startswith
 local substitute = vim.fn.substitute
 local uri_encode = vim.uri_encode
 local vim_keymap_del = vim.keymap.del
 local vim_keymap_set = vim.keymap.set
-local startswith = vim.startswith
 
 -- }}}
 
@@ -43,6 +44,8 @@ function M.set_up_database_access(bufnr)
     vim.b[bufnr].db = nil
     -- postgresql
     pcall(vim_keymap_del, "n", "<Leader>dt", bufopts)
+    -- sqlserver
+    pcall(nvim_buf_del_user_command, bufnr, "Describe")
     set_minor_modes(bufnr, "dadbod", "remove")
   end, { nargs = 0 })
 end
