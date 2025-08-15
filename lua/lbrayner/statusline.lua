@@ -135,7 +135,9 @@ function M.get_buffer_status()
   if vim.wo.previewwindow then
     status = concat({ status, "%<", pathshorten(get_full_path()) })
   elseif buf_is_scratch() and nvim_buf_get_name(0) == "" then
-    status = concat({ status, "%<%5*%f%*" })
+    local name = M.get_scratch_name()
+    name = name and concat({ " ", name }) or ""
+    status = concat({ status, "%<%5*%f", name, "%*" })
   elseif vim.bo.buftype ~= "" then
     status = concat({ status, "%<%5*", M.get_buffer_name({ tail = true }), "%*" })
   else
@@ -170,6 +172,15 @@ function M.get_minor_modes()
   end
 
   return ""
+end
+
+function M.get_scratch_name()
+  local bufnr = nvim_get_current_buf()
+  local name = tbl_get(vim.b[bufnr], "lbrayner", "statusline", "scratch", "name")
+
+  if name and name ~= "" then
+    return name
+  end
 end
 
 -- A Nerd Font is required
@@ -414,6 +425,23 @@ function M.set_minor_modes(bufnr, mode, action)
   }, lbrayner)
 
   lbrayner.statusline.modes.data = data
+  vim.b[bufnr].lbrayner = lbrayner
+end
+
+function M.set_scratch_name(bufnr, name)
+  assert(type(bufnr) == "number" and bufnr > 0, "'bufnr' must be a positive number")
+  assert(type(name) == "string" and name ~= "", "'name' must be a string")
+
+  local lbrayner = vim.b[bufnr].lbrayner or empty_dict()
+
+  lbrayner = tbl_deep_extend("keep", {
+    statusline = {
+      scratch = {
+        name = name
+      }
+    }
+  }, lbrayner)
+
   vim.b[bufnr].lbrayner = lbrayner
 end
 
