@@ -91,16 +91,18 @@ nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
 })
 
 nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
-  pattern = "postgresql:*@*:*.sql",
+  pattern = "postgresql:*@*:*:*.sql",
   group = database_connection,
   desc = "Set up buffer PostgreSQL database connection parameters",
   callback = function(args)
     local name = fnamemodify(args.match, ":t")
-    local user, host, port = match(name, "^postgresql:(.*)@(.*):(%d+)%.sql$")
+    local user, host, port, database = match(
+      name, "^postgresql:(.+)@(.+):(%d+):(.*)%.sql$"
+    )
 
-    -- psql derives password from .pgpass
+    -- psql recommends .pgpass for passwords
     vim.b.db = format(
-      "postgresql://%s@%s:%s", user, host, port
+      "postgresql://%s@%s:%s/%s", user, host, port, database
     )
 
     M.set_up_sql_database_access()
@@ -113,7 +115,7 @@ nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   desc = "Set up buffer SQL Server database connection parameters",
   callback = function(args)
     local name = fnamemodify(args.match, ":t")
-    local user, pwd_var, host, port, database = string.match(
+    local user, pwd_var, host, port, database = match(
       name, "^sqlserver:(.+):(.+)@(.+):(%d+):(.*)%.sql$"
     )
     local password = pwd_var ~= "" and getenv(pwd_var) or ""
