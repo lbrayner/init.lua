@@ -60,7 +60,10 @@ function M.set_up_sql_database_access(bufnr)
   if db and type(db) == "string" then
     if startswith(db, "postgresql") then
       -- Describe this object
-      vim_keymap_set("n", "<Leader>dt", [[<Cmd>exe 'DB \d ' . expand("<cWORD>")<CR>]], { buffer = bufnr })
+      vim_keymap_set(
+        "n", "<Leader>dt", [[<Cmd>exe 'DB \d ' . expand("<cWORD>")<CR>]],
+        { buffer = bufnr }
+      )
     elseif startswith(db, "sqlserver") then
       nvim_buf_create_user_command(bufnr, "Describe", function()
         -- Describe this object
@@ -78,7 +81,9 @@ nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
   desc = "Set up buffer MySQL database connection parameters",
   callback = function(args)
     local name = fnamemodify(args.match, ":t")
-    local user, pwd_var, host, port = match(name, "^mysql:(.*):(.*)@(.*):(%d+)%.sql$")
+    local user, pwd_var, host, port = match(
+      name, "^mysql:(.*):(.*)@(.*):(%d+)%.sql$"
+    )
     local password = pwd_var ~= "" and getenv(pwd_var) or ""
 
     vim.b.db = format(
