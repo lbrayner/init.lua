@@ -41,12 +41,12 @@ function M.set_up_database_access(bufnr)
   set_minor_modes(bufnr, "dadbod", "append")
 
   nvim_buf_create_user_command(bufnr, "DatabaseAccessClear", function()
-    vim.b[bufnr].db = nil
-    -- postgresql
-    pcall(vim_keymap_del, "n", "<Leader>dt", bufopts)
-    -- sqlserver
-    pcall(nvim_buf_del_user_command, bufnr, "Describe")
+    pcall(vim_keymap_del, "n", "<Enter>", bufopts)
     set_minor_modes(bufnr, "dadbod", "remove")
+    vim.b[bufnr].db = nil
+
+    -- postgresql, sqlserver
+    pcall(nvim_buf_del_user_command, bufnr, "Describe")
   end, { nargs = 0 })
 end
 
@@ -59,11 +59,10 @@ function M.set_up_sql_database_access(bufnr)
 
   if db and type(db) == "string" then
     if startswith(db, "postgresql") then
-      -- Describe this object
-      vim_keymap_set(
-        "n", "<Leader>dt", [[<Cmd>exe 'DB \d ' . expand("<cWORD>")<CR>]],
-        { buffer = bufnr }
-      )
+      nvim_buf_create_user_command(bufnr, "Describe", function()
+        -- Describe this object
+        cmd([[exe 'DB \d ' . expand("<cWORD>")]])
+      end, { nargs = 0 })
     elseif startswith(db, "sqlserver") then
       nvim_buf_create_user_command(bufnr, "Describe", function()
         -- Describe this object
