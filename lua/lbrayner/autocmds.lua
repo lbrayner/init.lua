@@ -46,24 +46,31 @@ vim.api.nvim_create_autocmd("SwapExists", {
 
 local buffer_setup = vim.api.nvim_create_augroup("buffer_setup", { clear = true })
 
-vim.api.nvim_create_autocmd("BufWinEnter", {
-  pattern = "COMMIT_EDITMSG",
+vim.api.nvim_create_autocmd("VimEnter", {
   group = buffer_setup,
-  desc = "Buffer setup",
-  callback = function(args)
-    local bufnr = args.buf
-    vim.schedule(function()
-      vim.api.nvim_buf_call(bufnr, function()
+  callback = function()
+    vim.api.nvim_create_autocmd("BufWinEnter", {
+      pattern = "COMMIT_EDITMSG",
+      group = buffer_setup,
+      desc = "Buffer setup",
+      callback = function(args)
+        local bufnr = args.buf
         local line = vim.api.nvim_buf_get_lines(bufnr, 0, 1, true)[1]
+
         -- If editing a commit message, do not start in insert mode
         if line == "" then
           vim.cmd.startinsert()
         end
-      end)
-    end)
-    vim.wo.spell = true
+
+        vim.wo.spell = true
+      end,
+    })
   end,
 })
+
+if vim.v.vim_did_enter == 1 then
+  vim.api.nvim_exec_autocmds("VimEnter", { group = buffer_setup })
+end
 
 local checktime = vim.api.nvim_create_augroup("checktime", { clear = true })
 
