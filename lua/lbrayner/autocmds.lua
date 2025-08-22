@@ -48,6 +48,7 @@ local buffer_setup = vim.api.nvim_create_augroup("buffer_setup", { clear = true 
 
 vim.api.nvim_create_autocmd("VimEnter", {
   group = buffer_setup,
+  desc = "Create buffer setup autocmds",
   callback = function()
     vim.api.nvim_create_autocmd("BufWinEnter", {
       pattern = "COMMIT_EDITMSG",
@@ -76,6 +77,7 @@ local checktime = vim.api.nvim_create_augroup("checktime", { clear = true })
 
 vim.api.nvim_create_autocmd("VimEnter", {
   group = checktime,
+  desc = "Create checktime autocmds",
   callback = function()
     vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "VimResume" }, {
       group = checktime,
@@ -142,10 +144,11 @@ local default_filetype = vim.api.nvim_create_augroup("default_filetype", { clear
 
 vim.api.nvim_create_autocmd("VimEnter", {
   group = default_filetype,
-  desc = "Set default filetype",
+  desc = "Create default filetype autocmds",
   callback = function()
     vim.api.nvim_create_autocmd("BufEnter", {
       group = default_filetype,
+      desc = "Set default filetype",
       callback = function(args)
         if vim.bo.filetype == "" then
           vim.b.default_filetype = true
@@ -548,10 +551,11 @@ vim.api.nvim_create_autocmd("TermLeave", {
 
 vim.api.nvim_create_autocmd("VimEnter", {
   group = terminal_setup,
-  desc = "Start in Insert Mode in terminal mode",
+  desc = "Create terminal setup autocmds",
   callback = function()
     vim.api.nvim_create_autocmd("TermOpen", {
       group = terminal_setup,
+      desc = "Start in Insert Mode in terminal mode",
       callback = function(args)
         local bufnr = args.buf
         local filetype = vim.bo[bufnr].filetype
