@@ -1,11 +1,30 @@
-local aesthetics = vim.api.nvim_create_augroup("aesthetics", { clear = true })
+local nvim_create_augroup = vim.api.nvim_create_augroup
+local nvim_create_autocmd = vim.api.nvim_create_autocmd
+local nvim_get_current_buf = vim.api.nvim_get_current_buf
+local nvim_buf_get_lines = vim.api.nvim_buf_get_lines
+local nvim_buf_is_valid = vim.api.nvim_buf_is_valid
+local nvim_exec_autocmds = vim.api.nvim_exec_autocmds
+local nvim_win_get_cursor = vim.api.nvim_win_get_cursor
+local nvim_buf_get_name = vim.api.nvim_buf_get_name
+local nvim_buf_set_name = vim.api.nvim_buf_set_name
+local nvim_tabpage_list_wins = vim.api.nvim_tabpage_list_wins
+local nvim_feedkeys = vim.api.nvim_feedkeys
+local nvim_replace_termcodes = vim.api.nvim_replace_termcodes
+local nvim_win_close = vim.api.nvim_win_close
+local cmd = vim.cmd
+local schedule = vim.schedule
+local tbl_contains = vim.tbl_contains
+local tbl_filter = vim.tbl_filter
+-- TODO sort
 
-vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
+local aesthetics = nvim_create_augroup("aesthetics", { clear = true })
+
+nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
   group = aesthetics,
   desc = "Buffer aesthetics",
   callback = function(args)
     local bufnr = args.buf
-    if vim.api.nvim_get_current_buf() ~= bufnr then
+    if nvim_get_current_buf() ~= bufnr then
       -- After a BufWritePost do nothing if bufnr is not current
       return
     end
@@ -20,9 +39,9 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
 
 -- Swap | File changes outside
 -- https://github.com/neovim/neovim/issues/2127
-local buffer_optimization = vim.api.nvim_create_augroup("buffer_optimization", { clear = true })
+local buffer_optimization = nvim_create_augroup("buffer_optimization", { clear = true })
 
-vim.api.nvim_create_autocmd({ "BufLeave", "BufRead", "BufWritePost", "CursorHold" }, {
+nvim_create_autocmd({ "BufLeave", "BufRead", "BufWritePost", "CursorHold" }, {
   group = buffer_optimization,
   desc = "Setting swapfile flag to trigger SwapExists",
   callback = function(args)
@@ -32,7 +51,7 @@ vim.api.nvim_create_autocmd({ "BufLeave", "BufRead", "BufWritePost", "CursorHold
   end,
 })
 
-vim.api.nvim_create_autocmd("SwapExists", {
+nvim_create_autocmd("SwapExists", {
   group = buffer_optimization,
   desc = "Automatically delete old swap files",
   callback = function(args)
@@ -44,19 +63,19 @@ vim.api.nvim_create_autocmd("SwapExists", {
   end,
 })
 
-local buffer_setup = vim.api.nvim_create_augroup("buffer_setup", { clear = true })
+local buffer_setup = nvim_create_augroup("buffer_setup", { clear = true })
 
-vim.api.nvim_create_autocmd("VimEnter", {
+nvim_create_autocmd("VimEnter", {
   group = buffer_setup,
   desc = "Create buffer setup autocmds",
   callback = function()
-    vim.api.nvim_create_autocmd("BufWinEnter", {
+    nvim_create_autocmd("BufWinEnter", {
       pattern = "COMMIT_EDITMSG",
       group = buffer_setup,
       desc = "Buffer setup",
       callback = function(args)
         local bufnr = args.buf
-        local line = vim.api.nvim_buf_get_lines(bufnr, 0, 1, true)[1]
+        local line = nvim_buf_get_lines(bufnr, 0, 1, true)[1]
 
         -- If editing a commit message, do not start in insert mode
         if line == "" then
@@ -70,16 +89,16 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 if vim.v.vim_did_enter == 1 then
-  vim.api.nvim_exec_autocmds("VimEnter", { group = buffer_setup })
+  nvim_exec_autocmds("VimEnter", { group = buffer_setup })
 end
 
-local checktime = vim.api.nvim_create_augroup("checktime", { clear = true })
+local checktime = nvim_create_augroup("checktime", { clear = true })
 
-vim.api.nvim_create_autocmd("VimEnter", {
+nvim_create_autocmd("VimEnter", {
   group = checktime,
   desc = "Create checktime autocmds",
   callback = function()
-    vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "VimResume" }, {
+    nvim_create_autocmd({ "BufEnter", "FocusGained", "VimResume" }, {
       group = checktime,
       desc = "Check if file was modified outside this instance",
       callback = function()
@@ -89,7 +108,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
       end,
     })
 
-    vim.api.nvim_create_autocmd("User", {
+    nvim_create_autocmd("User", {
       pattern = "FugitiveChanged",
       group = checktime,
       desc = "Check if file was modified by an asynchronous fugitive job",
@@ -106,26 +125,26 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 if vim.v.vim_did_enter == 1 then
-  vim.api.nvim_exec_autocmds("VimEnter", { group = checktime })
+  nvim_exec_autocmds("VimEnter", { group = checktime })
 end
 
-local cmdwindow = vim.api.nvim_create_augroup("cmdwindow", { clear = true })
+local cmdwindow = nvim_create_augroup("cmdwindow", { clear = true })
 
-vim.api.nvim_create_autocmd("CmdwinEnter", {
+nvim_create_autocmd("CmdwinEnter", {
   group = cmdwindow,
   desc = "Command-line window configuration",
   callback = function(args)
     vim.w.cmdline = true -- Performant way to know if we're in the Cmdline window
     vim.wo.spell = false
     vim.keymap.set("n", "gq", function()
-      vim.api.nvim_win_close(0, false)
+      nvim_win_close(0, false)
     end, { buffer = args.buf, nowait = true })
   end,
 })
 
-local commentstring = vim.api.nvim_create_augroup("commentstring", { clear = true })
+local commentstring = nvim_create_augroup("commentstring", { clear = true })
 
-vim.api.nvim_create_autocmd("FileType", {
+nvim_create_autocmd("FileType", {
   pattern = { "apache", "crontab", "debsources", "desktop", "fstab", "samba", "sql" },
   group = commentstring,
   desc = "Set commentstring",
@@ -140,13 +159,13 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Simulate Emacs' Fundamental mode
-local default_filetype = vim.api.nvim_create_augroup("default_filetype", { clear = true })
+local default_filetype = nvim_create_augroup("default_filetype", { clear = true })
 
-vim.api.nvim_create_autocmd("VimEnter", {
+nvim_create_autocmd("VimEnter", {
   group = default_filetype,
   desc = "Create default filetype autocmds",
   callback = function()
-    vim.api.nvim_create_autocmd("BufEnter", {
+    nvim_create_autocmd("BufEnter", {
       group = default_filetype,
       desc = "Set default filetype",
       callback = function(args)
@@ -160,10 +179,10 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 if vim.v.vim_did_enter == 1 then
-  vim.api.nvim_exec_autocmds("VimEnter", { group = default_filetype })
+  nvim_exec_autocmds("VimEnter", { group = default_filetype })
 end
 
-vim.api.nvim_create_autocmd("BufWritePre", {
+nvim_create_autocmd("BufWritePre", {
   group = default_filetype,
   desc = "Detect filetype after the first write",
   callback = function(args)
@@ -176,38 +195,38 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
-local help_setup = vim.api.nvim_create_augroup("help_setup", { clear = true })
+local help_setup = nvim_create_augroup("help_setup", { clear = true })
 
-vim.api.nvim_create_autocmd("FileType", {
+nvim_create_autocmd("FileType", {
   pattern = "help",
   group = help_setup,
   callback = function(args)
     local bufnr = args.buf
     vim.schedule(function()
-      if vim.api.nvim_buf_is_valid(bufnr) then
+      if nvim_buf_is_valid(bufnr) then
         vim.keymap.set("n", "q", function()
-          vim.api.nvim_win_close(0, false)
+          nvim_win_close(0, false)
         end, { buffer = bufnr, nowait = true })
       end
     end)
   end,
 })
 
-local insert_mode_undo_point = vim.api.nvim_create_augroup("insert_mode_undo_point", { clear = true })
+local insert_mode_undo_point = nvim_create_augroup("insert_mode_undo_point", { clear = true })
 
-vim.api.nvim_create_autocmd("CursorHoldI", {
+nvim_create_autocmd("CursorHoldI", {
   group = insert_mode_undo_point,
   desc = "Insert mode undo point",
   callback = function()
-    if vim.api.nvim_get_mode()["mode"] == "i" then
-      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-G>u", true, false, true), "m", false)
+    if nvim_get_mode()["mode"] == "i" then
+      nvim_feedkeys(nvim_replace_termcodes("<C-G>u", true, false, true), "m", false)
     end
   end,
 })
 
-local file_type_setup = vim.api.nvim_create_augroup("file_type_setup", { clear = true })
+local file_type_setup = nvim_create_augroup("file_type_setup", { clear = true })
 
-vim.api.nvim_create_autocmd("FileType", {
+nvim_create_autocmd("FileType", {
   pattern = {
     "gitcommit", "html", "java", "javascriptreact", "lua", "mail", "markdown", "sql",
     "text", "typescriptreact", "xml"
@@ -249,9 +268,9 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-local large_file = vim.api.nvim_create_augroup("large_file", { clear = true })
+local large_file = nvim_create_augroup("large_file", { clear = true })
 
-vim.api.nvim_create_autocmd("Syntax", {
+nvim_create_autocmd("Syntax", {
   pattern = { "json", "html", "xml" },
   group = large_file,
   desc = "Disable syntax for large files",
@@ -262,14 +281,14 @@ vim.api.nvim_create_autocmd("Syntax", {
     if size > 1024 * 512 then
       vim.schedule(function()
         -- Buffer might be gone
-        if vim.api.nvim_buf_is_valid(bufnr) then
+        if nvim_buf_is_valid(bufnr) then
           vim.bo[bufnr].syntax = "large_file"
         end
       end)
 
       -- Folds are slow
       -- There are vim-fugitive mappings that open windows and tabs
-      vim.api.nvim_create_autocmd("WinEnter", {
+      nvim_create_autocmd("WinEnter", {
         buffer = bufnr,
         once = true,
         callback = function()
@@ -282,9 +301,9 @@ vim.api.nvim_create_autocmd("Syntax", {
   end,
 })
 
-local protected_files = vim.api.nvim_create_augroup("protected_files", { clear = true })
+local protected_files = nvim_create_augroup("protected_files", { clear = true })
 
-vim.api.nvim_create_autocmd("BufRead", {
+nvim_create_autocmd("BufRead", {
   pattern = {
     "*/node_modules/*",
     vim.fs.joinpath(vim.g.rocks_nvim.rocks_path, "share/*"),
@@ -306,7 +325,7 @@ local function display_error_switchbuf(swb)
   end
   local switchbuf = vim.go.switchbuf
   vim.go.switchbuf = swb
-  local linenr = vim.api.nvim_win_get_cursor(0)[1]
+  local linenr = nvim_win_get_cursor(0)[1]
   vim.cmd.wincmd("p") -- TODO to avoid https://github.com/vim/vim/issues/12436
   vim.cmd(linenr .. command)
   vim.go.switchbuf = switchbuf
@@ -319,16 +338,16 @@ local function display_error_cmd(cmd)
   end
   local switchbuf = vim.go.switchbuf
   vim.go.switchbuf = "uselast"
-  local linenr = vim.api.nvim_win_get_cursor(0)[1]
+  local linenr = nvim_win_get_cursor(0)[1]
   vim.cmd.wincmd("p")
   vim.cmd(cmd)
   vim.cmd(linenr .. command)
   vim.go.switchbuf = switchbuf
 end
 
-local qf_setup = vim.api.nvim_create_augroup("qf_setup", { clear = true })
+local qf_setup = nvim_create_augroup("qf_setup", { clear = true })
 
-vim.api.nvim_create_autocmd("FileType", {
+nvim_create_autocmd("FileType", {
   group = qf_setup,
   desc = "Quickfix setup",
   pattern = "qf",
@@ -356,7 +375,7 @@ vim.api.nvim_create_autocmd("FileType", {
     end, { buffer = bufnr })
 
     vim.keymap.set("n", "q", function()
-      vim.api.nvim_win_close(0, false)
+      nvim_win_close(0, false)
     end, { buffer = bufnr, nowait = true })
 
     local wininfos = vim.tbl_filter(function(wininfo)
@@ -374,7 +393,7 @@ vim.api.nvim_create_autocmd("FileType", {
       for _, qfitem in ipairs(vim.fn.getqflist()) do
         local name
         if qfitem.bufnr > 0 then
-          name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(qfitem.bufnr), ":~")
+          name = vim.fn.fnamemodify(nvim_buf_get_name(qfitem.bufnr), ":~")
         else
           name = vim.fn.fnamemodify(qfitem.text, ":p:~")
         end
@@ -387,13 +406,13 @@ vim.api.nvim_create_autocmd("FileType", {
 
     -- https://github.com/wincent/ferret: ferret#private#qargs()
     if require("lbrayner").is_quickfix_list() then
-      vim.api.nvim_buf_create_user_command(bufnr, "QFFileNamesToArgList", function()
+      nvim_buf_create_user_command(bufnr, "QFFileNamesToArgList", function()
         vim.cmd("%argdelete")
         vim.iter(get_file_names()):each(function(f)
           vim.cmd.argadd(vim.fn.fnameescape(f))
         end)
       end, { nargs = 0 })
-      vim.api.nvim_buf_create_user_command(bufnr, "QFYankFileNames", function()
+      nvim_buf_create_user_command(bufnr, "QFYankFileNames", function()
         local names = get_file_names()
         vim.fn.setreg('"', names)
         vim.fn.setreg("+", names)
@@ -403,10 +422,10 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-local session_configuration = vim.api.nvim_create_augroup("session_configuration", { clear = true })
+local session_configuration = nvim_create_augroup("session_configuration", { clear = true })
 
 -- SessionLoadPost happens before VimEnter
-vim.api.nvim_create_autocmd("VimEnter", {
+nvim_create_autocmd("VimEnter", {
   group = session_configuration,
   desc = "Session configuration",
   callback = function()
@@ -424,9 +443,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end,
 })
 
-local set_file_type = vim.api.nvim_create_augroup("set_file_type", { clear = true })
+local set_file_type = nvim_create_augroup("set_file_type", { clear = true })
 
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = {
     "*/host_vars/*", "*.wsdl", ".ignore", ".ripgreprc*", "ignore", "ripgreprc*"
   },
@@ -449,7 +468,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   end,
 })
 
-vim.api.nvim_create_autocmd("BufRead", {
+nvim_create_autocmd("BufRead", {
   pattern = {
     "*/jre*/lib/security/java.policy", "/tmp/dir*"
   },
@@ -467,9 +486,9 @@ vim.api.nvim_create_autocmd("BufRead", {
   end,
 })
 
-local terminal_setup = vim.api.nvim_create_augroup("terminal_setup", { clear = true })
+local terminal_setup = nvim_create_augroup("terminal_setup", { clear = true })
 
-vim.api.nvim_create_autocmd("TermOpen", {
+nvim_create_autocmd("TermOpen", {
   group = terminal_setup,
   desc = "Terminal filetype",
   callback = function()
@@ -479,7 +498,7 @@ vim.api.nvim_create_autocmd("TermOpen", {
   end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
+nvim_create_autocmd("FileType", {
   pattern = "terminal",
   group = terminal_setup,
   desc = "Fix terminal title and set keymaps",
@@ -487,7 +506,7 @@ vim.api.nvim_create_autocmd("FileType", {
     local bufnr = args.buf
 
     vim.schedule(function()
-      if not vim.api.nvim_buf_is_valid(bufnr) then
+      if not nvim_buf_is_valid(bufnr) then
         return
       end
 
@@ -495,19 +514,19 @@ vim.api.nvim_create_autocmd("FileType", {
       local winid = vim.fn.win_findbuf(bufnr)[1]
 
       -- Specifically trying to exclude fzf-lua buffers
-      if vim.bo[bufnr].filetype == "terminal" and winid == vim.api.nvim_get_current_win() then
+      if vim.bo[bufnr].filetype == "terminal" and winid == nvim_get_current_win() then
         vim.wo.relativenumber = true
       end
 
-      if vim.api.nvim_buf_get_name(bufnr) ~= vim.b[bufnr].term_title then
+      if nvim_buf_get_name(bufnr) ~= vim.b[bufnr].term_title then
         local title = vim.b[bufnr].term_title
-        local wrong_title = vim.api.nvim_buf_get_name(bufnr)
+        local wrong_title = nvim_buf_get_name(bufnr)
         if not vim.startswith(title, "term://") then
           title = string.format("%s (%d)", vim.b[bufnr].term_title, vim.fn.jobpid(vim.bo[bufnr].channel))
         end
-        vim.api.nvim_buf_set_name(bufnr, title)
+        nvim_buf_set_name(bufnr, title)
         local wrong_title_bufnr = vim.fn.bufnr(wrong_title)
-        vim.api.nvim_buf_delete(wrong_title_bufnr, { force = true })
+        nvim_buf_delete(wrong_title_bufnr, { force = true })
       end
 
       vim.keymap.set("n", "<A-h>", [[<C-\><C-N><C-W>h]], { buffer = bufnr })
@@ -518,7 +537,7 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-vim.api.nvim_create_autocmd("BufWinEnter", {
+nvim_create_autocmd("BufWinEnter", {
   pattern = "term://*",
   group = terminal_setup,
   desc = "Line numbers are not helpful in terminal buffers",
@@ -527,14 +546,14 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end,
 })
 
-vim.api.nvim_create_autocmd("TermEnter", {
+nvim_create_autocmd("TermEnter", {
   group = terminal_setup,
   callback = function()
     if not require("lbrayner").win_is_floating() then
       local terminals = vim.tbl_filter(function(winid)
-        local bufnr = vim.api.nvim_win_get_buf(winid)
+        local bufnr = nvim_win_get_buf(winid)
         return vim.bo[bufnr].buftype == "terminal"
-      end, vim.api.nvim_tabpage_list_wins(0))
+      end, nvim_tabpage_list_wins(0))
       if vim.tbl_count(terminals) > 1 then
         vim.opt.winhighlight:append({ Normal = "CursorLine" })
       end
@@ -542,18 +561,18 @@ vim.api.nvim_create_autocmd("TermEnter", {
   end,
 })
 
-vim.api.nvim_create_autocmd("TermLeave", {
+nvim_create_autocmd("TermLeave", {
   group = terminal_setup,
   callback = function()
     vim.opt.winhighlight:remove({ "Normal" })
   end,
 })
 
-vim.api.nvim_create_autocmd("VimEnter", {
+nvim_create_autocmd("VimEnter", {
   group = terminal_setup,
   desc = "Create terminal setup autocmds",
   callback = function()
-    vim.api.nvim_create_autocmd("TermOpen", {
+    nvim_create_autocmd("TermOpen", {
       group = terminal_setup,
       desc = "Start in Insert Mode in terminal mode",
       callback = function(args)
@@ -571,5 +590,5 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 if vim.v.vim_did_enter == 1 then
-  vim.api.nvim_exec_autocmds("VimEnter", { group = terminal_setup })
+  nvim_exec_autocmds("VimEnter", { group = terminal_setup })
 end
