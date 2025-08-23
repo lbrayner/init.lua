@@ -15,6 +15,7 @@ local cmd = vim.cmd
 local schedule = vim.schedule
 local tbl_contains = vim.tbl_contains
 local tbl_filter = vim.tbl_filter
+local startswith = vim.startswith
 -- TODO sort
 
 local aesthetics = nvim_create_augroup("aesthetics", { clear = true })
@@ -30,7 +31,7 @@ nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
     end
     if require("lbrayner").win_is_floating() or
       vim.bo.filetype == "fugitiveblame" or
-      vim.startswith(vim.bo.syntax, "Neogit") then
+      startswith(vim.bo.syntax, "Neogit") then
       return
     end
     require("lbrayner").set_number()
@@ -79,7 +80,7 @@ nvim_create_autocmd("VimEnter", {
 
         -- If editing a commit message, do not start in insert mode
         if line == "" then
-          vim.cmd.startinsert()
+          cmd.startinsert()
         end
 
         vim.wo.spell = true
@@ -103,7 +104,7 @@ nvim_create_autocmd("VimEnter", {
       desc = "Check if file was modified outside this instance",
       callback = function()
         if vim.fn.getcmdwintype() == "" then -- E11: Invalid in command line window
-          vim.cmd.checktime()
+          cmd.checktime()
         end
       end,
     })
@@ -116,7 +117,7 @@ nvim_create_autocmd("VimEnter", {
         if vim.fn.getcmdwintype() == "" then -- E11: Invalid in command line window
           local fugitive_result = vim.fn.FugitiveResult()
           if fugitive_result.capture_bufnr and type(fugitive_result.capture_bufnr) == "number" then
-            vim.cmd.checktime()
+            cmd.checktime()
           end
         end
       end,
@@ -190,7 +191,7 @@ nvim_create_autocmd("BufWritePre", {
       vim.bo.infercase = true
       vim.bo.textwidth = nil
       vim.b.default_filetype = nil
-      vim.cmd("filetype detect")
+      cmd("filetype detect")
     end
   end,
 })
@@ -202,7 +203,7 @@ nvim_create_autocmd("FileType", {
   group = help_setup,
   callback = function(args)
     local bufnr = args.buf
-    vim.schedule(function()
+    schedule(function()
       if nvim_buf_is_valid(bufnr) then
         vim.keymap.set("n", "q", function()
           nvim_win_close(0, false)
@@ -239,7 +240,7 @@ nvim_create_autocmd("FileType", {
 
     if filetype == "gitcommit" then
       vim.bo.infercase = true
-    elseif vim.tbl_contains({ "html", "javascriptreact", "typescriptreact", "xml" }, filetype) then
+    elseif tbl_contains({ "html", "javascriptreact", "typescriptreact", "xml" }, filetype) then
       vim.keymap.set("n", "[<", function()
         require("lbrayner").navigate_depth_backward(vim.v.count1)
       end, { buffer = bufnr, silent = true })
@@ -279,7 +280,7 @@ nvim_create_autocmd("Syntax", {
     local size = tonumber(vim.fn.wordcount()["bytes"])
 
     if size > 1024 * 512 then
-      vim.schedule(function()
+      schedule(function()
         -- Buffer might be gone
         if nvim_buf_is_valid(bufnr) then
           vim.bo[bufnr].syntax = "large_file"
@@ -292,8 +293,8 @@ nvim_create_autocmd("Syntax", {
         buffer = bufnr,
         once = true,
         callback = function()
-          vim.schedule(function()
-            vim.cmd("normal! zR") -- Open all folds
+          schedule(function()
+            cmd("normal! zR") -- Open all folds
           end)
         end,
       })
@@ -326,8 +327,8 @@ local function display_error_switchbuf(swb)
   local switchbuf = vim.go.switchbuf
   vim.go.switchbuf = swb
   local linenr = nvim_win_get_cursor(0)[1]
-  vim.cmd.wincmd("p") -- TODO to avoid https://github.com/vim/vim/issues/12436
-  vim.cmd(linenr .. command)
+  cmd.wincmd("p") -- TODO to avoid https://github.com/vim/vim/issues/12436
+  cmd(linenr .. command)
   vim.go.switchbuf = switchbuf
 end
 
@@ -339,9 +340,9 @@ local function display_error_cmd(cmd)
   local switchbuf = vim.go.switchbuf
   vim.go.switchbuf = "uselast"
   local linenr = nvim_win_get_cursor(0)[1]
-  vim.cmd.wincmd("p")
-  vim.cmd(cmd)
-  vim.cmd(linenr .. command)
+  cmd.wincmd("p")
+  cmd(cmd)
+  cmd(linenr .. command)
   vim.go.switchbuf = switchbuf
 end
 
@@ -378,7 +379,7 @@ nvim_create_autocmd("FileType", {
       nvim_win_close(0, false)
     end, { buffer = bufnr, nowait = true })
 
-    local wininfos = vim.tbl_filter(function(wininfo)
+    local wininfos = tbl_filter(function(wininfo)
       return wininfo.bufnr == bufnr
     end, vim.fn.getwininfo())
 
@@ -407,9 +408,9 @@ nvim_create_autocmd("FileType", {
     -- https://github.com/wincent/ferret: ferret#private#qargs()
     if require("lbrayner").is_quickfix_list() then
       nvim_buf_create_user_command(bufnr, "QFFileNamesToArgList", function()
-        vim.cmd("%argdelete")
+        cmd("%argdelete")
         vim.iter(get_file_names()):each(function(f)
-          vim.cmd.argadd(vim.fn.fnameescape(f))
+          cmd.argadd(vim.fn.fnameescape(f))
         end)
       end, { nargs = 0 })
       nvim_buf_create_user_command(bufnr, "QFYankFileNames", function()
@@ -439,7 +440,7 @@ nvim_create_autocmd("VimEnter", {
       )
     end)
 
-    pcall(vim.cmd.exe, [["normal! \<C-W>="]]) -- Equalize windows
+    pcall(cmd.exe, [["normal! \<C-W>="]]) -- Equalize windows
   end,
 })
 
@@ -505,7 +506,7 @@ nvim_create_autocmd("FileType", {
   callback = function(args)
     local bufnr = args.buf
 
-    vim.schedule(function()
+    schedule(function()
       if not nvim_buf_is_valid(bufnr) then
         return
       end
@@ -521,7 +522,7 @@ nvim_create_autocmd("FileType", {
       if nvim_buf_get_name(bufnr) ~= vim.b[bufnr].term_title then
         local title = vim.b[bufnr].term_title
         local wrong_title = nvim_buf_get_name(bufnr)
-        if not vim.startswith(title, "term://") then
+        if not startswith(title, "term://") then
           title = string.format("%s (%d)", vim.b[bufnr].term_title, vim.fn.jobpid(vim.bo[bufnr].channel))
         end
         nvim_buf_set_name(bufnr, title)
@@ -550,7 +551,7 @@ nvim_create_autocmd("TermEnter", {
   group = terminal_setup,
   callback = function()
     if not require("lbrayner").win_is_floating() then
-      local terminals = vim.tbl_filter(function(winid)
+      local terminals = tbl_filter(function(winid)
         local bufnr = nvim_win_get_buf(winid)
         return vim.bo[bufnr].buftype == "terminal"
       end, nvim_tabpage_list_wins(0))
@@ -579,11 +580,11 @@ nvim_create_autocmd("VimEnter", {
         local bufnr = args.buf
         local filetype = vim.bo[bufnr].filetype
 
-        if vim.startswith(filetype, "dapui") then
+        if startswith(filetype, "dapui") then
           return
         end
 
-        vim.cmd.startinsert()
+        cmd.startinsert()
       end,
     })
   end,
