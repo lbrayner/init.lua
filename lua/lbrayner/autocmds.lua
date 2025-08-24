@@ -50,7 +50,7 @@ local buffer_optimization = nvim_create_augroup("buffer_optimization", { clear =
 nvim_create_autocmd({ "BufLeave", "BufRead", "BufWritePost", "CursorHold" }, {
   group = buffer_optimization,
   desc = "Setting swapfile flag to trigger SwapExists",
-  callback = function(args)
+  callback = function()
     if vim.bo.buftype == "" then
       vim.bo.swapfile = vim.bo.modified
     end
@@ -174,7 +174,7 @@ nvim_create_autocmd("VimEnter", {
     nvim_create_autocmd("BufEnter", {
       group = default_filetype,
       desc = "Set default filetype",
-      callback = function(args)
+      callback = function()
         if vim.bo.filetype == "" then
           vim.b.default_filetype = true
           vim.bo.filetype = "text"
@@ -191,7 +191,7 @@ end
 nvim_create_autocmd("BufWritePre", {
   group = default_filetype,
   desc = "Detect filetype after the first write",
-  callback = function(args)
+  callback = function()
     if vim.b.default_filetype then
       vim.bo.infercase = true
       vim.bo.textwidth = nil
@@ -337,7 +337,7 @@ local function display_error_switchbuf(swb)
   vim.go.switchbuf = switchbuf
 end
 
-local function display_error_cmd(cmd)
+local function display_error_cmd(ex)
   local command = "cc"
   if require("lbrayner").is_location_list() then
     command = "ll"
@@ -346,7 +346,7 @@ local function display_error_cmd(cmd)
   vim.go.switchbuf = "uselast"
   local linenr = nvim_win_get_cursor(0)[1]
   cmd.wincmd("p")
-  cmd(cmd)
+  cmd(ex)
   cmd(linenr .. command)
   vim.go.switchbuf = switchbuf
 end
