@@ -1,5 +1,5 @@
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#lua_ls
-vim.lsp.config("lua_ls", {
+return {
   settings = {
     Lua = {
       runtime = {
@@ -22,4 +22,4 @@ vim.lsp.config("lua_ls", {
       },
     },
   },
-})
+}
