@@ -1,3 +1,7 @@
+local nvim_win_get_buf = vim.api.nvim_win_get_buf
+local nvim_get_current_win = vim.api.nvim_get_current_win
+local nvim_buf_delete = vim.api.nvim_buf_delete
+local nvim_buf_create_user_command = vim.api.nvim_buf_create_user_command
 local nvim_create_augroup = vim.api.nvim_create_augroup
 local nvim_create_autocmd = vim.api.nvim_create_autocmd
 local nvim_get_current_buf = vim.api.nvim_get_current_buf
@@ -11,6 +15,7 @@ local nvim_tabpage_list_wins = vim.api.nvim_tabpage_list_wins
 local nvim_feedkeys = vim.api.nvim_feedkeys
 local nvim_replace_termcodes = vim.api.nvim_replace_termcodes
 local nvim_win_close = vim.api.nvim_win_close
+local nvim_get_mode = vim.api.nvim_get_mode
 local cmd = vim.cmd
 local schedule = vim.schedule
 local tbl_contains = vim.tbl_contains
