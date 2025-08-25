@@ -12,6 +12,8 @@ require("lbrayner.database")
 
 -- vim-fugitive
 
+vim.g.fugitive_no_maps = 1
+
 local fugitive_setup = vim.api.nvim_create_augroup("fugitive_setup", { clear = true })
 
 vim.api.nvim_create_autocmd("SourcePost", {
