@@ -29,6 +29,7 @@ local substitute = vim.fn.substitute
 local uri_encode = vim.uri_encode
 local vim_keymap_del = vim.keymap.del
 local vim_keymap_set = vim.keymap.set
+local visualmode = vim.fn.visualmode
 
 -- }}}
 
@@ -141,11 +142,13 @@ nvim_create_autocmd("VimEnter", {
       local args = opts.args
       local count = opts.count
 
-      local success, result = get_visual_selection(opts, { multi_line = true })
+      if visualmode() ~= "V" then
+        local success, result = get_visual_selection(opts, { multi_line = true })
 
-      if success then
-        args = join({ join(result), args })
-        count = -1 -- else vim-dadbod will add visual linewise selection on top of args
+        if success then
+          args = join({ join(result), args })
+          count = -1 -- else vim-dadbod will add visual linewise selection on top of args
+        end
       end
 
       vim.fn["db#execute_command"](
