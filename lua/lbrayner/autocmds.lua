@@ -581,7 +581,7 @@ vim.api.nvim_create_autocmd("FocusGained", {
   group = write_shada,
   desc = "Write ShaDa file",
   callback = function()
-    if write_shada_timer and write_shada_timer:is_closing() then
+    if not write_shada_timer or write_shada_timer:is_closing() then
       return
     end
 
