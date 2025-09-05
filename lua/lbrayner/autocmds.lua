@@ -573,3 +573,37 @@ vim.api.nvim_create_autocmd("VimEnter", {
 if vim.v.vim_did_enter == 1 then
   vim.api.nvim_exec_autocmds("VimEnter", { group = terminal_setup })
 end
+
+local write_shada = vim.api.nvim_create_augroup("write_shada", { clear = true })
+local write_shada_timer
+
+vim.api.nvim_create_autocmd("FocusGained", {
+  group = write_shada,
+  desc = "Write ShaDa file",
+  callback = function()
+    if write_shada_timer and write_shada_timer:is_closing() then
+      return
+    end
+
+    write_shada_timer:stop()
+    write_shada_timer:close()
+  end,
+})
+
+vim.api.nvim_create_autocmd("FocusLost", {
+  group = write_shada,
+  desc = "Maybe abort ShaDa file write",
+  callback = function()
+    if write_shada_timer and not write_shada_timer:is_closing() then
+      return
+    end
+
+    write_shada_timer = vim.uv.new_timer()
+
+    write_shada_timer:start(60000, 0, vim.schedule_wrap(function()
+      pcall(vim.cmd, "wshada!")
+      vim.notify("Wrote ShaDa file", vim.log.levels.WARN)
+      write_shada_timer:close()
+    end))
+  end,
+})
