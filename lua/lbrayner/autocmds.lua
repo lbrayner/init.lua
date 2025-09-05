@@ -601,8 +601,21 @@ vim.api.nvim_create_autocmd("FocusLost", {
     write_shada_timer = vim.uv.new_timer()
 
     write_shada_timer:start(60000, 0, vim.schedule_wrap(function()
-      pcall(vim.cmd, "wshada!")
-      vim.notify("Wrote ShaDa file", vim.log.levels.WARN)
+      local success , _ = pcall(vim.cmd, "wshada!")
+      local time = vim.fn.strftime("%Y-%m-%d %a %T")
+
+      if success then
+        vim.notify(
+          string.format("[%s] Wrote ShaDa file", time),
+          vim.log.levels.WARN
+        )
+      else
+        vim.notify(
+          string.format("[%s] Failed to write ShaDa file!", time),
+          vim.log.levels.ERROR
+        )
+      end
+
       write_shada_timer:close()
     end))
   end,
