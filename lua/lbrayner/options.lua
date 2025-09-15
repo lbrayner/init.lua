@@ -16,7 +16,6 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.ruler = false
 vim.o.shiftwidth = 2
-vim.o.showmode = false
 vim.o.smartcase = true
 vim.o.splitbelow = true
 vim.o.splitright = true

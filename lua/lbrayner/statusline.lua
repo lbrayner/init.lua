@@ -486,6 +486,15 @@ nvim_create_autocmd("ModeChanged", {
 })
 
 nvim_create_autocmd("ModeChanged", {
+  pattern = [[[^sS\x13]:[sS\x13]*]],
+  group = statusline,
+  desc = "Select modes statusline highlight",
+  callback = function()
+    M.highlight_mode("select")
+  end,
+})
+
+nvim_create_autocmd("ModeChanged", {
   pattern = [[[^vV\x16]:[vV\x16]*]],
   group = statusline,
   desc = "Visual modes statusline highlight",

@@ -45,6 +45,17 @@ return {
         User9 = { bg = "Removed", fg = "Special" },
         StatusLine = { bg = "Removed", fg = "Cursor" },
       },
+      select = {
+        User1 = { bg = "Type", fg = "Include" },
+        User2 = { bg = "Type", fg = "Cursor" },
+        User3 = { bg = "Type", fg = "Special" },
+        User4 = { bg = "Type", fg = "Underlined" },
+        User5 = { bg = "Type", fg = "Cursor" },
+        User6 = { bg = "Type", fg = "Special" },
+        User7 = { bg = "Type" },
+        User9 = { bg = "Type", fg = "Special" },
+        StatusLine = { bg = "Type", fg = "Cursor" },
+      },
       visual = {
         User1 = { bg = "Changed", fg = "Todo" },
         User2 = { bg = "Changed", fg = "Cursor" },
