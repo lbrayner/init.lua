@@ -53,36 +53,37 @@ instructions.
 
 ## Normal mode
 
-![Screenshot from 2024-08-27 10-09-16](https://github.com/user-attachments/assets/4f824ae4-bbd9-46dc-801f-1a6132656d58)
+<img width="1920" height="1080" alt="normal" src="https://github.com/user-attachments/assets/a232efba-6199-443b-bafa-b707a3fda491" />
 
 ## Visual mode
 
-![Screenshot from 2024-08-27 10-09-36](https://github.com/user-attachments/assets/ca08f5d4-298a-458c-87cf-de399a7a2e75)
+<img width="1920" height="1080" alt="visual" src="https://github.com/user-attachments/assets/33068e38-eea8-403c-b08e-8c8ffdeac0b7" />
+
+## Select mode
+
+<img width="1920" height="1080" alt="select" src="https://github.com/user-attachments/assets/c5108ef7-6094-433c-aef9-4a6a363d1954" />
 
 ## Insert mode
 
-![Screenshot from 2024-08-27 10-10-09](https://github.com/user-attachments/assets/306c0e4d-a652-4c1a-9263-216e6c3397ef)
+<img width="1920" height="1080" alt="insert" src="https://github.com/user-attachments/assets/6c71278e-6199-4dfe-a25a-96de92f191eb" />
 
 ## Command-line mode
 
-![Screenshot from 2024-08-27 10-10-35](https://github.com/user-attachments/assets/cd3fdacc-33f7-47c2-8ce6-f2fa7f90538f)
-
+<img width="1920" height="1080" alt="command" src="https://github.com/user-attachments/assets/d8f18bb7-2c5c-4eae-bacf-34d2d2724401" />
 
 ## Command-line mode (search)
 
-![Screenshot from 2024-08-27 10-11-03](https://github.com/user-attachments/assets/c8606137-5dbe-4b10-86de-0861c5d6d52a)
+<img width="1920" height="1080" alt="search" src="https://github.com/user-attachments/assets/e9c97d42-7790-4c48-b264-9ee9d5242d6f" />
 
 ## Terminal-mode
 
-![Screenshot from 2024-08-27 10-11-24](https://github.com/user-attachments/assets/92fe15ae-b6a3-4dec-9cd0-d90a2e2f4da2)
-
+<img width="1920" height="1080" alt="terminal" src="https://github.com/user-attachments/assets/4838e458-de82-4403-bddb-f793a5559df9" />
 
 ## Fugitive buffers
 
-![Screenshot from 2024-08-27 10-13-14](https://github.com/user-attachments/assets/31995d0c-f2e4-4f33-b48d-a622432f7d90)
-
+<img width="1920" height="1080" alt="fugitive" src="https://github.com/user-attachments/assets/68f607a4-e947-468b-aeec-37ff9f0e7297" />
 
 ## Language Server
 
-![Screenshot from 2024-08-27 10-15-06](https://github.com/user-attachments/assets/9ad45a59-bc28-4586-a7e8-c0465b7b5043)
-![Screenshot from 2024-08-27 10-21-40](https://github.com/user-attachments/assets/f5880e44-400b-4d32-9b49-9e6a8498fc8e)
+<img width="1920" height="1080" alt="lsp1" src="https://github.com/user-attachments/assets/c3041102-60fc-48ba-b4ff-3d987d1e73d5" />
+<img width="1920" height="1080" alt="lsp2" src="https://github.com/user-attachments/assets/0999a17f-9040-4977-8fa0-a02ebccd6d26" />
