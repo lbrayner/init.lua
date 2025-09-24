@@ -27,31 +27,44 @@ local function make_operator(coerce)
   return "g@l"
 end
 
--- Coerce keyword to camelCase
+function M.camel_case(word)
+  word = string.gsub(word, "-", "_")
+  if not require("lbrayner").contains(word, "_") and string.find(word, "%l") then
+    return string.gsub(word, "^.", string.lower)
+  end
+  -- From tpope's vim-abolish
+  word = vim.fn.substitute(word, [[\C\(_\)\=\(.\)]],
+  [[\=submatch(1)==""?tolower(submatch(2)) : toupper(submatch(2))]], "g")
+  return word
+end
+
+function M.dash_case(word)
+  -- From tpope's vim-abolish
+  word = M.snake_case(word)
+  word = string.gsub(word, "_", "-")
+  return word
+end
+
+function M.snake_case(word)
+  -- From tpope's vim-abolish
+  word = string.gsub(word, "::", "/")
+  word = string.gsub(word, "(%u+)(%u%l)", "%1-%2")
+  word = string.gsub(word, "([%l%d])(%u)", "%1-%2")
+  word = string.gsub(word, "[.-]", "_")
+  word = word:lower()
+  return word
+end
+
 vim.keymap.set("n", "crc", function()
-  return make_operator(function(word)
-    word = string.gsub(word, "-", "_")
-    if not require("lbrayner").contains(word, "_") and string.find(word, "%l") then
-      return string.gsub(word, "^.", string.lower)
-    end
-    -- From tpope's vim-abolish
-    word = vim.fn.substitute(word, [[\C\(_\)\=\(.\)]],
-    [[\=submatch(1)==""?tolower(submatch(2)) : toupper(submatch(2))]], "g")
-    return word
-  end)
+  return make_operator(M.camel_case)
 end, { expr = true })
 
--- Coerce keyword to snake_case
+vim.keymap.set("n", "cr-", function()
+  return make_operator(M.dash_case)
+end, { expr = true })
+
 vim.keymap.set("n", "cr_", function()
-  return make_operator(function(word)
-    -- From tpope's vim-abolish
-    word = string.gsub(word, "::", "/")
-    word = string.gsub(word, "(%u+)(%u%l)", "%1_%2")
-    word = string.gsub(word, "([%l%d])(%u)", "%1_%2")
-    word = string.gsub(word, "[.-]", "_")
-    word = word:lower()
-    return word
-  end)
+  return make_operator(M.snake_case)
 end, { expr = true })
 
 return M
