@@ -14,3 +14,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 if vim.v.vim_did_enter == 1 then
   vim.api.nvim_exec_autocmds("VimEnter", { group = dap_custom })
 end
+
+vim.api.nvim_create_user_command("DapListBreakpoints", function()
+  require("dap").list_breakpoints(true) -- openqf
+end, { nargs = 0 })
