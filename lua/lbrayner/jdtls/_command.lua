@@ -112,7 +112,7 @@ subcommand_tbl.updateProjectConfig = {
 
 -- Reference implementarion of multiple mutually exclusive flags
 subcommand_tbl.updateProjectsConfig = {
-  complete = { "--all", "--prompt" },
+  complete = { "--all", "--input", "--prompt" },
   optional = function(opts)
     local args = opts.args
 
@@ -134,6 +134,6 @@ subcommand_tbl.updateProjectsConfig = {
     )
 
     local select_mode = arg:match("--(%a+)")
-    require("jdtls").update_projects_config({ select_mode = select_mode })
+    require("lbrayner.jdtls").update_projects_config({ select_mode = select_mode })
   end,
 }

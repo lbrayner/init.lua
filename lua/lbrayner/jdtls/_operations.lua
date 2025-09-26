@@ -2,6 +2,8 @@
 
 local M = {}
 
+local join = require("lbrayner").join
+
 local offset_encoding = "utf-16"
 local SymbolKind = vim.lsp.protocol.SymbolKind
 
@@ -239,5 +241,49 @@ function M.java_type_hierarchy(opts)
     require("jdtls.util").execute_command(resolve_command(result), resolve_handler)
   end)
 end
+
+--- From nvim-jdtls
+---@param opts JdtUpdateProjectsOpts|nil configuration options
+function M.update_projects_config(opts)
+  opts = opts or {}
+
+  if not opts.select_mode or opts.select_mode ~= "input" then
+    require("jdtls").update_projects_config(opts)
+    return
+  end
+
+  local bufnr = vim.api.nvim_get_current_buf()
+  local command = {
+    command = "java.project.getAll",
+  }
+
+  require("jdtls.util").execute_command(command, function(err, result)
+    assert(not err, vim.inspect(err))
+
+    local input = vim.fn.input("Update project configurations: ")
+    local indexes = vim.fn.split(input, "[^[:keyword:]]")
+
+    local selection = vim.tbl_map(function(i)
+      return result[tonumber(i)]
+    end, indexes)
+
+    if selection and next(selection) then
+      local params = {
+        identifiers = vim.tbl_map(function(project) return { uri = project } end, selection)
+      }
+
+      vim.notify(join({ "Updating project configurations:", vim.inspect(selection) }))
+      vim.lsp.buf_notify(bufnr, "java/projectConfigurationsUpdate", params)
+    else
+      vim.notify(
+        "Update project configurations: user did not supply any input. Aborting.",
+        vim.log.levels.WARN
+      )
+    end
+  end)
+end
+
+---@class JdtUpdateProjectsOpts
+---@field select_mode? JdtProjectSelectMode show prompt to select projects or select all. Defaults to "prompt"
 
 return M
