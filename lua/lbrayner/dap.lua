@@ -20,6 +20,11 @@ local M = {}
 function M.continue(opts)
   opts = opts or {}
 
+  if session and session.stopped_thread_id then
+    require("dap").continue(opts)
+    return
+  end
+
   local bufnr = vim.api.nvim_get_current_buf()
 
   -- from dap.nvim's select_config_and_run(opts)

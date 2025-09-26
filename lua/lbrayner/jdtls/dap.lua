@@ -6,7 +6,7 @@ local M = {}
 function M.continue(opts)
   local session = require("dap").session()
 
-  if session then
+  if session and not session.stopped_thread_id then
     vim.ui.select(
       {
         { command = "redefine_classes", description = "Hot code replace (redefineClasses)" },
