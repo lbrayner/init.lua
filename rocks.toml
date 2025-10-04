@@ -13,21 +13,21 @@
 [plugins]
 "colorbuddy.nvim" = "scm"
 "lir.nvim" = "scm"
-"lz.n" = "2.11.4"
+"lz.n" = "2.12.1"
 "mini.nvim" = "scm"
-"rocks-git.nvim" = "2.5.4"
-"rocks.nvim" = "2.45.1"
+"rocks-git.nvim" = "2.5.6"
+"rocks.nvim" = "2.46.1"
 "typescript-tools.nvim" = "scm"
-fzf-lua = "0.0.2081"
+fzf-lua = "0.0.2263"
 nvim-dap = "scm"
 nvim-dap-ui = "scm"
-nvim-lspconfig = "2.4.0"
+nvim-lspconfig = "2.5.0"
 nvim-spider = "scm"
 
 [plugins."neosolarized.nvim"]
 git = "svrana/neosolarized.nvim"
-branch = "main"
 rev = "0c01fd2ac2ab33918073f57c63bcb2ae5a31d8de"
+branch = "main"
 ignore_tags = true
 
 [plugins.nvim-highlight-colors]
