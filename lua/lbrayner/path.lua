@@ -103,7 +103,7 @@ function M.get_path()
     return M.get_full_path(bufname) -- In case buffer represents a directory
   end
 
-  return fnamemodify(bufname, ":.")
+  return fnamemodify(bufname, ":~:.")
 end
 
 function M.get_relative_directory()
