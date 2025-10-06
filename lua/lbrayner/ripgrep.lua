@@ -3,7 +3,7 @@
 
 local M = {}
 
-local concat = require("lbrayner").concat
+local concat = table.concat
 local format = string.format
 local get_visual_selection = require("lbrayner").get_visual_selection
 local join = require("lbrayner").join

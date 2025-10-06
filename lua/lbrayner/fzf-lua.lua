@@ -3,7 +3,7 @@
 local M = {}
 
 local actions = require("fzf-lua.actions")
-local concat = require("lbrayner").concat
+local concat = table.concat
 local fzf = require("fzf-lua")
 local join = require("lbrayner").join
 local shellescape = vim.fn.shellescape
