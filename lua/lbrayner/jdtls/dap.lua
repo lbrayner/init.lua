@@ -1,5 +1,7 @@
 local M = {}
 
+local join = require("lbrayner").join
+
 ---@class dap.run.opts
 ---@field new? boolean force new session
 ---@field before? fun(config: dap.Configuration): dap.Configuration pre-process config
@@ -33,19 +35,6 @@ function M.continue(opts)
 end
 
 function M.terminal_win_cmd(config)
-  print("lbrayner terminal_win_cmd hello") -- TODO debug
-  -- local session = require("dap").session()
-  -- print("session", vim.inspect(session)) -- TODO
-
-  -- if not session or not session.config then
-  --   return require("dapui").elements.console.buffer()
-  -- end
-
-  -- if not session then
-  --   -- print("lbrayner terminal_win_cmd no session") -- TODO debug
-  --   return require("dapui").elements.console.buffer()
-  -- end
-
   local success, dapui = pcall(require, "dapui")
 
   if not success then
@@ -57,20 +46,21 @@ function M.terminal_win_cmd(config)
   end
 
   local settings = require("dap").defaults[config.type]
-  local bufnr = require("dapui").elements.console.buffer()
-
-  print("bufnr", bufnr) -- TODO debug
+  local bufnr = dapui.elements.console.buffer()
 
   if not vim.b[bufnr].terminal_job_pid then
     return bufnr
   end
-  print("messy-throw")
 
   if not vim.api.nvim_get_proc(vim.b[bufnr].terminal_job_pid) then
     return bufnr
   end
 
-  error("parallel-acre") -- TODO
+  bufnr = require("dapui.util").create_buffer(
+    join({ "DAP Console", bufnr }), { filetype = "dapui_console" }
+  )()
+
+  return bufnr
 end
 
 require("dap").defaults.fallback.terminal_win_cmd = function(config)
