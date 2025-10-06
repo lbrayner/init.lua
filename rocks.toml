@@ -18,11 +18,15 @@
 "rocks-git.nvim" = "2.5.6"
 "rocks.nvim" = "2.46.1"
 "typescript-tools.nvim" = "scm"
-fzf-lua = "0.0.2263"
 nvim-dap = "scm"
 nvim-dap-ui = "scm"
 nvim-lspconfig = "2.5.0"
 nvim-spider = "scm"
+
+[plugins.fzf-lua]
+git = "ibhagwan/fzf-lua"
+branch = "main"
+ignore_tags = true
 
 [plugins."neosolarized.nvim"]
 git = "svrana/neosolarized.nvim"
