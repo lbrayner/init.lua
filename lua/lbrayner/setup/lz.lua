@@ -32,6 +32,7 @@ require("lz.n").load({
   after = function()
     require("lbrayner.dapui").create_user_commands()
     require("dapui").setup()
+    require("dap").defaults.fallback.terminal_win_cmd = require("lbrayner.jdtls.dap").terminal_win_cmd
   end,
   cmd = "DapUiToggle",
 })

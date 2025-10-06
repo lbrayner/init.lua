@@ -32,4 +32,12 @@ function M.continue(opts)
   )
 end
 
+function M.terminal_win_cmd(config)
+  local session = require("dap").session()
+
+  if not session then
+    return require("dap").elements.console.buffer()
+  end
+end
+
 return M

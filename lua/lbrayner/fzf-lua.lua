@@ -98,6 +98,7 @@ function M.make_opts(base, opts)
   history_file = shellescape(history_file)
   local cmd = join({ "tac", history_file, "| nauniq | tac | sponge", history_file })
 
+  opts.autoclose = true
   opts.winopts = opts.winopts or {}
 
   opts.winopts.on_close = function()
