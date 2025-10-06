@@ -33,11 +33,48 @@ function M.continue(opts)
 end
 
 function M.terminal_win_cmd(config)
-  local session = require("dap").session()
+  print("lbrayner terminal_win_cmd hello") -- TODO debug
+  -- local session = require("dap").session()
+  -- print("session", vim.inspect(session)) -- TODO
 
-  if not session then
-    return require("dap").elements.console.buffer()
+  -- if not session or not session.config then
+  --   return require("dapui").elements.console.buffer()
+  -- end
+
+  -- if not session then
+  --   -- print("lbrayner terminal_win_cmd no session") -- TODO debug
+  --   return require("dapui").elements.console.buffer()
+  -- end
+
+  local success, dapui = pcall(require, "dapui")
+
+  if not success then
+    vim.api.nvim_command("belowright new")
+    local bufnr = vim.api.nvim_get_current_buf()
+    local win = vim.api.nvim_get_current_win()
+    vim.api.nvim_set_current_win(cur_win)
+    return bufnr, win
   end
+
+  local settings = require("dap").defaults[config.type]
+  local bufnr = require("dapui").elements.console.buffer()
+
+  print("bufnr", bufnr) -- TODO debug
+
+  if not vim.b[bufnr].terminal_job_pid then
+    return bufnr
+  end
+  print("messy-throw")
+
+  if not vim.api.nvim_get_proc(vim.b[bufnr].terminal_job_pid) then
+    return bufnr
+  end
+
+  error("parallel-acre") -- TODO
+end
+
+require("dap").defaults.fallback.terminal_win_cmd = function(config)
+  return require("lbrayner.jdtls.dap").terminal_win_cmd(config)
 end
 
 return M
