@@ -13,9 +13,11 @@ function M.get_fugitive_git_dir()
   end
 end
 
-function M.get_fugitive_object()
+function M.get_fugitive_object(bufnr)
+  bufnr = bufnr or 0
+
   if vim.fn.exists("*FugitiveParse") == 1 then
-    local object = vim.fn.FugitiveParse(vim.api.nvim_buf_get_name(0))[1]
+    local object = vim.fn.FugitiveParse(vim.api.nvim_buf_get_name(bufnr))[1]
     if object ~= "" then
       return object
     end

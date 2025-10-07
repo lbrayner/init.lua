@@ -38,6 +38,21 @@ function M.get_quickfix_or_location_list_title(winid)
   return vim.fn.getqflist({ title = 1 }).title
 end
 
+function M.get_path(bufnr)
+  bufnr = bufnr or 0
+  local path = require("lbrayner.fugitive").get_fugitive_object(bufnr)
+
+  if path then
+    return path
+  end
+
+  if vim.startswith(vim.api.nvim_buf_get_name(bufnr), "jdt://") then -- jdtls
+    return require("lbrayner.jdtls").get_buffer_name(bufnr)
+  end
+
+  return require("lbrayner.path").get_path(bufnr)
+end
+
 function M.get_proxy_table_for_module(module)
   return setmetatable({}, {
     __index = function(_, key)
@@ -201,10 +216,7 @@ function M.jump_to_location(bufnr, pos, opts)
       { command = "tabnew", description = "Tab" },
     },
     {
-      prompt = string.format(
-        "Open %s in:",
-        vim.fn.pathshorten(fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":~:."))
-      ),
+      prompt = string.format("Open %s in:", vim.fn.pathshorten(M.get_path(bufnr))),
       format_item = function(selected) return selected.description end,
     },
     function(selected)
