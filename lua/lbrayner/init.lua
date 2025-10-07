@@ -6,6 +6,7 @@ local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
 local nvim_buf_get_name = vim.api.nvim_buf_get_name
 local nvim_buf_get_text = vim.api.nvim_buf_get_text
 local nvim_get_current_buf = vim.api.nvim_get_current_buf
+local pathshorten = vim.fn.pathshorten
 local tbl_contains = vim.tbl_contains
 
 function M.buf_is_scratch(bufnr)
@@ -202,7 +203,7 @@ function M.jump_to_location(bufnr, pos, opts)
     },
     {
       prompt = string.format(
-        "Open %s in:", fnamemodify(nvim_buf_get_name(bufnr), ":~:.")
+        "Open %s in:", pathshorten(fnamemodify(nvim_buf_get_name(bufnr), ":~:."))
       ),
       format_item = function(selected) return selected.description end,
     },
