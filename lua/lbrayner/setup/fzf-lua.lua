@@ -1,6 +1,7 @@
 -- vim: fdm=marker
 
 local actions = require("fzf-lua.actions")
+local concat = table.concat
 local fzf = require("fzf-lua")
 local get_visual_selection = require("lbrayner").get_visual_selection
 local notify = vim.notify
@@ -34,9 +35,14 @@ end -- }}}
 
 local function file_tabedit_before(selected) -- {{{
   for _, sel in ipairs(selected) do
-    local path = require("fzf-lua.path").entry_to_file(sel).path
-    local vimcmd = string.format("-tabedit %s", vim.fn.fnameescape(path))
-    vim.cmd(vimcmd)
+    local entry = require("fzf-lua.path").entry_to_file(sel)
+
+    if entry.bufnr then
+      vim.cmd(concat({ "-tabnew | setlocal bufhidden=wipe | buffer ", entry.bufnr }))
+      return
+    end
+
+    vim.cmd(concat({ "-tabedit ", vim.fn.fnameescape(entry.path) }))
   end
 end -- }}}
 
