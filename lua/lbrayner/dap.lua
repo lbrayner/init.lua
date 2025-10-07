@@ -65,7 +65,7 @@ function M.continue(opts)
   end
 end
 
-function M.terminal_win_cmd(config)
+function M.terminal_win_cmd()
   local success, dapui = pcall(require, "dapui")
 
   if not success then
@@ -76,7 +76,6 @@ function M.terminal_win_cmd(config)
     return bufnr, win
   end
 
-  local settings = require("dap").defaults[config.type]
   local bufnr = dapui.elements.console.buffer()
 
   if not vim.b[bufnr].terminal_job_pid then
