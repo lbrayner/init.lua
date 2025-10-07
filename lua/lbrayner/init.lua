@@ -5,7 +5,6 @@ local fnamemodify = vim.fn.fnamemodify
 local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
 local nvim_buf_get_text = vim.api.nvim_buf_get_text
 local nvim_get_current_buf = vim.api.nvim_get_current_buf
-local pathshorten = vim.fn.pathshorten
 local tbl_contains = vim.tbl_contains
 
 function M.buf_is_scratch(bufnr)
@@ -207,6 +206,12 @@ function M.jump_to_location(bufnr, pos, opts)
     return
   end
 
+  local name = M.get_path(bufnr)
+
+  if vim.startswith(vim.uri_from_bufnr(bufnr), "file://") then
+    name = vim.fn.pathshorten(name)
+  end
+
   vim.ui.select(
     {
       { command = "", description = "Current window" },
@@ -216,7 +221,7 @@ function M.jump_to_location(bufnr, pos, opts)
       { command = "tabnew", description = "Tab" },
     },
     {
-      prompt = string.format("Open %s in:", vim.fn.pathshorten(M.get_path(bufnr))),
+      prompt = string.format("Open %s in:", name),
       format_item = function(selected) return selected.description end,
     },
     function(selected)
