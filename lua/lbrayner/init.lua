@@ -1,7 +1,9 @@
 local M = {}
 
 local concat = table.concat
+local fnamemodify = vim.fn.fnamemodify
 local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
+local nvim_buf_get_name = vim.api.nvim_buf_get_name
 local nvim_buf_get_text = vim.api.nvim_buf_get_text
 local nvim_get_current_buf = vim.api.nvim_get_current_buf
 local tbl_contains = vim.tbl_contains
@@ -51,7 +53,7 @@ function M.get_session()
   -- vim-obsession
   local session = string.gsub(vim.v.this_session, "%.%d+%.obsession~?", "")
   if session ~= "" then
-    return vim.fn.fnamemodify(session, ":t:r")
+    return fnamemodify(session, ":t:r")
   end
   return ""
 end
@@ -199,7 +201,9 @@ function M.jump_to_location(bufnr, pos, opts)
       { command = "tabnew", description = "Tab" },
     },
     {
-      prompt = string.format("Open %s in:", vim.fn.fnamemodify(filename, ":~:.")),
+      prompt = string.format(
+        "Open %s in:", fnamemodify(nvim_buf_get_name(bufnr), ":~:.")
+      ),
       format_item = function(selected) return selected.description end,
     },
     function(selected)
@@ -305,8 +309,8 @@ function M.truncate_filename(filename, maxlength)
   if string.len(filename) <= maxlength then
     return filename
   end
-  local head = vim.fn.fnamemodify(filename, ":h")
-  local tail = vim.fn.fnamemodify(filename, ":t")
+  local head = fnamemodify(filename, ":h")
+  local tail = fnamemodify(filename, ":t")
   if head ~= "." and string.len(tail) < maxlength then
     -- -1 (horizontal ellipsis …), -1 (forward slash)
     return string.sub(head, 1, maxlength - string.len(tail) - 1 -1) .. "…/" .. tail
