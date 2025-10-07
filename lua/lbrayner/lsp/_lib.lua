@@ -22,7 +22,8 @@ function M.on_list(options)
   local items = { { tagname = vim.fn.expand("<cword>"), from = from } }
   vim.fn.settagstack(vim.fn.win_getid(), { items = items }, "t")
 
-  require("lbrayner").jump_to_location(filename, pos)
+  local bufnr = vim.fn.bufadd(filename)
+  require("lbrayner").jump_to_location(bufnr, pos)
 end
 
 return M

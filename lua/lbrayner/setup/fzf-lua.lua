@@ -23,26 +23,18 @@ local function file_switch_or_edit_or_qf(selected, opts) -- {{{
     return
   else
     local file = require("fzf-lua.path").entry_to_file(selected[1])
-    local filename = file.path
+    local bufnr = file.bufnr or vim.fn.bufadd(file.path)
 
-    if file.terminal then
-      filename = file.stripped
-    end
-
-    require("lbrayner").jump_to_location(filename, nil, { open_cmd = "" })
+    require("lbrayner").jump_to_location(bufnr, nil, { open_cmd = "" })
   end
 end -- }}}
 
 local function file_tabedit_before(selected) -- {{{
   for _, sel in ipairs(selected) do
-    local entry = require("fzf-lua.path").entry_to_file(sel)
+    local file = require("fzf-lua.path").entry_to_file(sel)
+    local bufnr = file.bufnr or vim.fn.bufadd(file.path)
 
-    if entry.bufnr then
-      vim.cmd(concat({ "-tabnew | setlocal bufhidden=wipe | buffer ", entry.bufnr }))
-      return
-    end
-
-    vim.cmd(concat({ "-tabedit ", vim.fn.fnameescape(entry.path) }))
+    vim.cmd(concat({ "-tabnew | setlocal bufhidden=wipe | buffer ", bufnr }))
   end
 end -- }}}
 

@@ -90,7 +90,7 @@ function M.get_visual_selection(usr_cmd, opts)
   return true, visual_selection
 end
 
-local function _jump_to_location(winid, bufnr, pos)
+local function _jump_to_window_or_unhide(winid, bufnr, pos)
   -- From vim.lsp.util.show_document
   -- Save position in jumplist
   if vim.bo.buftype ~= "terminal" then -- TODO debug to find the real cause
@@ -160,19 +160,10 @@ function M.join(col)
   return table.concat(col, " ")
 end
 
-function M.jump_to_buffer(bufnr, pos)
+function M.jump_to_location(bufnr, pos, opts)
   assert(type(bufnr) == "number", "Bad argument; 'bufnr' must be a number.")
-  if not vim.api.nvim_buf_is_valid(bufnr) then
-    vim.notify(string.format("Buffer “%d” is not valid.", bufnr))
-    return
-  end
-  local winid = vim.fn.win_findbuf(bufnr)[1]
-  _jump_to_location(winid, bufnr, pos)
-end
 
-function M.jump_to_location(filename, pos, opts)
   opts = opts or {}
-  local bufnr = vim.fn.bufadd(filename)
   local winid = vim.fn.win_findbuf(bufnr)[1]
 
   local function open(command)
@@ -185,7 +176,7 @@ function M.jump_to_location(filename, pos, opts)
     local possibly_new_buf = vim.api.nvim_win_get_buf(possibly_new_winid) -- [No Name]
     vim.api.nvim_set_current_win(prev)
 
-    _jump_to_location(possibly_new_winid, bufnr, pos)
+    _jump_to_window_or_unhide(possibly_new_winid, bufnr, pos)
 
     if winid ~= possibly_new_winid and
       vim.api.nvim_buf_is_valid(possibly_new_buf) and
@@ -196,7 +187,7 @@ function M.jump_to_location(filename, pos, opts)
   end
 
   if winid then
-    _jump_to_location(winid, bufnr, pos)
+    _jump_to_window_or_unhide(winid, bufnr, pos)
     return
   end
 
