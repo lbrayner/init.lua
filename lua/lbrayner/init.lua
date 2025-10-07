@@ -1,5 +1,6 @@
 local M = {}
 
+local concat = table.concat
 local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
 local nvim_buf_get_text = vim.api.nvim_buf_get_text
 local nvim_get_current_buf = vim.api.nvim_get_current_buf
@@ -169,21 +170,14 @@ function M.jump_to_location(bufnr, pos, opts)
   local function open(command)
     if not command then return end
 
-    -- From vim.lsp.util.create_window_without_focus
-    local prev = vim.api.nvim_get_current_win()
-    vim.cmd(command)
-    local possibly_new_winid = vim.api.nvim_get_current_win()
-    local possibly_new_buf = vim.api.nvim_win_get_buf(possibly_new_winid) -- [No Name]
-    vim.api.nvim_set_current_win(prev)
+    local winid = 0
 
-    _jump_to_window_or_unhide(possibly_new_winid, bufnr, pos)
-
-    if winid ~= possibly_new_winid and
-      vim.api.nvim_buf_is_valid(possibly_new_buf) and
-      bufnr ~= possibly_new_buf and vim.api.nvim_buf_get_name(possibly_new_buf) == "" then
-      -- Delete new empty buffer possibly created by command
-      pcall(vim.api.nvim_buf_delete, possibly_new_buf, { force = force })
+    if command ~= "" then
+      vim.cmd(concat({ command, " | setlocal bufhidden=wipe | buffer ", bufnr }))
+      winid = vim.api.nvim_get_current_win()
     end
+
+    _jump_to_window_or_unhide(winid, bufnr, pos)
   end
 
   if winid then
