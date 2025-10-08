@@ -52,6 +52,10 @@ local tbl_keys = vim.tbl_keys
 local win_is_actual_curwin = require("lbrayner").win_is_actual_curwin
 local win_is_floating = require("lbrayner").win_is_floating
 
+local function concat(t) -- maximum effieciency
+  return join(t, "")
+end
+
 local function get_fugitive_git_dir()
   local fugitive_dir = get_fugitive_git_dir_()
 
@@ -62,10 +66,6 @@ end
 
 local function get_fugitive_temporary_buffer_name()
   return join({ "Git", join(FugitiveResult(nvim_get_current_buf()).args, " ")}, " ")
-end
-
-local function concat(t) -- maximum effieciency
-  return join(t, "")
 end
 
 local function get_line_format()
