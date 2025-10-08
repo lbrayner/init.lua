@@ -189,6 +189,7 @@ function M.jump_to_location(bufnr, pos, opts)
     local winid = 0
 
     if command ~= "" then
+      -- from fzf-lua's actions (vimcmd_entry)
       vim.cmd(concat({ command, " | setlocal bufhidden=wipe | buffer ", bufnr }))
       winid = vim.api.nvim_get_current_win()
     end

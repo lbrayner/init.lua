@@ -34,6 +34,7 @@ local function file_tabedit_before(selected) -- {{{
     local file = require("fzf-lua.path").entry_to_file(sel)
     local bufnr = file.bufnr or vim.fn.bufadd(file.path)
 
+    -- from fzf-lua's actions (vimcmd_entry)
     vim.cmd(concat({ "-tabnew | setlocal bufhidden=wipe | buffer ", bufnr }))
   end
 end -- }}}
