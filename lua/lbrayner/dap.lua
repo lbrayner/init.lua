@@ -14,7 +14,7 @@ end
 
 local M = {}
 
-local join = require("lbrayner").join
+local concat = table.concat
 
 ---@class dap.run.opts
 ---@field new? boolean force new session
@@ -29,7 +29,7 @@ function M.continue(opts)
 
   local bufnr = vim.api.nvim_get_current_buf()
 
-  -- from dap.nvim's select_config_and_run(opts)
+  -- from nvim-dap's select_config_and_run(opts)
   local providers = require("dap").providers
   local all_configs = {}
   local provider_keys = vim.tbl_keys(providers.configs)
@@ -69,6 +69,7 @@ function M.terminal_win_cmd()
   local success, dapui = pcall(require, "dapui")
 
   if not success then
+    -- from nvim-dap's session.create_terminal_buf
     vim.api.nvim_command("belowright new")
     local bufnr = vim.api.nvim_get_current_buf()
     local win = vim.api.nvim_get_current_win()
@@ -87,7 +88,7 @@ function M.terminal_win_cmd()
   end
 
   bufnr = require("dapui.util").create_buffer(
-    join({ "DAP Console", bufnr }), { filetype = "dapui_console" }
+    concat({ "DAP Console ", bufnr }), { filetype = "dapui_console" }
   )()
 
   return bufnr
