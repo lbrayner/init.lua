@@ -21,7 +21,7 @@ local get_state = vim.fn.state
 local hlID = vim.fn.hlID
 local is_fugitive_blame = require("lbrayner.fugitive").is_fugitive_blame
 local is_quickfix_or_location_list = require("lbrayner").is_quickfix_or_location_list
-local join = table.concat
+local concat = table.concat
 local nvim__redraw = vim.api.nvim__redraw
 local nvim_buf_get_name = vim.api.nvim_buf_get_name
 local nvim_create_augroup = vim.api.nvim_create_augroup
@@ -52,10 +52,6 @@ local tbl_keys = vim.tbl_keys
 local win_is_actual_curwin = require("lbrayner").win_is_actual_curwin
 local win_is_floating = require("lbrayner").win_is_floating
 
-local function concat(t) -- maximum effieciency
-  return join(t, "")
-end
-
 local function get_fugitive_git_dir()
   local fugitive_dir = get_fugitive_git_dir_()
 
@@ -65,7 +61,7 @@ local function get_fugitive_git_dir()
 end
 
 local function get_fugitive_temporary_buffer_name()
-  return join({ "Git", join(FugitiveResult(nvim_get_current_buf()).args, " ")}, " ")
+  return concat({ "Git", concat(FugitiveResult(nvim_get_current_buf()).args, " ")}, " ")
 end
 
 local function get_line_format()
@@ -373,7 +369,7 @@ function M.highlight_winbar()
 end
 
 function M.load_theme(name)
-  local success, theme = pcall(require, join({ "lbrayner.statusline.themes", name }, "."))
+  local success, theme = pcall(require, concat({ "lbrayner.statusline.themes", name }, "."))
 
   if not success then
     theme = require("lbrayner.statusline.themes.neosolarized")
@@ -414,7 +410,7 @@ function M.set_minor_modes(bufnr, mode, action)
   lbrayner = tbl_deep_extend("keep", {
     statusline = {
       modes = {
-        str = join(keys, ",")
+        str = concat(keys, ",")
       }
     }
   }, lbrayner)
