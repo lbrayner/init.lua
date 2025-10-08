@@ -91,6 +91,8 @@ function M.terminal_win_cmd()
     concat({ "DAP Console ", bufnr }), { filetype = "dapui_console" }
   )()
 
+  require("lbrayner").jump_to_location(bufnr)
+
   return bufnr
 end
 
