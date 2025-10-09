@@ -51,11 +51,25 @@ require("lbrayner.subcommands").create_user_command_and_subcommands("Wipe", subc
   desc = "Wipe buffers with text, pattern, filetype; not loaded, not readable or hidden",
 })
 
+subcommand_tbl.fileNotReadable = {
+  optional = function(opts)
+    local text = join(opts.args)
+    wipe_buffers(opts.bang, function(buf)
+      return (
+        buf.listed == 1 and
+        (text == "" or contains(buf.name, text)) and
+        vim.startswith(vim.uri_from_bufnr(buf.bufnr), "file://") and
+        not vim.uv.fs_stat(buf.name)
+      )
+    end)
+  end,
+}
+
 subcommand_tbl.hidden = {
   optional = function(opts)
     local text = join(opts.args)
     wipe_buffers(opts.bang, function(buf)
-      return buf.hidden == 1 and contains(buf.name, text)
+      return buf.hidden == 1 and (text == "" or contains(buf.name, text))
     end)
   end,
 }
@@ -69,10 +83,12 @@ subcommand_tbl.notLoaded = {
 }
 
 subcommand_tbl.notReadable = {
-  simple = function(opts)
+  optional = function(opts)
+    local text = join(opts.args)
     wipe_buffers(opts.bang, function(buf)
       return (
         buf.listed == 1 and
+        (text == "" or contains(buf.name, text)) and
         vim.bo[buf.bufnr].buftype ~= "terminal" and
         not vim.uv.fs_stat(buf.name)
       )
@@ -83,6 +99,7 @@ subcommand_tbl.notReadable = {
 subcommand_tbl.pattern = {
   optional = function(opts)
     local pattern = join(opts.args)
+    assert(pattern ~= "", "Argument required")
     wipe_buffers(opts.bang, function(buf)
       return buf.listed == 1 and string.find(buf.name, pattern)
     end)
@@ -92,6 +109,7 @@ subcommand_tbl.pattern = {
 subcommand_tbl.text = {
   optional = function(opts)
     local text = join(opts.args)
+    assert(text ~= "", "Argument required")
     wipe_buffers(opts.bang, function(buf)
       return buf.listed == 1 and contains(buf.name, text)
     end)
@@ -102,7 +120,7 @@ subcommand_tbl.unlisted = {
   optional = function(opts)
     local text = join(opts.args)
     wipe_buffers(opts.bang, function(buf)
-      return buf.listed == 0 and contains(buf.name, text)
+      return buf.listed == 0 and (text == "" or contains(buf.name, text))
     end)
   end,
 }
