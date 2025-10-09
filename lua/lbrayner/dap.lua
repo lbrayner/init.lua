@@ -88,7 +88,7 @@ function M.terminal_win_cmd()
   end
 
   bufnr = require("dapui.util").create_buffer(
-    concat({ "DAP Console ", bufnr }), { filetype = "dapui_console" }
+     "DAP Console" , { filetype = "dapui_console" }
   )()
 
   require("lbrayner").jump_to_location(bufnr)
