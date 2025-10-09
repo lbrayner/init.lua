@@ -14,6 +14,8 @@ end
 
 local M = {}
 
+local concat = table.concat
+
 ---@class dap.run.opts
 ---@field new? boolean force new session
 ---@field before? fun(config: dap.Configuration): dap.Configuration pre-process config
@@ -27,7 +29,7 @@ function M.continue(opts)
 
   local bufnr = vim.api.nvim_get_current_buf()
 
-  -- from dap.nvim's select_config_and_run(opts)
+  -- from nvim-dap's select_config_and_run(opts)
   local providers = require("dap").providers
   local all_configs = {}
   local provider_keys = vim.tbl_keys(providers.configs)
@@ -61,6 +63,41 @@ function M.continue(opts)
   else
     continue(opts)
   end
+end
+
+function M.terminal_win_cmd()
+  local success, dapui = pcall(require, "dapui")
+
+  if not success then
+    -- from nvim-dap's session.create_terminal_buf
+    vim.api.nvim_command("belowright new")
+    local bufnr = vim.api.nvim_get_current_buf()
+    local win = vim.api.nvim_get_current_win()
+    vim.api.nvim_set_current_win(cur_win)
+    return bufnr, win
+  end
+
+  local bufnr = dapui.elements.console.buffer()
+
+  if not vim.b[bufnr].terminal_job_pid then
+    return bufnr
+  end
+
+  if not vim.api.nvim_get_proc(vim.b[bufnr].terminal_job_pid) then
+    return bufnr
+  end
+
+  bufnr = require("dapui.util").create_buffer(
+     "DAP Console" , { filetype = "dapui_console" }
+  )()
+
+  require("lbrayner").jump_to_location(bufnr)
+
+  return bufnr
+end
+
+require("dap").defaults.fallback.terminal_win_cmd = function(config)
+  return require("lbrayner.dap").terminal_win_cmd(config)
 end
 
 return M
