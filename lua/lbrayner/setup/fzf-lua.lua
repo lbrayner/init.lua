@@ -1,6 +1,7 @@
 -- vim: fdm=marker
 
 local actions = require("fzf-lua.actions")
+local concat = table.concat
 local fzf = require("fzf-lua")
 local get_visual_selection = require("lbrayner").get_visual_selection
 local notify = vim.notify
@@ -22,21 +23,19 @@ local function file_switch_or_edit_or_qf(selected, opts) -- {{{
     return
   else
     local file = require("fzf-lua.path").entry_to_file(selected[1])
-    local filename = file.path
+    local bufnr = file.bufnr or vim.fn.bufadd(file.path)
 
-    if file.terminal then
-      filename = file.stripped
-    end
-
-    require("lbrayner").jump_to_location(filename, nil, { open_cmd = "" })
+    require("lbrayner").jump_to_location(bufnr, nil, { open_cmd = "" })
   end
 end -- }}}
 
 local function file_tabedit_before(selected) -- {{{
   for _, sel in ipairs(selected) do
-    local path = require("fzf-lua.path").entry_to_file(sel).path
-    local vimcmd = string.format("-tabedit %s", vim.fn.fnameescape(path))
-    vim.cmd(vimcmd)
+    local file = require("fzf-lua.path").entry_to_file(sel)
+    local bufnr = file.bufnr or vim.fn.bufadd(file.path)
+
+    -- from fzf-lua's actions (vimcmd_entry)
+    vim.cmd(concat({ "-tabnew | setlocal bufhidden=wipe | buffer ", bufnr }))
   end
 end -- }}}
 

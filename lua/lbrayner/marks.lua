@@ -84,7 +84,7 @@ local function file_mark_info_jump_to_location(file_mark_info)
   local file = file_mark_info.file
   if vim.startswith(file, "term://") then
     local bufnr = vim.fn.bufnr(file)
-    require("lbrayner").jump_to_buffer(bufnr, nil, true)
+    require("lbrayner").jump_to_location(bufnr)
     return
   end
   -- Normalized path because tilde is not expanded in lua
@@ -94,7 +94,7 @@ local function file_mark_info_jump_to_location(file_mark_info)
   if not vim.api.nvim_buf_is_loaded(bufnr) then
     pos = { file_mark_info.pos[2], (file_mark_info.pos[3] - 1) }
   end
-  require("lbrayner").jump_to_location(file, pos)
+  require("lbrayner").jump_to_location(bufnr, pos)
 end
 
 function M.file_mark_jump_to_location(mark)

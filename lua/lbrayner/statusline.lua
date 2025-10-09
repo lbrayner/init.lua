@@ -5,6 +5,7 @@
 local FugitiveHead = vim.fn.FugitiveHead
 local FugitiveResult = vim.fn.FugitiveResult
 local buf_is_scratch = require("lbrayner").buf_is_scratch
+local concat = table.concat
 local empty_dict = vim.empty_dict
 local endswith = vim.endswith
 local exists = vim.fn.exists
@@ -16,12 +17,11 @@ local get_fugitive_object = require("lbrayner.fugitive").get_fugitive_object
 local get_full_path = require("lbrayner.path").get_full_path
 local get_jdtls_buffer_name = require("lbrayner.jdtls").get_buffer_name
 local get_line = vim.fn.line
-local get_path = require("lbrayner.path").get_path
+local get_path_ = require("lbrayner.path").get_path
 local get_state = vim.fn.state
 local hlID = vim.fn.hlID
 local is_fugitive_blame = require("lbrayner.fugitive").is_fugitive_blame
 local is_quickfix_or_location_list = require("lbrayner").is_quickfix_or_location_list
-local join = table.concat
 local nvim__redraw = vim.api.nvim__redraw
 local nvim_buf_get_name = vim.api.nvim_buf_get_name
 local nvim_create_augroup = vim.api.nvim_create_augroup
@@ -61,11 +61,7 @@ local function get_fugitive_git_dir()
 end
 
 local function get_fugitive_temporary_buffer_name()
-  return join({ "Git", join(FugitiveResult(nvim_get_current_buf()).args, " ")}, " ")
-end
-
-local function concat(t) -- maximum effieciency
-  return join(t, "")
+  return concat({ "Git", concat(FugitiveResult(nvim_get_current_buf()).args, " ")}, " ")
 end
 
 local function get_line_format()
@@ -96,6 +92,22 @@ local function get_number_of_lines()
   return concat({ "%-", length, "L" })
 end
 
+-- local copy of lbrayner.get_path
+local function get_path()
+  bufnr = 0
+  local path = get_fugitive_object(bufnr)
+
+  if path then
+    return path
+  end
+
+  if startswith(nvim_buf_get_name(bufnr), "jdt://") then -- jdtls
+    return get_jdtls_buffer_name(bufnr)
+  end
+
+  return get_path_(bufnr)
+end
+
 -- }}}
 
 local function get_buffer_position() -- {{{
@@ -106,20 +118,10 @@ local M = {}
 
 function M.get_buffer_name(opts)
   opts = opts or {}
-  local path = get_fugitive_object()
-
-  if not path then
-    if startswith(nvim_buf_get_name(0), "jdt://") then -- jdtls
-      path = get_jdtls_buffer_name(0)
-    else
-      path = get_path()
-    end
-  end
-
-  local buffer_name = path
+  local buffer_name = get_path()
 
   if opts.tail then -- default is relative
-    buffer_name = fnamemodify(path, ":t")
+    buffer_name = fnamemodify(buffer_name, ":t")
   end
 
   if buffer_name == "" then
@@ -367,7 +369,7 @@ function M.highlight_winbar()
 end
 
 function M.load_theme(name)
-  local success, theme = pcall(require, join({ "lbrayner.statusline.themes", name }, "."))
+  local success, theme = pcall(require, concat({ "lbrayner.statusline.themes", name }, "."))
 
   if not success then
     theme = require("lbrayner.statusline.themes.neosolarized")
@@ -408,7 +410,7 @@ function M.set_minor_modes(bufnr, mode, action)
   lbrayner = tbl_deep_extend("keep", {
     statusline = {
       modes = {
-        str = join(keys, ",")
+        str = concat(keys, ",")
       }
     }
   }, lbrayner)

@@ -1,5 +1,7 @@
 local M = {}
 
+local concat = table.concat
+local fnamemodify = vim.fn.fnamemodify
 local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
 local nvim_buf_get_text = vim.api.nvim_buf_get_text
 local nvim_get_current_buf = vim.api.nvim_get_current_buf
@@ -35,6 +37,21 @@ function M.get_quickfix_or_location_list_title(winid)
   return vim.fn.getqflist({ title = 1 }).title
 end
 
+function M.get_path(bufnr)
+  bufnr = bufnr or 0
+  local path = require("lbrayner.fugitive").get_fugitive_object(bufnr)
+
+  if path then
+    return path
+  end
+
+  if vim.startswith(vim.api.nvim_buf_get_name(bufnr), "jdt://") then -- jdtls
+    return require("lbrayner.jdtls").get_buffer_name(bufnr)
+  end
+
+  return require("lbrayner.path").get_path(bufnr)
+end
+
 function M.get_proxy_table_for_module(module)
   return setmetatable({}, {
     __index = function(_, key)
@@ -50,7 +67,7 @@ function M.get_session()
   -- vim-obsession
   local session = string.gsub(vim.v.this_session, "%.%d+%.obsession~?", "")
   if session ~= "" then
-    return vim.fn.fnamemodify(session, ":t:r")
+    return fnamemodify(session, ":t:r")
   end
   return ""
 end
@@ -90,7 +107,7 @@ function M.get_visual_selection(usr_cmd, opts)
   return true, visual_selection
 end
 
-local function _jump_to_location(winid, bufnr, pos)
+local function _jump_to_window_or_unhide(winid, bufnr, pos)
   -- From vim.lsp.util.show_document
   -- Save position in jumplist
   if vim.bo.buftype ~= "terminal" then -- TODO debug to find the real cause
@@ -160,49 +177,40 @@ function M.join(col)
   return table.concat(col, " ")
 end
 
-function M.jump_to_buffer(bufnr, pos)
+function M.jump_to_location(bufnr, pos, opts)
   assert(type(bufnr) == "number", "Bad argument; 'bufnr' must be a number.")
-  if not vim.api.nvim_buf_is_valid(bufnr) then
-    vim.notify(string.format("Buffer “%d” is not valid.", bufnr))
-    return
-  end
-  local winid = vim.fn.win_findbuf(bufnr)[1]
-  _jump_to_location(winid, bufnr, pos)
-end
 
-function M.jump_to_location(filename, pos, opts)
   opts = opts or {}
-  local bufnr = vim.fn.bufadd(filename)
   local winid = vim.fn.win_findbuf(bufnr)[1]
 
   local function open(command)
     if not command then return end
 
-    -- From vim.lsp.util.create_window_without_focus
-    local prev = vim.api.nvim_get_current_win()
-    vim.cmd(command)
-    local possibly_new_winid = vim.api.nvim_get_current_win()
-    local possibly_new_buf = vim.api.nvim_win_get_buf(possibly_new_winid) -- [No Name]
-    vim.api.nvim_set_current_win(prev)
+    local winid = 0
 
-    _jump_to_location(possibly_new_winid, bufnr, pos)
-
-    if winid ~= possibly_new_winid and
-      vim.api.nvim_buf_is_valid(possibly_new_buf) and
-      bufnr ~= possibly_new_buf and vim.api.nvim_buf_get_name(possibly_new_buf) == "" then
-      -- Delete new empty buffer possibly created by command
-      pcall(vim.api.nvim_buf_delete, possibly_new_buf, { force = force })
+    if command ~= "" then
+      -- from fzf-lua's actions (vimcmd_entry)
+      vim.cmd(concat({ command, " | setlocal bufhidden=wipe | buffer ", bufnr }))
+      winid = vim.api.nvim_get_current_win()
     end
+
+    _jump_to_window_or_unhide(winid, bufnr, pos)
   end
 
   if winid then
-    _jump_to_location(winid, bufnr, pos)
+    _jump_to_window_or_unhide(winid, bufnr, pos)
     return
   end
 
   if opts.open_cmd then
     open(opts.open_cmd)
     return
+  end
+
+  local name = M.get_path(bufnr)
+
+  if vim.startswith(vim.uri_from_bufnr(bufnr), "file://") then
+    name = vim.fn.pathshorten(name)
   end
 
   vim.ui.select(
@@ -214,7 +222,7 @@ function M.jump_to_location(filename, pos, opts)
       { command = "tabnew", description = "Tab" },
     },
     {
-      prompt = string.format("Open %s in:", vim.fn.fnamemodify(filename, ":~:.")),
+      prompt = string.format("Open %s in:", name),
       format_item = function(selected) return selected.description end,
     },
     function(selected)
@@ -320,8 +328,8 @@ function M.truncate_filename(filename, maxlength)
   if string.len(filename) <= maxlength then
     return filename
   end
-  local head = vim.fn.fnamemodify(filename, ":h")
-  local tail = vim.fn.fnamemodify(filename, ":t")
+  local head = fnamemodify(filename, ":h")
+  local tail = fnamemodify(filename, ":t")
   if head ~= "." and string.len(tail) < maxlength then
     -- -1 (horizontal ellipsis …), -1 (forward slash)
     return string.sub(head, 1, maxlength - string.len(tail) - 1 -1) .. "…/" .. tail

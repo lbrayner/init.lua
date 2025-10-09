@@ -79,8 +79,8 @@ function M.get_name()
   return fnamemodify(M.get_path(), ":t")
 end
 
-function M.get_path()
-  local bufnr = 0
+function M.get_path(bufnr)
+  bufnr = bufnr or 0
   local bufname = vim.api.nvim_buf_get_name(bufnr)
 
   if bufname == "" then

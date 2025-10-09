@@ -5,6 +5,7 @@ function M.create_user_command()
 end
 
 function M.get_buffer_name(bufnr)
+  bufnr = bufnr or 0
   local bufname = vim.api.nvim_buf_get_name(bufnr)
 
   if vim.startswith(bufname, "jdt://") then
