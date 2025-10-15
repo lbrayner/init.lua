@@ -253,10 +253,18 @@ function M.get_statusline()
     get_buffer_position()
   })
 
-  if vim.bo.buftype ~= "" then
+  if vim.bo.filetype == "git" then
     rightline = concat({
       rightline,
-      "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%) %2*%{&filetype}%* "
+      "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
+      " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
+      " %2*%{&filetype}%* "
+    })
+  elseif vim.bo.buftype ~= "" then
+    rightline = concat({
+      rightline,
+      "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
+      " %2*%{&filetype}%* "
     })
   else
     rightline = concat({
