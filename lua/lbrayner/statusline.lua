@@ -60,8 +60,20 @@ local function get_fugitive_git_dir()
   end
 end
 
+function get_fugitive_result()
+  return FugitiveResult(nvim_get_current_buf())
+end
+
+function has_fugitive_result()
+  if exists("*FugitiveResult") == 0 then
+    return false
+  end
+
+  return not tbl_isempty(FugitiveResult(nvim_get_current_buf()))
+end
+
 local function get_fugitive_temporary_buffer_name()
-  return concat({ "Git", concat(FugitiveResult(nvim_get_current_buf()).args, " ")}, " ")
+  return concat({ "Git", concat(get_fugitive_result().args, " ")}, " ")
 end
 
 local function get_line_format()
@@ -226,8 +238,7 @@ function M.get_statusline()
       leftline, "%6*", dir, "$%* %<", "Fugitive summary ",
       "%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
     })
-  elseif exists("*FugitiveResult") == 1 and
-    not tbl_isempty(FugitiveResult(nvim_get_current_buf())) then -- Fugitive temporary buffers
+  elseif has_fugitive_result() then -- Fugitive temporary buffers
     local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
     local dir = pathshorten(get_fugitive_git_dir())
 
@@ -319,8 +330,7 @@ function M.get_winbar()
       statusline, dir, "$ %<", "Fugitive summary ",
       "%{v:lua.require'lbrayner.statusline'.get_status_flag()}"
     })
-  elseif exists("*FugitiveResult") == 1 and
-    not tbl_isempty(FugitiveResult(nvim_get_current_buf())) then -- Fugitive temporary buffers
+  elseif has_fugitive_result() then -- Fugitive temporary buffers
     local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
     local dir = pathshorten(get_fugitive_git_dir())
 
