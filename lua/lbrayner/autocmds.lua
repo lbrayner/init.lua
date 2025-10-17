@@ -616,7 +616,9 @@ vim.api.nvim_create_autocmd("FocusLost", {
         )
       end
 
-      write_shada_timer:close()
+      if not write_shada_timer:is_closing() then
+        write_shada_timer:close()
+      end
     end))
   end,
 })
