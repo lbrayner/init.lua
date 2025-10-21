@@ -36,13 +36,15 @@ function M.continue(opts)
   local all_configs = {}
   local provider_keys = vim.tbl_keys(providers.configs)
   table.sort(provider_keys)
-  for _, provider in ipairs(provider_keys) do
-    local config_provider = providers.configs[provider]
-    local configs = config_provider(bufnr)
-    if vim.islist(configs) then
-      vim.list_extend(all_configs, configs)
+  require("dap.async").run(function()
+    for _, provider in ipairs(provider_keys) do
+      local config_provider = providers.configs[provider]
+      local configs = config_provider(bufnr)
+      if vim.islist(configs) then
+        vim.list_extend(all_configs, configs)
+      end
     end
-  end
+  end)
 
   if #all_configs == 1 then
     vim.ui.select(
