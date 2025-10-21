@@ -22,6 +22,8 @@ local concat = table.concat
 function M.continue(opts)
   opts = opts or {}
 
+  local session = require("dap").session()
+
   if session and session.stopped_thread_id then
     require("dap").continue(opts)
     return
