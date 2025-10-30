@@ -1,5 +1,7 @@
 local aesthetics = vim.api.nvim_create_augroup("aesthetics", { clear = true })
 
+local concat = table.concat
+
 vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
   group = aesthetics,
   desc = "Buffer aesthetics",
@@ -321,7 +323,7 @@ local function display_error_cmd(cmd)
   vim.go.switchbuf = "uselast"
   local linenr = vim.api.nvim_win_get_cursor(0)[1]
   vim.cmd.wincmd("p")
-  vim.cmd(cmd)
+  vim.cmd(concat({ cmd, " | setlocal bufhidden=wipe" }))
   vim.cmd(linenr .. command)
   vim.go.switchbuf = switchbuf
 end
@@ -353,6 +355,9 @@ vim.api.nvim_create_autocmd("FileType", {
     end, { buffer = bufnr })
     vim.keymap.set("n", "<Leader><Tab>", function()
       display_error_cmd("tabnew")
+    end, { buffer = bufnr })
+    vim.keymap.set("n", "<Leader>-", function()
+      display_error_cmd("-tabnew")
     end, { buffer = bufnr })
 
     vim.keymap.set("n", "q", function()
