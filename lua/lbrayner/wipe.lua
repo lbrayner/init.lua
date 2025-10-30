@@ -51,6 +51,17 @@ require("lbrayner.subcommands").create_user_command_and_subcommands("Wipe", subc
   desc = "Wipe buffers with text, pattern, filetype; not loaded, not readable or hidden",
 })
 
+subcommand_tbl.file = {
+  optional = function(opts)
+    local text = join(opts.args)
+    assert(text ~= "", "Argument required")
+    wipe_buffers(opts.bang, function(buf)
+      return buf.listed == 1 and contains(buf.name, text) and
+      vim.startswith(vim.uri_from_bufnr(buf.bufnr), "file://")
+    end)
+  end,
+}
+
 subcommand_tbl.fileNotReadable = {
   optional = function(opts)
     local text = join(opts.args)
@@ -61,6 +72,17 @@ subcommand_tbl.fileNotReadable = {
         vim.startswith(vim.uri_from_bufnr(buf.bufnr), "file://") and
         not vim.uv.fs_stat(buf.name)
       )
+    end)
+  end,
+}
+
+subcommand_tbl.filePattern = {
+  optional = function(opts)
+    local pattern = join(opts.args)
+    assert(pattern ~= "", "Argument required")
+    wipe_buffers(opts.bang, function(buf)
+      return buf.listed == 1 and string.find(buf.name, pattern) and
+      vim.startswith(vim.uri_from_bufnr(buf.bufnr), "file://")
     end)
   end,
 }
