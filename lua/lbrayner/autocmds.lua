@@ -561,14 +561,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.api.nvim_create_autocmd("TermOpen", {
       group = terminal_setup,
       desc = "Start in Insert Mode in terminal mode",
-      callback = function(args)
-        local bufnr = args.buf
-        local filetype = vim.bo[bufnr].filetype
-
-        if vim.startswith(filetype, "dapui") then
-          return
-        end
-
+      callback = function()
         vim.cmd.startinsert()
       end,
     })

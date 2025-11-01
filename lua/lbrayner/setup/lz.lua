@@ -24,14 +24,3 @@ end, opts)
 keymap.set("n", "<F8>", function()
   require("lbrayner.fzf-lua").tabs()
 end, opts)
-
--- nvim-dap-ui
-
-require("lz.n").load({
-  "nvim-dap-ui",
-  after = function()
-    require("lbrayner.dapui").create_user_commands()
-    require("dapui").setup()
-  end,
-  cmd = "DapUiToggle",
-})
