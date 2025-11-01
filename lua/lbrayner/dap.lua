@@ -69,39 +69,22 @@ function M.continue(opts)
   end
 end
 
-function M.terminal_win_cmd()
-  local success, dapui = pcall(require, "dapui")
+-- lbrayner.dap is (sould be) only loaded on demand for this to work as expected
+-- From nvim-dap-view
+-- Let nvim-dap handle terminal buffers internally without interfering in the layout
+require("dap").defaults.fallback.terminal_win_cmd = function()
+  local bufnr = vim.api.nvim_create_buf(false, false)
 
-  if not success then
-    -- from nvim-dap's session.create_terminal_buf
-    vim.api.nvim_command("belowright new")
-    local bufnr = vim.api.nvim_get_current_buf()
-    local win = vim.api.nvim_get_current_win()
-    vim.api.nvim_set_current_win(cur_win)
-    return bufnr, win
-  end
-
-  local bufnr = dapui.elements.console.buffer()
-
-  if not vim.b[bufnr].terminal_job_pid then
-    return bufnr
-  end
-
-  if not vim.api.nvim_get_proc(vim.b[bufnr].terminal_job_pid) then
-    return bufnr
-  end
-
-  bufnr = require("dapui.util").create_buffer(
-     "DAP Console" , { filetype = "dapui_console" }
-  )()
-
-  require("lbrayner").jump_to_location(bufnr)
+  vim.api.nvim_create_autocmd("BufFilePost", {
+    desc = "Wait for DAP to change buffer name, then jump to it",
+    buffer = bufnr,
+    once = true,
+    callback = vim.schedule_wrap(function()
+      require("lbrayner").jump_to_location(bufnr)
+    end),
+  })
 
   return bufnr
-end
-
-require("dap").defaults.fallback.terminal_win_cmd = function(config)
-  return require("lbrayner.dap").terminal_win_cmd(config)
 end
 
 return M

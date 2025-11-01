@@ -1,6 +1,7 @@
 local aesthetics = vim.api.nvim_create_augroup("aesthetics", { clear = true })
 
 local concat = table.concat
+local startswith = vim.startswith
 
 vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
   group = aesthetics,
@@ -13,7 +14,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
     end
     if require("lbrayner").win_is_floating() or
       vim.bo.filetype == "fugitiveblame" or
-      vim.startswith(vim.bo.syntax, "Neogit") then
+      startswith(vim.bo.syntax, "Neogit") then
       return
     end
     require("lbrayner").set_number()
@@ -478,7 +479,9 @@ vim.api.nvim_create_autocmd("TermOpen", {
   group = terminal_setup,
   desc = "Terminal filetype",
   callback = function()
-    if vim.b.default_filetype then
+    if vim.v.vim_did_enter == 0 or -- session restore
+      vim.b.default_filetype or
+      vim.bo.filetype == "" then -- buffer created in background, BufEnter not triggered
       vim.bo.filetype = "terminal"
     end
   end,
@@ -504,14 +507,18 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.wo.relativenumber = true
       end
 
-      if vim.api.nvim_buf_get_name(bufnr) ~= vim.b[bufnr].term_title then
-        local title = vim.b[bufnr].term_title
-        local wrong_title = vim.api.nvim_buf_get_name(bufnr)
-        if not vim.startswith(title, "term://") then
-          title = string.format("%s (%d)", vim.b[bufnr].term_title, vim.fn.jobpid(vim.bo[bufnr].channel))
-        end
-        vim.api.nvim_buf_set_name(bufnr, title)
-        local wrong_title_bufnr = vim.fn.bufnr(wrong_title)
+      local bufname = vim.api.nvim_buf_get_name(bufnr)
+      local term_title = vim.b[bufnr].term_title
+
+      if startswith(term_title, "reply: ") then
+        local reply = string.format(
+          "%s (%d)", term_title, vim.fn.jobpid(vim.bo[bufnr].channel)
+        )
+        vim.api.nvim_buf_set_name(bufnr, reply)
+      elseif startswith(bufname, "term://") and
+        startswith(term_title, "term://") and bufname ~= term_title then
+        vim.api.nvim_buf_set_name(bufnr, term_title)
+        local wrong_title_bufnr = vim.fn.bufnr(bufname)
         vim.api.nvim_buf_delete(wrong_title_bufnr, { force = true })
       end
 
@@ -563,9 +570,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
       desc = "Start in Insert Mode in terminal mode",
       callback = function(args)
         local bufnr = args.buf
-        local filetype = vim.bo[bufnr].filetype
 
-        if vim.startswith(filetype, "dapui") then
+        -- There must be a way to determine if terminal was manually open
+        if vim.b[bufnr]["dap-type"] then
           return
         end
 
