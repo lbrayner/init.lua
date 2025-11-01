@@ -19,7 +19,6 @@
 "rocks.nvim" = "2.46.1"
 "typescript-tools.nvim" = "scm"
 nvim-dap = "scm"
-nvim-dap-ui = "scm"
 nvim-lspconfig = "2.5.0"
 nvim-spider = "scm"
 
