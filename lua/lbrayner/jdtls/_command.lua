@@ -21,6 +21,10 @@ subcommand_tbl.goToTopLevelDeclaration = {
   simple = require("lbrayner.jdtls").java_go_to_top_level_declaration,
 }
 
+subcommand_tbl.importProject = {
+  simple = require("lbrayner.jdtls").import_project,
+}
+
 subcommand_tbl.organizeImports = {
   simple = function()
     require("jdtls").organize_imports()

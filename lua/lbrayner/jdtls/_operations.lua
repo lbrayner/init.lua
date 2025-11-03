@@ -24,6 +24,16 @@ local function with_jdtls(fn) -- {{{
   fn(client, bufnr)
 end -- }}}
 
+function M.import_project()
+  local command = {
+    command = "java.project.import",
+  }
+
+  require("jdtls.util").execute_command(command, function(err)
+    assert(not err, vim.inspect(err))
+  end)
+end
+
 function M.java_go_to_top_level_declaration()
   with_jdtls(function(client, bufnr)
     require("lbrayner.lsp").document_symbol(client, function(result, ctx)
@@ -70,12 +80,12 @@ function M.java_is_test_file(cb)
   local bufnr = vim.api.nvim_get_current_buf()
   local uri = vim.uri_from_bufnr(bufnr)
 
-  local is_test_file_cmd = {
+  local command = {
     command = "java.project.isTestFile",
     arguments = { uri }
   }
 
-  require("jdtls.util").execute_command(is_test_file_cmd, function(err, result, ctx)
+  require("jdtls.util").execute_command(command, function(err, result, ctx)
     assert(not err, vim.inspect(err))
     cb(result, ctx)
   end)
