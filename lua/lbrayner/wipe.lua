@@ -62,6 +62,17 @@ subcommand_tbl.file = {
   end,
 }
 
+subcommand_tbl.fileHidden = {
+  optional = function(opts)
+    local text = join(opts.args)
+    wipe_buffers(opts.bang, function(buf)
+      return buf.hidden == 1 and
+      (text == "" or contains(buf.name, text)) and
+      vim.startswith(vim.uri_from_bufnr(buf.bufnr), "file://")
+    end)
+  end,
+}
+
 subcommand_tbl.fileNotReadable = {
   optional = function(opts)
     local text = join(opts.args)
