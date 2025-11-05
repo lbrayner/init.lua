@@ -222,7 +222,7 @@ function M.jump_to_location(bufnr, pos, opts)
       { command = "tabnew", description = "Tab" },
     },
     {
-      prompt = string.format("Open %s in:", name),
+      prompt = string.format("Open %s in> ", name),
       format_item = function(selected) return selected.description end,
     },
     function(selected)

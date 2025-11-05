@@ -53,7 +53,7 @@ function M.continue(opts)
         { command = "do_nothing", description = "Do nothing" },
       },
       {
-        prompt = "There is only one DAP configuration. What would you like to do?",
+        prompt = "There is only one DAP configuration> ",
         format_item = function(c) return c.description end,
       },
       function(c)
