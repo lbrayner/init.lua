@@ -6,7 +6,10 @@ local M = {}
 function M.continue(opts)
   local session = require("dap").session()
 
-  if not session or session and session.stopped_thread_id then
+  if not session or
+    session and session.stopped_thread_id or
+    session and vim.tbl_get(session, "config", "type") ~= "java" or
+    session and not vim.tbl_get(session, "config", "mainClass") then
     require("lbrayner.dap").continue(opts)
     return
   end
@@ -17,7 +20,7 @@ function M.continue(opts)
       { command = "dap_continue", description = "See more DAP options..." },
     },
     {
-      prompt = "A DAP session is active. What would you like to do?",
+      prompt = string.format("Java Debug Server session “%s” active> ", session.config.name),
       format_item = function(c) return c.description end,
     },
     function(c)
