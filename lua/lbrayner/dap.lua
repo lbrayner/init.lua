@@ -1,4 +1,6 @@
 local function continue(opts)
+  opts = opts or {}
+
   require("dap").continue(vim.tbl_extend("force", {
     before = function(config)
       local success, session = pcall(require, "lbrayner.session")
@@ -20,8 +22,6 @@ local concat = table.concat
 ---@field new? boolean force new session
 ---@field before? fun(config: dap.Configuration): dap.Configuration pre-process config
 function M.continue(opts)
-  opts = opts or {}
-
   local session = require("dap").session()
 
   if session and session.stopped_thread_id then
