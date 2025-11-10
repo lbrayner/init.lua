@@ -44,7 +44,9 @@ function M.continue(opts)
     end
   end)
 
-  if #all_configs == 1 then
+  if #all_configs == 0 then
+    vim.notify("No DAP configurations found.")
+  elseif #all_configs == 1 then
     vim.ui.select(
       {
         { command = "dap_continue", description = "DAP continue..." },
