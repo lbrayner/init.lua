@@ -16,8 +16,6 @@ end
 
 local M = {}
 
-local concat = table.concat
-
 ---@class dap.run.opts
 ---@field new? boolean force new session
 ---@field before? fun(config: dap.Configuration): dap.Configuration pre-process config
