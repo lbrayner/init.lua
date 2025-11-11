@@ -480,7 +480,8 @@ vim.api.nvim_create_autocmd("TermOpen", {
   desc = "Terminal filetype",
   callback = function()
     if vim.v.vim_did_enter == 0 or -- session restore
-      vim.b.default_filetype then
+      vim.b.default_filetype or
+      vim.bo.filetype == "" then -- buffer created in background, BufEnter not triggered
       vim.bo.filetype = "terminal"
     end
   end,
