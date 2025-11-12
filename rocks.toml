@@ -33,6 +33,12 @@ rev = "0c01fd2ac2ab33918073f57c63bcb2ae5a31d8de"
 branch = "main"
 ignore_tags = true
 
+[plugins.nvim-dap-view]
+git = "igorlfs/nvim-dap-view"
+branch = "main"
+rev = "502990690cbde93d1b1065faff6e5ae1ca8be72d"
+ignore_tags = true
+
 [plugins.nvim-highlight-colors]
 git = "brenoprata10/nvim-highlight-colors"
 branch = "main"
