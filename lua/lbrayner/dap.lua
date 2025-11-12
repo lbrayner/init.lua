@@ -69,4 +69,13 @@ function M.continue(opts)
   end
 end
 
+-- lbrayner.dap is (sould be) only loaded on demand for this to work as expected
+-- From nvim-dap-view
+-- Let nvim-dap handle terminal buffers internally without interfering in the layout
+require("dap").defaults.fallback.terminal_win_cmd = function()
+    local bufnr = vim.api.nvim_create_buf(false, false)
+    require("lbrayner").jump_to_location(bufnr)
+    return bufnr
+end
+
 return M
