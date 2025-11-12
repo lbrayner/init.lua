@@ -74,7 +74,16 @@ end
 -- Let nvim-dap handle terminal buffers internally without interfering in the layout
 require("dap").defaults.fallback.terminal_win_cmd = function()
     local bufnr = vim.api.nvim_create_buf(false, false)
-    require("lbrayner").jump_to_location(bufnr)
+
+    vim.api.nvim_create_autocmd("BufFilePost", {
+      desc = "Wait for DAP to change buffer name, then jump to it",
+      buffer = bufnr,
+      once = true,
+      callback = vim.schedule_wrap(function()
+        require("lbrayner").jump_to_location(bufnr)
+      end),
+    })
+
     return bufnr
 end
 
