@@ -561,27 +561,6 @@ vim.api.nvim_create_autocmd("TermLeave", {
   end,
 })
 
-vim.api.nvim_create_autocmd("VimEnter", {
-  group = terminal_setup,
-  desc = "Create terminal setup autocmds",
-  callback = function()
-    vim.api.nvim_create_autocmd("TermOpen", {
-      group = terminal_setup,
-      desc = "Start in Insert Mode in terminal mode",
-      callback = function(args)
-        local bufnr = args.buf
-
-        -- There must be a way to determine if terminal was manually open
-        if vim.b[bufnr]["dap-type"] then
-          return
-        end
-
-        vim.cmd.startinsert()
-      end,
-    })
-  end,
-})
-
 if vim.v.vim_did_enter == 1 then
   vim.api.nvim_exec_autocmds("VimEnter", { group = terminal_setup })
 end
