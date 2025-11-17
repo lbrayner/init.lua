@@ -23,9 +23,9 @@ nvim-lspconfig = "2.5.0"
 nvim-spider = "scm"
 
 [plugins.fzf-lua]
-git = "ibhagwan/fzf-lua"
-branch = "main"
-rev = "abad16fa530926b34413f7763cb2c202bcf5b392"
+git = "lbrayner/fzf-lua"
+branch = "lbrayner/stable"
+rev = "71fe5c16a2fc2897fc41d916b30b96d8a3a9811a"
 ignore_tags = true
 
 [plugins."neosolarized.nvim"]
