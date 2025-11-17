@@ -179,7 +179,7 @@ function M.get_minor_modes()
   local bufnr = nvim_get_current_buf()
   local modes = tbl_get(vim.b[bufnr], "lbrayner", "statusline", "modes", "str")
 
-  if modes and modes ~= "" then
+  if modes and type(modes) == "string" and modes ~= "" then
     return concat({ "%9*", modes, "%* " })
   end
 
