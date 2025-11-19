@@ -600,9 +600,7 @@ nvim_create_autocmd("VimEnter", {
         group = statusline,
         buffer = bufnr,
         desc = "Diagnostic severity statusline highlight",
-        callback = function(args)
-          local bufnr = args.buf
-
+        callback = function()
           highlight_severity(bufnr)
         end,
       })
