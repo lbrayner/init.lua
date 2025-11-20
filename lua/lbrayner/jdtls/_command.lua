@@ -44,7 +44,11 @@ subcommand_tbl.setupDapMainClassConfigs = {
         local dap_configs_on_ready = session.dap_configs_on_ready
 
         if dap_configs_on_ready and type(dap_configs_on_ready) == "function" then
-          dap_configs_on_ready()
+          require("jdtls.async").run(function()
+            dap_configs_on_ready()
+          end)
+
+          vim.notify("Java Debug Server configurations are ready!")
         end
       end
   })
