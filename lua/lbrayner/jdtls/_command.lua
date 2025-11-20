@@ -35,17 +35,23 @@ subcommand_tbl.setupDapMainClassConfigs = {
   simple = function()
     require("jdtls.dap").setup_dap_main_class_configs({
       on_ready = function()
-        local success, session = pcall(require, "lbrayner.session.jdtls")
+        require("jdtls.async").run(function()
+          (function()
+            local success, session = pcall(require, "lbrayner.session.jdtls")
 
-        if not success then
-          return
-        end
+            if not success then
+              return
+            end
 
-        local dap_configs_on_ready = session.dap_configs_on_ready
+            local dap_configs_on_ready = session.dap_configs_on_ready
 
-        if dap_configs_on_ready and type(dap_configs_on_ready) == "function" then
-          dap_configs_on_ready()
-        end
+            if dap_configs_on_ready and type(dap_configs_on_ready) == "function" then
+              dap_configs_on_ready()
+            end
+          end)()
+
+          vim.notify("Java Debug Server configurations are ready!")
+        end)
       end
   })
   end,
