@@ -35,7 +35,7 @@ subcommand_tbl.setupDapMainClassConfigs = {
   simple = function()
     require("jdtls.dap").setup_dap_main_class_configs({
       on_ready = function()
-        require("jdtls.async").run(function()
+        require("dap.async").run(function()
           (function()
             local success, session = pcall(require, "lbrayner.session.jdtls")
 
@@ -50,7 +50,7 @@ subcommand_tbl.setupDapMainClassConfigs = {
             end
           end)()
 
-          vim.notify("Java Debug Server configurations are ready!")
+          require("dap.utils").notify("Java Debug Server configurations are ready!")
         end)
       end
   })
