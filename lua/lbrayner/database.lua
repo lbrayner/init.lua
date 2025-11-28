@@ -7,6 +7,7 @@ local M = {}
 -- Local variables -- {{{
 
 local cmd = vim.cmd
+local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local format = string.format
 local get_visual_selection = require("lbrayner").get_visual_selection
@@ -32,6 +33,21 @@ local vim_keymap_set = vim.keymap.set
 local visualmode = vim.fn.visualmode
 
 -- }}}
+
+function M.create_connection_parameters_command(bufnr, params)
+    nvim_buf_create_user_command(bufnr, "ConnectionParameters", function()
+      require("lbrayner.clipboard").clip(
+        concat(
+          vim.iter(
+            vim.tbl_keys(params)
+          ):map(
+            function(k) return concat({ k, params[k] }, ": ") end
+          ):totable(),
+          "\n"
+        )
+      )
+    end, { nargs = 0 })
+end
 
 -- NoSQL databases
 function M.set_up_database_access(bufnr)
@@ -91,6 +107,9 @@ nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
       user, host, port, uri_encode(password)
     )
 
+    M.create_connection_parameters_command(args.buf, {
+      Host = host, Port = port, User = user
+    })
     M.set_up_sql_database_access()
   end,
 })
@@ -110,6 +129,9 @@ nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
       "postgresql://%s@%s:%s/%s", user, host, port, database
     )
 
+    M.create_connection_parameters_command(args.buf, {
+      Host = host, Port = port, Database = database, User = user
+    })
     M.set_up_sql_database_access()
   end,
 })
@@ -130,6 +152,9 @@ nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
       user, host, port, database, uri_encode(password)
     )
 
+    M.create_connection_parameters_command(args.buf, {
+      Host = host, Port = port, Database = database, User = user
+    })
     M.set_up_sql_database_access()
   end,
 })
