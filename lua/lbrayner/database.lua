@@ -35,18 +35,18 @@ local visualmode = vim.fn.visualmode
 -- }}}
 
 function M.create_connection_parameters_command(bufnr, params)
-    nvim_buf_create_user_command(bufnr, "ConnectionParameters", function()
-      require("lbrayner.clipboard").clip(
-        concat(
-          vim.iter(
-            vim.tbl_keys(params)
-          ):map(
-            function(k) return concat({ k, params[k] }, ": ") end
-          ):totable(),
-          "\n"
-        )
-      )
-    end, { nargs = 0 })
+  params = concat(
+    vim.iter(
+      vim.tbl_keys(params)
+    ):map(
+      function(k) return concat({ k, params[k] }, ": ") end
+    ):totable(),
+    "\n"
+  )
+
+  nvim_buf_create_user_command(bufnr, "ConnectionParameters", function()
+    require("lbrayner.clipboard").clip(params)
+  end, { nargs = 0 })
 end
 
 -- NoSQL databases
@@ -130,7 +130,10 @@ nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
     )
 
     M.create_connection_parameters_command(args.buf, {
-      Host = host, Port = port, Database = database, User = user
+      Host = host,
+      Port = port,
+      Database = database ~= "" and database or nil,
+      User = user
     })
     M.set_up_sql_database_access()
   end,
@@ -153,7 +156,10 @@ nvim_create_autocmd({ "BufNewFile", "BufRead", }, {
     )
 
     M.create_connection_parameters_command(args.buf, {
-      Host = host, Port = port, Database = database, User = user
+      Host = host,
+      Port = port,
+      Database = database ~= "" and database or nil,
+      User = user
     })
     M.set_up_sql_database_access()
   end,
