@@ -107,25 +107,6 @@ function M.get_visual_selection(usr_cmd, opts)
   return true, visual_selection
 end
 
-local function _jump_to_window_or_unhide(winid, bufnr, pos)
-  -- From vim.lsp.util.show_document
-  -- Save position in jumplist
-  if vim.bo.buftype ~= "terminal" then -- TODO debug to find the real cause
-    vim.cmd("normal! m'")
-  end
-
-  vim.bo[bufnr].buflisted = true
-  vim.api.nvim_win_set_buf(winid, bufnr)
-  vim.api.nvim_set_current_win(winid)
-  if pos then
-    vim.api.nvim_win_set_cursor(winid, pos)
-    vim.api.nvim_win_call(winid, function()
-      -- Open folds under the cursor
-      vim.cmd("normal! zv")
-    end)
-  end
-end
-
 function M.include_expression(fname)
   fname = vim.fn.tr(fname, ".", "/")
   local dir = "lua"
@@ -175,6 +156,25 @@ end
 function M.join(col)
   assert(type(col) == "table", "Bad argument; 'col' must be a table.")
   return table.concat(col, " ")
+end
+
+local function _jump_to_window_or_unhide(winid, bufnr, pos)
+  -- From vim.lsp.util.show_document
+  -- Save position in jumplist
+  if vim.bo.buftype ~= "terminal" then -- TODO debug to find the real cause
+    vim.cmd("normal! m'")
+  end
+
+  vim.bo[bufnr].buflisted = true
+  vim.api.nvim_win_set_buf(winid, bufnr)
+  vim.api.nvim_set_current_win(winid)
+  if pos then
+    vim.api.nvim_win_set_cursor(winid, pos)
+    vim.api.nvim_win_call(winid, function()
+      -- Open folds under the cursor
+      vim.cmd("normal! zv")
+    end)
+  end
 end
 
 function M.jump_to_location(bufnr, pos, opts)
@@ -336,6 +336,19 @@ function M.truncate_filename(filename, maxlength)
   end
   local cut = maxlength / 2
   return string.sub(tail, 1, cut - 1) .. "…" .. string.sub(tail, cut)
+end
+
+function M.tbl_tostring(t)
+  assert(type(t) == "table", "Bad argument; 't' must be a table.")
+
+  return concat(
+    vim.iter(
+      vim.tbl_keys(t)
+    ):map(
+      function(k) return concat({ k, t[k] }, ": ") end
+    ):totable(),
+    "\n"
+  )
 end
 
 function M.win_is_actual_curwin()

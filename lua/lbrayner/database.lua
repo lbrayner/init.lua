@@ -35,14 +35,18 @@ local visualmode = vim.fn.visualmode
 -- }}}
 
 function M.create_connection_parameters_command(bufnr, params)
-  params = concat(
-    vim.iter(
-      vim.tbl_keys(params)
-    ):map(
-      function(k) return concat({ k, params[k] }, ": ") end
-    ):totable(),
-    "\n"
+  assert(type(bufnr) == "number", "Bad argument; 'bufnr' must be a number.")
+  assert(type(params) == "table", "Bad argument; 'params' must be a table.")
+  assert(
+    params.Host and type(params.Host) == "string",
+    "Parameter 'Host' of type 'string' is required"
   )
+  assert(
+    params.Port and type(params.Port) == "string",
+    "Parameter 'Port' of type 'string' is required"
+  )
+
+  params = require("lbrayner").tbl_tostring(params)
 
   nvim_buf_create_user_command(bufnr, "ConnectionParameters", function()
     require("lbrayner.clipboard").clip(params)
