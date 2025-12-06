@@ -17,7 +17,7 @@ fzf.register_ui_select(require("lbrayner.fzf-lua").make_opts({
   }
 }))
 
-local function file_switch_or_edit_or_qf(selected, opts) -- {{{
+local function file_jump_or_qf(selected, opts) -- {{{
   if #selected > 1 then
     actions.file_sel_to_qf(selected, opts)
     return
@@ -25,7 +25,7 @@ local function file_switch_or_edit_or_qf(selected, opts) -- {{{
     local file = require("fzf-lua.path").entry_to_file(selected[1])
     local bufnr = file.bufnr or vim.fn.bufadd(file.path)
 
-    require("lbrayner").jump_to_location(bufnr, nil, { open_cmd = "" })
+    require("lbrayner").jump_to_location(bufnr)
   end
 end -- }}}
 
@@ -48,8 +48,8 @@ fzf.setup({
       -- Pickers inheriting these actions:
       --   files, git_files, git_status, grep, lsp, oldfiles, quickfix, loclist,
       --   tags, btags, args, buffers, tabs, lines, blines
-      ["enter"]       = file_switch_or_edit_or_qf,
-      ["alt-g"]       = actions.file_edit_or_qf,
+      ["enter"]       = file_jump_or_qf,
+      ["ctrl-]"]      = actions.file_edit_or_qf,
       ["ctrl-s"]      = actions.file_split,
       ["alt-s"]       = actions.file_vsplit,
       ["alt-t"]       = file_tabedit_before,
