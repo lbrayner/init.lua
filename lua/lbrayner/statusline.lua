@@ -162,6 +162,16 @@ function M.get_buffer_status()
   return status
 end
 
+function M.get_dap_status()
+  local session = require("dap").session()
+
+  if not session then
+    return "  "
+  end
+
+  return "%7*%* "
+end
+
 function M.get_diagnostics()
   local bufnr = nvim_get_current_buf()
 
@@ -269,6 +279,7 @@ function M.get_statusline()
     rightline = concat({
       rightline,
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
+      " %{%v:lua.require'lbrayner.statusline'.get_dap_status()%}",
       " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
       " %2*%{&filetype}%* "
     })
@@ -276,6 +287,7 @@ function M.get_statusline()
     rightline = concat({
       rightline,
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
+      " %{%v:lua.require'lbrayner.statusline'.get_dap_status()%}",
       " %2*%{&filetype}%* "
     })
   else
@@ -283,6 +295,7 @@ function M.get_statusline()
       rightline,
       " %{%v:lua.require'lbrayner.statusline'.get_diagnostics()%}",
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
+      " %{%v:lua.require'lbrayner.statusline'.get_dap_status()%}",
       " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
       " %4.(%4*%{&fileformat}%*%)",
       " %2*%{&filetype}%* "
