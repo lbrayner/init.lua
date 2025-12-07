@@ -122,6 +122,43 @@ end
 
 -- }}}
 
+-- {{{ DAP listeners
+
+local DAP_HL_USER_GROUP = "User7"
+
+local function highlight_dap_stopped(is_stopped)
+  local daphl = nvim_get_hl(0, { name = DAP_HL_USER_GROUP })
+
+  if is_stopped then
+    local stopped_hl = nvim_get_hl(0, { name = "DiagnosticError" })
+
+    nvim_set_hl(
+      0,
+      DAP_HL_USER_GROUP,
+      tbl_deep_extend("keep", { fg = stopped_hl.fg }, daphl)
+    )
+    return
+  end
+
+  nvim_set_hl(
+    0,
+    DAP_HL_USER_GROUP,
+    tbl_deep_extend("keep", { fg = "NONE" }, daphl)
+  )
+end
+
+-- command: 'continue';
+require("dap").listeners.after["continue"]["lbrayner.statusline"] = function()
+  highlight_dap_stopped(false)
+end
+
+-- event: 'stopped';
+require("dap").listeners.after["event_stopped"]["lbrayner.statusline"] = function()
+  highlight_dap_stopped(true)
+end
+
+-- }}}
+
 local function get_buffer_position() -- {{{
   return concat({ get_line_format(), ",%-3.v %3.P ", get_number_of_lines() })
 end -- }}}
@@ -160,6 +197,16 @@ function M.get_buffer_status()
   status = concat({ status, (vim.bo.modified and " " or " %1*"), M.get_status_flag(), "%*" })
 
   return status
+end
+
+function M.get_dap_status()
+  local session = require("dap").session()
+
+  if not session then
+    return "  "
+  end
+
+  return "%7*%* "
 end
 
 function M.get_diagnostics()
@@ -269,6 +316,7 @@ function M.get_statusline()
     rightline = concat({
       rightline,
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
+      " %{%v:lua.require'lbrayner.statusline'.get_dap_status()%}",
       " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
       " %2*%{&filetype}%* "
     })
@@ -276,6 +324,7 @@ function M.get_statusline()
     rightline = concat({
       rightline,
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
+      " %{%v:lua.require'lbrayner.statusline'.get_dap_status()%}",
       " %2*%{&filetype}%* "
     })
   else
@@ -283,6 +332,7 @@ function M.get_statusline()
       rightline,
       " %{%v:lua.require'lbrayner.statusline'.get_diagnostics()%}",
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
+      " %{%v:lua.require'lbrayner.statusline'.get_dap_status()%}",
       " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
       " %4.(%4*%{&fileformat}%*%)",
       " %2*%{&filetype}%* "

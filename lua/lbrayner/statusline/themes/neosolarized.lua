@@ -4,7 +4,6 @@ return {
       command = {
         User1 = { bg = "Constant", fg = "Todo" },
         User2 = { bg = "Constant", fg = "Cursor" },
-        User3 = { bg = "Constant" },
         User4 = { bg = "Constant", fg = "Comment" },
         User5 = { bg = "Constant", fg = "Comment" },
         User6 = { bg = "Constant", fg = "Underlined" },
@@ -14,7 +13,6 @@ return {
       insert = {
         User1 = { bg = "Added", fg = "Todo" },
         User2 = { bg = "Added", fg = "Cursor" },
-        User3 = { bg = "Added" },
         User4 = { bg = "Added", fg = "Special" },
         User5 = { bg = "Added", fg = "Cursor" },
         User6 = { bg = "Added", fg = "Comment" },
@@ -24,7 +22,6 @@ return {
       normal = {
         User1 = { bg = "NONE", fg = "Todo" },
         User2 = { bg = "NONE", fg = "Underlined" },
-        User3 = { bg = "Cursor" },
         User4 = { bg = "NONE", fg = "Comment" },
         User5 = { bg = "NONE", fg = "Ignore" },
         User6 = { bg = "NONE", fg = "Statement" },
@@ -34,7 +31,6 @@ return {
       search = {
         User1 = { bg = "Removed", fg = "Include" },
         User2 = { bg = "Removed", fg = "Cursor" },
-        User3 = { bg = "Removed" },
         User4 = { bg = "Removed", fg = "Normal" },
         User5 = { bg = "Removed", fg = "Cursor" },
         User6 = { bg = "Removed", fg = "Special" },
@@ -44,7 +40,6 @@ return {
       select = {
         User1 = { bg = "Type", fg = "Include" },
         User2 = { bg = "Type", fg = "Cursor" },
-        User3 = { bg = "Type" },
         User4 = { bg = "Type", fg = "Underlined" },
         User5 = { bg = "Type", fg = "Cursor" },
         User6 = { bg = "Type", fg = "Special" },
@@ -54,7 +49,6 @@ return {
       visual = {
         User1 = { bg = "Changed", fg = "Todo" },
         User2 = { bg = "Changed", fg = "Cursor" },
-        User3 = { bg = "Changed" },
         User4 = { bg = "Changed", fg = "Underlined" },
         User5 = { bg = "Changed", fg = "Cursor" },
         User6 = { bg = "Changed", fg = "Comment" },
