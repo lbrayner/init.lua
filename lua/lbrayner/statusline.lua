@@ -126,6 +126,7 @@ local function get_buffer_position() -- {{{
   return concat({ get_line_format(), ",%-3.v %3.P ", get_number_of_lines() })
 end -- }}}
 
+local DIAGNOSTIC_HL_USER_GROUP = "User3"
 local M = {}
 
 function M.get_buffer_name(opts)
@@ -168,7 +169,7 @@ function M.get_diagnostics()
     return " "
   end
 
-  return "%7*•%*"
+  return "%3*•%*"
 end
 
 function M.get_empty()
@@ -576,10 +577,14 @@ nvim_create_autocmd("VimEnter", {
           end
         end)(bufnr)
 
-        local user7 = nvim_get_hl(0, { name = "User7" })
+        local diaghl = nvim_get_hl(0, { name = DIAGNOSTIC_HL_USER_GROUP })
 
         if not severity then
-          nvim_set_hl(0, "User7", tbl_deep_extend("keep", { fg = "NONE" }, user7))
+          nvim_set_hl(
+            0,
+            DIAGNOSTIC_HL_USER_GROUP,
+            tbl_deep_extend("keep", { fg = "NONE" }, diaghl)
+          )
 
           return
         end
@@ -589,7 +594,11 @@ nvim_create_autocmd("VimEnter", {
         })
         local severity_hl = nvim_get_hl(0, { name = group })
 
-        nvim_set_hl(0, "User7", tbl_deep_extend("keep", { fg = severity_hl.fg }, user7))
+        nvim_set_hl(
+          0,
+          DIAGNOSTIC_HL_USER_GROUP,
+          tbl_deep_extend("keep", { fg = severity_hl.fg }, diaghl)
+        )
       end
 
       highlight_severity(bufnr)
