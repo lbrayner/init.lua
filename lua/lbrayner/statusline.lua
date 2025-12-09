@@ -126,6 +126,7 @@ local function get_buffer_position() -- {{{
   return concat({ get_line_format(), ",%-3.v %3.P ", get_number_of_lines() })
 end -- }}}
 
+local DAP_HL_USER_GROUP = "User7"
 local DIAGNOSTIC_HL_USER_GROUP = "User3"
 local M = {}
 
@@ -162,8 +163,29 @@ function M.get_buffer_status()
   return status
 end
 
+local function highlight_dap_stopped(session)
+  local daphl = nvim_get_hl(0, { name = DAP_HL_USER_GROUP })
+  local stopped_hl = nvim_get_hl(0, { name = "Include" })
+
+  if not vim.tbl_get(session, "stopped_thread_id") then
+    nvim_set_hl(
+      0,
+      DAP_HL_USER_GROUP,
+      tbl_deep_extend("keep", { fg = "NONE" }, daphl)
+    )
+    return
+  end
+
+  nvim_set_hl(
+    0,
+    DAP_HL_USER_GROUP,
+    tbl_deep_extend("keep", { fg = stopped_hl.fg }, daphl)
+  )
+end
+
 function M.get_dap_status()
   local session = require("dap").session()
+  highlight_dap_stopped(session)
 
   if not session then
     return "  "
