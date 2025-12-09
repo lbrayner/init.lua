@@ -1,5 +1,41 @@
 -- vim: fdm=marker
 
+-- {{{ DAP listeners
+
+local DAP_HL_USER_GROUP = "User7"
+
+local function highlight_dap_stopped(stopped)
+  local daphl = nvim_get_hl(0, { name = DAP_HL_USER_GROUP })
+  local stopped_hl = nvim_get_hl(0, { name = "Include" })
+
+  if stopped then
+    nvim_set_hl(
+      0,
+      DAP_HL_USER_GROUP,
+      tbl_deep_extend("keep", { fg = stopped_hl.fg }, daphl)
+    )
+    return
+  end
+
+  nvim_set_hl(
+    0,
+    DAP_HL_USER_GROUP,
+    tbl_deep_extend("keep", { fg = "NONE" }, daphl)
+  )
+end
+
+-- command: 'continue';
+require("dap").listeners.after["continue"]["lbrayner.statusline"] = function()
+  highlight_dap_stopped()
+end
+
+-- event: 'stopped';
+require("dap").listeners.after["event_stopped"]["lbrayner.statusline"] = function()
+  highlight_dap_stopped(true)
+end
+
+-- }}}
+
 -- {{{ Helper functions
 
 local FugitiveHead = vim.fn.FugitiveHead
@@ -126,7 +162,6 @@ local function get_buffer_position() -- {{{
   return concat({ get_line_format(), ",%-3.v %3.P ", get_number_of_lines() })
 end -- }}}
 
-local DAP_HL_USER_GROUP = "User7"
 local DIAGNOSTIC_HL_USER_GROUP = "User3"
 local M = {}
 
@@ -161,36 +196,6 @@ function M.get_buffer_status()
   status = concat({ status, (vim.bo.modified and " " or " %1*"), M.get_status_flag(), "%*" })
 
   return status
-end
-
-local function highlight_dap_stopped(stopped)
-  local daphl = nvim_get_hl(0, { name = DAP_HL_USER_GROUP })
-  local stopped_hl = nvim_get_hl(0, { name = "Include" })
-
-  if stopped then
-    nvim_set_hl(
-      0,
-      DAP_HL_USER_GROUP,
-      tbl_deep_extend("keep", { fg = stopped_hl.fg }, daphl)
-    )
-    return
-  end
-
-  nvim_set_hl(
-    0,
-    DAP_HL_USER_GROUP,
-    tbl_deep_extend("keep", { fg = "NONE" }, daphl)
-  )
-end
-
--- command: 'continue';
-require("dap").listeners.after["continue"]["lbrayner.statusline"] = function()
-  highlight_dap_stopped()
-end
-
--- event: 'stopped';
-require("dap").listeners.after["event_stopped"]["lbrayner.statusline"] = function()
-  highlight_dap_stopped(true)
 end
 
 function M.get_dap_status()
