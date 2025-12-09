@@ -163,15 +163,15 @@ function M.get_buffer_status()
   return status
 end
 
-local function highlight_dap_stopped(session)
+local function highlight_dap_stopped(stopped)
   local daphl = nvim_get_hl(0, { name = DAP_HL_USER_GROUP })
   local stopped_hl = nvim_get_hl(0, { name = "Include" })
 
-  if not vim.tbl_get(session, "stopped_thread_id") then
+  if stopped then
     nvim_set_hl(
       0,
       DAP_HL_USER_GROUP,
-      tbl_deep_extend("keep", { fg = "NONE" }, daphl)
+      tbl_deep_extend("keep", { fg = stopped_hl.fg }, daphl)
     )
     return
   end
@@ -179,13 +179,22 @@ local function highlight_dap_stopped(session)
   nvim_set_hl(
     0,
     DAP_HL_USER_GROUP,
-    tbl_deep_extend("keep", { fg = stopped_hl.fg }, daphl)
+    tbl_deep_extend("keep", { fg = "NONE" }, daphl)
   )
+end
+
+-- command: 'continue';
+require("dap").listeners.after["continue"]["lbrayner.statusline"] = function()
+  highlight_dap_stopped()
+end
+
+-- event: 'stopped';
+require("dap").listeners.after["event_stopped"]["lbrayner.statusline"] = function()
+  highlight_dap_stopped(true)
 end
 
 function M.get_dap_status()
   local session = require("dap").session()
-  highlight_dap_stopped(session)
 
   if not session then
     return "  "
