@@ -45,6 +45,7 @@ local string_sub = string.sub
 local synIDattr = vim.fn.synIDattr
 local synIDtrans = vim.fn.synIDtrans
 local tbl_contains = vim.tbl_contains
+local tbl_count = vim.tbl_count
 local tbl_deep_extend = vim.tbl_deep_extend
 local tbl_get = vim.tbl_get
 local tbl_isempty = vim.tbl_isempty
@@ -200,13 +201,20 @@ function M.get_buffer_status()
 end
 
 function M.get_dap_status()
-  local session = require("dap").session()
+  local sessions = require("dap").sessions()
+  local count = tbl_count(sessions)
 
-  if not session then
-    return "  "
+  if count == 0 then
+    return "     "
+  elseif count == 1 then
+    return " %7*%*   "
+  elseif count == 2 then
+    return " %7* ²%* "
+  elseif count == 3 then
+    return " %7* ³%* "
   end
 
-  return "%7*%* "
+  return " %7* ³⁺%*"
 end
 
 function M.get_diagnostics()
