@@ -138,6 +138,7 @@ local function highlight_dap_stopped(is_stopped)
       DAP_HL_USER_GROUP,
       tbl_deep_extend("keep", { fg = stopped_hl.fg }, daphl)
     )
+
     return
   end
 
@@ -254,17 +255,11 @@ function M.get_status_flag()
 
   if vim.bo.buftype == "help" then
     return ""
-  end
-
-  if vim.bo.buftype == "terminal" then
+  elseif vim.bo.buftype == "terminal" then
     return ""
-  end
-
-  if not vim.bo.modifiable then
+  elseif not vim.bo.modifiable then
     return "󰷤"
-  end
-
-  if vim.bo.readonly then
+  elseif vim.bo.readonly then
     return "󰌾"
   end
 
