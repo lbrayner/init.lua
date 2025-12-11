@@ -717,6 +717,11 @@ end
 
 if vim.v.vim_did_enter == 1 then
   nvim_exec_autocmds("VimEnter", { group = statusline })
+
+  vim.iter(vim.api.nvim_list_wins())
+  :each(function(w)
+    vim.wo[w].statusline = nil -- forces the option value to be redefined
+  end)
 end
 
 return M
