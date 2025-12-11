@@ -206,16 +206,16 @@ function M.get_dap_status()
   local count = tbl_count(sessions)
 
   if count == 0 then
-    return "     "
+    return "    "
   elseif count == 1 then
-    return " %7*%*   "
+    return "%7*%*   "
   elseif count == 2 then
-    return " %7* ²%* "
+    return "%7* ²%* "
   elseif count == 3 then
-    return " %7* ³%* "
+    return "%7* ³%* "
   end
 
-  return " %7* ³⁺%*"
+  return "%7* ³⁺%*"
 end
 
 function M.get_diagnostics()
@@ -312,6 +312,7 @@ function M.get_statusline()
 
   local rightline = concat({
     "%{%v:lua.require'lbrayner.statusline'.get_minor_modes()%}",
+    " %{%v:lua.require'lbrayner.statusline'.get_dap_status()%}",
     get_buffer_position()
   })
 
@@ -319,7 +320,6 @@ function M.get_statusline()
     rightline = concat({
       rightline,
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
-      " %{%v:lua.require'lbrayner.statusline'.get_dap_status()%}",
       " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
       " %2*%{&filetype}%* "
     })
@@ -327,7 +327,6 @@ function M.get_statusline()
     rightline = concat({
       rightline,
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
-      " %{%v:lua.require'lbrayner.statusline'.get_dap_status()%}",
       " %2*%{&filetype}%* "
     })
   else
@@ -335,7 +334,6 @@ function M.get_statusline()
       rightline,
       " %{%v:lua.require'lbrayner.statusline'.get_diagnostics()%}",
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
-      " %{%v:lua.require'lbrayner.statusline'.get_dap_status()%}",
       " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
       " %4.(%4*%{&fileformat}%*%)",
       " %2*%{&filetype}%* "
