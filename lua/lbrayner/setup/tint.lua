@@ -1,16 +1,14 @@
 local function window_ignore_function(winid)
+  if vim.w[winid]._lbrayner_tint_ignore then return true end
+
   local diff = vim.wo[winid].diff
   local preview = vim.wo[winid].previewwindow
 
-  if diff or preview then
-    return true
-  end
+  if diff or preview then return true end
 
   local floating = vim.api.nvim_win_get_config(winid).relative ~= ""
 
-  if floating then
-    return true
-  end
+  if floating then return true end
 
   local bufnr = vim.api.nvim_win_get_buf(winid)
 
@@ -53,6 +51,7 @@ end
 
 vim.api.nvim_create_user_command("TintUnTab", function()
   for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    vim.w[w]._lbrayner_tint_ignore = true
     require("tint").untint(w)
   end
 end, { desc = "Untint all windows in a tab", nargs = 0 })
