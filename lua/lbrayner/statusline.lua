@@ -107,7 +107,7 @@ end
 
 -- local copy of lbrayner.get_path
 local function get_path()
-  bufnr = 0
+  local bufnr = 0
   local path = get_fugitive_object(bufnr)
 
   if path then
