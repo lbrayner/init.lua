@@ -44,5 +44,12 @@ require("nvim-highlight-colors").setup({ -- nvim-highlight-colors
 
 vim.g.nvim_jdtls = 1 -- skipping autocmds and commands
 require("lbrayner.jdtls").create_user_command()
+local dap = require("dap")
+
+-- From nvim.jdtls.dap's setup_dap_main_class_configs
+if dap.providers and dap.providers.configs then
+  -- disable the automatic discovery on dap.continue()
+  dap.providers.configs["jdtls"] = nil
+end
 
 return M
