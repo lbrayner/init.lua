@@ -109,6 +109,48 @@ function M.file_mark_jump_to_location(mark)
   file_mark_info_jump_to_location(file_mark_info)
 end
 
+local function file_mark_move_down_info()
+  local file = get_file()
+
+  if file == "" then return end
+
+  local file_mark_info_list, index_by_file = get_file_mark_navigator()
+  local idx = index_by_file[file]
+
+  if not idx then return end
+
+  local file_mark_info = file_mark_info_list[idx]
+  local _, next_file_mark_info = next(file_mark_info_list, idx)
+
+  if not next_file_mark_info then
+    _, next_file_mark_info = next(file_mark_info_list)
+  end
+
+  return file_mark_info, next_file_mark_info
+end
+
+local function file_mark_move_up_info()
+  local file = get_file()
+
+  if file == "" then return end
+
+  local file_mark_info_list, index_by_file = get_file_mark_navigator({
+    file_mark_info_list = vim.iter(M.get_file_mark_info_list()):rev():totable()
+  })
+  local idx = index_by_file[file]
+
+  if not idx then return end
+
+  local file_mark_info = file_mark_info_list[idx]
+  local _, previous_file_mark_info = next(file_mark_info_list, idx)
+
+  if not previous_file_mark_info then
+    _, previous_file_mark_info = next(file_mark_info_list)
+  end
+
+  return file_mark_info, previous_file_mark_info
+end
+
 -- Mappings
 vim.keymap.set("n", "]4", function()
   local file_mark_info = file_mark_info_get_next()
@@ -129,6 +171,72 @@ vim.keymap.set("n", "[4", function()
   end
 
   file_mark_info_jump_to_location(file_mark_info)
+end)
+vim.keymap.set("n", "<A-4>", function()
+  local file_mark_info, next_file_mark_info = file_mark_move_down_info()
+
+  if not file_mark_info then
+    vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
+    return
+  end
+
+  if not next_file_mark_info then
+    vim.notify("There is only one file mark.", vim.log.levels.WARN)
+    return
+  end
+
+  local cur = vim.fn.bufadd(vim.fs.normalize(file_mark_info.file))
+  local nex = vim.fn.bufadd(vim.fs.normalize(next_file_mark_info.file))
+
+  vim.api.nvim_buf_set_mark(
+    cur,
+    (next_file_mark_info.mark):sub(2),
+    file_mark_info.pos[2],
+    file_mark_info.pos[3] - 1,
+    {}
+  )
+  vim.api.nvim_buf_set_mark(
+    nex,
+    (file_mark_info.mark):sub(2),
+    next_file_mark_info.pos[2],
+    next_file_mark_info.pos[3] - 1,
+    {}
+  )
+
+  print("Swapped file mark", file_mark_info.mark, "with", next_file_mark_info.mark, ".")
+end)
+vim.keymap.set("n", "<A-$>", function()
+  local file_mark_info, previous_file_mark_info = file_mark_move_up_info()
+
+  if not file_mark_info then
+    vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
+    return
+  end
+
+  if not previous_file_mark_info then
+    vim.notify("There is only one file mark.", vim.log.levels.WARN)
+    return
+  end
+
+  local cur = vim.fn.bufadd(vim.fs.normalize(file_mark_info.file))
+  local pre = vim.fn.bufadd(vim.fs.normalize(previous_file_mark_info.file))
+
+  vim.api.nvim_buf_set_mark(
+    cur,
+    (previous_file_mark_info.mark):sub(2),
+    file_mark_info.pos[2],
+    file_mark_info.pos[3] - 1,
+    {}
+  )
+  vim.api.nvim_buf_set_mark(
+    pre,
+    (file_mark_info.mark):sub(2),
+    previous_file_mark_info.pos[2],
+    previous_file_mark_info.pos[3] - 1,
+    {}
+  )
+
+  print("Swapped file mark", file_mark_info.mark, "with", previous_file_mark_info.mark, ".")
 end)
 
 return M
