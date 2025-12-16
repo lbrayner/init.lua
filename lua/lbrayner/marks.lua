@@ -1,3 +1,5 @@
+-- vim: fdm=marker
+
 local M = {}
 
 local function get_file()
@@ -172,71 +174,75 @@ vim.keymap.set("n", "[4", function()
 
   file_mark_info_jump_to_location(file_mark_info)
 end)
+
+local function swap_marks(fmark1, fmark2) -- {{{
+    if not fmark1 then
+      vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
+      return
+    end
+
+    if not fmark2 then
+      vim.notify("There is only one file mark.", vim.log.levels.WARN)
+      return
+    end
+
+    local cur = vim.fn.bufadd(vim.fs.normalize(fmark1.file))
+    local pre = vim.fn.bufadd(vim.fs.normalize(fmark2.file))
+
+    local restore = function()
+      vim.api.nvim_buf_set_mark(
+        cur,
+        (fmark1.mark):sub(2),
+        fmark1.pos[2],
+        fmark1.pos[3] - 1,
+        {}
+      )
+    end
+
+    local success, err = pcall(
+      vim.api.nvim_buf_set_mark,
+      cur,
+      (fmark2.mark):sub(2),
+      fmark1.pos[2],
+      fmark1.pos[3] - 1,
+      {}
+    ) or pcall(
+      vim.api.nvim_buf_set_mark,
+      cur,
+      (fmark2.mark):sub(2),
+      1, 0, {}
+    )
+
+    if not success then
+      restore()
+      error(err)
+    end
+
+    success, err = pcall(
+      vim.api.nvim_buf_set_mark,
+      pre,
+      (fmark1.mark):sub(2),
+      fmark2.pos[2],
+      fmark2.pos[3] - 1,
+      {}
+    )
+
+    if not success then
+      restore()
+      error(err)
+    end
+
+    print("Swapped file mark", fmark1.mark, "with", fmark2.mark, ".")
+  end
+  -- }}}
+
 vim.keymap.set("n", "<A-4>", function()
   local file_mark_info, next_file_mark_info = file_mark_move_down_info()
-
-  if not file_mark_info then
-    vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
-    return
-  end
-
-  if not next_file_mark_info then
-    vim.notify("There is only one file mark.", vim.log.levels.WARN)
-    return
-  end
-
-  local cur = vim.fn.bufadd(vim.fs.normalize(file_mark_info.file))
-  local nex = vim.fn.bufadd(vim.fs.normalize(next_file_mark_info.file))
-
-  vim.api.nvim_buf_set_mark(
-    cur,
-    (next_file_mark_info.mark):sub(2),
-    file_mark_info.pos[2],
-    file_mark_info.pos[3] - 1,
-    {}
-  )
-  vim.api.nvim_buf_set_mark(
-    nex,
-    (file_mark_info.mark):sub(2),
-    next_file_mark_info.pos[2],
-    next_file_mark_info.pos[3] - 1,
-    {}
-  )
-
-  print("Swapped file mark", file_mark_info.mark, "with", next_file_mark_info.mark, ".")
+  swap_marks(file_mark_info, next_file_mark_info)
 end)
 vim.keymap.set("n", "<A-$>", function()
   local file_mark_info, previous_file_mark_info = file_mark_move_up_info()
-
-  if not file_mark_info then
-    vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
-    return
-  end
-
-  if not previous_file_mark_info then
-    vim.notify("There is only one file mark.", vim.log.levels.WARN)
-    return
-  end
-
-  local cur = vim.fn.bufadd(vim.fs.normalize(file_mark_info.file))
-  local pre = vim.fn.bufadd(vim.fs.normalize(previous_file_mark_info.file))
-
-  vim.api.nvim_buf_set_mark(
-    cur,
-    (previous_file_mark_info.mark):sub(2),
-    file_mark_info.pos[2],
-    file_mark_info.pos[3] - 1,
-    {}
-  )
-  vim.api.nvim_buf_set_mark(
-    pre,
-    (file_mark_info.mark):sub(2),
-    previous_file_mark_info.pos[2],
-    previous_file_mark_info.pos[3] - 1,
-    {}
-  )
-
-  print("Swapped file mark", file_mark_info.mark, "with", previous_file_mark_info.mark, ".")
+  swap_marks(file_mark_info, previous_file_mark_info)
 end)
 
 return M
