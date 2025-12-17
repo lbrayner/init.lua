@@ -237,7 +237,7 @@ function M.get_minor_modes()
   local modes = tbl_get(vim.b[bufnr], "lbrayner", "statusline", "modes", "str")
 
   if modes and type(modes) == "string" and modes ~= "" then
-    return concat({ "%9*", modes, "%* " })
+    return modes
   end
 
   return ""
@@ -311,8 +311,8 @@ function M.get_statusline()
   end
 
   local rightline = concat({
-    "%{%v:lua.require'lbrayner.statusline'.get_minor_modes()%}",
-    " %{%v:lua.require'lbrayner.statusline'.get_dap_status()%}",
+    "%{%v:lua.require'lbrayner.statusline'.get_dap_status()%}",
+    "%( %9*%{v:lua.require'lbrayner.statusline'.get_minor_modes()}%*%)",
     get_buffer_position()
   })
 
