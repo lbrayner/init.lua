@@ -208,14 +208,14 @@ function M.get_dap_status()
   if count == 0 then
     return "    "
   elseif count == 1 then
-    return "%8*%*   "
+    return "   "
   elseif count == 2 then
-    return "%8* ²%* "
+    return " ² "
   elseif count == 3 then
-    return "%8* ³%* "
+    return " ³ "
   end
 
-  return "%8* ³⁺%*"
+  return " ³⁺"
 end
 
 function M.get_diagnostics()
@@ -225,7 +225,7 @@ function M.get_diagnostics()
     return " "
   end
 
-  return "%7*•%*"
+  return "•"
 end
 
 function M.get_empty()
@@ -311,7 +311,7 @@ function M.get_statusline()
   end
 
   local rightline = concat({
-    "%{%v:lua.require'lbrayner.statusline'.get_dap_status()%}",
+    "%8*%{v:lua.require'lbrayner.statusline'.get_dap_status()}%*",
     "%( %3*%{v:lua.require'lbrayner.statusline'.get_minor_modes()}%*%)",
     get_buffer_position()
   })
@@ -332,7 +332,7 @@ function M.get_statusline()
   else
     rightline = concat({
       rightline,
-      " %{%v:lua.require'lbrayner.statusline'.get_diagnostics()%}",
+      " %7*%{v:lua.require'lbrayner.statusline'.get_diagnostics()}%*",
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
       " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
       " %4.(%4*%{&fileformat}%*%)",
