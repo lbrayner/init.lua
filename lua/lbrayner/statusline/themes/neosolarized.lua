@@ -23,7 +23,7 @@ return {
         User1 = { bg = "NONE", fg = "Todo" },
         User2 = { bg = "NONE", fg = "Underlined" },
         User4 = { bg = "NONE", fg = "Comment" },
-        User5 = { bg = "NONE", fg = "Ignore" },
+        User5 = { bg = "NONE", fg = "Normal" },
         User6 = { bg = "NONE", fg = "Statement" },
         User9 = { bg = "NONE", fg = "Special" },
         StatusLine = { bg = "NONE", fg = "Identifier" },
