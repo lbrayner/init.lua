@@ -145,6 +145,23 @@ function M.setup(config)
     end,
   })
 
+  local dap = require("dap")
+
+  vim.api.nvim_create_autocmd("LspAttach", {
+    group = jdtls_setup,
+    pattern = "*.java",
+    desc = "JDT Language Server DAP config override",
+    callback = function()
+      -- Must run after on_attach (see jdtls.dap.setup.start_or_attach)
+      -- From nvim.jdtls.dap's setup_dap_main_class_configs
+      if dap.providers and dap.providers.configs and dap.providers.configs.jdtls then
+        -- disable the automatic discovery on dap.continue()
+        dap.providers.configs.jdtls = nil
+        return true -- delete autocmd after overriding jdtls dap provider
+      end
+    end,
+  })
+
   require("jdtls").start_or_attach(config)
 end
 
