@@ -125,7 +125,7 @@ end
 
 -- {{{ DAP listeners
 
-local DAP_HL_USER_GROUP = "User7"
+local DAP_HL_USER_GROUP = "User8"
 
 local function highlight_dap_stopped(is_stopped)
   local daphl = nvim_get_hl(0, { name = DAP_HL_USER_GROUP })
@@ -165,7 +165,7 @@ local function get_buffer_position() -- {{{
   return concat({ get_line_format(), ",%-3.v %3.P ", get_number_of_lines() })
 end -- }}}
 
-local DIAGNOSTIC_HL_USER_GROUP = "User3"
+local DIAGNOSTIC_HL_USER_GROUP = "User7"
 local M = {}
 
 function M.get_buffer_name(opts)
@@ -208,14 +208,14 @@ function M.get_dap_status()
   if count == 0 then
     return "    "
   elseif count == 1 then
-    return "%7*%*   "
+    return "%8*%*   "
   elseif count == 2 then
-    return "%7* ²%* "
+    return "%8* ²%* "
   elseif count == 3 then
-    return "%7* ³%* "
+    return "%8* ³%* "
   end
 
-  return "%7* ³⁺%*"
+  return "%8* ³⁺%*"
 end
 
 function M.get_diagnostics()
@@ -225,7 +225,7 @@ function M.get_diagnostics()
     return " "
   end
 
-  return "%3*•%*"
+  return "%7*•%*"
 end
 
 function M.get_empty()
@@ -312,7 +312,7 @@ function M.get_statusline()
 
   local rightline = concat({
     "%{%v:lua.require'lbrayner.statusline'.get_dap_status()%}",
-    "%( %9*%{v:lua.require'lbrayner.statusline'.get_minor_modes()}%*%)",
+    "%( %3*%{v:lua.require'lbrayner.statusline'.get_minor_modes()}%*%)",
     get_buffer_position()
   })
 
