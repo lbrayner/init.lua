@@ -416,10 +416,10 @@ function M.get_winbar()
   return statusline
 end
 
-local mapping
+local theme
 
 function M.highlight_mode(mode)
-  local hl_map_by_group = mapping[mode]
+  local hl_map_by_group = theme[mode]
 
   for group, hl_map in pairs(hl_map_by_group) do
     current_hl_map = nvim_get_hl(0, { name = group })
@@ -440,20 +440,20 @@ function M.highlight_winbar()
 end
 
 function M.load_theme(name)
-  local success, theme = pcall(require, concat({ "lbrayner.statusline.themes", name }, "."))
+  local success, result = pcall(require, concat({ "lbrayner.statusline.themes", name }, "."))
 
-  if not success then
+  if success then
+    theme = result
+  else
     theme = require("lbrayner.statusline.themes.neosolarized")
   end
 
-  mapping = theme.get_color_mapping()
-
-  for mode, hl_map_by_group in pairs(mapping) do
+  for mode, hl_map_by_group in pairs(theme) do
     for group, hl_map in pairs(hl_map_by_group) do
       local guibg = synIDattr(synIDtrans(hlID(hl_map.bg)), "fg", "gui")
       local guifg = synIDattr(synIDtrans(hlID(hl_map.fg)), "fg", "gui")
 
-      mapping[mode][group] = { bg = (hl_map.bg and guibg), fg = (hl_map.fg and guifg) }
+      theme[mode][group] = { bg = (hl_map.bg and guibg), fg = (hl_map.fg and guifg) }
     end
   end
 
@@ -689,7 +689,7 @@ nvim_create_autocmd("VimEnter", {
     })
 
     -- Useful when reloading the module
-    if not mapping and
+    if not theme and
       vim.g.colors_name and
       vim.g.colors_name ~= "" then
 
@@ -697,7 +697,7 @@ nvim_create_autocmd("VimEnter", {
     end
 
     -- Useful when reloading the module
-    if not mapping and not vim.g.colors_name then
+    if not theme and not vim.g.colors_name then
       -- A statusline theme is required
       M.load_theme("neosolarized")
     end
