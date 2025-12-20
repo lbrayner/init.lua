@@ -2,6 +2,7 @@
 
 -- {{{ Helper functions
 
+local FugitiveGitDir = vim.fn.FugitiveGitDir
 local FugitiveHead = vim.fn.FugitiveHead
 local FugitiveResult = vim.fn.FugitiveResult
 local buf_is_scratch = require("lbrayner").buf_is_scratch
@@ -13,7 +14,6 @@ local exists = vim.fn.exists
 local fnamemodify = vim.fn.fnamemodify
 local fugitiveHead = vim.fn["fugitive#Head"]
 local get_diagnostic = vim.diagnostic.get
-local get_fugitive_git_dir_ = require("lbrayner.fugitive").get_fugitive_git_dir
 local get_fugitive_object = require("lbrayner.fugitive").get_fugitive_object
 local get_full_path = require("lbrayner.path").get_full_path
 local get_jdtls_buffer_name = require("lbrayner.jdtls").get_buffer_name
@@ -54,12 +54,12 @@ local tbl_keys = vim.tbl_keys
 local win_is_actual_curwin = require("lbrayner").win_is_actual_curwin
 local win_is_floating = require("lbrayner").win_is_floating
 
-local function get_fugitive_git_dir()
-  local fugitive_dir = get_fugitive_git_dir_()
-
-  if fugitive_dir then
-    return fnamemodify(fugitive_dir, ":~")
+function has_fugitive_git_dir()
+  if exists("*FugitiveGitDir") == 0 then
+    return false
   end
+
+  return FugitiveGitDir() ~= ""
 end
 
 function get_fugitive_result()
@@ -72,6 +72,20 @@ function has_fugitive_result()
   end
 
   return not tbl_isempty(FugitiveResult(nvim_get_current_buf()))
+end
+
+local function get_fugitive_git_dir()
+  local fugitive_dir
+
+  if has_fugitive_git_dir() then
+    fugitive_dir = string.gsub(FugitiveGitDir(), "/%.git$", "")
+  elseif has_fugitive_result() then
+    fugitive_dir = get_fugitive_result().cwd
+  end
+
+  if fugitive_dir then
+    return fnamemodify(fugitive_dir, ":~")
+  end
 end
 
 local function get_fugitive_temporary_buffer_name()

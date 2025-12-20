@@ -6,13 +6,6 @@ function M.include_expression(fname)
   return fname
 end
 
-function M.get_fugitive_git_dir()
-  if vim.fn.exists("*FugitiveGitDir") == 1 and vim.fn.FugitiveGitDir() ~= "" then
-    local dir, _ = string.gsub(vim.fn.FugitiveGitDir(), "/%.git$", "")
-    return dir
-  end
-end
-
 function M.get_fugitive_object(bufnr)
   bufnr = bufnr or 0
 
