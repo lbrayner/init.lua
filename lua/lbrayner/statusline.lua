@@ -157,10 +157,12 @@ local function highlight_dap_stopped(is_stopped)
     return
   end
 
+  local not_stopped_hl = nvim_get_hl(0, { name = "DiagnosticWarn" })
+
   nvim_set_hl(
     0,
     DAP_HL_USER_GROUP,
-    tbl_deep_extend("keep", { fg = "NONE" }, daphl)
+    tbl_deep_extend("keep", { fg = not_stopped_hl.fg }, daphl)
   )
 end
 
@@ -172,6 +174,11 @@ end
 -- event: 'stopped';
 dap.listeners.after["event_stopped"]["lbrayner.statusline"] = function()
   highlight_dap_stopped(true)
+end
+
+-- command: 'launch';
+dap.listeners.after["launch"]["lbrayner.statusline"] = function()
+  highlight_dap_stopped(false)
 end
 
 -- }}}
@@ -457,9 +464,9 @@ function M.load_theme(name)
   local success, result = pcall(require, concat({ "lbrayner.statusline.themes", name }, "."))
 
   if success then
-    theme = result
+    theme = result.get()
   else
-    theme = require("lbrayner.statusline.themes.neosolarized")
+    theme = require("lbrayner.statusline.themes.neosolarized").get()
   end
 
   for mode, hl_map_by_group in pairs(theme) do
