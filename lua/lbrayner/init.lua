@@ -169,7 +169,7 @@ local function _jump_to_window_or_unhide(winid, bufnr, pos)
   vim.api.nvim_win_set_buf(winid, bufnr)
   vim.api.nvim_set_current_win(winid)
   if pos then
-    vim.api.nvim_win_set_cursor(winid, pos)
+    pcall(vim.api.nvim_win_set_cursor, winid, pos)
     vim.api.nvim_win_call(winid, function()
       -- Open folds under the cursor
       vim.cmd("normal! zv")
