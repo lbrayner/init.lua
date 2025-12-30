@@ -211,6 +211,17 @@ function M.file_mark_jump_to_location(mark)
   file_mark_info_jump_to_location(file_mark_info)
 end
 
+function M.get_file_mark_info_by_file()
+  local file_mark_info_list = M.get_file_mark_info_list()
+
+  local file_mark_info_by_file = {}
+  for _, file_mark_info in ipairs(file_mark_info_list) do
+    file_mark_info_by_file[file_mark_info.file] = file_mark_info
+  end
+
+  return file_mark_info_by_file
+end
+
 function M.get_file_mark_info_list()
   return vim.tbl_filter(function(mark)
     return mark.mark:match("^'%u$") -- Uppercase letters

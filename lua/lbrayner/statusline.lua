@@ -14,6 +14,7 @@ local exists = vim.fn.exists
 local fnamemodify = vim.fn.fnamemodify
 local fugitiveHead = vim.fn["fugitive#Head"]
 local get_diagnostic = vim.diagnostic.get
+local get_file_mark_info_by_file = require("lbrayner.marks").get_file_mark_info_by_file
 local get_fugitive_object = require("lbrayner.fugitive").get_fugitive_object
 local get_full_path = require("lbrayner.path").get_full_path
 local get_jdtls_buffer_name = require("lbrayner.jdtls").get_buffer_name
@@ -205,6 +206,18 @@ function M.get_buffer_name(opts)
   return buffer_name
 end
 
+function M.get_bookmark_status()
+  local file = get_full_path()
+  local file_mark_info_by_file = get_file_mark_info_by_file()
+  local file_mark = file_mark_info_by_file[file]
+
+  if file_mark then
+    return concat({ (file_mark.mark):sub(2), " 🔖 " })
+  end
+
+  return "     "
+end
+
 function M.get_buffer_status()
   local status = vim.bo.modified and "%1*" or ""
 
@@ -298,7 +311,7 @@ function M.get_statusline()
     })
   end
 
-  local leftline = " "
+  local leftline = " %4*%{v:lua.require'lbrayner.statusline'.get_bookmark_status()}%*"
 
   if vim.wo.previewwindow then
     leftline = concat({ leftline, "%5*%w%* " })
