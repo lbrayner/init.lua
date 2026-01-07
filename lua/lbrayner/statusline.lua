@@ -108,7 +108,7 @@ end
 
 local function get_number_of_lines()
   if vim.bo.buftype == "terminal" then
-    return concat({ "%", (#tostring(vim.bo.scrollback)+1), "L" })
+    return concat({ "%-", (#tostring(vim.bo.scrollback)+1), "L" })
   end
 
   local length = #tostring(get_line("$"))
