@@ -333,9 +333,9 @@ function M.get_statusline()
   end
 
   local rightline = concat({
-    "%8*%{v:lua.require'lbrayner.statusline'.get_dap_status()}%*",
     "%( %3*%{v:lua.require'lbrayner.statusline'.get_minor_modes()}%*%)",
-    get_buffer_position()
+    get_buffer_position(),
+    "%8*%{v:lua.require'lbrayner.statusline'.get_dap_status()}%*",
   })
 
   if vim.bo.filetype == "git" then
