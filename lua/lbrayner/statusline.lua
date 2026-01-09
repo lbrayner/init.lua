@@ -250,6 +250,26 @@ function M.get_diagnostics()
   return "•"
 end
 
+local function get_diff_status(option) -- {{{
+  if string.find(option, "iwhite") then
+    return function()
+      if vim.wo.diff then
+        return "%5* ʷ %*"
+      end
+      return "    "
+    end
+  else
+    return function()
+      if vim.wo.diff then
+        return "%4*   %*"
+      end
+      return "    "
+    end
+  end
+end -- }}}
+
+M.get_diff_status = get_diff_status(vim.go.diffopt)
+
 function M.get_empty()
   return ""
 end
@@ -343,13 +363,11 @@ function M.get_statusline()
       rightline,
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
       " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
-      " %2*%{&filetype}%* "
     })
   elseif vim.bo.buftype ~= "" then
     rightline = concat({
       rightline,
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
-      " %2*%{&filetype}%* "
     })
   else
     rightline = concat({
@@ -358,9 +376,14 @@ function M.get_statusline()
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
       " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
       " %4.(%4*%{&fileformat}%*%)",
-      " %2*%{&filetype}%* "
     })
   end
+
+  rightline = concat({
+    rightline,
+    " %{%v:lua.require'lbrayner.statusline'.get_diff_status()%}",
+    " %2*%{&filetype}%* ",
+  })
 
   return concat({ leftline, " %=", rightline })
 end
@@ -603,6 +626,15 @@ nvim_create_autocmd("ModeChanged", {
   desc = "Command/Normal mode statusline highlight",
   callback = function()
     M.highlight_mode("normal")
+  end,
+})
+
+nvim_create_autocmd("OptionSet", {
+  pattern = "diffopt",
+  group = statusline,
+  desc = "Dynamically define v:lua.require'lbrayner.statusline'.get_diff_status()",
+  callback = function()
+    M.get_diff_status = get_diff_status(vim.v.option_new)
   end,
 })
 
