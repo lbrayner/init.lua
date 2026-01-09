@@ -250,6 +250,14 @@ function M.get_diagnostics()
   return "•"
 end
 
+function M.get_diff_status()
+  if vim.wo.diff then
+    return " "
+  end
+
+  return "  "
+end
+
 function M.get_empty()
   return ""
 end
@@ -343,13 +351,11 @@ function M.get_statusline()
       rightline,
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
       " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
-      " %2*%{&filetype}%* "
     })
   elseif vim.bo.buftype ~= "" then
     rightline = concat({
       rightline,
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
-      " %2*%{&filetype}%* "
     })
   else
     rightline = concat({
@@ -358,9 +364,14 @@ function M.get_statusline()
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
       " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
       " %4.(%4*%{&fileformat}%*%)",
-      " %2*%{&filetype}%* "
     })
   end
+
+  rightline = concat({
+    rightline,
+    " %8*%{v:lua.require'lbrayner.statusline'.get_diff_status()}%*",
+    " %2*%{&filetype}%* ",
+  })
 
   return concat({ leftline, " %=", rightline })
 end
