@@ -250,6 +250,26 @@ function M.get_diagnostics()
   return "•"
 end
 
+local function get_diff_status(option) -- {{{
+  if string.find(option, "iwhite") then
+    return function()
+      if vim.wo.diff then
+        return "%5* ⁱ%*"
+      end
+      return "   "
+    end
+  else
+    return function()
+      if vim.wo.diff then
+        return "%4*  %*"
+      end
+      return "   "
+    end
+  end
+end -- }}}
+
+M.get_diff_status = get_diff_status(vim.go.diffopt)
+
 function M.get_empty()
   return ""
 end
@@ -609,37 +629,12 @@ nvim_create_autocmd("ModeChanged", {
   end,
 })
 
--- {{{ define_get_diff_status
-
-local function define_get_diff_status(option)
-  if string.find(option, "iwhite") then
-    M.get_diff_status = function()
-      if vim.wo.diff then
-        return "%5* ⁱ%*"
-      end
-      return "   "
-    end
-  else
-    M.get_diff_status = function()
-      if vim.wo.diff then
-        return "%4*  %*"
-      end
-      return "   "
-    end
-  end
-end
-
--- Define M.get_diff_status
-define_get_diff_status(vim.go.diffopt)
-
- -- }}}
-
 nvim_create_autocmd("OptionSet", {
   pattern = "diffopt",
   group = statusline,
-  desc = "Diff status highlight",
+  desc = "Dynamically define v:lua.require'lbrayner.statusline'.get_diff_status()",
   callback = function()
-    define_get_diff_status(vim.v.option_new)
+    M.get_diff_status = get_diff_status(vim.v.option_new)
   end,
 })
 
