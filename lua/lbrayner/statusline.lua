@@ -254,16 +254,16 @@ local function get_diff_status(option) -- {{{
   if string.find(option, "iwhite") then
     return function()
       if vim.wo.diff then
-        return "%5* ⁱ%*"
+        return "%5* ʷ %*"
       end
-      return "   "
+      return "    "
     end
   else
     return function()
       if vim.wo.diff then
-        return "%4*  %*"
+        return "%4*   %*"
       end
-      return "   "
+      return "    "
     end
   end
 end -- }}}
