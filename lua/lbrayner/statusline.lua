@@ -250,14 +250,6 @@ function M.get_diagnostics()
   return "•"
 end
 
-function M.get_diff_status()
-  if vim.wo.diff then
-    return " "
-  end
-
-  return "  "
-end
-
 function M.get_empty()
   return ""
 end
@@ -369,7 +361,7 @@ function M.get_statusline()
 
   rightline = concat({
     rightline,
-    " %8*%{v:lua.require'lbrayner.statusline'.get_diff_status()}%*",
+    " %{%v:lua.require'lbrayner.statusline'.get_diff_status()%}",
     " %2*%{&filetype}%* ",
   })
 
@@ -614,6 +606,40 @@ nvim_create_autocmd("ModeChanged", {
   desc = "Command/Normal mode statusline highlight",
   callback = function()
     M.highlight_mode("normal")
+  end,
+})
+
+-- {{{ define_get_diff_status
+
+local function define_get_diff_status(option)
+  if string.find(option, "iwhite") then
+    M.get_diff_status = function()
+      if vim.wo.diff then
+        return "%5* ⁱ%*"
+      end
+      return "   "
+    end
+  else
+    M.get_diff_status = function()
+      if vim.wo.diff then
+        return "%4*  %*"
+      end
+      return "   "
+    end
+  end
+end
+
+-- Define M.get_diff_status
+define_get_diff_status(vim.go.diffopt)
+
+ -- }}}
+
+nvim_create_autocmd("OptionSet", {
+  pattern = "diffopt",
+  group = statusline,
+  desc = "Diff status highlight",
+  callback = function()
+    define_get_diff_status(vim.v.option_new)
   end,
 })
 
