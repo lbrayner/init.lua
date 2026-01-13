@@ -247,4 +247,21 @@ vim.keymap.set("n", "<A-$>", function()
   swap_marks(file_mark_info, previous_file_mark_info)
 end)
 
+-- Borrowed from marks.nvim (https://github.com/chentoast/marks.nvim)
+
+local utils = require("lbrayner.marks.utils")
+
+vim.keymap.set("n", "m", function()
+  local err, input = pcall(function()
+    return string.char(vim.fn.getchar())
+  end)
+  if not err then
+    return
+  end
+
+  if utils.is_valid_mark(input) then
+    vim.cmd("normal! m" .. input)
+  end
+end)
+
 return M
