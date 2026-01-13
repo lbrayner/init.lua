@@ -252,9 +252,37 @@ end)
 local utils = require("lbrayner.marks.utils")
 
 vim.keymap.set("n", "m", function()
-  local err, input = pcall(function()
-    return string.char(vim.fn.getchar())
-  end)
+  -- local set_mark_timer = vim.uv.new_timer()
+
+  -- set_mark_timer:start(1000, 0, vim.schedule_wrap(function()
+  --   -- From mini.nvim jump
+  --   -- Echo. Force redraw to ensure that it is effective (`:h echo-redraw`)
+  --   vim.cmd([[echo '' | redraw]])
+  --   print("Enter mark ")
+  --   -- vim.api.nvim_echo("Enter mark ", false, {})
+  -- end))
+
+  -- set_mark_timer:stop()
+  -- set_mark_timer:close()
+
+  -- From mini.nvim jump
+  local needs_help_msg = true
+
+  vim.defer_fn(function()
+    if not needs_help_msg then return end
+    -- Echo. Force redraw to ensure that it is effective (`:h echo-redraw`)
+    vim.cmd([[echo '' | redraw]])
+    print("Enter mark ")
+    -- vim.api.nvim_echo({ "Enter mark " }, false, {})
+  end, 1000)
+
+  -- local err, input = pcall(function()
+  --   return string.char(vim.fn.getchar())
+  -- end)
+
+  local err, input = pcall(vim.fn.getcharstr)
+  needs_help_msg = false
+
   if not err then
     return
   end
