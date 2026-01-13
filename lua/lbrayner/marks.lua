@@ -15,7 +15,7 @@ local function get_file_mark_info_by_mark()
 
   local file_mark_info_by_mark = {}
   for _, file_mark_info in ipairs(file_mark_info_list) do
-    file_mark_info_by_mark[file_mark_info.mark] = file_mark_info
+    file_mark_info_by_mark[(file_mark_info.mark):sub(2)] = file_mark_info
   end
 
   return file_mark_info_by_mark
@@ -203,7 +203,7 @@ function M.file_mark_jump_to_location(mark)
   assert(type(mark) == "string", "Bad argument; 'mark' must be a string.")
   assert(mark:match("^%u$"), "Bad argument; 'mark' must be a file mark.")
   local file_mark_info_by_mark = get_file_mark_info_by_mark()
-  local file_mark_info = file_mark_info_by_mark["'"..mark]
+  local file_mark_info = file_mark_info_by_mark[mark]
   if not file_mark_info then
     vim.notify(string.format("“%s” is not set.", mark))
     return
@@ -211,9 +211,13 @@ function M.file_mark_jump_to_location(mark)
   file_mark_info_jump_to_location(file_mark_info)
 end
 
+local function is_file_mark(input) -- {{{
+  return input:match("^%u$") -- Uppercase letters
+end -- }}}
+
 function M.get_file_mark_info_list()
   return vim.tbl_filter(function(mark)
-    return mark.mark:match("^'%u$") -- Uppercase letters
+    return is_file_mark((mark.mark):sub(2))
   end, vim.fn.getmarklist())
 end
 
@@ -249,22 +253,10 @@ end)
 
 -- Borrowed from marks.nvim (https://github.com/chentoast/marks.nvim)
 
+local file_marks = {}
 local utils = require("lbrayner.marks.utils")
 
 vim.keymap.set("n", "m", function()
-  -- local set_mark_timer = vim.uv.new_timer()
-
-  -- set_mark_timer:start(1000, 0, vim.schedule_wrap(function()
-  --   -- From mini.nvim jump
-  --   -- Echo. Force redraw to ensure that it is effective (`:h echo-redraw`)
-  --   vim.cmd([[echo '' | redraw]])
-  --   print("Enter mark ")
-  --   -- vim.api.nvim_echo("Enter mark ", false, {})
-  -- end))
-
-  -- set_mark_timer:stop()
-  -- set_mark_timer:close()
-
   -- From mini.nvim jump
   local needs_help_msg = true
 
@@ -273,23 +265,46 @@ vim.keymap.set("n", "m", function()
     -- Echo. Force redraw to ensure that it is effective (`:h echo-redraw`)
     vim.cmd([[echo '' | redraw]])
     print("Enter mark ")
-    -- vim.api.nvim_echo({ "Enter mark " }, false, {})
   end, 1000)
-
-  -- local err, input = pcall(function()
-  --   return string.char(vim.fn.getchar())
-  -- end)
 
   local err, input = pcall(vim.fn.getcharstr)
   needs_help_msg = false
+  -- Unecho
+  vim.cmd([[echo '' | redraw]])
 
   if not err then
     return
   end
 
   if utils.is_valid_mark(input) then
+    if is_file_mark(input) then
+      local bufnr = vim.api.nvim_get_current_buf()
+
+      file_marks[input] = { pos = { bufnr } }
+      print("file_marks", vim.inspect(file_marks)) -- TODO debug
+    end
+
     vim.cmd("normal! m" .. input)
   end
 end)
+
+local marks = vim.api.nvim_create_augroup("marks", { clear = true })
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = marks,
+  desc = "Load file marks",
+  callback = function()
+    file_marks = get_file_mark_info_by_mark()
+    M.file_marks = setmetatable(
+      {},
+      {
+        __index = file_marks,
+        __newindex = function()
+          error("Cannot add item")
+        end,
+      }
+    )
+  end,
+})
 
 return M
