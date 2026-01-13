@@ -364,11 +364,6 @@ function M.get_statusline()
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
       " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
     })
-  elseif vim.bo.buftype ~= "" then
-    rightline = concat({
-      rightline,
-      "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
-    })
   else
     rightline = concat({
       rightline,
