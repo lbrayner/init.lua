@@ -281,12 +281,35 @@ vim.keymap.set("n", "m", function()
       local bufnr = vim.api.nvim_get_current_buf()
 
       file_marks[input] = { pos = { bufnr } }
-      print("file_marks", vim.inspect(file_marks)) -- TODO debug
     end
 
     vim.cmd("normal! m" .. input)
   end
 end)
+
+local function load_file_marks() -- {{{
+  file_marks = get_file_mark_info_by_mark()
+  M.file_marks = setmetatable(
+    {},
+    {
+      __index = file_marks,
+      __newindex = function()
+        error("Cannot add item")
+      end,
+    }
+  )
+end -- }}}
+
+vim.api.nvim_create_user_command("Delmarks", function(opts)
+  local args = opts.args
+  vim.cmd.delmarks(args)
+
+  if args:match("%u") then
+    load_file_marks()
+  end
+end, { bar = true, nargs = 1 })
+
+vim.keymap.set("ca", "delmarks", "Delmarks")
 
 local marks = vim.api.nvim_create_augroup("marks", { clear = true })
 
@@ -294,16 +317,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
   group = marks,
   desc = "Load file marks",
   callback = function()
-    file_marks = get_file_mark_info_by_mark()
-    M.file_marks = setmetatable(
-      {},
-      {
-        __index = file_marks,
-        __newindex = function()
-          error("Cannot add item")
-        end,
-      }
-    )
+    load_file_marks()
   end,
 })
 
