@@ -10,12 +10,13 @@ local function get_file()
   )
 end
 
-local function get_file_mark_info_by_mark()
+local function get_file_mark_info_by_mark_or_bufnr()
   local file_mark_info_list = M.get_file_mark_info_list()
 
   local file_mark_info_by_mark = {}
   for _, file_mark_info in ipairs(file_mark_info_list) do
-    file_mark_info_by_mark[(file_mark_info.mark):sub(2)] = file_mark_info
+    file_mark_info_by_mark[file_mark_info.mark] = file_mark_info
+    file_mark_info_by_mark[file_mark_info.pos[1]] = file_mark_info
   end
 
   return file_mark_info_by_mark
@@ -78,7 +79,6 @@ end
 
 local function file_mark_info_jump_to_location(file_mark_info)
   if not file_mark_info then return end
-  current_mark = file_mark_info.mark
   local file = file_mark_info.file
   if vim.startswith(file, "term://") then
     local bufnr = vim.fn.bufnr(file)
@@ -154,7 +154,7 @@ local function swap_marks(fmark1, fmark2)
   local restore = function()
     vim.api.nvim_buf_set_mark(
       cur,
-      (fmark1.mark):sub(2),
+      fmark1.mark,
       fmark1.pos[2],
       fmark1.pos[3] - 1,
       {}
@@ -164,14 +164,14 @@ local function swap_marks(fmark1, fmark2)
   local success, err = pcall(
     vim.api.nvim_buf_set_mark,
     cur,
-    (fmark2.mark):sub(2),
+    fmark2.mark,
     fmark1.pos[2],
     fmark1.pos[3] - 1,
     {}
   ) or pcall(
     vim.api.nvim_buf_set_mark,
     cur,
-    (fmark2.mark):sub(2),
+    fmark2.mark,
     1, 0, {}
   )
 
@@ -183,7 +183,7 @@ local function swap_marks(fmark1, fmark2)
   success, err = pcall(
     vim.api.nvim_buf_set_mark,
     pre,
-    (fmark1.mark):sub(2),
+    fmark1.mark,
     fmark2.pos[2],
     fmark2.pos[3] - 1,
     {}
@@ -202,7 +202,7 @@ end
 function M.file_mark_jump_to_location(mark)
   assert(type(mark) == "string", "Bad argument; 'mark' must be a string.")
   assert(mark:match("^%u$"), "Bad argument; 'mark' must be a file mark.")
-  local file_mark_info_by_mark = get_file_mark_info_by_mark()
+  local file_mark_info_by_mark = get_file_mark_info_by_mark_or_bufnr()
   local file_mark_info = file_mark_info_by_mark[mark]
   if not file_mark_info then
     vim.notify(string.format("“%s” is not set.", mark))
@@ -217,7 +217,8 @@ end -- }}}
 
 function M.get_file_mark_info_list()
   return vim.tbl_filter(function(mark)
-    return is_file_mark((mark.mark):sub(2))
+    mark.mark = (mark.mark):sub(2)
+    return is_file_mark(mark.mark)
   end, vim.fn.getmarklist())
 end
 
@@ -280,7 +281,8 @@ vim.keymap.set("n", "m", function()
     if is_file_mark(input) then
       local bufnr = vim.api.nvim_get_current_buf()
 
-      file_marks[input] = { pos = { bufnr } }
+      file_marks[input] = { mark = input, pos = { bufnr } }
+      file_marks[bufnr] = file_marks[input]
     end
 
     vim.cmd("normal! m" .. input)
@@ -288,7 +290,7 @@ vim.keymap.set("n", "m", function()
 end)
 
 local function load_file_marks() -- {{{
-  file_marks = get_file_mark_info_by_mark()
+  file_marks = get_file_mark_info_by_mark_or_bufnr()
   M.file_marks = setmetatable(
     {},
     {
