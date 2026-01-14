@@ -137,7 +137,110 @@ local function file_mark_move_up_info()
   return file_mark_info, previous_file_mark_info
 end
 
-local function swap_marks(fmark1, fmark2)
+-- }}}
+
+function M.file_mark_jump_to_location(mark)
+  assert(type(mark) == "string", "Bad argument; 'mark' must be a string.")
+  assert(mark:match("^%u$"), "Bad argument; 'mark' must be a file mark.")
+  local file_mark_info_by_mark = get_file_mark_info_by_mark_or_bufnr()
+  local file_mark_info = file_mark_info_by_mark[mark]
+  if not file_mark_info then
+    vim.notify(string.format("“%s” is not set.", mark))
+    return
+  end
+  file_mark_info_jump_to_location(file_mark_info)
+end
+
+local function is_file_mark(input) -- {{{
+  return input:match("^%u$") -- Uppercase letters
+end -- }}}
+
+function M.get_file_mark_info_list()
+  return vim.tbl_filter(function(mark)
+    mark.mark = (mark.mark):sub(2)
+    return is_file_mark(mark.mark)
+  end, vim.fn.getmarklist())
+end
+
+-- Mappings
+-- Borrowed from marks.nvim (https://github.com/chentoast/marks.nvim)
+
+local file_marks = {}
+local utils = require("lbrayner.marks.utils")
+
+vim.keymap.set("n", "m", function()
+  -- From mini.nvim jump
+  local needs_help_msg = true
+
+  vim.defer_fn(function()
+    if not needs_help_msg then return end
+    -- Echo. Force redraw to ensure that it is effective (`:h echo-redraw`)
+    vim.cmd([[echo '' | redraw]])
+    print("Enter mark ")
+  end, 1000)
+
+  local err, input = pcall(vim.fn.getcharstr)
+  needs_help_msg = false
+  -- Unecho
+  vim.cmd([[echo '' | redraw]])
+
+  if not err then
+    return
+  end
+
+  if utils.is_valid_mark(input) then
+    local input_is_file_mark = is_file_mark(input)
+
+    if input_is_file_mark then
+      local bufnr = vim.api.nvim_get_current_buf()
+
+      file_marks[input] = { mark = input, pos = { bufnr } }
+      file_marks[bufnr] = file_marks[input]
+    end
+
+    vim.cmd("normal! m" .. input)
+
+    if input_is_file_mark then
+      vim.api.nvim_exec_autocmds("User", { pattern = "FileMarkSet" })
+    end
+  end
+end)
+
+vim.keymap.set("n", "]4", function()
+  local file_mark_info = file_mark_info_get_next()
+
+  if not file_mark_info then
+    vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
+    return
+  end
+
+  file_mark_info_jump_to_location(file_mark_info)
+end)
+vim.keymap.set("n", "[4", function()
+  local file_mark_info = file_mark_info_get_previous()
+
+  if not file_mark_info then
+    vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
+    return
+  end
+
+  file_mark_info_jump_to_location(file_mark_info)
+end)
+
+local function load_file_marks() -- {{{
+  file_marks = get_file_mark_info_by_mark_or_bufnr()
+  M.file_marks = setmetatable(
+    {},
+    {
+      __index = file_marks,
+      __newindex = function()
+        error("Cannot add item")
+      end,
+    }
+  )
+end -- }}}
+
+local function swap_marks(fmark1, fmark2) -- {{{
   if not fmark1 then
     vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
     return
@@ -194,55 +297,10 @@ local function swap_marks(fmark1, fmark2)
     error(err)
   end
 
+  load_file_marks()
   print("Swapped file mark", fmark1.mark, "with", fmark2.mark, ".")
-end
-
--- }}}
-
-function M.file_mark_jump_to_location(mark)
-  assert(type(mark) == "string", "Bad argument; 'mark' must be a string.")
-  assert(mark:match("^%u$"), "Bad argument; 'mark' must be a file mark.")
-  local file_mark_info_by_mark = get_file_mark_info_by_mark_or_bufnr()
-  local file_mark_info = file_mark_info_by_mark[mark]
-  if not file_mark_info then
-    vim.notify(string.format("“%s” is not set.", mark))
-    return
-  end
-  file_mark_info_jump_to_location(file_mark_info)
-end
-
-local function is_file_mark(input) -- {{{
-  return input:match("^%u$") -- Uppercase letters
 end -- }}}
 
-function M.get_file_mark_info_list()
-  return vim.tbl_filter(function(mark)
-    mark.mark = (mark.mark):sub(2)
-    return is_file_mark(mark.mark)
-  end, vim.fn.getmarklist())
-end
-
--- Mappings
-vim.keymap.set("n", "]4", function()
-  local file_mark_info = file_mark_info_get_next()
-
-  if not file_mark_info then
-    vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
-    return
-  end
-
-  file_mark_info_jump_to_location(file_mark_info)
-end)
-vim.keymap.set("n", "[4", function()
-  local file_mark_info = file_mark_info_get_previous()
-
-  if not file_mark_info then
-    vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
-    return
-  end
-
-  file_mark_info_jump_to_location(file_mark_info)
-end)
 vim.keymap.set("n", "<A-4>", function()
   local file_mark_info, next_file_mark_info = file_mark_move_down_info()
   swap_marks(file_mark_info, next_file_mark_info)
@@ -251,62 +309,6 @@ vim.keymap.set("n", "<A-$>", function()
   local file_mark_info, previous_file_mark_info = file_mark_move_up_info()
   swap_marks(file_mark_info, previous_file_mark_info)
 end)
-
--- Borrowed from marks.nvim (https://github.com/chentoast/marks.nvim)
-
-local file_marks = {}
-local utils = require("lbrayner.marks.utils")
-
-vim.keymap.set("n", "m", function()
-  -- From mini.nvim jump
-  local needs_help_msg = true
-
-  vim.defer_fn(function()
-    if not needs_help_msg then return end
-    -- Echo. Force redraw to ensure that it is effective (`:h echo-redraw`)
-    vim.cmd([[echo '' | redraw]])
-    print("Enter mark ")
-  end, 1000)
-
-  local err, input = pcall(vim.fn.getcharstr)
-  needs_help_msg = false
-  -- Unecho
-  vim.cmd([[echo '' | redraw]])
-
-  if not err then
-    return
-  end
-
-  if utils.is_valid_mark(input) then
-    local input_is_file_mark = is_file_mark(input)
-
-    if input_is_file_mark then
-      local bufnr = vim.api.nvim_get_current_buf()
-
-      file_marks[input] = { mark = input, pos = { bufnr } }
-      file_marks[bufnr] = file_marks[input]
-    end
-
-    vim.cmd("normal! m" .. input)
-
-    if input_is_file_mark then
-      vim.api.nvim_exec_autocmds("User", { pattern = "FileMarkSet" })
-    end
-  end
-end)
-
-local function load_file_marks() -- {{{
-  file_marks = get_file_mark_info_by_mark_or_bufnr()
-  M.file_marks = setmetatable(
-    {},
-    {
-      __index = file_marks,
-      __newindex = function()
-        error("Cannot add item")
-      end,
-    }
-  )
-end -- }}}
 
 vim.api.nvim_create_user_command("Delmarks", function(opts)
   local args = opts.args
