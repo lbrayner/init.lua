@@ -177,7 +177,7 @@ vim.keymap.set("n", "m", function()
     if not needs_help_msg then return end
     -- Echo. Force redraw to ensure that it is effective (`:h echo-redraw`)
     vim.cmd([[echo '' | redraw]])
-    print("Enter mark ")
+    print("[Set mark] Enter mark: ")
   end, 1000)
 
   local err, input = pcall(vim.fn.getcharstr)
