@@ -166,9 +166,45 @@ end
 -- Mappings
 -- Borrowed from marks.nvim (https://github.com/chentoast/marks.nvim)
 
-local file_marks = {}
+local file_marks_by_bufnr = {}
+local file_marks_by_mark = {}
 local utils = require("lbrayner.marks.utils")
 
+vim.keymap.set("n", "'", function()
+  -- From mini.nvim jump
+  local needs_help_msg = true
+
+  vim.defer_fn(function()
+    if not needs_help_msg then return end
+    -- Echo. Force redraw to ensure that it is effective (`:h echo-redraw`)
+    vim.cmd([[echo '' | redraw]])
+    print("[Jump to mark] Enter mark: ")
+  end, 1000)
+
+  local success, input = pcall(vim.fn.getcharstr)
+  needs_help_msg = false
+  -- Unecho
+  vim.cmd([[echo '' | redraw]])
+
+  if not success then
+    return
+  end
+
+  if utils.is_valid_mark(input) then
+    local input_is_file_mark = is_file_mark(input)
+
+    if input_is_file_mark then
+      local file_mark = file_marks_by_mark[input]
+
+      if not file_mark then return end
+
+      require("lbrayner").jump_to_location(file_mark.pos[1])
+      return
+    end
+
+    vim.cmd("normal! '" .. input)
+  end
+end)
 vim.keymap.set("n", "m", function()
   -- From mini.nvim jump
   local needs_help_msg = true
@@ -195,8 +231,8 @@ vim.keymap.set("n", "m", function()
     if input_is_file_mark then
       local bufnr = vim.api.nvim_get_current_buf()
 
-      file_marks[input] = { mark = input, pos = { bufnr } }
-      file_marks[bufnr] = file_marks[input]
+      file_marks_by_mark[input] = { mark = input, pos = { bufnr } }
+      file_marks_by_bufnr[bufnr] = file_marks_by_mark[input]
     end
 
     vim.cmd("normal! m" .. input)
@@ -229,11 +265,20 @@ vim.keymap.set("n", "[4", function()
 end)
 
 local function load_file_marks() -- {{{
-  _, file_marks = get_file_mark_info_by_mark_bufnr()
-  M.file_marks = setmetatable(
+  file_marks_by_mark, file_marks_by_bufnr = get_file_mark_info_by_mark_bufnr()
+  M.file_marks_by_bufnr = setmetatable(
     {},
     {
-      __index = file_marks,
+      __index = file_marks_by_bufnr,
+      __newindex = function()
+        error("Cannot add item")
+      end,
+    }
+  )
+  M.file_marks_by_mark = setmetatable(
+    {},
+    {
+      __index = file_marks_by_mark,
       __newindex = function()
         error("Cannot add item")
       end,

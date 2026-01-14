@@ -191,7 +191,7 @@ local DIAGNOSTIC_HL_USER_GROUP = "User7"
 local M = {}
 
 function M.get_bookmark_status()
-  local file_mark = require("lbrayner.marks").file_marks[nvim_get_current_buf()]
+  local file_mark = require("lbrayner.marks").file_marks_by_bufnr[nvim_get_current_buf()]
 
   if not file_mark then return "   " end
 
