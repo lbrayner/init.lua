@@ -251,20 +251,15 @@ function M.get_diagnostics()
 end
 
 local function get_diff_status(option) -- {{{
+  local diff_status = "%4*   %*"
   if string.find(option, "iwhite") then
-    return function()
-      if vim.wo.diff then
-        return "%5* ʷ %*"
-      end
-      return "    "
+    diff_status = "%5* ʷ %*"
+  end
+  return function()
+    if vim.wo.diff then
+      return diff_status
     end
-  else
-    return function()
-      if vim.wo.diff then
-        return "%4*   %*"
-      end
-      return "    "
-    end
+    return "    "
   end
 end -- }}}
 

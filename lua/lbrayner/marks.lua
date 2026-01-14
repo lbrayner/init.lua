@@ -318,9 +318,7 @@ local marks = vim.api.nvim_create_augroup("marks", { clear = true })
 vim.api.nvim_create_autocmd("VimEnter", {
   group = marks,
   desc = "Load file marks",
-  callback = function()
-    load_file_marks()
-  end,
+  callback = load_file_marks,
 })
 
 return M
