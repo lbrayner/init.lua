@@ -10,16 +10,17 @@ local function get_file()
   )
 end
 
-local function get_file_mark_info_by_mark_or_bufnr()
+local function get_file_mark_info_by_mark_bufnr()
   local file_mark_info_list = M.get_file_mark_info_list()
 
   local file_mark_info_by_mark = {}
+  local file_mark_info_by_bufnr = {}
   for _, file_mark_info in ipairs(file_mark_info_list) do
     file_mark_info_by_mark[file_mark_info.mark] = file_mark_info
-    file_mark_info_by_mark[file_mark_info.pos[1]] = file_mark_info
+    file_mark_info_by_bufnr[file_mark_info.pos[1]] = file_mark_info
   end
 
-  return file_mark_info_by_mark
+  return file_mark_info_by_mark, file_mark_info_by_bufnr
 end
 
 local function get_file_mark_navigator(opts)
@@ -142,7 +143,7 @@ end
 function M.file_mark_jump_to_location(mark)
   assert(type(mark) == "string", "Bad argument; 'mark' must be a string.")
   assert(mark:match("^%u$"), "Bad argument; 'mark' must be a file mark.")
-  local file_mark_info_by_mark = get_file_mark_info_by_mark_or_bufnr()
+  local file_mark_info_by_mark = get_file_mark_info_by_mark_bufnr()
   local file_mark_info = file_mark_info_by_mark[mark]
   if not file_mark_info then
     vim.notify(string.format("“%s” is not set.", mark))
@@ -228,7 +229,7 @@ vim.keymap.set("n", "[4", function()
 end)
 
 local function load_file_marks() -- {{{
-  file_marks = get_file_mark_info_by_mark_or_bufnr()
+  _, file_marks = get_file_mark_info_by_mark_bufnr()
   M.file_marks = setmetatable(
     {},
     {
