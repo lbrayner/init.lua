@@ -361,27 +361,11 @@ function M.get_statusline()
     "%( %3*%{v:lua.require'lbrayner.statusline'.get_minor_modes()}%*%) ",
     get_buffer_position(),
     " %8*%{v:lua.require'lbrayner.statusline'.get_dap_status()}%*",
-  })
-
-  if vim.bo.filetype == "git" then
-    rightline = concat({
-      rightline,
-      "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
-      " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
-    })
-  else
-    rightline = concat({
-      rightline,
-      " %7*%{v:lua.require'lbrayner.statusline'.get_diagnostics()}%*",
-      "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
-      " %5*%{v:lua.require'lbrayner.statusline'.get_bookmark_status()}%*",
-      " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
-      " %4.(%4*%{&fileformat}%*%)",
-    })
-  end
-
-  rightline = concat({
-    rightline,
+    " %7*%{v:lua.require'lbrayner.statusline'.get_diagnostics()}%*",
+    "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
+    " %5*%{v:lua.require'lbrayner.statusline'.get_bookmark_status()}%*",
+    " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
+    " %4.(%4*%{&fileformat}%*%)",
     " %{%v:lua.require'lbrayner.statusline'.get_diff_status()%}",
     " %2*%{&filetype}%* ",
   })
