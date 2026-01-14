@@ -180,12 +180,12 @@ vim.keymap.set("n", "m", function()
     print("[Set mark] Enter mark: ")
   end, 1000)
 
-  local err, input = pcall(vim.fn.getcharstr)
+  local success, input = pcall(vim.fn.getcharstr)
   needs_help_msg = false
   -- Unecho
   vim.cmd([[echo '' | redraw]])
 
-  if not err then
+  if not success then
     return
   end
 
