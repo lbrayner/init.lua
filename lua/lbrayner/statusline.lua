@@ -653,6 +653,16 @@ nvim_create_autocmd("TermEnter", {
   end,
 })
 
+-- For now this is necessary
+nvim_create_autocmd("User", {
+  pattern = "FileMarkSet",
+  group = statusline,
+  desc = "Redraw statusline after file mark is set",
+  callback = function()
+    nvim__redraw({ statusline = true })
+  end,
+})
+
 nvim_create_autocmd("TermLeave", {
   group = statusline,
   desc = "Restore regular statusline",

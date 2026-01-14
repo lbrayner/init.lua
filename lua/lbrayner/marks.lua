@@ -278,7 +278,9 @@ vim.keymap.set("n", "m", function()
   end
 
   if utils.is_valid_mark(input) then
-    if is_file_mark(input) then
+    local input_is_file_mark = is_file_mark(input)
+
+    if input_is_file_mark then
       local bufnr = vim.api.nvim_get_current_buf()
 
       file_marks[input] = { mark = input, pos = { bufnr } }
@@ -286,8 +288,10 @@ vim.keymap.set("n", "m", function()
     end
 
     vim.cmd("normal! m" .. input)
-    -- For now this is necessary
-    vim.api.nvim__redraw({ statusline = true })
+
+    if input_is_file_mark then
+      vim.api.nvim_exec_autocmds("User", { pattern = "FileMarkSet" })
+    end
   end
 end)
 
