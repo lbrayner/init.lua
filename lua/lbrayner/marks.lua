@@ -327,4 +327,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
   callback = load_file_marks,
 })
 
+if vim.v.vim_did_enter == 1 then
+  vim.api.nvim_exec_autocmds("VimEnter", { group = marks })
+end
+
 return M
