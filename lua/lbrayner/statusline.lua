@@ -190,6 +190,14 @@ end -- }}}
 local DIAGNOSTIC_HL_USER_GROUP = "User7"
 local M = {}
 
+function M.get_bookmark_status()
+  local file_mark = require("lbrayner.marks").file_marks[nvim_get_current_buf()]
+
+  if not file_mark then return "   " end
+
+  return concat({ " ", file_mark.mark })
+end
+
 function M.get_buffer_name(opts)
   opts = opts or {}
   local buffer_name = get_path()
@@ -348,9 +356,9 @@ function M.get_statusline()
   end
 
   local rightline = concat({
-    "%( %3*%{v:lua.require'lbrayner.statusline'.get_minor_modes()}%*%)",
+    "%( %3*%{v:lua.require'lbrayner.statusline'.get_minor_modes()}%*%) ",
     get_buffer_position(),
-    "%8*%{v:lua.require'lbrayner.statusline'.get_dap_status()}%*",
+    " %8*%{v:lua.require'lbrayner.statusline'.get_dap_status()}%*",
   })
 
   if vim.bo.filetype == "git" then
@@ -364,6 +372,7 @@ function M.get_statusline()
       rightline,
       " %7*%{v:lua.require'lbrayner.statusline'.get_diagnostics()}%*",
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
+      " %5*%{v:lua.require'lbrayner.statusline'.get_bookmark_status()}%*",
       " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
       " %4.(%4*%{&fileformat}%*%)",
     })

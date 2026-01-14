@@ -286,6 +286,8 @@ vim.keymap.set("n", "m", function()
     end
 
     vim.cmd("normal! m" .. input)
+    -- For now this is necessary
+    vim.api.nvim__redraw({ statusline = true })
   end
 end)
 
