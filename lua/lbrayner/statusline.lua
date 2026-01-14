@@ -190,6 +190,16 @@ end -- }}}
 local DIAGNOSTIC_HL_USER_GROUP = "User7"
 local M = {}
 
+function M.get_bookmark_status()
+  local file_mark_info = require(
+    "lbrayner.marks"
+  ).file_mark_info_by_bufnr[nvim_get_current_buf()]
+
+  if not file_mark_info then return "   " end
+
+  return concat({ " ", file_mark_info.mark })
+end
+
 function M.get_buffer_name(opts)
   opts = opts or {}
   local buffer_name = get_path()
@@ -251,20 +261,15 @@ function M.get_diagnostics()
 end
 
 local function get_diff_status(option) -- {{{
+  local diff_status = "%4*   %*"
   if string.find(option, "iwhite") then
-    return function()
-      if vim.wo.diff then
-        return "%5* ʷ %*"
-      end
-      return "    "
+    diff_status = "%5* ʷ %*"
+  end
+  return function()
+    if vim.wo.diff then
+      return diff_status
     end
-  else
-    return function()
-      if vim.wo.diff then
-        return "%4*   %*"
-      end
-      return "    "
-    end
+    return "    "
   end
 end -- }}}
 
@@ -353,9 +358,9 @@ function M.get_statusline()
   end
 
   local rightline = concat({
-    "%( %3*%{v:lua.require'lbrayner.statusline'.get_minor_modes()}%*%)",
+    "%( %3*%{v:lua.require'lbrayner.statusline'.get_minor_modes()}%*%) ",
     get_buffer_position(),
-    "%8*%{v:lua.require'lbrayner.statusline'.get_dap_status()}%*",
+    " %8*%{v:lua.require'lbrayner.statusline'.get_dap_status()}%*",
   })
 
   if vim.bo.filetype == "git" then
@@ -369,6 +374,7 @@ function M.get_statusline()
       rightline,
       " %7*%{v:lua.require'lbrayner.statusline'.get_diagnostics()}%*",
       "%( %6*%{v:lua.require'lbrayner.statusline'.get_version_control()}%*%)",
+      " %5*%{v:lua.require'lbrayner.statusline'.get_bookmark_status()}%*",
       " %4*%{v:lua.require'lbrayner'.options(&fileencoding, &encoding, '')}%*",
       " %4.(%4*%{&fileformat}%*%)",
     })
@@ -646,6 +652,16 @@ nvim_create_autocmd("TermEnter", {
         end)
       end
     end)
+  end,
+})
+
+-- For now this is necessary
+nvim_create_autocmd("User", {
+  pattern = "FileMarkSet",
+  group = statusline,
+  desc = "Redraw statusline after file mark is set",
+  callback = function()
+    nvim__redraw({ statusline = true })
   end,
 })
 
