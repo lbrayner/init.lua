@@ -1,6 +1,4 @@
 local concat = table.concat
-local execute = vim.fn.execute
-local nvim_get_current_buf = vim.api.nvim_get_current_buf
 local shellescape = vim.fn.shellescape
 local utils = require("fzf-commands.utils")
 
@@ -18,12 +16,11 @@ end -- }}}
 
 return function (opts)
   opts = utils.normalize_opts(opts)
-          -- return string.format("pos(%d)", opts.__locate_pos)
-  local marks = execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+  local marks = vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ")
   marks = vim.split(marks:sub(2), "\n")
   local file_mark_info, pos = require(
     "lbrayner.marks"
-  ).file_mark_info_by_bufnr[nvim_get_current_buf()]
+  ).file_mark_info_by_bufnr[vim.api.nvim_get_current_buf()]
 
   if file_mark_info then
     pos = (function()
