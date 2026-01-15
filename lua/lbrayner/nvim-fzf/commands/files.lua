@@ -4,6 +4,7 @@ local concat = table.concat
 local fnameescape = vim.fn.fnameescape
 local fzf = require("fzf").fzf
 local get_cwd = require("lbrayner.path").get_cwd
+local get_history_file = require("lbrayner.nvim-fzf").get_history_file
 local shellescape = vim.fn.shellescape
 local utils = require("fzf-commands.utils")
 
@@ -42,8 +43,10 @@ end -- }}}
 return function (opts)
   opts = utils.normalize_opts(opts)
   local command = "rg --files --sort path"
+  local history_file_ = shellescape(get_history_file())
+
   local fzf_cli_args = concat({
-    "--ansi --multi",
+    "--ansi --multi", concat({ "--history=", history_file_ }),
     concat({
       "--expect=", shellescape(concat({ EDIT, SPLIT, TAB, TAB_BEFORE, VSPLIT }, ","))
     }),
@@ -54,6 +57,18 @@ return function (opts)
 
   coroutine.wrap(function ()
     local selected = opts.fzf(command, fzf_cli_args)
+
+    if vim.fn.executable("nauniq") == 1 then
+      local cmd = concat({ "tac", history_file_, "| nauniq | tac | sponge", history_file_ }, " ")
+
+      pcall(vim.system, { "sh", "-c", cmd }, { text = true }, vim.schedule_wrap(function(obj)
+        if obj.code ~= 0 then
+          vim.notify(string.format(
+            "Could not run '%s': %s", cmd, obj.stderr
+          ), vim.log.levels.ERROR)
+        end
+      end))
+    end
 
     if not selected then return end
 
