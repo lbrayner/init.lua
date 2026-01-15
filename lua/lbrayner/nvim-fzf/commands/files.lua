@@ -17,18 +17,6 @@ local function files(opts)
 
   local command = "rg --files --sort path"
 
-  local preview
-  if fn.executable("bat") == 1 then
-    -- 5 is the number that prevents overflow of the preview window when using
-    -- bat
-    preview = ('bash -c %s "$0"'):format(fn.shellescape('bat --line-range=:$(($FZF_PREVIEW_LINES - 5)) --color always -- "$0"'))
-  else
-    preview = "head -n $FZF_PREVIEW_LINES -- \"$0\""
-  end
-
-  -- We use bash to do math on the environment variable, so
-  -- let's make sure this command runs in bash
-  preview = "bash -c " .. fn.shellescape(preview) .. " {}"
   local fzf_cli_args = opts.fzf_cli_args or ""
 
   coroutine.wrap(function ()
@@ -36,9 +24,7 @@ local function files(opts)
       command,
       concat({
         fzf_cli_args,
-        (
-          "--ansi --preview=%s --expect=ctrl-s,ctrl-t,ctrl-v --multi"
-        ):format(fn.shellescape(preview))
+        "--ansi --expect=ctrl-s,ctrl-t,ctrl-v --multi"
       }, " ")
     )
 
