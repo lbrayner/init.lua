@@ -1,4 +1,5 @@
 local fzf = require "fzf".fzf
+local concat = table.concat
 
 local utils = require "fzf-commands.utils"
 
@@ -14,17 +15,7 @@ local function files(opts)
      executable = "find"
   end
 
-  local command = executable
-
-  if opts.command_flags then
-     command = command .. " " .. opts.command_flags
-  else
-     if executable == "fd" then
-        command = command .. " --color always -t f -L"
-     else
-        command = command .. " . -type f -printf '%P\n' | tail +2"
-     end
-  end
+  local command = "rg --files --sort path"
 
   local preview
   if fn.executable("bat") == 1 then
@@ -38,11 +29,18 @@ local function files(opts)
   -- We use bash to do math on the environment variable, so
   -- let's make sure this command runs in bash
   preview = "bash -c " .. fn.shellescape(preview) .. " {}"
+  local fzf_cli_args = opts.fzf_cli_args or ""
 
   coroutine.wrap(function ()
-    local choices = opts.fzf(command,
-      ("--ansi --preview=%s --expect=ctrl-s,ctrl-t,ctrl-v --multi"):format(
-        fn.shellescape(preview)))
+    local choices = opts.fzf(
+      command,
+      concat({
+        fzf_cli_args,
+        (
+          "--ansi --preview=%s --expect=ctrl-s,ctrl-t,ctrl-v --multi"
+        ):format(fn.shellescape(preview))
+      }, " ")
+    )
 
     if not choices then return end
 
