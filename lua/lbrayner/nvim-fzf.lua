@@ -6,6 +6,7 @@ local function run_module(name)
   end
 end
 
-M.files = run_module("lbrayner.nvim-fzf.files")
+M.files = run_module("lbrayner.nvim-fzf.commands.files")
+M.setup = run_module("lbrayner.nvim-fzf.setup")
 
 return M
