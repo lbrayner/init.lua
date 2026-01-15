@@ -192,11 +192,11 @@ vim.keymap.set("n", "'", function()
 
   if utils.is_valid_mark(input) then
     if is_file_mark(input) then
-      local file_mark = file_mark_info_by_mark[input]
+      local file_mark_info = file_mark_info_by_mark[input]
 
-      if not file_mark then return end
+      if not file_mark_info then return end
 
-      require("lbrayner").jump_to_location(file_mark.pos[1])
+      require("lbrayner").jump_to_location(file_mark_info.pos[1])
       return
     end
 
