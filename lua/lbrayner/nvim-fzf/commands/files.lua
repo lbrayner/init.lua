@@ -1,9 +1,30 @@
+-- vim: fdm=marker
+
 local fzf = require "fzf".fzf
 local concat = table.concat
+local shellescape = vim.fn.shellescape
 
 local utils = require "fzf-commands.utils"
 
 local fn, api = utils.helpers()
+
+local function file_jump(selected) -- {{{
+  if #selected > 2 then
+    vim.notify("Cannot jump to multiple files.", vim.log.levels.WARN)
+    return
+  else
+    local bufnr = vim.fn.bufadd(selected[2])
+    require("lbrayner").jump_to_location(bufnr)
+  end
+end -- }}}
+
+local function file_tabedit_before(selected) -- {{{
+  for i=2, #selected do
+    local bufnr = vim.fn.bufadd(selected[i])
+    -- from fzf-lua's actions (vimcmd_entry)
+    vim.cmd(concat({ "-tabnew | setlocal bufhidden=wipe | buffer ", bufnr }))
+  end
+end -- }}}
 
 local function files(opts)
   opts = utils.normalize_opts(opts)
@@ -17,32 +38,35 @@ local function files(opts)
 
   local command = "rg --files --sort path"
 
-  local fzf_cli_args = opts.fzf_cli_args or ""
+  local fzf_cli_args = concat({
+    opts.fzf_cli_args or "",
+    " --ansi --multi --expect=",
+    shellescape("alt-s,alt-t,ctrl-s,ctrl-t,ctrl-]")
+  })
+  print("fzf_cli_args", fzf_cli_args) -- TODO debug
 
   coroutine.wrap(function ()
-    local choices = opts.fzf(
-      command,
-      concat({
-        fzf_cli_args,
-        "--ansi --expect=ctrl-s,ctrl-t,ctrl-v --multi"
-      }, " ")
-    )
+    local selected = opts.fzf(command, fzf_cli_args)
 
-    if not choices then return end
+    if not selected then return end
+
+    local key = selected[1]
 
     local vimcmd
-    if choices[1] == "ctrl-t" then
-      vimcmd = "tabnew"
-    elseif choices[1] == "ctrl-v" then
+    if key == "alt-t" then
+      file_tabedit_before(selected)
+      return
+    elseif key == "alt-s" then
       vimcmd = "vnew"
-    elseif choices[1] == "ctrl-s" then
+    elseif key == "ctrl-s" then
       vimcmd = "new"
     else
-      vimcmd = "e"
+      file_jump(selected)
+      return
     end
 
-    for i=2,#choices do
-      vim.cmd(vimcmd .. " " .. fn.fnameescape(choices[i]))
+    for i=2,#selected do
+      vim.cmd(vimcmd .. " " .. fn.fnameescape(selected[i]))
     end
 
   end)()
