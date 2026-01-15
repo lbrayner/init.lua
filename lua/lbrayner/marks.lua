@@ -339,7 +339,7 @@ local function swap_marks(fmark1, fmark2) -- {{{
 
   load_file_marks()
   vim.api.nvim_exec_autocmds("User", { pattern = "FileMarkSet" })
-  print("Swapped file mark", fmark1.mark, "with", fmark2.mark, ".")
+  print("Swapped file mark", fmark1.mark, "with", fmark2.mark)
 end -- }}}
 
 vim.keymap.set("n", "<A-4>", function()
