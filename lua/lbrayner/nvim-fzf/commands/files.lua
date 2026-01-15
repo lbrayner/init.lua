@@ -6,6 +6,7 @@ local fzf = require("fzf").fzf
 local shellescape = vim.fn.shellescape
 local utils = require("fzf-commands.utils")
 
+local EDIT       = "ctrl-]"
 local SPLIT      = "ctrl-s"
 local TAB        = "ctrl-t"
 local TAB_BEFORE = "alt-t"
@@ -13,16 +14,12 @@ local VSPLIT     = "alt-s"
 
 local function jump(selected) -- {{{
   if #selected > 2 then
-    -- vim.schedule(function()
-    --   vim.api.nvim_echo({ { "[FZF files] Cannot jump to multiple files", "Normal" } }, true, {})
-    -- end)
-    -- vim.notify("[FZF files] Cannot jump to multiple files", vim.log.levels.WARN)
-    -- vim.cmd.redraw()
+    vim.api.nvim_echo({ { "[FZF files] Cannot jump to multiple files", "Normal" } }, true, {})
     return
-  else
-    local bufnr = vim.fn.bufadd(selected[2])
-    require("lbrayner").jump_to_location(bufnr)
   end
+
+  local bufnr = vim.fn.bufadd(selected[2])
+  require("lbrayner").jump_to_location(bufnr)
 end -- }}}
 
 local function tabedit_before(selected) -- {{{
@@ -38,7 +35,7 @@ return function (opts)
   local command = "rg --files --sort path"
   local fzf_cli_args = concat({
     "--ansi --multi --expect=",
-    shellescape(concat({ SPLIT, TAB, TAB_BEFORE, VSPLIT }, ",")),
+    shellescape(concat({ EDIT, SPLIT, TAB, TAB_BEFORE, VSPLIT }, ",")),
     opts.fzf_cli_args and concat({ " ", opts.fzf_cli_args }) or "",
   })
 
@@ -50,7 +47,14 @@ return function (opts)
     local action = selected[1]
     local vicmd
 
-    if action == SPLIT then
+    if action == EDIT then
+      if #selected > 2 then
+        vim.notify("[FZF files] Cannot edit multiple files", vim.log.levels.WARN)
+      else
+        vim.cmd(concat({ "edit ", fnameescape(selected[2]) }))
+      end
+      return
+    elseif action == SPLIT then
       vicmd = "new"
     elseif action == TAB then
       vicmd = "tabnew"
