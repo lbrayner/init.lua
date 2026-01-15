@@ -3,6 +3,7 @@
 local concat = table.concat
 local fnameescape = vim.fn.fnameescape
 local fzf = require("fzf").fzf
+local get_cwd = require("lbrayner.path").get_cwd
 local shellescape = vim.fn.shellescape
 local utils = require("fzf-commands.utils")
 
@@ -12,9 +13,17 @@ local TAB        = "ctrl-t"
 local TAB_BEFORE = "alt-t"
 local VSPLIT     = "alt-s"
 
+local function edit(selected) -- {{{
+  if #selected > 2 then
+    vim.notify("[FZF files] Cannot edit multiple files", vim.log.levels.WARN)
+  else
+    vim.cmd(concat({ "edit ", fnameescape(selected[2]) }))
+  end
+end -- }}}
+
 local function jump(selected) -- {{{
   if #selected > 2 then
-    vim.api.nvim_echo({ { "[FZF files] Cannot jump to multiple files", "Normal" } }, true, {})
+    vim.notify("[FZF files] Cannot jump to multiple files", vim.log.levels.WARN)
     return
   end
 
@@ -34,10 +43,14 @@ return function (opts)
   opts = utils.normalize_opts(opts)
   local command = "rg --files --sort path"
   local fzf_cli_args = concat({
-    "--ansi --multi --expect=",
-    shellescape(concat({ EDIT, SPLIT, TAB, TAB_BEFORE, VSPLIT }, ",")),
-    opts.fzf_cli_args and concat({ " ", opts.fzf_cli_args }) or "",
-  })
+    "--ansi --multi",
+    concat({
+      "--expect=", shellescape(concat({ EDIT, SPLIT, TAB, TAB_BEFORE, VSPLIT }, ","))
+    }),
+    concat({ "--prompt=", shellescape(get_cwd()), "/" }),
+    opts.fzf_cli_args and opts.fzf_cli_args or nil
+  }, " ")
+  -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
 
   coroutine.wrap(function ()
     local selected = opts.fzf(command, fzf_cli_args)
@@ -48,11 +61,7 @@ return function (opts)
     local vicmd
 
     if action == EDIT then
-      if #selected > 2 then
-        vim.notify("[FZF files] Cannot edit multiple files", vim.log.levels.WARN)
-      else
-        vim.cmd(concat({ "edit ", fnameescape(selected[2]) }))
-      end
+      edit(selected)
       return
     elseif action == SPLIT then
       vicmd = "new"
