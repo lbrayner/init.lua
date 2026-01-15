@@ -1,5 +1,7 @@
 local concat = table.concat
 local execute = vim.fn.execute
+local nvim_get_current_buf = vim.api.nvim_get_current_buf
+local shellescape = vim.fn.shellescape
 local utils = require("fzf-commands.utils")
 
 local function jump(selected) -- {{{
@@ -16,16 +18,32 @@ end -- }}}
 
 return function (opts)
   opts = utils.normalize_opts(opts)
+          -- return string.format("pos(%d)", opts.__locate_pos)
+  local marks = execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+  marks = vim.split(marks:sub(2), "\n")
+  local file_mark_info, pos = require(
+    "lbrayner.marks"
+  ).file_mark_info_by_bufnr[nvim_get_current_buf()]
+
+  if file_mark_info then
+    pos = (function()
+      -- Start from position 2
+      for i=3, #marks do
+        if (marks[i]):match("%u") == file_mark_info.mark then return i end
+      end
+    end)()
+  end
+
   local fzf_cli_args = concat({
     "--ansi --header-lines=1 --multi --prompt='File marks> '",
+    pos and concat(
+      { "--bind=", shellescape(string.format("load:pos(%d)", pos - 1)) }
+    ) or nil,
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
 
   coroutine.wrap(function ()
-    local marks = execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-    marks = vim.split(marks:sub(2), "\n")
-
     local selected = opts.fzf(marks, fzf_cli_args)
     jump(selected)
   end)()
