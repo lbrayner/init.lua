@@ -60,32 +60,34 @@ return function (opts)
   coroutine.wrap(function()
     local selected = require("fzf").fzf(command, fzf_cli_args)
 
+    if selected then
+      (function()
+        local action = selected[1]
+        local vicmd
+
+        if action == EDIT then
+          edit(selected)
+          return
+        elseif action == SPLIT then
+          vicmd = "new"
+        elseif action == TAB then
+          vicmd = "tabnew"
+        elseif action == TAB_BEFORE then
+          tabedit_before(selected)
+          return
+        elseif action == VSPLIT then
+          vicmd = "vnew"
+        else
+          jump(selected)
+          return
+        end
+
+        for i=2, #selected do
+          vim.cmd(concat({ vicmd, fnameescape(selected[i]) }, " "))
+        end
+      end)()
+    end
+
     sanitize_history_file(history_file)
-
-    if not selected then return end
-
-    local action = selected[1]
-    local vicmd
-
-    if action == EDIT then
-      edit(selected)
-      return
-    elseif action == SPLIT then
-      vicmd = "new"
-    elseif action == TAB then
-      vicmd = "tabnew"
-    elseif action == TAB_BEFORE then
-      tabedit_before(selected)
-      return
-    elseif action == VSPLIT then
-      vicmd = "vnew"
-    else
-      jump(selected)
-      return
-    end
-
-    for i=2, #selected do
-      vim.cmd(concat({ vicmd, fnameescape(selected[i]) }, " "))
-    end
   end)()
 end

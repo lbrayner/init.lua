@@ -46,10 +46,10 @@ return function (opts)
   coroutine.wrap(function()
     local selected = require("fzf").fzf(marks, fzf_cli_args)
 
+    if selected then
+      jump(selected)
+    end
+
     sanitize_history_file(history_file)
-
-    if not selected then return end
-
-    jump(selected)
   end)()
 end

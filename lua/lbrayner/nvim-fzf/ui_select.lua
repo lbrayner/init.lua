@@ -14,6 +14,7 @@ end
 
 function M.ui_select(items, ui_opts, on_choice)
   local entries = {}
+
   for i, e in ipairs(items) do
     table.insert(
       entries,
@@ -35,12 +36,12 @@ function M.ui_select(items, ui_opts, on_choice)
     local selected = require("fzf").fzf(entries, fzf_cli_args)
     -- print("selected", vim.inspect(selected)) -- TODO debug
 
+    if selected then
+      local idx = tonumber(selected[1]:match("%d+"))
+      on_choice(items[idx])
+    end
+
     sanitize_history_file(history_file)
-
-    if not selected then return end
-
-    local idx = tonumber(selected[1]:match("%d+"))
-    on_choice(items[idx])
   end
 
   local co = coroutine.running()
