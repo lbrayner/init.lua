@@ -20,6 +20,8 @@ local function get_visual_selection_query(opts) -- {{{
 end -- }}}
 
 return function()
+  require("lbrayner.nvim-fzf.ui_select").register()
+
   nvim_create_user_command("NFiles", function(opts)
     local query = get_visual_selection_query(opts)
     query = query and concat({ "--query=", shellescape(query) })

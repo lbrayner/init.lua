@@ -10,13 +10,6 @@ local nvim_create_augroup = vim.api.nvim_create_augroup
 local nvim_create_autocmd = vim.api.nvim_create_autocmd
 local nvim_create_user_command = vim.api.nvim_create_user_command
 
--- register fzf-lua as the UI interface for `vim.ui.select`
-fzf.register_ui_select(require("lbrayner.fzf-lua").make_opts({
-  fzf_opts = {
-    ["--history"] = require("lbrayner.fzf-lua").get_history_file("ui_select")
-  }
-}))
-
 local function file_jump_or_qf(selected, opts) -- {{{
   if #selected > 1 then
     actions.file_sel_to_qf(selected, opts)
