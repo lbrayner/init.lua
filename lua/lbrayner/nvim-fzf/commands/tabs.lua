@@ -23,8 +23,13 @@ end -- }}}
 return function (opts)
   opts = opts or {}
   local entries = {}
+  local i, pos = 0, 0
+  local curtabh = vim.api.nvim_get_current_tabpage()
+  local curwin = vim.api.nvim_get_current_win()
+  -- print("tabh", vim.inspect(tabh), "winid", vim.inspect(winid)) -- TODO debug
 
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
+    i = i + 1
     local cwd = getcwd(-1, tabnr)
 
     table.insert(
@@ -33,6 +38,10 @@ return function (opts)
     )
 
     for _, w in ipairs(vim.api.nvim_tabpage_list_wins(tabh)) do
+      i = i + 1
+
+      if pos == 0 and tabh == curtabh and w == curwin then pos = i end
+
       -- From fzf-lua.providers.buffers's gen_buffer_entry
       local bufnr = vim.api.nvim_win_get_buf(w)
       local info = getbufinfo(bufnr)[1]
@@ -55,6 +64,9 @@ return function (opts)
   local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
   local fzf_cli_args = concat({
     concat({ "--history=", shellescape(history_file) }), "--prompt='Tabs> '" ,
+    pos > 1 and concat(
+      { "--bind=", shellescape(string.format("load:pos(%d)", pos)) }
+    ) or nil,
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
