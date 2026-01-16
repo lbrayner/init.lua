@@ -29,7 +29,7 @@ return function (opts)
     local cwd = getcwd(-1, tabnr)
     table.insert(
       entries,
-      concat({ tabnr, fnamemodify(cwd, ":~") }, TAB)
+      concat({ tabnr, 0, fnamemodify(cwd, ":~") }, TAB)
     )
 
     for _, w in ipairs(vim.api.nvim_tabpage_list_wins(tabh)) do
@@ -64,7 +64,13 @@ return function (opts)
 
     if selected then
       -- local tabn, bufnr = tonumber(selected[1]:match("%d+"))
-      jump(selected)
+      local tabh, winid = selected[1]:match("^(%d+)	(%d+)")
+      -- print("tabh", vim.inspect(tabh), "winid", vim.inspect(winid)) -- TODO debug
+
+      vim.api.nvim_set_current_tabpage(tonumber(tabh))
+      if tonumber(winid) > 0 then
+        vim.api.nvim_set_current_win(tonumber(winid))
+      end
     end
 
     sanitize_history_file(history_file)
