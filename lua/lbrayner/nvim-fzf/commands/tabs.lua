@@ -4,19 +4,21 @@ local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local getbufinfo = vim.fn.getbufinfo
 local getcwd = vim.fn.getcwd
-local nvim_win_call = vim.api.nvim_win_call
+local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
 
   local TAB = ( -- {{{
       "	")
       -- }}}
 
-local function strip_cwd(winid, name) -- {{{
-  nvim_win_call(winid, function()
-    name = fnamemodify(name, ":~:.")
-  end)
+local function strip_cwd(cwd, name) -- {{{
+  local rel = relpath(cwd, name)
 
-  return name
+  if not rel then
+    return fnamemodify(name, ":~")
+  end
+
+  return rel
 end -- }}}
 
 return function (opts)
@@ -25,6 +27,7 @@ return function (opts)
 
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
     local cwd = getcwd(-1, tabnr)
+
     table.insert(
       entries,
       concat({ tabnr, 0, fnamemodify(cwd, ":~") }, TAB)
@@ -44,7 +47,7 @@ return function (opts)
       table.insert(
         entries,
         ("%d	%d	[%d]	%s	%s"):format(
-          tabnr, w, bufnr, flags, strip_cwd(w, info.name)
+          tabnr, w, bufnr, flags, strip_cwd(cwd, info.name)
         )
       )
     end
