@@ -20,11 +20,13 @@ local function get_visual_selection_query(opts) -- {{{
 end -- }}}
 
 return function()
-  nvim_create_user_command("NFiles", function(opts)
+  nvim_create_user_command("Files", function(opts)
     local query = get_visual_selection_query(opts)
     query = query and concat({ "--query=", shellescape(query) })
 
-    require("lbrayner.nvim-fzf").files({ fzf_cli_args = query })
+    require("lbrayner.nvim-fzf").files({
+      fzf_cli_args = query, fzf_command_args = opts.args
+    })
   end, { complete = "file", nargs = "*", range = -1 })
   nvim_create_user_command("Marks", function()
     require("lbrayner.nvim-fzf").marks()
@@ -34,6 +36,9 @@ return function()
 
   vim.keymap.set("n", "<F4>", function()
     require("lbrayner.nvim-fzf").marks()
+  end, opts)
+  vim.keymap.set("n", "<F7>", function()
+    require("lbrayner.nvim-fzf").files()
   end, opts)
 
   require("lbrayner.nvim-fzf.ui_select").register()

@@ -42,7 +42,10 @@ end -- }}}
 
 return function (opts)
   opts = opts or {}
-  local command = "rg --files --sort path"
+  local command = concat(
+    { "rg --files --sort path", opts.fzf_command_args }, " "
+  )
+  print("command", vim.inspect(command)) -- TODO debug
   local history_file = get_history_file()
 
   local fzf_cli_args = concat({

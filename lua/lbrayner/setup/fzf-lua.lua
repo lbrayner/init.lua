@@ -117,7 +117,7 @@ end -- }}}
 nvim_create_user_command("Buffers", function()
   require("lbrayner.fzf-lua").buffers()
 end, { nargs = 0 })
-nvim_create_user_command("Files", function(opts)
+nvim_create_user_command("LFiles", function(opts)
   local args = opts.args
   local query = get_visual_selection_query(opts)
 
@@ -127,6 +127,9 @@ nvim_create_user_command("Files", function(opts)
 end, { complete = "file", nargs = "*", range = -1 })
 nvim_create_user_command("HelpTags", function()
   require("lbrayner.fzf-lua").help_tags()
+end, { nargs = 0 })
+nvim_create_user_command("LMarks", function()
+  require("lbrayner.fzf-lua").file_marks()
 end, { nargs = 0 })
 nvim_create_user_command("Tabs", function(opts)
   local query = get_visual_selection_query(opts)
