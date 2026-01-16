@@ -45,7 +45,7 @@ return function (opts)
   local history_file_ = shellescape(get_history_file())
 
   local fzf_cli_args = concat({
-    "--ansi --multi", concat({ "--history=", history_file_ }),
+    "--multi", concat({ "--history=", history_file_ }),
     concat({
       "--expect=", shellescape(concat({ EDIT, SPLIT, TAB, TAB_BEFORE, VSPLIT }, ","))
     }),

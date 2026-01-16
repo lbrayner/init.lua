@@ -32,7 +32,7 @@ return function (opts)
   end
 
   local fzf_cli_args = concat({
-    "--ansi --header-lines=1 --multi --prompt='File marks> '",
+    "--header-lines=1 --multi --prompt='File marks> '",
     pos and concat(
       { "--bind=", shellescape(string.format("load:pos(%d)", pos - 1)) }
     ) or nil,
