@@ -22,22 +22,28 @@ function M.ui_select(items, ui_opts, on_choice)
     )
   end
 
-  local prompt = ui_opts.prompt or "Select one of>"
-  local fzf_cli_args = concat({
-    concat({ "--prompt=", shellescape(prompt) }),
-  }, " ")
+  local prompt = ui_opts.prompt or "Select one of> "
+  local fzf_cli_args = concat({ "--prompt=", shellescape(prompt) })
 
-  coroutine.wrap(function ()
+  local function select()
     local selected = require("fzf").fzf(entries, fzf_cli_args)
     -- print("selected", vim.inspect(selected)) -- TODO debug
 
     if not selected then return end
 
     local idx = tonumber(selected[1]:match("%d"))
-    -- print("idx", vim.inspect(idx), "items", vim.inspect(items), "items[idx]", vim.inspect(items[idx])) -- TODO debug
-
     on_choice(items[idx])
-  end)()
+  end
+
+  local co = coroutine.running()
+
+  if co then
+    select()
+  else
+    coroutine.wrap(function()
+      select()
+    end)()
+  end
 end
 
 return M

@@ -54,7 +54,7 @@ return function (opts)
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
 
-  coroutine.wrap(function ()
+  coroutine.wrap(function()
     local selected = fzf(command, fzf_cli_args)
 
     if vim.fn.executable("nauniq") == 1 then
