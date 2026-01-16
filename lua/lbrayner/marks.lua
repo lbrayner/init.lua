@@ -227,8 +227,13 @@ vim.keymap.set("n", "m", function()
     vim.cmd("normal! m" .. input)
 
     if is_file_mark(input) then
-      local bufnr = vim.api.nvim_get_current_buf()
+      local file_mark_info = file_mark_info_by_mark[input]
 
+      if file_mark_info then
+        file_mark_info_by_bufnr[file_mark_info.pos[1]] = nil
+      end
+
+      local bufnr = vim.api.nvim_get_current_buf()
       file_mark_info_by_mark[input] = { mark = input, pos = { bufnr } }
       file_mark_info_by_bufnr[bufnr] = file_mark_info_by_mark[input]
 
