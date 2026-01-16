@@ -6,7 +6,6 @@ local fzf = require("fzf").fzf
 local get_cwd = require("lbrayner.path").get_cwd
 local get_history_file = require("lbrayner.nvim-fzf").get_history_file
 local shellescape = vim.fn.shellescape
-local utils = require("fzf-commands.utils")
 
 local EDIT       = "ctrl-]"
 local SPLIT      = "ctrl-s"
@@ -41,7 +40,7 @@ local function tabedit_before(selected) -- {{{
 end -- }}}
 
 return function (opts)
-  opts = utils.normalize_opts(opts)
+  opts = opts or {}
   local command = "rg --files --sort path"
   local history_file_ = shellescape(get_history_file())
 
@@ -56,7 +55,7 @@ return function (opts)
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
 
   coroutine.wrap(function ()
-    local selected = opts.fzf(command, fzf_cli_args)
+    local selected = fzf(command, fzf_cli_args)
 
     if vim.fn.executable("nauniq") == 1 then
       local cmd = concat({ "tac", history_file_, "| nauniq | tac | sponge", history_file_ }, " ")

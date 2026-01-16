@@ -1,6 +1,6 @@
 local concat = table.concat
+local fzf = require("fzf").fzf
 local shellescape = vim.fn.shellescape
-local utils = require("fzf-commands.utils")
 
 local function jump(selected) -- {{{
   if #selected > 1 then
@@ -15,7 +15,7 @@ local function jump(selected) -- {{{
 end -- }}}
 
 return function (opts)
-  opts = utils.normalize_opts(opts)
+  opts = opts or {}
   local marks = vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ")
   marks = vim.split(marks:sub(2), "\n")
   local file_mark_info, pos = require(
@@ -41,7 +41,7 @@ return function (opts)
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
 
   coroutine.wrap(function ()
-    local selected = opts.fzf(marks, fzf_cli_args)
+    local selected = fzf(marks, fzf_cli_args)
     jump(selected)
   end)()
 end
