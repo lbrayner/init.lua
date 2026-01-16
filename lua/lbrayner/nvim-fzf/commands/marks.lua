@@ -1,6 +1,4 @@
 local concat = table.concat
-local get_history_file = require("lbrayner.nvim-fzf.history").get_history_file
-local sanitize_history_file = require("lbrayner.nvim-fzf.history").sanitize_history_file
 local shellescape = vim.fn.shellescape
 
 local function jump(selected) -- {{{
@@ -32,7 +30,7 @@ return function (opts)
     end)()
   end
 
-  local history_file = get_history_file("file_marks")
+  local history_file = require("lbrayner.nvim-fzf.history").get_history_file("file_marks")
   local fzf_cli_args = concat({
     "--header-lines=1 --multi --prompt='File marks> '",
     concat({ "--history=", shellescape(history_file) }),
@@ -50,6 +48,6 @@ return function (opts)
       jump(selected)
     end
 
-    sanitize_history_file(history_file)
+    require("lbrayner.nvim-fzf.history").sanitize_history_file(history_file)
   end)()
 end

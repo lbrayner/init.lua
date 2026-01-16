@@ -3,8 +3,6 @@
 local concat = table.concat
 local fnameescape = vim.fn.fnameescape
 local get_cwd = require("lbrayner.path").get_cwd
-local get_history_file = require("lbrayner.nvim-fzf.history").get_history_file
-local sanitize_history_file = require("lbrayner.nvim-fzf.history").sanitize_history_file
 local shellescape = vim.fn.shellescape
 
 local EDIT       = "ctrl-]"
@@ -12,6 +10,8 @@ local SPLIT      = "ctrl-s"
 local TAB        = "ctrl-t"
 local TAB_BEFORE = "alt-t"
 local VSPLIT     = "alt-s"
+
+local PATH_SEPARATOR = package.config:sub(1,1)
 
 local function edit(selected) -- {{{
   if #selected > 2 then
@@ -45,14 +45,14 @@ return function (opts)
     { "rg --files --sort path", opts.fzf_command_args }, " "
   )
   print("command", vim.inspect(command)) -- TODO debug
-  local history_file = get_history_file()
+  local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
 
   local fzf_cli_args = concat({
     "--multi", concat({ "--history=", shellescape(history_file) }),
     concat({
       "--expect=", shellescape(concat({ EDIT, SPLIT, TAB, TAB_BEFORE, VSPLIT }, ","))
     }),
-    concat({ "--prompt=", shellescape(get_cwd()), "/" }),
+    concat({ "--prompt=", shellescape(get_cwd()), PATH_SEPARATOR }),
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
@@ -88,6 +88,6 @@ return function (opts)
       end)()
     end
 
-    sanitize_history_file(history_file)
+    require("lbrayner.nvim-fzf.history").sanitize_history_file(history_file)
   end)()
 end

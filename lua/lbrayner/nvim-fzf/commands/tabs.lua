@@ -2,11 +2,9 @@
 
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
-local get_history_file = require("lbrayner.nvim-fzf.history").get_history_file
 local getbufinfo = vim.fn.getbufinfo
 local getcwd = vim.fn.getcwd
 local nvim_win_call = vim.api.nvim_win_call
-local sanitize_history_file = require("lbrayner.nvim-fzf.history").sanitize_history_file
 local shellescape = vim.fn.shellescape
 
   local TAB = ( -- {{{
@@ -52,7 +50,7 @@ return function (opts)
     end
   end
 
-  local history_file = get_history_file()
+  local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
   local fzf_cli_args = concat({
     concat({ "--history=", shellescape(history_file) }), "--prompt='Tabs> '" ,
     opts.fzf_cli_args and opts.fzf_cli_args or nil
@@ -73,6 +71,6 @@ return function (opts)
       end
     end
 
-    sanitize_history_file(history_file)
+    require("lbrayner.nvim-fzf.history").sanitize_history_file(history_file)
   end)()
 end

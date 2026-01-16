@@ -1,6 +1,4 @@
 local concat = table.concat
-local get_history_file = require("lbrayner.nvim-fzf.history").get_history_file
-local sanitize_history_file = require("lbrayner.nvim-fzf.history").sanitize_history_file
 local shellescape = vim.fn.shellescape
 
 local M = {}
@@ -26,7 +24,7 @@ function M.ui_select(items, ui_opts, on_choice)
   end
 
   local prompt = ui_opts.prompt or "Select one of> "
-  local history_file = get_history_file("ui_select")
+  local history_file = require("lbrayner.nvim-fzf.history").get_history_file("ui_select")
   local fzf_cli_args = concat({
     concat({ "--history=", shellescape(history_file) }),
     concat({ "--prompt=", shellescape(prompt) })
@@ -41,7 +39,7 @@ function M.ui_select(items, ui_opts, on_choice)
       on_choice(items[idx])
     end
 
-    sanitize_history_file(history_file)
+    require("lbrayner.nvim-fzf.history").sanitize_history_file(history_file)
   end
 
   local co = coroutine.running()
