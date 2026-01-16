@@ -1,5 +1,7 @@
 local concat = table.concat
 local fzf = require("fzf").fzf
+local get_history_file = require("lbrayner.nvim-fzf.history").get_history_file
+local sanitize_history_file = require("lbrayner.nvim-fzf.history").sanitize_history_file
 local shellescape = vim.fn.shellescape
 
 local function jump(selected) -- {{{
@@ -31,8 +33,10 @@ return function (opts)
     end)()
   end
 
+  local history_file = get_history_file("file_marks")
   local fzf_cli_args = concat({
     "--header-lines=1 --multi --prompt='File marks> '",
+    concat({ "--history=", shellescape(history_file) }),
     pos and concat(
       { "--bind=", shellescape(string.format("load:pos(%d)", pos - 1)) }
     ) or nil,
@@ -42,6 +46,11 @@ return function (opts)
 
   coroutine.wrap(function()
     local selected = fzf(marks, fzf_cli_args)
+
+    sanitize_history_file(history_file)
+
+    if not selected then return end
+
     jump(selected)
   end)()
 end
