@@ -1,5 +1,4 @@
 local concat = table.concat
-local fzf = require("fzf").fzf
 local get_history_file = require("lbrayner.nvim-fzf.history").get_history_file
 local sanitize_history_file = require("lbrayner.nvim-fzf.history").sanitize_history_file
 local shellescape = vim.fn.shellescape
@@ -45,7 +44,7 @@ return function (opts)
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
 
   coroutine.wrap(function()
-    local selected = fzf(marks, fzf_cli_args)
+    local selected = require("fzf").fzf(marks, fzf_cli_args)
 
     sanitize_history_file(history_file)
 
