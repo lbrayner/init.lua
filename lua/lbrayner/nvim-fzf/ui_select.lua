@@ -39,7 +39,7 @@ function M.ui_select(items, ui_opts, on_choice)
 
     if not selected then return end
 
-    local idx = tonumber(selected[1]:match("%d"))
+    local idx = tonumber(selected[1]:match("%d+"))
     on_choice(items[idx])
   end
 
