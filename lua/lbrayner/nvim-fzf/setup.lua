@@ -28,9 +28,16 @@ return function()
       fzf_cli_args = query, fzf_command_args = opts.args
     })
   end, { complete = "file", nargs = "*", range = -1 })
+
   nvim_create_user_command("Marks", function()
     require("lbrayner.nvim-fzf").marks()
   end, { nargs = 0 })
+  nvim_create_user_command("NTabs", function(opts)
+    local query = get_visual_selection_query(opts)
+    query = query and concat({ "--query=", shellescape(query) })
+
+    require("lbrayner.nvim-fzf").tabs({ fzf_cli_args = query })
+  end, { nargs = 0, range = -1 })
 
   local opts = { silent = true }
 
