@@ -52,6 +52,19 @@ function M.get_path(bufnr)
   return require("lbrayner.path").get_path(bufnr)
 end
 
+function M.get_proxy_table(t)
+  return setmetatable(
+    {},
+    {
+      __index = t,
+      __newindex = function()
+        error("Cannot add item")
+      end,
+    }
+  )
+end
+
+-- TODO deprecated, use get_proxy_table
 function M.get_proxy_table_for_module(module)
   return setmetatable({}, {
     __index = function(_, key)

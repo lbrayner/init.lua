@@ -1,5 +1,6 @@
 -- vim: fdm=marker
 
+local ansi_escseq = require("lbrayner.nvim-fzf").ansi_escseq
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local getbufinfo = vim.fn.getbufinfo
@@ -54,8 +55,10 @@ return function (opts)
       -- print("info.name", vim.inspect(info.name)) -- TODO debug
       table.insert(
         entries,
-        ("%d	%d	[%d]	%s	%s"):format(
-          tabnr, w, bufnr, flags, strip_cwd(cwd, info.name)
+        ("%d	%d	%s[%d]%s	%s	%s"):format(
+          tabnr, w,
+          ansi_escseq.magenta, bufnr, ansi_escseq.clear,
+          flags, strip_cwd(cwd, info.name)
         )
       )
     end
@@ -63,6 +66,7 @@ return function (opts)
 
   local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
   local fzf_cli_args = concat({
+    "--ansi",
     concat({ "--history=", shellescape(history_file) }), "--prompt='Tabs> '" ,
     pos > 1 and concat(
       { "--bind=", shellescape(string.format("load:pos(%d)", pos)) }
@@ -73,6 +77,7 @@ return function (opts)
 
   coroutine.wrap(function()
     local selected = require("fzf").fzf(entries, fzf_cli_args)
+    -- print("selected", vim.inspect(selected)) -- TODO debug
 
     if selected then
       -- local tabn, bufnr = tonumber(selected[1]:match("%d+"))
