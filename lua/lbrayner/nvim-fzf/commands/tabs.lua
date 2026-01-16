@@ -7,9 +7,8 @@ local getcwd = vim.fn.getcwd
 local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
 
-  local TAB = ( -- {{{
-      "	")
-      -- }}}
+local TAB = ( -- {{{
+  "	") -- }}}
 
 local function strip_cwd(cwd, name) -- {{{
   local rel = relpath(cwd, name)
