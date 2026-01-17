@@ -1,6 +1,6 @@
 -- vim: fdm=marker
 
-local ansi_escseq = require("lbrayner.nvim-fzf").ansi_escseq
+local ansi = require("lbrayner.nvim-fzf").ansi_escseq
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local getbufinfo = vim.fn.getbufinfo
@@ -35,7 +35,10 @@ return function (opts)
 
     table.insert(
       entries,
-      concat({ tabnr, 0, fnamemodify(cwd, ":~") }, TAB)
+      concat({
+        tabnr, 0, concat({ ansi.white, "Tab page ", tabnr, ":" }),
+        ansi.cyan, fnamemodify(cwd, ":~"), ansi.clear
+      }, TAB)
     )
 
     for _, w in ipairs(vim.api.nvim_tabpage_list_wins(tabh)) do
@@ -55,9 +58,9 @@ return function (opts)
       -- print("info.name", vim.inspect(info.name)) -- TODO debug
       table.insert(
         entries,
-        ("%d	%d	%s[%d]%s	%s	%s"):format(
-          tabnr, w,
-          ansi_escseq.magenta, bufnr, ansi_escseq.clear,
+        ("%d	%d		»%d	%d	%s[%d]%s	%s	%s"):format(
+          tabnr, w, tabnr, w,
+          ansi.blue, bufnr, ansi.clear,
           flags, strip_cwd(cwd, info.name)
         )
       )
@@ -71,6 +74,8 @@ return function (opts)
     pos > 1 and concat(
       { "--bind=", shellescape(string.format("load:pos(%d)", pos)) }
     ) or nil,
+    concat({ "--delimiter=", shellescape(TAB) }),
+    "--with-nth=3..",
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
@@ -81,7 +86,7 @@ return function (opts)
 
     if selected then
       -- local tabn, bufnr = tonumber(selected[1]:match("%d+"))
-      local tabh, winid = selected[1]:match("^(%d+)	(%d+)")
+      local tabh, winid = selected[1]:match(concat({ "^(%d+)", TAB, "(%d+)" }))
       -- print("tabh", vim.inspect(tabh), "winid", vim.inspect(winid)) -- TODO debug
 
       vim.api.nvim_set_current_tabpage(tonumber(tabh))
