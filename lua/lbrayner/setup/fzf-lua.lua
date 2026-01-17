@@ -131,7 +131,7 @@ end, { nargs = 0 })
 nvim_create_user_command("LMarks", function()
   require("lbrayner.fzf-lua").file_marks()
 end, { nargs = 0 })
-nvim_create_user_command("Tabs", function(opts)
+nvim_create_user_command("LTabs", function(opts)
   local query = get_visual_selection_query(opts)
 
   require("lbrayner.fzf-lua").tabs({ query = query })
