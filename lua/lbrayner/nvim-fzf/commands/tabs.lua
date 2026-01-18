@@ -5,7 +5,6 @@ local base64_encode = vim.base64.encode
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local getbufinfo = vim.fn.getbufinfo
-local getcwd = vim.fn.getcwd
 local nvim_win_get_buf = vim.api.nvim_win_get_buf
 local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
@@ -33,18 +32,19 @@ return function (opts)
 
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
     i = i + 1
-    local cwd = getcwd(-1, tabnr)
+    local cwd = vim.fn.getcwd(-1, tabnr)
+    local wins = vim.api.nvim_tabpage_list_wins(tabh)
 
     table.insert(
       entries,
       concat({
-        tabnr, TAB, 0, TAB, "", TAB,
+        tabnr, TAB, #wins, TAB, "", TAB,
         ansi.white, "Tab page ", tabnr, ":", TAB,
         ansi.cyan, fnamemodify(cwd, ":~"), ansi.clear
       })
     )
 
-    for _, w in ipairs(vim.api.nvim_tabpage_list_wins(tabh)) do
+    for _, w in ipairs(wins) do
       i = i + 1
 
       if pos == 0 and tabh == curtabh and w == curwin then pos = i end
@@ -80,7 +80,7 @@ return function (opts)
     concat({ "--delimiter=", shellescape(TAB) }),
     "--with-nth=4..",
     concat({ "--preview=", shellescape(
-      'echo "Tab page "{1}"$(test {2} -gt 0 && echo -n :\\ && echo {3} | base64 -d -)"'
+      'echo "Tab page "{1}"$(test {2} -ge 1000 && { echo -n :\\ && echo {3} | base64 -d - ; } || echo \\ has {2} window\\(s\\) )"'
     ) }),
     "--preview-window=nohidden:up,1" ,
     opts.fzf_cli_args and opts.fzf_cli_args or nil
@@ -97,7 +97,7 @@ return function (opts)
       -- print("tabh", vim.inspect(tabh), "winid", vim.inspect(winid)) -- TODO debug
 
       vim.api.nvim_set_current_tabpage(tonumber(tabh))
-      if tonumber(winid) > 0 then
+      if tonumber(winid) >= 1000 then
         vim.api.nvim_set_current_win(tonumber(winid))
       end
     end
