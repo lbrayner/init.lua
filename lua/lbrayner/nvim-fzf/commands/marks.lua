@@ -6,8 +6,34 @@ local shellescape = vim.fn.shellescape
 local MOVE_DOWN = "shift-down"
 local MOVE_UP   = "shift-up"
 
+local state = {}
+
+local function get_pos() -- {{{
+  -- print("state", vim.inspect(state)) -- TODO debug
+  if not state.bufnr or not state.marks then return end
+
+  local marks = vim.split(state.marks, "\n")
+  -- print("marks", vim.inspect(marks)) -- TODO debug
+
+  local file_mark_info = require(
+    "lbrayner.marks"
+  ).file_mark_info_by_bufnr[state.bufnr]
+
+  if file_mark_info then
+    -- Start from position 2
+    for i=3, #marks do
+      if (marks[i]):match("%u") == file_mark_info.mark then
+        local pos = string.format("pos(%d)", i - 1)
+        -- print("pos", vim.inspect(pos)) -- TODO debug
+        return pos
+      end
+    end
+  end
+end -- }}}
+
 local function get_marks() -- {{{
-  return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
+  state.marks = vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
+  return state.marks
 end -- }}}
 
 local function jump(selected) -- {{{
@@ -35,31 +61,20 @@ end -- }}}
 
 return function (opts)
   opts = opts or {}
+  state.bufnr = vim.api.nvim_get_current_buf()
   local marks = vim.split(get_marks(), "\n")
-  local file_mark_info, pos = require(
-    "lbrayner.marks"
-  ).file_mark_info_by_bufnr[vim.api.nvim_get_current_buf()]
-
-  if file_mark_info then
-    pos = (function()
-      -- Start from position 2
-      for i=3, #marks do
-        if (marks[i]):match("%u") == file_mark_info.mark then return i end
-      end
-    end)()
-  end
-
   local history_file = require("lbrayner.nvim-fzf.history").get_history_file("file_marks")
+  local get_pos_action = require("fzf.actions").raw_action(get_pos)
   local reload_action = require("fzf.actions").raw_action(get_marks)
   local move_down_action = require("fzf.actions").raw_action(move_down)
   local move_up_action = require("fzf.actions").raw_action(move_up)
   local fzf_cli_args = concat({
     "--header-lines=1 --multi --prompt='File marks> '",
     concat({ "--history=", shellescape(history_file) }),
-    pos and pos > 1 and concat({
+    concat({
       "--bind=", shellescape(string.format(
-        "load:pos(%d),ctrl-r:reload(%s),%s:reload(%s),%s:reload(%s)",
-        pos - 1, reload_action, MOVE_DOWN, move_down_action, MOVE_UP, move_up_action
+        "load:transform(%s),ctrl-r:reload(%s),%s:reload(%s),%s:reload(%s)",
+        get_pos_action, reload_action, MOVE_DOWN, move_down_action, MOVE_UP, move_up_action
       ))
     }) or nil,
     -- concat({
