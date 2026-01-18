@@ -14,9 +14,12 @@ local function jump(selected) -- {{{
 end -- }}}
 
 return function (opts)
+  local function get_marks()
+    return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
+  end
+
   opts = opts or {}
-  local marks = vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-  marks = vim.split(marks:sub(2), "\n")
+  local marks = vim.split(get_marks(), "\n")
   local file_mark_info, pos = require(
     "lbrayner.marks"
   ).file_mark_info_by_bufnr[vim.api.nvim_get_current_buf()]
@@ -31,12 +34,15 @@ return function (opts)
   end
 
   local history_file = require("lbrayner.nvim-fzf.history").get_history_file("file_marks")
+  local reload_marks = require("fzf.actions").raw_action(get_marks)
   local fzf_cli_args = concat({
     "--header-lines=1 --multi --prompt='File marks> '",
     concat({ "--history=", shellescape(history_file) }),
-    pos and concat(
-      { "--bind=", shellescape(string.format("load:pos(%d)", pos - 1)) }
-    ) or nil,
+    pos > 1 and concat({
+      "--bind=", shellescape(string.format(
+        "load:pos(%d),ctrl-r:reload(%s)", pos - 1, reload_marks
+      ))
+    }) or nil,
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
