@@ -1,5 +1,14 @@
+-- vim: fdm=marker
+
 local concat = table.concat
 local shellescape = vim.fn.shellescape
+
+local MOVE_DOWN = "shift-down"
+local MOVE_UP   = "shift-up"
+
+local function get_marks() -- {{{
+  return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
+end -- }}}
 
 local function jump(selected) -- {{{
   if #selected > 1 then
@@ -13,11 +22,18 @@ local function jump(selected) -- {{{
   require("lbrayner").jump_to_location(bufnr)
 end -- }}}
 
-return function (opts)
-  local function get_marks()
-    return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
-  end
+local function move_down(args) -- {{{
+  -- TODO
+  print("args", vim.inspect(args)) -- TODO debug
+  return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
+end -- }}}
 
+local function move_up() -- {{{
+  -- TODO
+  return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
+end -- }}}
+
+return function (opts)
   opts = opts or {}
   local marks = vim.split(get_marks(), "\n")
   local file_mark_info, pos = require(
@@ -34,15 +50,21 @@ return function (opts)
   end
 
   local history_file = require("lbrayner.nvim-fzf.history").get_history_file("file_marks")
-  local reload_marks = require("fzf.actions").raw_action(get_marks)
+  local reload_action = require("fzf.actions").raw_action(get_marks)
+  local move_down_action = require("fzf.actions").raw_action(move_down)
+  local move_up_action = require("fzf.actions").raw_action(move_up)
   local fzf_cli_args = concat({
     "--header-lines=1 --multi --prompt='File marks> '",
     concat({ "--history=", shellescape(history_file) }),
     pos > 1 and concat({
       "--bind=", shellescape(string.format(
-        "load:pos(%d),ctrl-r:reload(%s)", pos - 1, reload_marks
+        "load:pos(%d),ctrl-r:reload(%s),%s:reload(%s),%s:reload(%s)",
+        pos - 1, reload_action, MOVE_DOWN, move_down_action, MOVE_UP, move_up_action
       ))
     }) or nil,
+    -- concat({
+    --   "--expect=", shellescape(concat({ MOVE_DOWN, MOVE_UP }, ","))
+    -- }),
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
