@@ -56,7 +56,7 @@ return function (opts)
   local fzf_cli_args = concat({
     "--header-lines=1 --multi --prompt='File marks> '",
     concat({ "--history=", shellescape(history_file) }),
-    pos > 1 and concat({
+    pos and pos > 1 and concat({
       "--bind=", shellescape(string.format(
         "load:pos(%d),ctrl-r:reload(%s),%s:reload(%s),%s:reload(%s)",
         pos - 1, reload_action, MOVE_DOWN, move_down_action, MOVE_UP, move_up_action
