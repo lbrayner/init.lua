@@ -9,24 +9,29 @@ local MOVE_UP   = "shift-up"
 local state = {}
 
 local function get_pos() -- {{{
-  -- print("state", vim.inspect(state)) -- TODO debug
-  if not state.bufnr or not state.marks then return end
+  local function pos(p)
+    return string.format("pos(%d)", p)
+  end
 
+  -- print("marks", vim.inspect(state.marks)) -- TODO debug
   local marks = vim.split(state.marks, "\n")
-  -- print("marks", vim.inspect(marks)) -- TODO debug
 
   local file_mark_info = require(
     "lbrayner.marks"
   ).file_mark_info_by_bufnr[state.bufnr]
 
-  if file_mark_info then
-    -- Start from position 2
-    for i=3, #marks do
-      if (marks[i]):match("%u") == file_mark_info.mark then
-        local pos = string.format("pos(%d)", i - 1)
-        -- print("pos", vim.inspect(pos)) -- TODO debug
-        return pos
-      end
+  if not file_mark_info then
+    -- print("pos", 1) -- TODO debug
+    return pos(1)
+  end
+
+  -- Start from position 2
+  for i=3, #marks do
+    if (marks[i]):match("%u") == file_mark_info.mark then
+      -- local p = pos(i - 1)
+      -- print("pos", vim.inspect(p)) -- TODO debug
+      -- return p
+      return pos(i - 1)
     end
   end
 end -- }}}
