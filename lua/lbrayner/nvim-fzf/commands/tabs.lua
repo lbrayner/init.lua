@@ -38,7 +38,7 @@ return function (opts)
     table.insert(
       entries,
       concat({
-        tabnr, TAB, #wins, TAB, "", TAB,
+        tabh, TAB, #wins, TAB, tabnr, TAB, "", TAB,
         ansi.white, "Tab page ", tabnr, ":", TAB,
         ansi.cyan, fnamemodify(cwd, ":~"), ansi.clear
       })
@@ -61,8 +61,8 @@ return function (opts)
       -- print("info.name", vim.inspect(info.name)) -- TODO debug
       table.insert(
         entries,
-        ("%d	%d	%s		»%d	%d	%s[%d]%s	%s	%s"):format(
-          tabnr, w, base64_encode(fnamemodify(cwd, ":~")),
+        ("%d	%d	%d	%s		»%d	%d	%s[%d]%s	%s	%s"):format(
+          tabh, w, tabnr, base64_encode(fnamemodify(cwd, ":~")),
           tabnr, w, ansi.blue, bufnr, ansi.clear,
           flags, strip_cwd(cwd, info.name)
         )
@@ -78,10 +78,10 @@ return function (opts)
       { "--bind=", shellescape(string.format("load:pos(%d)", pos)) }
     ) or nil,
     concat({ "--delimiter=", shellescape(TAB) }),
-    "--with-nth=4..",
+    "--with-nth=5..",
     concat({ "--preview=", shellescape(
-      [[echo "Tab page "{1}"$(test {2} -ge 1000 && \
-      { echo -n :\ && echo {3} | base64 -d - ; } || echo \ has {2} window\(s\) )"]]
+      [[echo "Tab page "{3}"$(test {2} -ge 1000 && \
+      { echo -n :\ && echo {4} | base64 -d - ; } || echo \ has {2} window\(s\) )"]]
     ) }),
     "--preview-window=nohidden:up,1" ,
     opts.fzf_cli_args and opts.fzf_cli_args or nil
@@ -95,7 +95,7 @@ return function (opts)
     if selected then
       -- local tabn, bufnr = tonumber(selected[1]:match("%d+"))
       local tabh, winid = selected[1]:match(concat({ "^(%d+)", TAB, "(%d+)" }))
-      -- print("tabh", vim.inspect(tabh), "winid", vim.inspect(winid)) -- TODO debug
+      print("tabh", vim.inspect(tabh), "winid", vim.inspect(winid)) -- TODO debug
 
       vim.api.nvim_set_current_tabpage(tonumber(tabh))
       if tonumber(winid) >= 1000 then
