@@ -1,10 +1,12 @@
 -- vim: fdm=marker
 
 local ansi = require("lbrayner.nvim-fzf").ansi_escseq
+local base64_encode = vim.base64.encode
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local getbufinfo = vim.fn.getbufinfo
 local getcwd = vim.fn.getcwd
+local nvim_win_get_buf = vim.api.nvim_win_get_buf
 local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
 
@@ -36,7 +38,7 @@ return function (opts)
     table.insert(
       entries,
       concat({
-        tabnr, 0, concat({ ansi.white, "Tab page ", tabnr, ":" }),
+        tabnr, 0, "", concat({ ansi.white, "Tab page ", tabnr, ":" }),
         ansi.cyan, fnamemodify(cwd, ":~"), ansi.clear
       }, TAB)
     )
@@ -47,7 +49,7 @@ return function (opts)
       if pos == 0 and tabh == curtabh and w == curwin then pos = i end
 
       -- From fzf-lua.providers.buffers's gen_buffer_entry
-      local bufnr = vim.api.nvim_win_get_buf(w)
+      local bufnr = nvim_win_get_buf(w)
       local info = getbufinfo(bufnr)[1]
       local hidden = info.hidden == 1 and "h" or "a"
       local readonly = vim.bo[bufnr].readonly and "=" or " "
@@ -58,9 +60,9 @@ return function (opts)
       -- print("info.name", vim.inspect(info.name)) -- TODO debug
       table.insert(
         entries,
-        ("%d	%d		»%d	%d	%s[%d]%s	%s	%s"):format(
-          tabnr, w, tabnr, w,
-          ansi.blue, bufnr, ansi.clear,
+        ("%d	%d	%s		»%d	%d	%s[%d]%s	%s	%s"):format(
+          tabnr, w, base64_encode(fnamemodify(cwd, ":~")),
+          tabnr, w, ansi.blue, bufnr, ansi.clear,
           flags, strip_cwd(cwd, info.name)
         )
       )
@@ -70,12 +72,16 @@ return function (opts)
   local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
   local fzf_cli_args = concat({
     "--ansi",
-    concat({ "--history=", shellescape(history_file) }), "--prompt='Tabs> '" ,
+    concat({ "--history=", shellescape(history_file) }),
     pos > 1 and concat(
       { "--bind=", shellescape(string.format("load:pos(%d)", pos)) }
     ) or nil,
     concat({ "--delimiter=", shellescape(TAB) }),
-    "--with-nth=3..",
+    "--with-nth=4..",
+    concat({ "--preview=", shellescape(
+      'echo "Tab page "{1}"$(test {2} -gt 0 && echo -n :\\ && echo {3} | base64 -d -)"'
+    ) }),
+    "--preview-window=nohidden:up,1" ,
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
