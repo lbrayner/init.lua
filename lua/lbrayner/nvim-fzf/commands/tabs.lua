@@ -80,7 +80,8 @@ return function (opts)
     concat({ "--delimiter=", shellescape(TAB) }),
     "--with-nth=4..",
     concat({ "--preview=", shellescape(
-      'echo "Tab page "{1}"$(test {2} -ge 1000 && { echo -n :\\ && echo {3} | base64 -d - ; } || echo \\ has {2} window\\(s\\) )"'
+      [[echo "Tab page "{1}"$(test {2} -ge 1000 && \
+      { echo -n :\ && echo {3} | base64 -d - ; } || echo \ has {2} window\(s\) )"]]
     ) }),
     "--preview-window=nohidden:up,1" ,
     opts.fzf_cli_args and opts.fzf_cli_args or nil
