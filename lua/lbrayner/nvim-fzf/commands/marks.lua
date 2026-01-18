@@ -6,6 +6,7 @@ local shellescape = vim.fn.shellescape
 local MOVE_DOWN = "shift-down"
 local MOVE_UP   = "shift-up"
 
+local history_file = require("lbrayner.nvim-fzf.history").get_history_file("file_marks")
 local state = {}
 
 local function get_pos() -- {{{
@@ -34,12 +35,16 @@ local function get_pos() -- {{{
       return pos(i - 1)
     end
   end
-end -- }}}
+end
+
+local get_pos_action = require("fzf.actions").raw_action(get_pos) -- }}}
 
 local function get_marks() -- {{{
   state.marks = vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
   return state.marks
-end -- }}}
+end
+
+local reload_action = require("fzf.actions").raw_action(get_marks) -- }}}
 
 local function jump(selected) -- {{{
   if #selected > 1 then
@@ -57,22 +62,21 @@ local function move_down(args) -- {{{
   -- TODO
   print("args", vim.inspect(args)) -- TODO debug
   return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
-end -- }}}
+end
+
+local move_down_action = require("fzf.actions").raw_action(move_down) -- }}}
 
 local function move_up() -- {{{
   -- TODO
   return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
-end -- }}}
+end
+
+local move_up_action = require("fzf.actions").raw_action(move_up) -- }}}
 
 return function (opts)
   opts = opts or {}
   state.bufnr = vim.api.nvim_get_current_buf()
   local marks = vim.split(get_marks(), "\n")
-  local history_file = require("lbrayner.nvim-fzf.history").get_history_file("file_marks")
-  local get_pos_action = require("fzf.actions").raw_action(get_pos)
-  local reload_action = require("fzf.actions").raw_action(get_marks)
-  local move_down_action = require("fzf.actions").raw_action(move_down)
-  local move_up_action = require("fzf.actions").raw_action(move_up)
   local fzf_cli_args = concat({
     "--header-lines=1 --multi --prompt='File marks> '",
     concat({ "--history=", shellescape(history_file) }),
