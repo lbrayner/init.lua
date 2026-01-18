@@ -38,9 +38,10 @@ return function (opts)
     table.insert(
       entries,
       concat({
-        tabnr, 0, "", concat({ ansi.white, "Tab page ", tabnr, ":" }),
+        tabnr, TAB, 0, TAB, "", TAB,
+        ansi.white, "Tab page ", tabnr, ":", TAB,
         ansi.cyan, fnamemodify(cwd, ":~"), ansi.clear
-      }, TAB)
+      })
     )
 
     for _, w in ipairs(vim.api.nvim_tabpage_list_wins(tabh)) do
@@ -71,7 +72,7 @@ return function (opts)
 
   local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
   local fzf_cli_args = concat({
-    "--ansi",
+    "--ansi --prompt='Tabs> '",
     concat({ "--history=", shellescape(history_file) }),
     pos > 1 and concat(
       { "--bind=", shellescape(string.format("load:pos(%d)", pos)) }
