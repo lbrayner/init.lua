@@ -5,6 +5,7 @@ local shellescape = vim.fn.shellescape
 
 local MOVE_DOWN = "shift-down"
 local MOVE_UP   = "shift-up"
+local RELOAD    = "ctrl-r"
 
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file("file_marks")
 local state = {}
@@ -82,13 +83,11 @@ return function (opts)
     concat({ "--history=", shellescape(history_file) }),
     concat({
       "--bind=", shellescape(string.format(
-        "load:transform(%s),ctrl-r:reload(%s),%s:reload(%s),%s:reload(%s)",
-        get_pos_action, reload_action, MOVE_DOWN, move_down_action, MOVE_UP, move_up_action
+        "load:transform(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s)",
+        get_pos_action, RELOAD, reload_action,
+        MOVE_DOWN, move_down_action, MOVE_UP, move_up_action
       ))
     }) or nil,
-    -- concat({
-    --   "--expect=", shellescape(concat({ MOVE_DOWN, MOVE_UP }, ","))
-    -- }),
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
