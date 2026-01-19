@@ -10,8 +10,8 @@ local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
 
 local BLUE = ansi.color_to_ansi("blue")
+local BOLD_CYAN = ansi.color_to_ansi("cyan", "bold")
 local CLEAR = ansi.clear
-local CYAN = ansi.color_to_ansi("cyan")
 local WHITE = ansi.color_to_ansi("white")
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
 
@@ -46,7 +46,7 @@ return function (opts)
       concat({
         tabh, TAB, #wins, TAB, tabnr, TAB, "", TAB,
         WHITE, "Tab page ", tabnr, ":", TAB,
-        CYAN, fnamemodify(cwd, ":~"), CLEAR
+        BOLD_CYAN, fnamemodify(cwd, ":~"), CLEAR
       })
     )
 
