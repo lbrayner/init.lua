@@ -1,7 +1,7 @@
 -- vim: fdm=marker
 
-local ansi = require("lbrayner.nvim-fzf").ansi_escseq
 local base64_encode = vim.base64.encode
+local ansi = require("lbrayner.nvim-fzf").ansi
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local getbufinfo = vim.fn.getbufinfo
@@ -9,6 +9,10 @@ local nvim_win_get_buf = vim.api.nvim_win_get_buf
 local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
 
+local BLUE = ansi.color_to_ansi("blue")
+local CLEAR = ansi.clear
+local CYAN = ansi.color_to_ansi("cyan")
+local WHITE = ansi.color_to_ansi("white")
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
 
 local TAB = ( -- {{{
@@ -41,8 +45,8 @@ return function (opts)
       entries,
       concat({
         tabh, TAB, #wins, TAB, tabnr, TAB, "", TAB,
-        ansi.white, "Tab page ", tabnr, ":", TAB,
-        ansi.cyan, fnamemodify(cwd, ":~"), ansi.clear
+        WHITE, "Tab page ", tabnr, ":", TAB,
+        CYAN, fnamemodify(cwd, ":~"), CLEAR
       })
     )
 
@@ -65,7 +69,7 @@ return function (opts)
         entries,
         ("%d	%d	%d	%s		»%d	%d	%s[%d]%s	%s	%s"):format(
           tabh, w, tabnr, base64_encode(fnamemodify(cwd, ":~")),
-          tabnr, w, ansi.blue, bufnr, ansi.clear,
+          tabnr, w, BLUE, bufnr, CLEAR,
           flags, strip_cwd(cwd, info.name)
         )
       )

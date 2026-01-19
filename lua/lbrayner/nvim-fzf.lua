@@ -1,3 +1,5 @@
+local concat = table.concat
+
 local function run_module(name)
   return function(...)
     require(name)(...)
@@ -12,27 +14,33 @@ M.tabs = run_module("lbrayner.nvim-fzf.commands.tabs")
 
 M.setup = run_module("lbrayner.nvim-fzf.setup")
 
--- From fzf-lua.utils
-local ansi_escseq = {
-  -- the "\x1b" esc sequence causes issues
-  -- with older Lua versions
-  -- clear    = "\x1b[0m",
-  clear     = "[0m",
-  bold      = "[1m",
-  italic    = "[3m",
-  underline = "[4m",
-  black     = "[0;30m",
-  red       = "[0;31m",
-  green     = "[0;32m",
-  yellow    = "[0;33m",
-  blue      = "[0;34m",
-  magenta   = "[0;35m",
-  cyan      = "[0;36m",
-  white     = "[0;37m",
-  grey      = "[0;90m",
-  dark_grey = "[0;97m",
-}
+local ansi = { clear = concat({ string.char(27), "[0m" }) }
 
-M.ansi_escseq = require("lbrayner").get_proxy_table(ansi_escseq)
+-- From Brave's Leo AI
+function ansi.color_to_ansi(color, property)
+  local ansiCodes = {
+    -- Colors
+    black = 30,
+    red = 31,
+    green = 32,
+    yellow = 33,
+    blue = 34,
+    magenta = 35,
+    cyan = 36,
+    white = 37,
+    -- Properties
+    normal = 0,
+    bold = 1,
+    italic = 3
+  }
+
+  local code = ansiCodes[color] or ansiCodes["white"] -- default to white if color not found
+  local propCode = ansiCodes[property] or ansiCodes["normal"]
+
+  -- Combine codes: property first, then color
+  return concat({ string.char(27), "[", propCode, ";", code, "m" })
+end
+
+M.ansi = ansi
 
 return M
