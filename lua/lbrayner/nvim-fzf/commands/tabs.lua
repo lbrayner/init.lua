@@ -1,10 +1,11 @@
 -- vim: fdm=marker
 
-local base64_encode = vim.base64.encode
 local ansi = require("lbrayner.nvim-fzf").ansi
+local base64_encode = vim.base64.encode
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local getbufinfo = vim.fn.getbufinfo
+local getcwd = vim.fn.getcwd
 local nvim_win_get_buf = vim.api.nvim_win_get_buf
 local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
@@ -30,6 +31,7 @@ end -- }}}
 
 return function (opts)
   opts = opts or {}
+  local cwd = getcwd(-1, vim.fn.tabpagenr())
   local entries = {}
   local i, pos = 0, 0
   local curtabh = vim.api.nvim_get_current_tabpage()
@@ -38,17 +40,21 @@ return function (opts)
 
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
     i = i + 1
-    local cwd = vim.fn.getcwd(-1, tabnr)
+    local tcwd = getcwd(-1, tabnr)
     local wins = vim.api.nvim_tabpage_list_wins(tabh)
+    local entry = concat({
+      tabh, TAB, #wins, TAB, tabnr, TAB, "", TAB,
+      WHITE, "Tab page ", tabnr
+    })
 
-    table.insert(
-      entries,
-      concat({
-        tabh, TAB, #wins, TAB, tabnr, TAB, "", TAB,
-        WHITE, "Tab page ", tabnr, ":", TAB,
-        BOLD_CYAN, fnamemodify(cwd, ":~"), CLEAR
+    if cwd ~= tcwd then
+      entry = concat({
+        entry, ":", TAB,
+        BOLD_CYAN, fnamemodify(tcwd, ":~"), CLEAR
       })
-    )
+    end
+
+    table.insert(entries, entry)
 
     for _, w in ipairs(wins) do
       i = i + 1
@@ -68,9 +74,9 @@ return function (opts)
       table.insert(
         entries,
         ("%d	%d	%d	%s		»%d	%d	%s[%d]%s	%s	%s"):format(
-          tabh, w, tabnr, base64_encode(fnamemodify(cwd, ":~")),
+          tabh, w, tabnr, base64_encode(fnamemodify(tcwd, ":~")),
           tabnr, w, BLUE, bufnr, CLEAR,
-          flags, strip_cwd(cwd, info.name)
+          flags, strip_cwd(tcwd, info.name)
         )
       )
     end
