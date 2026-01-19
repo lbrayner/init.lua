@@ -9,6 +9,8 @@ local nvim_win_get_buf = vim.api.nvim_win_get_buf
 local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
 
+local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
+
 local TAB = ( -- {{{
   "	") -- }}}
 
@@ -70,7 +72,6 @@ return function (opts)
     end
   end
 
-  local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
   local fzf_cli_args = concat({
     "--ansi --prompt='Tabs> '",
     concat({ "--history=", shellescape(history_file) }),
@@ -95,7 +96,7 @@ return function (opts)
     if selected then
       -- local tabn, bufnr = tonumber(selected[1]:match("%d+"))
       local tabh, winid = selected[1]:match(concat({ "^(%d+)", TAB, "(%d+)" }))
-      print("tabh", vim.inspect(tabh), "winid", vim.inspect(winid)) -- TODO debug
+      -- print("tabh", vim.inspect(tabh), "winid", vim.inspect(winid)) -- TODO debug
 
       vim.api.nvim_set_current_tabpage(tonumber(tabh))
       if tonumber(winid) >= 1000 then
