@@ -12,6 +12,3 @@ local opts = { silent = true }
 keymap.set("n", "<F1>", function()
   require("lbrayner.fzf-lua").help_tags()
 end, opts)
-keymap.set("n", "<F5>", function()
-  require("lbrayner.fzf-lua").buffers()
-end, opts)

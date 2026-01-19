@@ -20,6 +20,14 @@ local function get_visual_selection_query(opts) -- {{{
 end -- }}}
 
 return function()
+  nvim_create_user_command("Buffers", function(opts)
+    local query = get_visual_selection_query(opts)
+    query = query and concat({ "--query=", shellescape(query) })
+
+    require("lbrayner.nvim-fzf").buffers({
+      fzf_cli_args = query
+    })
+  end, { nargs = "*", range = -1 })
   nvim_create_user_command("Files", function(opts)
     local query = get_visual_selection_query(opts)
     query = query and concat({ "--query=", shellescape(query) })
@@ -43,6 +51,9 @@ return function()
 
   vim.keymap.set("n", "<F4>", function()
     require("lbrayner.nvim-fzf").marks()
+  end, opts)
+  vim.keymap.set("n", "<F5>", function()
+    require("lbrayner.nvim-fzf").buffers()
   end, opts)
   vim.keymap.set("n", "<F7>", function()
     require("lbrayner.nvim-fzf").files()

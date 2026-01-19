@@ -4,7 +4,7 @@ local ansi = require("lbrayner.nvim-fzf").ansi
 local base64_encode = vim.base64.encode
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
-local getbufinfo = vim.fn.getbufinfo
+local get_buffer_info = require("lbrayner.nvim-fzf.utils").get_buffer_info
 local getcwd = vim.fn.getcwd
 local nvim_win_get_buf = vim.api.nvim_win_get_buf
 local relpath = vim.fs.relpath
@@ -61,22 +61,15 @@ return function (opts)
 
       if pos == 0 and tabh == curtabh and w == curwin then pos = i end
 
-      -- From fzf-lua.providers.buffers's gen_buffer_entry
       local bufnr = nvim_win_get_buf(w)
-      local info = getbufinfo(bufnr)[1]
-      local hidden = info.hidden == 1 and "h" or "a"
-      local readonly = vim.bo[bufnr].readonly and "=" or " "
-      local changed = info.changed == 1 and "+" or " "
-      local flags = hidden .. readonly .. changed
-      -- print("info", vim.inspect(info)) -- TODO debug
+      local info = get_buffer_info(bufnr)
 
-      -- print("info.name", vim.inspect(info.name)) -- TODO debug
       table.insert(
         entries,
         ("%d	%d	%d	%s		»%d	%d	%s[%d]%s	%s	%s"):format(
           tabh, w, tabnr, base64_encode(fnamemodify(tcwd, ":~")),
           tabnr, w, BLUE, bufnr, CLEAR,
-          flags, strip_cwd(tcwd, info.name)
+          info.flags, strip_cwd(tcwd, info.name)
         )
       )
     end

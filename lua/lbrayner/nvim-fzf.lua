@@ -8,6 +8,7 @@ end
 
 local M = {}
 
+M.buffers = run_module("lbrayner.nvim-fzf.commands.buffers")
 M.files = run_module("lbrayner.nvim-fzf.commands.files")
 M.marks = run_module("lbrayner.nvim-fzf.commands.marks")
 M.tabs = run_module("lbrayner.nvim-fzf.commands.tabs")

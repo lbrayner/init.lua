@@ -114,7 +114,7 @@ local function get_visual_selection_query(opts) -- {{{
   end
 end -- }}}
 
-nvim_create_user_command("Buffers", function()
+nvim_create_user_command("LBuffers", function()
   require("lbrayner.fzf-lua").buffers()
 end, { nargs = 0 })
 nvim_create_user_command("LFiles", function(opts)
