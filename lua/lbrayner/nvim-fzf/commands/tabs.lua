@@ -1,6 +1,6 @@
 -- vim: fdm=marker
 
-local ansi = require("lbrayner.nvim-fzf").ansi
+local ansi = require("lbrayner.nvim-fzf.utils").ansi
 local base64_encode = vim.base64.encode
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
