@@ -59,7 +59,6 @@ return function (opts)
 
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
     i = i + 1
-    local tcwd = getcwd(-1, tabnr)
     local wins = vim.api.nvim_tabpage_list_wins(tabh)
 
     local title_color = tabh == curtabh and BOLD_YELLOW or WHITE
@@ -69,12 +68,11 @@ return function (opts)
       title_color, "Tab page ", tabnr
     })
 
-    if cwd ~= tcwd then
-      entry = concat({
-        entry, ":", TAB,
-        BOLD_CYAN, fnamemodify(tcwd, ":~"), CLEAR
-      })
-    end
+    local tcwd = getcwd(-1, tabnr)
+    entry = cwd ~= tcwd and concat({
+      entry, ":", TAB,
+      BOLD_CYAN, fnamemodify(tcwd, ":~"), CLEAR
+    }) or concat({ entry, CLEAR })
 
     table.insert(entries, entry)
 
