@@ -5,6 +5,9 @@ local base64_encode = vim.base64.encode
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local get_buffer_info = require("lbrayner.nvim-fzf.utils").get_buffer_info
+local get_quickfix_or_location_list_title = require(
+  "lbrayner"
+).get_quickfix_or_location_list_title
 local getcwd = vim.fn.getcwd
 local getwininfo = vim.fn.getwininfo
 local nvim_win_get_buf = vim.api.nvim_win_get_buf
@@ -29,6 +32,15 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
     end
 
     return rel
+  end
+
+  if winfo.loclist == 1 or winfo.quickfix == 1 then
+    return concat(
+      {
+        winfo.loclist == 1 and "[Location List]" or "[Quickfix List] ",
+        get_quickfix_or_location_list_title(winfo.winid)
+      }
+    )
   end
 
   return strip_cwd(tinfo.cwd, binfo.name)
@@ -67,9 +79,12 @@ return function (opts)
       if pos == 0 and tabh == curtabh and w == curwin then pos = i end
 
       local tinfo = { cwd = tcwd }
-      local winfo = getwininfo(w)
+      local winfo = getwininfo(w)[1]
       local bufnr = nvim_win_get_buf(w)
       local binfo = get_buffer_info(bufnr)
+      -- if w == 1654 then
+      --   print("winfo", vim.inspect(winfo)) -- TODO debug
+      -- end
 
       table.insert(
         entries,
