@@ -16,10 +16,12 @@ local shellescape = vim.fn.shellescape
 
 local BLUE = ansi.color_to_ansi("blue")
 local BOLD_CYAN = ansi.color_to_ansi("cyan", "bold")
+local BOLD_YELLOW = ansi.color_to_ansi("yellow", "bold")
 local CLEAR = ansi.clear
 local WHITE = ansi.color_to_ansi("white")
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
 
+local RELOAD    = "ctrl-r"
 local TAB = ( -- {{{
   "	") -- }}}
 
@@ -50,7 +52,7 @@ return function (opts)
   opts = opts or {}
   local cwd = getcwd(-1, vim.fn.tabpagenr())
   local entries = {}
-  local i, pos = 0, 0
+  local i, p = 0, 0
   local curtabh = vim.api.nvim_get_current_tabpage()
   local curwin = vim.api.nvim_get_current_win()
   -- print("tabh", vim.inspect(tabh), "winid", vim.inspect(winid)) -- TODO debug
@@ -59,9 +61,12 @@ return function (opts)
     i = i + 1
     local tcwd = getcwd(-1, tabnr)
     local wins = vim.api.nvim_tabpage_list_wins(tabh)
+
+    local title_color = tabh == curtabh and BOLD_YELLOW or WHITE
+
     local entry = concat({
       tabh, TAB, #wins, TAB, tabnr, TAB, "", TAB,
-      WHITE, "Tab page ", tabnr
+      title_color, "Tab page ", tabnr
     })
 
     if cwd ~= tcwd then
@@ -76,15 +81,12 @@ return function (opts)
     for _, w in ipairs(wins) do
       i = i + 1
 
-      if pos == 0 and tabh == curtabh and w == curwin then pos = i end
+      if p == 0 and tabh == curtabh and w == curwin then p = i end
 
       local tinfo = { cwd = tcwd }
       local winfo = getwininfo(w)[1]
       local bufnr = nvim_win_get_buf(w)
       local binfo = get_buffer_info(bufnr)
-      -- if w == 1654 then
-      --   print("winfo", vim.inspect(winfo)) -- TODO debug
-      -- end
 
       table.insert(
         entries,
@@ -97,12 +99,14 @@ return function (opts)
     end
   end
 
+  local pos = string.format("pos(%d)", p)
+
   local fzf_cli_args = concat({
     "--ansi --prompt='Tabs> '",
     concat({ "--history=", shellescape(history_file) }),
-    pos > 1 and concat(
-      { "--bind=", shellescape(string.format("load:pos(%d)", pos)) }
-    ) or nil,
+    concat(
+      { "--bind=", shellescape(string.format("load:%s,%s:%s", pos, RELOAD, pos)) }
+    ),
     concat({ "--delimiter=", shellescape(TAB) }),
     "--with-nth=5..",
     concat({ "--preview=", shellescape(
