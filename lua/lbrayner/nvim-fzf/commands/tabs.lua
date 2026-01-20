@@ -6,6 +6,7 @@ local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local get_buffer_info = require("lbrayner.nvim-fzf.utils").get_buffer_info
 local getcwd = vim.fn.getcwd
+local getwininfo = vim.fn.getwininfo
 local nvim_win_get_buf = vim.api.nvim_win_get_buf
 local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
@@ -19,14 +20,18 @@ local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
 local TAB = ( -- {{{
   "	") -- }}}
 
-local function strip_cwd(cwd, name) -- {{{
-  local rel = relpath(cwd, name)
+local function get_window_name(tinfo, winfo, binfo) -- {{{
+  local function strip_cwd(cwd, name)
+    local rel = relpath(cwd, name)
 
-  if not rel then
-    return fnamemodify(name, ":~")
+    if not rel then
+      return fnamemodify(name, ":~")
+    end
+
+    return rel
   end
 
-  return rel
+  return strip_cwd(tinfo.cwd, binfo.name)
 end -- }}}
 
 return function (opts)
@@ -61,15 +66,17 @@ return function (opts)
 
       if pos == 0 and tabh == curtabh and w == curwin then pos = i end
 
+      local tinfo = { cwd = tcwd }
+      local winfo = getwininfo(w)
       local bufnr = nvim_win_get_buf(w)
-      local info = get_buffer_info(bufnr)
+      local binfo = get_buffer_info(bufnr)
 
       table.insert(
         entries,
         ("%d	%d	%d	%s		»%d	%d	%s[%d]%s	%s	%s"):format(
           tabh, w, tabnr, base64_encode(fnamemodify(tcwd, ":~")),
           tabnr, w, BLUE, bufnr, CLEAR,
-          info.flags, strip_cwd(tcwd, info.name)
+          binfo.flags, get_window_name(tinfo, winfo, binfo)
         )
       )
     end
