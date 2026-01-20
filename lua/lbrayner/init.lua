@@ -31,7 +31,7 @@ function M.get_quickfix_or_location_list_title(winid)
   if not M.is_quickfix_or_location_list(winid) then
     return ""
   end
-  if M.is_location_list() then
+  if M.is_location_list(winid) then
     return vim.fn.getloclist(winid, { title = 1 }).title
   end
   return vim.fn.getqflist({ title = 1 }).title
