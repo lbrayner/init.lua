@@ -32,7 +32,7 @@ local function jump(selected) -- {{{
 end -- }}}
 
 local function tabedit_before(selected) -- {{{
-  for i=2, #selected do
+  for i = 2, #selected do
     local bufnr = vim.fn.bufadd(selected[i])
     -- from fzf-lua's actions (vimcmd_entry)
     vim.cmd(concat({ "-tabnew | setlocal bufhidden=wipe | buffer ", bufnr }))
@@ -82,7 +82,7 @@ return function (opts)
           return
         end
 
-        for i=2, #selected do
+        for i = 2, #selected do
           vim.cmd(concat({ vicmd, fnameescape(selected[i]) }, " "))
         end
       end)()

@@ -10,6 +10,7 @@ local get_quickfix_or_location_list_title = require(
 ).get_quickfix_or_location_list_title
 local getcwd = vim.fn.getcwd
 local getwininfo = vim.fn.getwininfo
+local nvim_win_close = vim.api.nvim_win_close
 local nvim_win_get_buf = vim.api.nvim_win_get_buf
 local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
@@ -21,9 +22,23 @@ local CLEAR = ansi.clear
 local WHITE = ansi.color_to_ansi("white")
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
 
-local RELOAD    = "ctrl-r"
+local CLOSE_WINDOW = "ctrl-x"
+local RELOAD       = "ctrl-r"
 local TAB = ( -- {{{
   "	") -- }}}
+
+local function get_tabh_winid(entry) -- {{{
+  local tabh, winid = entry:match(concat({ "^(%d+)", TAB, "(%d+)" }))
+  return tonumber(tabh), tonumber(winid)
+end -- }}}
+
+local function close_window(selected) -- {{{
+  for i = 2, #selected do
+    local _, winid = get_tabh_winid(selected[i])
+    -- print("winid", vim.inspect(winid)) -- TODO debug
+    pcall(nvim_win_close, winid, false)
+  end
+end -- }}}
 
 local function get_window_name(tinfo, winfo, binfo) -- {{{
   local function strip_cwd(cwd, name)
@@ -46,6 +61,21 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
   end
 
   return strip_cwd(tinfo.cwd, binfo.name)
+end -- }}}
+
+local function jump(selected) -- {{{
+  if #selected > 2 then
+    vim.notify("[FZF tabs] Cannot jump to multiple windows", vim.log.levels.WARN)
+    return
+  end
+
+  local tabh, winid = get_tabh_winid(selected[2])
+  -- print("tabh", vim.inspect(tabh), "winid", vim.inspect(winid)) -- TODO debug
+
+  vim.api.nvim_set_current_tabpage(tabh)
+  if winid >= 1000 then
+    vim.api.nvim_set_current_win(winid)
+  end
 end -- }}}
 
 return function (opts)
@@ -99,11 +129,12 @@ return function (opts)
   local pos = string.format("pos(%d)", p)
 
   local fzf_cli_args = concat({
-    "--ansi --prompt='Tabs> '",
+    "--ansi --multi --prompt='Tabs> '",
     concat({ "--history=", shellescape(history_file) }),
     concat(
       { "--bind=", shellescape(string.format("load:%s,%s:%s", pos, RELOAD, pos)) }
     ),
+    concat({ "--expect=", shellescape(CLOSE_WINDOW) }),
     concat({ "--delimiter=", shellescape(TAB) }),
     "--with-nth=5..",
     concat({ "--preview=", shellescape(
@@ -120,14 +151,16 @@ return function (opts)
     -- print("selected", vim.inspect(selected)) -- TODO debug
 
     if selected then
-      local tabh, winid = selected[1]:match(concat({ "^(%d+)", TAB, "(%d+)" }))
-      tabh, winid = tonumber(tabh), tonumber(winid)
-      -- print("tabh", vim.inspect(tabh), "winid", vim.inspect(winid)) -- TODO debug
+      (function()
+        local action = selected[1]
 
-      vim.api.nvim_set_current_tabpage(tabh)
-      if winid >= 1000 then
-        vim.api.nvim_set_current_win(winid)
-      end
+        if action == CLOSE_WINDOW then
+          close_window(selected)
+          return
+        end
+
+        jump(selected)
+      end)()
     end
 
     require("lbrayner.nvim-fzf.history").sanitize_history_file(history_file)
