@@ -1,8 +1,21 @@
+-- vim: fdm=marker
+
 vim.g.loaded_netrwPlugin = 1
 
 local actions = require("lir.actions")
 local clipboard_actions = require("lir.clipboard.actions")
+local concat = table.concat
+local get_context = require("lir.vim").get_context
 local mark_actions = require("lir.mark.actions")
+
+local function jump(vicmd) -- {{{
+  return function()
+    local ctx = get_context()
+    local filename = vim.fn.fnameescape(concat({ ctx.dir, ctx:current_value() }))
+    local bufnr = vim.fn.bufadd(filename)
+    require("lbrayner").jump_to_location(bufnr, nil, { open_cmd = vicmd })
+  end
+end -- }}}
 
 require("lir").setup {
   show_hidden_files = false,
@@ -12,10 +25,10 @@ require("lir").setup {
   },
   mappings = {
     ["l"]     = actions.edit,
-    ["<CR>"]  = actions.edit,
-    ["o"]     = actions.split,
-    ["O"]     = actions.vsplit,
-    ["<Tab>"] = actions.tabedit,
+    ["<CR>"]  = jump(),
+    ["o"]     = jump("new"),
+    ["O"]     = jump("vnew"),
+    ["<Tab>"] = jump("tabnew"),
 
     ["h"]     = actions.up,
     ["q"]     = actions.quit,
