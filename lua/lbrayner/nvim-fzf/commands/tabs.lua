@@ -60,7 +60,6 @@ return function (opts)
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
     i = i + 1
     local wins = vim.api.nvim_tabpage_list_wins(tabh)
-
     local title_color = tabh == curtabh and BOLD_YELLOW or WHITE
 
     local entry = concat({
@@ -121,13 +120,13 @@ return function (opts)
     -- print("selected", vim.inspect(selected)) -- TODO debug
 
     if selected then
-      -- local tabn, bufnr = tonumber(selected[1]:match("%d+"))
       local tabh, winid = selected[1]:match(concat({ "^(%d+)", TAB, "(%d+)" }))
+      tabh, winid = tonumber(tabh), tonumber(winid)
       -- print("tabh", vim.inspect(tabh), "winid", vim.inspect(winid)) -- TODO debug
 
-      vim.api.nvim_set_current_tabpage(tonumber(tabh))
-      if tonumber(winid) >= 1000 then
-        vim.api.nvim_set_current_win(tonumber(winid))
+      vim.api.nvim_set_current_tabpage(tabh)
+      if winid >= 1000 then
+        vim.api.nvim_set_current_win(winid)
       end
     end
 
