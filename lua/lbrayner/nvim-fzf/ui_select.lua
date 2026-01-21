@@ -4,6 +4,7 @@ local shellescape = vim.fn.shellescape
 local M = {}
 
 _OLD_UI_SELECT = nil
+local history_file = require("lbrayner.nvim-fzf.history").get_history_file("ui_select")
 
 function M.register()
   _OLD_UI_SELECT = _OLD_UI_SELECT or vim.ui.select
@@ -24,7 +25,6 @@ function M.ui_select(items, ui_opts, on_choice)
   end
 
   local prompt = ui_opts.prompt or "Select one of> "
-  local history_file = require("lbrayner.nvim-fzf.history").get_history_file("ui_select")
   local fzf_cli_args = concat({
     concat({ "--history=", shellescape(history_file) }),
     concat({ "--prompt=", shellescape(prompt) })
