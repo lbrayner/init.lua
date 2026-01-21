@@ -8,14 +8,16 @@ local concat = table.concat
 local get_context = require("lir.vim").get_context
 local mark_actions = require("lir.mark.actions")
 
-local function jump(vicmd) -- {{{
+local function jump_cmd(open_cmd) -- {{{
   return function()
     local ctx = get_context()
-    local filename = vim.fn.fnameescape(concat({ ctx.dir, ctx:current_value() }))
+    local filename = concat({ ctx.dir, ctx:current_value() })
     local bufnr = vim.fn.bufadd(filename)
-    require("lbrayner").jump_to_location(bufnr, nil, { open_cmd = vicmd })
+    require("lbrayner").jump_to_location(bufnr, nil, { open_cmd = open_cmd })
   end
 end -- }}}
+
+local jump = jump_cmd()
 
 require("lir").setup {
   show_hidden_files = false,
@@ -24,11 +26,15 @@ require("lir").setup {
     highlight_dirname = true,
   },
   mappings = {
-    ["l"]     = actions.edit,
-    ["<CR>"]  = jump(),
-    ["o"]     = jump("new"),
-    ["O"]     = jump("vnew"),
-    ["<Tab>"] = jump("tabnew"),
+    ["l"]     = jump,
+    ["<CR>"]  = jump,
+    ["o"]     = function()
+      actions.split(false)
+    end,
+    ["O"]     = function()
+      actions.vsplit(false)
+    end,
+    ["<Tab>"] = jump_cmd("tabnew"),
 
     ["h"]     = actions.up,
     ["q"]     = actions.quit,
