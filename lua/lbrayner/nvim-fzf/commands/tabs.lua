@@ -14,6 +14,7 @@ local nvim_win_close = vim.api.nvim_win_close
 local nvim_win_get_buf = vim.api.nvim_win_get_buf
 local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
+local tabclose = vim.cmd.tabclose
 
 local BLUE = ansi.color_to_ansi("blue")
 local BOLD_CYAN = ansi.color_to_ansi("cyan", "bold")
@@ -27,19 +28,25 @@ local RELOAD       = "ctrl-r"
 local TAB = ( -- {{{
   "	") -- }}}
 
-local function get_tabh_winid(entry) -- {{{
-  local tabh, winid = entry:match(concat({ "^(%d+)", TAB, "(%d+)" }))
-  return tonumber(tabh), tonumber(winid)
+local function get_entry_values(entry) -- {{{
+  local tabh, winid, tabn = entry:match(concat({ "^(%d+)", TAB, "(%d+)", TAB, "(%d+)" }))
+  return tonumber(tabh), tonumber(winid), tonumber(tabn)
 end -- }}}
 
 local function close_window(selected) -- {{{
   local count = 0
 
   for i = 2, #selected do
-    local _, winid = get_tabh_winid(selected[i])
-    -- print("winid", vim.inspect(winid)) -- TODO debug
-    local sucess, _ = pcall(nvim_win_close, winid, false)
-    if sucess then count = count + 1 end
+    local tabh, winid, tabn = get_entry_values(selected[i])
+
+    if winid >= 1000 then
+      local success, _ = pcall(nvim_win_close, winid, false)
+      if success then count = count + 1 end
+    else
+      local wins = winid
+      local success, _ = pcall(tabclose, tabn)
+      if success then count = count + wins end
+    end
   end
 
   vim.notify(concat({ "[FZF tabs] Closed ", count, " window(s)" }))
@@ -74,8 +81,7 @@ local function jump(selected) -- {{{
     return
   end
 
-  local tabh, winid = get_tabh_winid(selected[2])
-  -- print("tabh", vim.inspect(tabh), "winid", vim.inspect(winid)) -- TODO debug
+  local tabh, winid = get_entry_values(selected[2])
 
   vim.api.nvim_set_current_tabpage(tabh)
   if winid >= 1000 then
@@ -90,7 +96,6 @@ return function (opts)
   local i, p = 0, 0
   local curtabh = vim.api.nvim_get_current_tabpage()
   local curwin = vim.api.nvim_get_current_win()
-  -- print("tabh", vim.inspect(tabh), "winid", vim.inspect(winid)) -- TODO debug
 
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
     i = i + 1
@@ -153,7 +158,6 @@ return function (opts)
 
   coroutine.wrap(function()
     local selected = require("fzf").fzf(entries, fzf_cli_args)
-    -- print("selected", vim.inspect(selected)) -- TODO debug
 
     if selected then
       (function()
