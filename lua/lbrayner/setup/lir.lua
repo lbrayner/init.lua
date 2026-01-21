@@ -42,7 +42,9 @@ require("lir").setup {
     ["K"]     = actions.mkdir,
     ["N"]     = actions.newfile,
     ["R"]     = actions.rename,
-    ["@"]     = actions.cd,
+    ["@"] = function()
+      vim.cmd.tcd("%")
+    end,
     ["Y"]     = actions.yank_path,
     ["."]     = actions.toggle_show_hidden,
     ["D"]     = actions.delete,
@@ -55,9 +57,6 @@ require("lir").setup {
       mark_actions.toggle_mark()
       vim.cmd("normal! j")
     end,
-    ["g~"] = function()
-      vim.cmd.tcd("%")
-    end
   },
   hide_cursor = true
 }
