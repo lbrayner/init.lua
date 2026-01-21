@@ -33,11 +33,16 @@ local function get_tabh_winid(entry) -- {{{
 end -- }}}
 
 local function close_window(selected) -- {{{
+  local count = 0
+
   for i = 2, #selected do
     local _, winid = get_tabh_winid(selected[i])
     -- print("winid", vim.inspect(winid)) -- TODO debug
-    pcall(nvim_win_close, winid, false)
+    local sucess, _ = pcall(nvim_win_close, winid, false)
+    if sucess then count = count + 1 end
   end
+
+  vim.notify(concat({ "[FZF tabs] Closed ", count, " window(s)" }))
 end -- }}}
 
 local function get_window_name(tinfo, winfo, binfo) -- {{{
