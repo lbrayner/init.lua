@@ -49,15 +49,6 @@ function M.redefine_tabline()
   local max_length = vim.go.columns - 1 - 3 - 1 -
   (session_name == "" and 0 or 1 + len(session_name) + 1 + 1) - len(cwd) - 1
 
-  if require("lbrayner.fugitive").is_fugitive_blame() then
-    local blame = "Fugitive blame: "
-    max_length = max_length - len(blame)
-    local filename = vim.fn.FugitiveResult(vim.api.nvim_get_current_buf()).blame_file
-    filename = truncate_filename(filename, max_length)
-    vim.go.tabline = tabline .. string.format(" %%=%%#WarningMsg#%s%%#Normal#%s ", blame, filename)
-    return
-  end
-
   local bufname = vim.api.nvim_buf_get_name(0)
 
   if vim.fn.exists("*FugitiveResult") == 1 and
