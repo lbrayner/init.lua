@@ -3,9 +3,11 @@
 local concat = table.concat
 local shellescape = vim.fn.shellescape
 
-local MOVE_DOWN = "shift-down"
-local MOVE_UP   = "shift-up"
-local RELOAD    = "ctrl-r"
+local MOVE_DOWN  = "shift-down"
+local MOVE_UP    = "shift-up"
+local RELOAD     = "ctrl-r"
+local SHIFT_DOWN = "alt-shift-down"
+local SHIFT_UP   = "alt-shift-up"
 
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file("file_marks")
 local state = {}
@@ -74,6 +76,21 @@ end
 
 local move_up_action = require("fzf.actions").raw_action(move_up) -- }}}
 
+local function shift_down(args) -- {{{
+  -- TODO
+  print("args", vim.inspect(args)) -- TODO debug
+  return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
+end
+
+local shift_down_action = require("fzf.actions").raw_action(shift_down) -- }}}
+
+local function shift_up() -- {{{
+  -- TODO
+  return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
+end
+
+local shift_up_action = require("fzf.actions").raw_action(shift_up) -- }}}
+
 return function (opts)
   opts = opts or {}
   state.bufnr = vim.api.nvim_get_current_buf()
@@ -83,9 +100,10 @@ return function (opts)
     concat({ "--history=", shellescape(history_file) }),
     concat({
       "--bind=", shellescape(string.format(
-        "load:%s,%s:reload(%s),%s:reload(%s),%s:reload(%s)",
+        "load:%s,%s:reload(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s)",
         get_pos(), RELOAD, reload_action,
-        MOVE_DOWN, move_down_action, MOVE_UP, move_up_action
+        MOVE_DOWN, move_down_action, MOVE_UP, move_up_action,
+        SHIFT_UP, shift_down_action, SHIFT_DOWN, shift_up_action
       ))
     }) or nil,
     opts.fzf_cli_args and opts.fzf_cli_args or nil
