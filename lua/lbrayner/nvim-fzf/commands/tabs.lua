@@ -1,5 +1,7 @@
 -- vim: fdm=marker
 
+local FugitiveGitDir = vim.fn.FugitiveGitDir
+local FugitiveResult = vim.fn.FugitiveResult
 local ansi = require("lbrayner.nvim-fzf.utils").ansi
 local base64_encode = vim.base64.encode
 local concat = table.concat
@@ -12,6 +14,7 @@ local getcwd = vim.fn.getcwd
 local getwininfo = vim.fn.getwininfo
 local nvim_win_close = vim.api.nvim_win_close
 local nvim_win_get_buf = vim.api.nvim_win_get_buf
+local pathshorten = vim.fn.pathshorten
 local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
 local tabclose = vim.cmd.tabclose
@@ -63,7 +66,29 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
     return rel
   end
 
-  if winfo.loclist == 1 or winfo.quickfix == 1 then
+  local fugitive_type = vim.b[binfo.bufnr].fugitive_type
+
+  if fugitive_type and fugitive_type == "index" then -- Fugitive summary
+    local name = "Fugitive summary"
+    local git_dir = FugitiveGitDir(binfo.bufnr):sub(1, -6)
+
+    if git_dir ~= tinfo.cwd then
+      name = concat({ name, ": ", fnamemodify(git_dir, ":~") })
+    end
+
+    return name
+  elseif fugitive_type and fugitive_type == "temp" then -- Fugitive temporary buffers
+    local fugitive_result = FugitiveResult(binfo.bufnr)
+    local blame_file = fugitive_result.blame_file
+    local name = concat({ "Git", concat(fugitive_result.args, " "), blame_file }, " ")
+    local git_dir = fugitive_result.cwd
+
+    if git_dir ~= tinfo.cwd then
+      name = concat({ pathshorten(fnamemodify(git_dir, ":~")), "$ ", name })
+    end
+
+    return name
+  elseif winfo.loclist == 1 or winfo.quickfix == 1 then
     return concat(
       {
         winfo.loclist == 1 and "[Location List]" or "[Quickfix List] ",
