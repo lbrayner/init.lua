@@ -71,8 +71,11 @@ local function get_fugitive_git_dir()
   end
 end
 
-local function get_fugitive_temporary_buffer_name()
-  return concat({ "Git", concat(get_fugitive_result().args, " ")}, " ")
+local function get_fugitive_temporary_buffer_name(fugitive_result)
+  fugitive_result = fugitive_result or get_fugitive_result()
+  local blame_file = fugitive_result.blame_file
+
+  return concat({ "Git", concat(fugitive_result.args, " "), blame_file }, " ")
 end
 
 local function get_line_format()
@@ -384,13 +387,19 @@ function M.get_winbar()
       "%{v:lua.require'lbrayner.statusline'.get_status_flag()}"
     })
   elseif vim.b.fugitive_type and vim.b.fugitive_type == "temp" then -- Fugitive temporary buffers
-    local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
-    local dir = pathshorten(get_fugitive_git_dir())
+    local fugitive_result = get_fugitive_result()
 
-    statusline = concat({
-      statusline, dir, "$ %<", fugitive_temp_buf,
-      " %{v:lua.require'lbrayner.statusline'.get_status_flag()}"
-    })
+    if fugitive_result.blame_file then
+      statusline = concat({ statusline, "%=Fugitive blame " })
+    else
+      local fugitive_temp_buf = get_fugitive_temporary_buffer_name(fugitive_result)
+      local dir = pathshorten(get_fugitive_git_dir())
+
+      statusline = concat({
+        statusline, dir, "$ %<", fugitive_temp_buf,
+        " %{v:lua.require'lbrayner.statusline'.get_status_flag()}"
+      })
+    end
   elseif is_quickfix_or_location_list() then
     statusline = concat({
       statusline, "%<%f %{v:lua.require'lbrayner'.get_quickfix_or_location_list_title()}"
