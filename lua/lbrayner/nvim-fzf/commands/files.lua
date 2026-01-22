@@ -26,7 +26,6 @@ local function jump(selected) -- {{{
     vim.notify("[FZF files] Cannot jump to multiple files", vim.log.levels.WARN)
     return
   end
-
   local bufnr = vim.fn.bufadd(selected[2])
   require("lbrayner").jump_to_location(bufnr)
 end -- }}}
