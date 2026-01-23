@@ -100,8 +100,8 @@ return function (opts)
     concat({ "--history=", shellescape(history_file) }),
     concat({
       "--bind=", shellescape(string.format(
-        "load:%s,%s:reload(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s)",
-        get_pos(), RELOAD, reload_action,
+        "load:transform(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s)",
+        get_pos_action, RELOAD, reload_action,
         MOVE_DOWN, move_down_action, MOVE_UP, move_up_action,
         SHIFT_DOWN, shift_down_action, SHIFT_UP, shift_up_action
       ))
