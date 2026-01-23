@@ -68,7 +68,7 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
 
   local fugitive_type = vim.b[binfo.bufnr].fugitive_type
 
-  if fugitive_type and fugitive_type == "index" then -- Fugitive summary
+  if fugitive_type == "index" then -- Fugitive summary
     local name = "[Fugitive] Summary"
     local git_dir = FugitiveGitDir(binfo.bufnr):sub(1, -6)
 
@@ -77,7 +77,7 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
     end
 
     return name
-  elseif fugitive_type and fugitive_type == "temp" then -- Fugitive temporary buffers
+  elseif fugitive_type == "temp" then -- Fugitive temporary buffers
     local fugitive_result = FugitiveResult(binfo.bufnr)
     local name = concat({
       "[Fugitive]", "Git", concat(fugitive_result.args, " "), fugitive_result.blame_file
