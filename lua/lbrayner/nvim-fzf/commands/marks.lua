@@ -103,7 +103,7 @@ return function (opts)
         "load:%s,%s:reload(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s)",
         get_pos(), RELOAD, reload_action,
         MOVE_DOWN, move_down_action, MOVE_UP, move_up_action,
-        SHIFT_UP, shift_down_action, SHIFT_DOWN, shift_up_action
+        SHIFT_DOWN, shift_down_action, SHIFT_UP, shift_up_action
       ))
     }) or nil,
     opts.fzf_cli_args and opts.fzf_cli_args or nil
