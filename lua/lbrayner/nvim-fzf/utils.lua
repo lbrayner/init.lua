@@ -1,5 +1,6 @@
 local concat = table.concat
 local getbufinfo = vim.fn.getbufinfo
+local jobwait = vim.fn.jobwait
 
 local M = {}
 
@@ -35,10 +36,15 @@ M.ansi = ansi
 -- From fzf-lua.providers.buffers's gen_buffer_entry
 function M.get_buffer_info(bufnr)
   local info = getbufinfo(bufnr)[1]
-  local hidden = info.hidden == 1 and "h" or "a"
+  local hidden = info.hidden == 1 and "h" or " "
   local readonly = vim.bo[bufnr].readonly and "=" or " "
   local changed = info.changed == 1 and "+" or " "
-  info.flags = concat({ hidden, readonly, changed })
+  local terminal = jobwait({ vim.bo[bufnr].channel }, 0)[1] < -2 and "!" or "&"
+  info.flags = concat({
+    hidden,
+    vim.bo[bufnr].buftype == "terminal" and terminal or readonly,
+    changed
+  })
   return info
 end
 
