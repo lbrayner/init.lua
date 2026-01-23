@@ -4,13 +4,15 @@ local ansi = require("lbrayner.nvim-fzf.utils").ansi
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local get_buffer_info = require("lbrayner.nvim-fzf.utils").get_buffer_info
+local nvim_buf_delete = vim.api.nvim_buf_delete
 local shellescape = vim.fn.shellescape
 
-local EDIT       = "ctrl-]"
-local SPLIT      = "ctrl-s"
-local TAB        = "ctrl-t"
-local TAB_BEFORE = "alt-t"
-local VSPLIT     = "alt-s"
+local EDIT        = "ctrl-]"
+local SPLIT       = "ctrl-s"
+local TAB         = "ctrl-t"
+local TAB_BEFORE  = "alt-t"
+local VSPLIT      = "alt-s"
+local WIPE_BUFFER = "ctrl-x"
 
 local BLUE = ansi.color_to_ansi("blue")
 local CLEAR = ansi.clear
@@ -34,6 +36,44 @@ local function jump(selected) -- {{{
   require("lbrayner").jump_to_location(bufnr)
 end -- }}}
 
+local function wipe_buffer(selected) -- {{{
+  local function wipe(selected)
+    local count = 0
+
+    for i = 2, #selected do
+      local bufnr = tonumber(selected[i]:match("%d+"))
+      local success, _ = pcall(nvim_buf_delete, bufnr, {})
+      if success then count = count + 1 end
+    end
+
+    vim.notify(concat({ "[FZF buffers] Wiped ", count, " buffer(s)" }))
+  end
+
+  if #selected <= 5 then
+    wipe(selected)
+    return
+  end
+
+  if #selected > 10 then
+    vim.notify(
+      "[FZF buffers] Wipe buffer: exceeded limit of 10 selected items",
+      vim.log.levels.ERROR
+    )
+    return
+  end
+
+  vim.ui.select({ "Yes", "No", },
+    {
+      prompt = concat({
+        "[FZF buffers] Wipe buffer: you have selected ", #selected, " items. Proceed?"
+      }),
+    },
+    function(choice)
+      if choice == "Yes" then wipe(selected) end
+    end
+  )
+end -- }}}
+
 return function (opts)
   opts = opts or {}
   local entries = {}
@@ -54,7 +94,9 @@ return function (opts)
     "--ansi --multi --prompt='Buffers> '",
     concat({ "--history=", shellescape(history_file) }),
     concat({
-      "--expect=", shellescape(concat({ EDIT, SPLIT, TAB, TAB_BEFORE, VSPLIT }, ","))
+      "--expect=", shellescape(concat({
+        EDIT, SPLIT, TAB, TAB_BEFORE, VSPLIT, WIPE_BUFFER
+      }, ","))
     }),
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
@@ -80,6 +122,9 @@ return function (opts)
           vicmd = "-tabnew"
         elseif action == VSPLIT then
           vicmd = "vnew"
+        elseif action == WIPE_BUFFER then
+          wipe_buffer(selected)
+          return
         else
           jump(selected)
           return
