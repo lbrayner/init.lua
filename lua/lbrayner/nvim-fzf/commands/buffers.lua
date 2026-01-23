@@ -18,7 +18,7 @@ local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
 
 local function edit(selected) -- {{{
   if #selected > 2 then
-    vim.notify("[FZF files] Cannot edit multiple files", vim.log.levels.WARN)
+    vim.notify("[FZF buffers] Cannot edit multiple files", vim.log.levels.WARN)
   else
     local bufnr = tonumber(selected[2]:match("%d+"))
     vim.api.nvim_set_current_buf(bufnr)
