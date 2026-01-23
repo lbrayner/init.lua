@@ -37,22 +37,48 @@ local function get_entry_values(entry) -- {{{
 end -- }}}
 
 local function close_window(selected) -- {{{
-  local count = 0
+  local function close(selected)
+    local count = 0
 
-  for i = 2, #selected do
-    local tabh, winid, tabn = get_entry_values(selected[i])
+    for i = 2, #selected do
+      local tabh, winid, tabn = get_entry_values(selected[i])
 
-    if winid >= 1000 then
-      local success, _ = pcall(nvim_win_close, winid, false)
-      if success then count = count + 1 end
-    else
-      local wins = winid
-      local success, _ = pcall(tabclose, tabn)
-      if success then count = count + wins end
+      if winid >= 1000 then
+        local success, _ = pcall(nvim_win_close, winid, false)
+        if success then count = count + 1 end
+      else
+        local wins = winid
+        local success, _ = pcall(tabclose, tabn)
+        if success then count = count + wins end
+      end
     end
+
+    vim.notify(concat({ "[FZF tabs] Closed ", count, " window(s)" }))
   end
 
-  vim.notify(concat({ "[FZF tabs] Closed ", count, " window(s)" }))
+  if #selected <= 5 then
+    close(selected)
+    return
+  end
+
+  if #selected > 10 then
+    vim.notify(
+      "[FZF tabs] Close window: exceeded limit of 10 selected items",
+      vim.log.levels.ERROR
+    )
+    return
+  end
+
+  vim.ui.select({ "Yes", "No", },
+    {
+      prompt = concat({
+        "[FZF tabs] Close window: you have selected ", #selected, " items. Proceed?"
+      }),
+    },
+    function(choice)
+      if choice == "Yes" then close(selected) end
+    end
+  )
 end -- }}}
 
 local function get_window_name(tinfo, winfo, binfo) -- {{{
