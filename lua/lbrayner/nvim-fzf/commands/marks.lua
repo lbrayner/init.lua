@@ -30,7 +30,7 @@ local function get_pos() -- {{{
   end
 
   -- Start from position 2
-  for i=3, #marks do
+  for i=2, #marks do
     if (marks[i]):match("%u") == file_mark_info.mark then
       -- local p = pos(i - 1)
       -- print("pos", vim.inspect(p)) -- TODO debug
@@ -100,8 +100,8 @@ return function (opts)
     concat({ "--history=", shellescape(history_file) }),
     concat({
       "--bind=", shellescape(string.format(
-        "load:transform(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s)",
-        get_pos_action, RELOAD, reload_action,
+        "load:%s,%s:reload(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s)",
+        get_pos(), RELOAD, reload_action,
         MOVE_DOWN, move_down_action, MOVE_UP, move_up_action,
         SHIFT_DOWN, shift_down_action, SHIFT_UP, shift_up_action
       ))
