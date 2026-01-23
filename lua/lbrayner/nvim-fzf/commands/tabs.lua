@@ -79,8 +79,9 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
     return name
   elseif fugitive_type and fugitive_type == "temp" then -- Fugitive temporary buffers
     local fugitive_result = FugitiveResult(binfo.bufnr)
-    local blame_file = fugitive_result.blame_file
-    local name = concat({ "[Fugitive]", "Git", concat(fugitive_result.args, " "), blame_file }, " ")
+    local name = concat({
+      "[Fugitive]", "Git", concat(fugitive_result.args, " "), fugitive_result.blame_file
+    }, " ")
     local git_dir = fugitive_result.cwd
 
     if git_dir ~= tinfo.cwd then
