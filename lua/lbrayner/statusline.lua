@@ -53,31 +53,6 @@ local tbl_keys = vim.tbl_keys
 local win_is_actual_curwin = require("lbrayner").win_is_actual_curwin
 local win_is_floating = require("lbrayner").win_is_floating
 
-function get_fugitive_result()
-  return FugitiveResult(nvim_get_current_buf())
-end
-
-local function get_fugitive_git_dir()
-  local fugitive_dir
-
-  if FugitiveGitDir() ~= "" then
-    fugitive_dir = string.gsub(FugitiveGitDir(), "/%.git$", "")
-  elseif not tbl_isempty(get_fugitive_result()) then
-    fugitive_dir = get_fugitive_result().cwd
-  end
-
-  if fugitive_dir then
-    return fnamemodify(fugitive_dir, ":~")
-  end
-end
-
-local function get_fugitive_temporary_buffer_name(fugitive_result)
-  fugitive_result = fugitive_result or get_fugitive_result()
-  local blame_file = fugitive_result.blame_file
-
-  return concat({ "Git", concat(fugitive_result.args, " "), blame_file }, " ")
-end
-
 local function get_line_format()
   if vim.bo.buftype == "terminal" then
     return concat({ "%", (#tostring(vim.bo.scrollback)+1), "l" })
@@ -308,18 +283,23 @@ function M.get_statusline()
   end
 
   if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
-    local dir = pathshorten(get_fugitive_git_dir())
+    local git_dir = pathshorten(fnamemodify(
+      FugitiveGitDir(nvim_get_current_buf()):sub(1, -6), ":~"
+    ))
 
     leftline = concat({
-      leftline, "%6*", dir, "$%* %<", "Fugitive summary ",
+      leftline, "%6*", git_dir, "$%* %<", "Fugitive summary ",
       "%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
     })
   elseif vim.b.fugitive_type and vim.b.fugitive_type == "temp" then -- Fugitive temporary buffers
-    local fugitive_temp_buf = get_fugitive_temporary_buffer_name()
-    local dir = pathshorten(get_fugitive_git_dir())
+    local fugitive_result = FugitiveResult(nvim_get_current_buf())
+    local git_dir = pathshorten(fnamemodify(fugitive_result.cwd, ":~"))
 
     leftline = concat({
-      leftline, "%6*", dir, "$%* %<", fugitive_temp_buf,
+      leftline, "%6*", git_dir, "$%* %<",
+      concat({
+        "Git", concat(fugitive_result.args, " "), fugitive_result.blame_file
+      }, " "),
       " %1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
     })
   elseif is_quickfix_or_location_list() then
@@ -380,23 +360,25 @@ function M.get_winbar()
   end
 
   if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
-    local dir = pathshorten(get_fugitive_git_dir())
+    local git_dir = pathshorten(fnamemodify(
+      FugitiveGitDir(nvim_get_current_buf()):sub(1, -6), ":~"
+    ))
 
     statusline = concat({
-      statusline, dir, "$ %<", "Fugitive summary ",
+      statusline, git_dir, "$ %<", "Fugitive summary ",
       "%{v:lua.require'lbrayner.statusline'.get_status_flag()}"
     })
   elseif vim.b.fugitive_type and vim.b.fugitive_type == "temp" then -- Fugitive temporary buffers
-    local fugitive_result = get_fugitive_result()
+    local fugitive_result = FugitiveResult(nvim_get_current_buf())
 
     if fugitive_result.blame_file then
       statusline = concat({ statusline, "%=Fugitive blame " })
     else
-      local fugitive_temp_buf = get_fugitive_temporary_buffer_name(fugitive_result)
-      local dir = pathshorten(get_fugitive_git_dir())
+      local git_dir = pathshorten(fnamemodify(fugitive_result.cwd, ":~"))
 
       statusline = concat({
-        statusline, dir, "$ %<", fugitive_temp_buf,
+        statusline, git_dir, "$ %<",
+        concat({ "Git", concat(fugitive_result.args, " ") }, " "),
         " %{v:lua.require'lbrayner.statusline'.get_status_flag()}"
       })
     end
