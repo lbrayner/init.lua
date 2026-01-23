@@ -1,5 +1,6 @@
 -- vim: fdm=marker
 
+local bufadd = vim.fn.bufadd
 local concat = table.concat
 local fnameescape = vim.fn.fnameescape
 local get_cwd = require("lbrayner.path").get_cwd
@@ -26,13 +27,13 @@ local function jump(selected) -- {{{
     vim.notify("[FZF files] Cannot jump to multiple files", vim.log.levels.WARN)
     return
   end
-  local bufnr = vim.fn.bufadd(selected[2])
+  local bufnr = bufadd(selected[2])
   require("lbrayner").jump_to_location(bufnr)
 end -- }}}
 
 local function tabedit_before(selected) -- {{{
   for i = 2, #selected do
-    local bufnr = vim.fn.bufadd(selected[i])
+    local bufnr = bufadd(selected[i])
     -- from fzf-lua's actions (vimcmd_entry)
     vim.cmd(concat({ "-tabnew | setlocal bufhidden=wipe | buffer ", bufnr }))
   end
