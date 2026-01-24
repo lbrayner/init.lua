@@ -6,12 +6,19 @@ local actions = require("lir.actions")
 local clipboard_actions = require("lir.clipboard.actions")
 local concat = table.concat
 local get_context = require("lir.vim").get_context
+local isdirectory = vim.fn.isdirectory
 local mark_actions = require("lir.mark.actions")
 
 local function jump_cmd(open_cmd) -- {{{
   return function()
     local ctx = get_context()
     local filename = concat({ ctx.dir, ctx:current_value() })
+
+    if isdirectory(filename) == 1 then
+      vim.cmd.edit(filename)
+      return
+    end
+
     local bufnr = vim.fn.bufadd(filename)
     require("lbrayner").jump_to_location(bufnr, nil, { open_cmd = open_cmd })
   end
