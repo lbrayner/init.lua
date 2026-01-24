@@ -30,8 +30,8 @@ end
 
 require("dap-view").setup({ winbar = { default_section = "scopes" } })
 require("fidget").setup() -- fidget.nvim (installed as a dependency of rocks.nvim)
+require("lbrayner.lir").setup() -- lir.nvim
 require("lbrayner.setup.dap") -- nvim-dap
-require("lbrayner.setup.lir") -- lir.nvim
 require("lbrayner.setup.lz") -- lz.n
 require("lbrayner.setup.mini") -- mini.nvim
 require("lbrayner.setup.neosolarized") -- neosolarized.nvim

@@ -19,7 +19,7 @@ end -- }}}
 
 local jump = jump_cmd()
 
-require("lir").setup {
+require("lir").setup({
   show_hidden_files = false,
   devicons = {
     enable = true,
@@ -59,7 +59,7 @@ require("lir").setup {
     end,
   },
   hide_cursor = true
-}
+})
 
 local lir_custom = vim.api.nvim_create_augroup("lir_custom", { clear = true })
 
@@ -88,11 +88,16 @@ vim.keymap.set("n", "-", function()
     require("lir.actions").up()
     return
   end
-  local filename = vim.fn.expand("%:~:h")
-  if filename == "" then
+
+  local head = vim.fn.expand("%:~:h")
+
+  if head == "" then
     open_cwd()
     return
   end
-  vim.cmd.edit(filename)
+
+  vim.cmd.edit(head)
 end)
 vim.keymap.set("n", "g-", open_cwd)
+
+return { setup = function() return end }
