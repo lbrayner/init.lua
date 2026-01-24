@@ -1,3 +1,8 @@
+local FugitiveParse = vim.fn.FugitiveParse
+local FugitiveReal = vim.fn.FugitiveReal
+local exists = vim.fn.exists
+local nvim_buf_get_name = vim.api.nvim_buf_get_name
+
 local M = {}
 
 function M.include_expression(fname)
@@ -9,8 +14,8 @@ end
 function M.get_fugitive_object(bufnr)
   bufnr = bufnr or 0
 
-  if vim.fn.exists("*FugitiveParse") == 1 then
-    local object = vim.fn.FugitiveParse(vim.api.nvim_buf_get_name(bufnr))[1]
+  if exists("*FugitiveParse") == 1 then
+    local object = FugitiveParse(nvim_buf_get_name(bufnr))[1]
     if object ~= "" then
       return object
     end
@@ -18,8 +23,8 @@ function M.get_fugitive_object(bufnr)
 end
 
 function M.get_fugitive_path()
-  if vim.fn.exists("*FugitiveReal") == 1 then
-    local path = vim.fn.fnamemodify(vim.fn.FugitiveReal(vim.api.nvim_buf_get_name(0)), ":~:.")
+  if exists("*FugitiveReal") == 1 then
+    local path = fnamemodify(FugitiveReal(nvim_buf_get_name(0)), ":~:.")
     if path ~= "" then
       return path
     end
