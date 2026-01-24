@@ -2,6 +2,8 @@ local M = {}
 
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
+local getloclist = vim.fn.getloclist
+local getqflist = vim.fn.getqflist
 local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
 local nvim_buf_get_text = vim.api.nvim_buf_get_text
 local nvim_get_current_buf = vim.api.nvim_get_current_buf
@@ -26,15 +28,14 @@ function M.get_close_events()
   return { "CursorMoved", "CursorMovedI", "InsertCharPre", "WinScrolled" }
 end
 
-function M.get_quickfix_or_location_list_title(winid)
-  winid = winid or vim.api.nvim_get_current_win()
-  if not M.is_quickfix_or_location_list(winid) then
-    return ""
+function M.get_quickfix_or_location_list_title(winfo)
+  if winfo.loclist == 1 then
+    return getloclist(winfo.winid, { title = 1 }).title
+  elseif winfo.quickfix == 1 then
+    return getqflist({ title = 1 }).title
   end
-  if M.is_location_list(winid) then
-    return vim.fn.getloclist(winid, { title = 1 }).title
-  end
-  return vim.fn.getqflist({ title = 1 }).title
+
+  return getqflist({ title = 1 }).title
 end
 
 function M.get_path(bufnr)
@@ -159,11 +160,6 @@ end
 function M.is_quickfix_list(winid)
   winid = winid or vim.api.nvim_get_current_win()
   return vim.fn.getwininfo(winid)[1]["quickfix"] == 1 and vim.fn.getwininfo(winid)[1]["loclist"] == 0
-end
-
-function M.is_quickfix_or_location_list(winid)
-  winid = winid or vim.api.nvim_get_current_win()
-  return vim.fn.getwininfo(winid)[1]["quickfix"] == 1
 end
 
 function M.join(col)

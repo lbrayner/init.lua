@@ -116,12 +116,10 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
 
     return name
   elseif winfo.loclist == 1 or winfo.quickfix == 1 then
-    return concat(
-      {
-        winfo.loclist == 1 and "[Location List]" or "[Quickfix List] ",
-        get_quickfix_or_location_list_title(winfo.winid)
-      }
-    )
+    return concat({
+      winfo.loclist == 1 and "[Location List] " or "[Quickfix List] ",
+      get_quickfix_or_location_list_title(winfo)
+    })
   end
 
   return strip_cwd(tinfo.cwd, binfo.name)
