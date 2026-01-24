@@ -7,6 +7,7 @@ local base64_encode = vim.base64.encode
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local get_buffer_info = require("lbrayner.nvim-fzf.utils").get_buffer_info
+local get_fugitive_object = require("lbrayner.fugitive").get_fugitive_object
 local get_quickfix_or_location_list_title = require(
   "lbrayner"
 ).get_quickfix_or_location_list_title
@@ -94,7 +95,9 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
 
   local fugitive_type = vim.b[binfo.bufnr].fugitive_type
 
-  if fugitive_type == "index" then -- Fugitive summary
+  if fugitive_type == "blob" then -- Fugitive object
+    return concat({ "[Fugitive] ", get_fugitive_object(binfo.bufnr) })
+  elseif fugitive_type == "index" then -- Fugitive summary
     local name = "[Fugitive] Summary"
     local git_dir = FugitiveGitDir(binfo.bufnr):sub(1, -6)
 
