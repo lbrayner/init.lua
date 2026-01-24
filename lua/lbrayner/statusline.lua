@@ -19,9 +19,12 @@ local get_full_path = require("lbrayner.path").get_full_path
 local get_jdtls_buffer_name = require("lbrayner.jdtls").get_buffer_name
 local get_line = vim.fn.line
 local get_path_ = require("lbrayner.path").get_path
+local get_quickfix_or_location_list_title = require(
+  "lbrayner"
+).get_quickfix_or_location_list_title
 local get_state = vim.fn.state
+local getwininfo = vim.fn.getwininfo
 local hlID = vim.fn.hlID
-local is_quickfix_or_location_list = require("lbrayner").is_quickfix_or_location_list
 local nvim__redraw = vim.api.nvim__redraw
 local nvim_buf_get_name = vim.api.nvim_buf_get_name
 local nvim_create_augroup = vim.api.nvim_create_augroup
@@ -282,7 +285,9 @@ function M.get_statusline()
     leftline = concat({ leftline, "%5*%w%* " })
   end
 
-  if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
+  local winfo = getwininfo(nvim_get_current_win())[1]
+
+  if vim.b.fugitive_type == "index" then -- Fugitive summary
     local git_dir = pathshorten(fnamemodify(
       FugitiveGitDir(nvim_get_current_buf()):sub(1, -6), ":~"
     ))
@@ -291,7 +296,7 @@ function M.get_statusline()
       leftline, "%6*", git_dir, "$%* %<", "Fugitive summary ",
       "%1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
     })
-  elseif vim.b.fugitive_type and vim.b.fugitive_type == "temp" then -- Fugitive temporary buffers
+  elseif vim.b.fugitive_type == "temp" then -- Fugitive temporary buffers
     local fugitive_result = FugitiveResult(nvim_get_current_buf())
     local git_dir = pathshorten(fnamemodify(fugitive_result.cwd, ":~"))
 
@@ -302,10 +307,9 @@ function M.get_statusline()
       }, " "),
       " %1*%{v:lua.require'lbrayner.statusline'.get_status_flag()}%*"
     })
-  elseif is_quickfix_or_location_list() then
+  elseif winfo.loclist == 1 or winfo.quickfix == 1 then
     leftline = concat({
-      leftline,
-      "%<%5*%f%* %{v:lua.require'lbrayner'.get_quickfix_or_location_list_title()}"
+      leftline, "%<%5*%f%* ", get_quickfix_or_location_list_title(winfo)
     })
   elseif vim.w.cmdline then
     leftline = concat({ leftline, "%<%5*[Command Line]%*" })
@@ -359,7 +363,9 @@ function M.get_winbar()
     statusline = concat({ statusline, "%w " })
   end
 
-  if vim.b.fugitive_type and vim.b.fugitive_type == "index" then -- Fugitive summary
+  local winfo = getwininfo(nvim_get_current_win())[1]
+
+  if vim.b.fugitive_type == "index" then -- Fugitive summary
     local git_dir = pathshorten(fnamemodify(
       FugitiveGitDir(nvim_get_current_buf()):sub(1, -6), ":~"
     ))
@@ -368,7 +374,7 @@ function M.get_winbar()
       statusline, git_dir, "$ %<", "Fugitive summary ",
       "%{v:lua.require'lbrayner.statusline'.get_status_flag()}"
     })
-  elseif vim.b.fugitive_type and vim.b.fugitive_type == "temp" then -- Fugitive temporary buffers
+  elseif vim.b.fugitive_type == "temp" then -- Fugitive temporary buffers
     local fugitive_result = FugitiveResult(nvim_get_current_buf())
 
     if fugitive_result.blame_file then
@@ -382,9 +388,9 @@ function M.get_winbar()
         " %{v:lua.require'lbrayner.statusline'.get_status_flag()}"
       })
     end
-  elseif is_quickfix_or_location_list() then
+  elseif winfo.loclist == 1 or winfo.quickfix == 1 then
     statusline = concat({
-      statusline, "%<%f %{v:lua.require'lbrayner'.get_quickfix_or_location_list_title()}"
+      statusline, "%<%f ", get_quickfix_or_location_list_title(winfo)
     })
   elseif vim.w.cmdline then
     statusline = ""
