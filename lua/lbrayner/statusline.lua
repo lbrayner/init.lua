@@ -192,7 +192,9 @@ function M.get_buffer_status()
     status = concat({ status, "%<", M.get_buffer_name({ tail = true }) })
   end
 
-  status = concat({ status, (vim.bo.modified and " " or " %1*"), M.get_status_flag(), "%*" })
+  status = concat({
+    status, (vim.bo.modified and " " or " %1*"), M.get_status_flag(), "%*"
+  })
 
   return status
 end
@@ -407,7 +409,9 @@ function M.get_winbar()
         "v:lua.require'lbrayner.statusline'.get_buffer_name(), winwidth('%') - 4)}"
       })
     end
-    statusline = concat({ statusline, " %{v:lua.require'lbrayner.statusline'.get_status_flag()}" })
+    statusline = concat({
+      statusline, " %{v:lua.require'lbrayner.statusline'.get_status_flag()}"
+    })
   end
 
   return statusline
@@ -437,7 +441,9 @@ function M.highlight_winbar()
 end
 
 function M.load_theme(name)
-  local success, result = pcall(require, concat({ "lbrayner.statusline.themes", name }, "."))
+  local success, result = pcall(
+    require, concat({ "lbrayner.statusline.themes", name }, ".")
+  )
 
   if success then
     theme = result.get()
@@ -461,7 +467,10 @@ end
 function M.set_minor_modes(bufnr, mode, action)
   assert(type(bufnr) == "number" and bufnr > 0, "'bufnr' must be a positive number")
   assert(type(mode) == "string", "'mode' must be a string")
-  assert(action == "append" or action == "remove", concat({ "invalid 'action': ", tostring(action) }))
+  assert(
+    action == "append" or action == "remove",
+    concat({ "invalid 'action': ", tostring(action) })
+  )
 
   local lbrayner = vim.b[bufnr].lbrayner or empty_dict()
   local data = tbl_get(lbrayner, "statusline", "modes", "data") or empty_dict()
@@ -658,7 +667,9 @@ nvim_create_autocmd("VimEnter", {
         end
 
         local group = concat({
-          "Diagnostic", string_sub(severity, 1, 1), string_lower(string_sub(severity, 2))
+          "Diagnostic",
+          string_sub(severity, 1, 1),
+          string_lower(string_sub(severity, 2))
         })
         local severity_hl = nvim_get_hl(0, { name = group })
 
