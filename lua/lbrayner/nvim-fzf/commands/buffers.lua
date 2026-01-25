@@ -27,6 +27,24 @@ local function edit(selected) -- {{{
   end
 end -- }}}
 
+local function get_buffers() -- {{{
+  local buffers = {}
+
+  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    local info = get_buffer_info(bufnr)
+
+    table.insert(
+      buffers,
+      ("%s[%d]%s	%s	%s"):format(
+        BLUE, bufnr, CLEAR,
+        info.flags, fnamemodify(info.name, ":~:.")
+      )
+    )
+  end
+
+  return buffers
+end -- }}}
+
 local function jump(selected) -- {{{
   if #selected > 2 then
     vim.notify("[FZF buffers] Cannot jump to multiple buffers", vim.log.levels.WARN)
@@ -39,8 +57,9 @@ end -- }}}
 local function wipe_buffer(selected) -- {{{
   local function wipe(selected)
     local count = 0
+    -- print("wipe selected", vim.inspect(selected))--TODO debug
 
-    for i = 2, #selected do
+    for i = 1, #selected do
       local bufnr = tonumber(selected[i]:match("%d+"))
       local success, _ = pcall(nvim_buf_delete, bufnr, {})
       if success then count = count + 1 end
@@ -48,54 +67,35 @@ local function wipe_buffer(selected) -- {{{
 
     vim.notify(concat({ "[FZF buffers] Wiped ", count, " buffer(s)" }))
   end
+  -- print("Selected", #selected, "items")--TODO debug
 
-  if #selected <= 5 then
+  if #selected <= 10 then
     wipe(selected)
-    return
-  end
-
-  if #selected > 10 then
+  else
     vim.notify(
       "[FZF buffers] Wipe buffer: exceeded limit of 10 selected items",
       vim.log.levels.ERROR
     )
-    return
   end
 
-  vim.ui.select({ "Yes", "No", },
-    {
-      prompt = concat({
-        "[FZF buffers] Wipe buffer: you have selected ", #selected, " items. Proceed?"
-      }),
-    },
-    function(choice)
-      if choice == "Yes" then wipe(selected) end
-    end
-  )
-end -- }}}
+  return get_buffers()
+end
+
+local wipe_buffer_action = require("fzf.actions").raw_action(wipe_buffer) -- }}}
 
 return function (opts)
   opts = opts or {}
-  local entries = {}
-
-  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    local info = get_buffer_info(bufnr)
-
-    table.insert(
-      entries,
-      ("%s[%d]%s	%s	%s"):format(
-        BLUE, bufnr, CLEAR,
-        info.flags, fnamemodify(info.name, ":~:.")
-      )
-    )
-  end
-
+  local buffers = get_buffers()
   local fzf_cli_args = concat({
     "--ansi --multi --prompt='Buffers> '",
     concat({ "--history=", shellescape(history_file) }),
     concat({
+      "--bind=",
+      shellescape(string.format("%s:reload(%s)", WIPE_BUFFER, wipe_buffer_action))
+    }),
+    concat({
       "--expect=", shellescape(concat({
-        EDIT, SPLIT, TAB, TAB_BEFORE, VSPLIT, WIPE_BUFFER
+        EDIT, SPLIT, TAB, TAB_BEFORE, VSPLIT
       }, ","))
     }),
     opts.fzf_cli_args and opts.fzf_cli_args or nil
@@ -103,7 +103,7 @@ return function (opts)
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
 
   coroutine.wrap(function()
-    local selected = require("fzf").fzf(entries, fzf_cli_args)
+    local selected = require("fzf").fzf(buffers, fzf_cli_args)
     -- print("selected", vim.inspect(selected)) -- TODO debug
 
     if selected then
@@ -122,9 +122,6 @@ return function (opts)
           vicmd = "-tabnew"
         elseif action == VSPLIT then
           vicmd = "vnew"
-        elseif action == WIPE_BUFFER then
-          wipe_buffer(selected)
-          return
         else
           jump(selected)
           return
