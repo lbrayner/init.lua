@@ -59,11 +59,11 @@ local function wipe_buffer(selected) -- {{{
     local count = 0
     -- print("wipe selected", vim.inspect(selected))--TODO debug
 
-    for i = 1, #selected do
-      local bufnr = tonumber(selected[i]:match("%d+"))
+    vim.iter(selected):each(function(s)
+      local bufnr = tonumber(s:match("%d+"))
       local success, _ = pcall(nvim_buf_delete, bufnr, {})
       if success then count = count + 1 end
-    end
+    end)
 
     vim.notify(concat({ "[FZF buffers] Wiped ", count, " buffer(s)" }))
   end
@@ -91,7 +91,7 @@ return function (opts)
     concat({ "--history=", shellescape(history_file) }),
     concat({
       "--bind=",
-      shellescape(string.format("%s:reload(%s)", WIPE_BUFFER, wipe_buffer_action))
+      shellescape(string.format("%s:reload(%s)+first", WIPE_BUFFER, wipe_buffer_action))
     }),
     concat({
       "--expect=", shellescape(concat({
