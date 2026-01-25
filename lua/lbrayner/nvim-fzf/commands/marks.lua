@@ -23,6 +23,7 @@ local function get_pos() -- {{{
   local file_mark_info = require(
     "lbrayner.marks"
   ).file_mark_info_by_bufnr[state.bufnr]
+  -- print("file_mark_info", vim.inspect(file_mark_info)) -- TODO debug
 
   if not file_mark_info then
     -- print("pos", 1) -- TODO debug
@@ -100,12 +101,16 @@ return function (opts)
     concat({ "--history=", shellescape(history_file) }),
     concat({
       "--bind=", shellescape(string.format(
-        "load:%s,%s:reload(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s),%s:reload(%s)",
-        get_pos(), RELOAD, reload_action,
+        concat({
+          "load:transform(%s)", "%s:reload(%s)",
+          "%s:reload(%s)", "%s:reload(%s)",
+          "%s:reload(%s)", "%s:reload(%s)",
+        }, ","),
+        get_pos_action, RELOAD, reload_action,
         SHIFT_BELOW, shift_below_action, SHIFT_ABOVE, shift_above_action,
         SHIFT_DOWN, shift_down_action, SHIFT_UP, shift_up_action
       ))
-    }) or nil,
+    }),
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
