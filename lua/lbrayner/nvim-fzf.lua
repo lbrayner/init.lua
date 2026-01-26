@@ -1,5 +1,3 @@
-local concat = table.concat
-
 local function run_module(name)
   return function(...)
     require(name)(...)
