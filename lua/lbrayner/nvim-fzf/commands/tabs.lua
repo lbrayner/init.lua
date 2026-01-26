@@ -26,11 +26,18 @@ local BOLD_YELLOW = ansi.color_to_ansi("yellow", "bold")
 local CLEAR = ansi.clear
 local WHITE = ansi.color_to_ansi("white")
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
+local state = {}
 
 local CLOSE_WINDOW = "ctrl-x"
 local RELOAD       = "ctrl-r"
 local TAB = ( -- {{{
   "	") -- }}}
+
+local function get_pos() -- {{{
+  return string.format("pos(%d)", state.pos)
+end
+
+local reload_action = require("fzf.actions").raw_action(get_pos) -- }}}
 
 local function get_entry_values(entry) -- {{{
   local tabh, winid, tabn = entry:match(concat({ "^(%d+)", TAB, "(%d+)", TAB, "(%d+)" }))
@@ -129,7 +136,8 @@ local function get_tabs() -- {{{
     end
   end
 
-  return tabs, p
+  state.pos = p
+  return tabs
 end -- }}}
 
 local function close_window(selected) -- {{{
@@ -183,16 +191,16 @@ end -- }}}
 
 return function (opts)
   opts = opts or {}
-  local tabs, p = get_tabs()
-  local pos = string.format("pos(%d)", p)
+  local tabs = get_tabs()
+  local pos = get_pos()
   local fzf_cli_args = concat({
-    "--ansi --multi --prompt='Tabs> '",
+    "--ansi --multi --sync --prompt='Tabs> '",
     concat({ "--history=", shellescape(history_file) }),
     concat(
       {
         "--bind=",
         shellescape(string.format(
-          "load:%s,%s:%s,%s:reload(%s)", pos, RELOAD, pos,
+          "start:%s,%s:transform(%s),%s:reload(%s)", pos, RELOAD, reload_action,
           CLOSE_WINDOW, close_window_action
         ))
       }
