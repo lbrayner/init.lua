@@ -31,20 +31,12 @@ local function jump(selected) -- {{{
   require("lbrayner").jump_to_location(bufnr)
 end -- }}}
 
-local function tabedit_before(selected) -- {{{
-  for i = 2, #selected do
-    local bufnr = bufadd(selected[i])
-    -- from fzf-lua's actions (vimcmd_entry)
-    vim.cmd(concat({ "-tabnew | setlocal bufhidden=wipe | buffer ", bufnr }))
-  end
-end -- }}}
-
 return function (opts)
   opts = opts or {}
   local command = concat(
     { "rg --files --sort path", opts.fzf_command_args }, " "
   )
-  print("command", vim.inspect(command)) -- TODO debug
+  -- print("command", vim.inspect(command)) -- TODO debug
   local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
 
   local fzf_cli_args = concat({
@@ -73,8 +65,7 @@ return function (opts)
         elseif action == TAB then
           vicmd = "tabnew"
         elseif action == TAB_BEFORE then
-          tabedit_before(selected)
-          return
+          vicmd = "-tabnew"
         elseif action == VSPLIT then
           vicmd = "vnew"
         else
