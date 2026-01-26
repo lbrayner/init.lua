@@ -37,51 +37,6 @@ local function get_entry_values(entry) -- {{{
   return tonumber(tabh), tonumber(winid), tonumber(tabn)
 end -- }}}
 
-local function close_window(selected) -- {{{
-  local function close(selected)
-    local count = 0
-
-    for i = 2, #selected do
-      local tabh, winid, tabn = get_entry_values(selected[i])
-
-      if winid >= 1000 then
-        local success, _ = pcall(nvim_win_close, winid, false)
-        if success then count = count + 1 end
-      else
-        local wins = winid
-        local success, _ = pcall(tabclose, tabn)
-        if success then count = count + wins end
-      end
-    end
-
-    vim.notify(concat({ "[FZF tabs] Closed ", count, " window(s)" }))
-  end
-
-  if #selected <= 5 then
-    close(selected)
-    return
-  end
-
-  if #selected > 10 then
-    vim.notify(
-      "[FZF tabs] Close window: exceeded limit of 10 selected items",
-      vim.log.levels.ERROR
-    )
-    return
-  end
-
-  vim.ui.select({ "Yes", "No", },
-    {
-      prompt = concat({
-        "[FZF tabs] Close window: you have selected ", #selected, " items. Proceed?"
-      }),
-    },
-    function(choice)
-      if choice == "Yes" then close(selected) end
-    end
-  )
-end -- }}}
-
 local function get_window_name(tinfo, winfo, binfo) -- {{{
   local function strip_cwd(cwd, name)
     local rel = relpath(cwd, name)
@@ -128,27 +83,12 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
   return strip_cwd(tinfo.cwd, binfo.name)
 end -- }}}
 
-local function jump(selected) -- {{{
-  if #selected > 2 then
-    vim.notify("[FZF tabs] Cannot jump to multiple windows", vim.log.levels.WARN)
-    return
-  end
-
-  local tabh, winid = get_entry_values(selected[2])
-
-  vim.api.nvim_set_current_tabpage(tabh)
-  if winid >= 1000 then
-    vim.api.nvim_set_current_win(winid)
-  end
-end -- }}}
-
-return function (opts)
-  opts = opts or {}
-  local cwd = getcwd(-1, vim.fn.tabpagenr())
-  local entries = {}
+local function get_tabs() -- {{{
   local i, p = 0, 0
+  local tabs = {}
   local curtabh = vim.api.nvim_get_current_tabpage()
   local curwin = vim.api.nvim_get_current_win()
+  local cwd = getcwd(-1, vim.fn.tabpagenr())
 
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
     i = i + 1
@@ -166,7 +106,7 @@ return function (opts)
       BOLD_CYAN, fnamemodify(tcwd, ":~"), CLEAR
     }) or concat({ entry, CLEAR })
 
-    table.insert(entries, entry)
+    table.insert(tabs, entry)
 
     for _, w in ipairs(wins) do
       i = i + 1
@@ -179,7 +119,7 @@ return function (opts)
       local binfo = get_buffer_info(bufnr)
 
       table.insert(
-        entries,
+        tabs,
         ("%d	%d	%d	%s		»%d	%d	%s[%d]%s	%s	%s"):format(
           tabh, w, tabnr, base64_encode(fnamemodify(tcwd, ":~")),
           tabnr, w, BLUE, bufnr, CLEAR,
@@ -189,15 +129,74 @@ return function (opts)
     end
   end
 
-  local pos = string.format("pos(%d)", p)
+  return tabs, p
+end -- }}}
 
+local function close_window(selected) -- {{{
+  local function close(selected)
+    local count = 0
+
+    vim.iter(selected):each(function(s)
+      local tabh, winid, tabn = get_entry_values(s)
+
+      if winid >= 1000 then
+        local success, _ = pcall(nvim_win_close, winid, false)
+        if success then count = count + 1 end
+      else
+        local wins = winid
+        local success, _ = pcall(tabclose, tabn)
+        if success then count = count + wins end
+      end
+    end)
+
+    vim.notify(concat({ "[FZF tabs] Closed ", count, " window(s)" }))
+  end
+
+  if #selected <= 10 then
+    close(selected)
+  else
+    vim.notify(
+      "[FZF tabs] Close window: exceeded limit of 10 selected items",
+      vim.log.levels.ERROR
+    )
+    return
+  end
+
+  return get_tabs()
+end
+
+local close_window_action = require("fzf.actions").raw_action(close_window) -- }}}
+
+local function jump(selected) -- {{{
+  if #selected > 1 then
+    vim.notify("[FZF tabs] Cannot jump to multiple windows", vim.log.levels.WARN)
+    return
+  end
+
+  local tabh, winid = get_entry_values(selected[1])
+
+  vim.api.nvim_set_current_tabpage(tabh)
+  if winid >= 1000 then
+    vim.api.nvim_set_current_win(winid)
+  end
+end -- }}}
+
+return function (opts)
+  opts = opts or {}
+  local tabs, p = get_tabs()
+  local pos = string.format("pos(%d)", p)
   local fzf_cli_args = concat({
     "--ansi --multi --prompt='Tabs> '",
     concat({ "--history=", shellescape(history_file) }),
     concat(
-      { "--bind=", shellescape(string.format("load:%s,%s:%s", pos, RELOAD, pos)) }
+      {
+        "--bind=",
+        shellescape(string.format(
+          "load:%s,%s:%s,%s:reload(%s)", pos, RELOAD, pos,
+          CLOSE_WINDOW, close_window_action
+        ))
+      }
     ),
-    concat({ "--expect=", shellescape(CLOSE_WINDOW) }),
     concat({ "--delimiter=", shellescape(TAB) }),
     "--with-nth=5..",
     concat({ "--preview=", shellescape(
@@ -210,19 +209,10 @@ return function (opts)
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
 
   coroutine.wrap(function()
-    local selected = require("fzf").fzf(entries, fzf_cli_args)
+    local selected = require("fzf").fzf(tabs, fzf_cli_args)
 
     if selected then
-      (function()
-        local action = selected[1]
-
-        if action == CLOSE_WINDOW then
-          close_window(selected)
-          return
-        end
-
-        jump(selected)
-      end)()
+      jump(selected)
     end
 
     require("lbrayner.nvim-fzf.history").sanitize_history_file(history_file)
