@@ -37,9 +37,14 @@ return function()
     })
   end, { complete = "file", nargs = "*", range = -1 })
 
-  nvim_create_user_command("Marks", function()
-    require("lbrayner.nvim-fzf").marks()
-  end, { nargs = 0 })
+  nvim_create_user_command("Marks", function(opts)
+    local query = get_visual_selection_query(opts)
+    query = query and concat({ "--query=", shellescape(query) })
+
+    require("lbrayner.nvim-fzf").marks({
+      fzf_cli_args = query
+    })
+  end, { nargs = 0, range = -1 })
   nvim_create_user_command("Tabs", function(opts)
     local query = get_visual_selection_query(opts)
     query = query and concat({ "--query=", shellescape(query) })
