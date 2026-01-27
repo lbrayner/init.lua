@@ -13,10 +13,6 @@ local history_file = require("lbrayner.nvim-fzf.history").get_history_file("file
 local state = {}
 
 local function get_pos() -- {{{
-  local function pos(p)
-    return string.format("pos(%d)", p)
-  end
-
   -- print("marks", vim.inspect(state.marks)) -- TODO debug
   local marks = vim.split(state.marks, "\n")
 
@@ -27,16 +23,16 @@ local function get_pos() -- {{{
 
   if not file_mark_info then
     -- print("pos", 1) -- TODO debug
-    return pos(1)
+    return "ignore"
   end
 
   -- Start from position 2
-  for i=2, #marks do
+  for i = 2, #marks do
     if (marks[i]):match("%u") == file_mark_info.mark then
       -- local p = pos(i - 1)
       -- print("pos", vim.inspect(p)) -- TODO debug
       -- return p
-      return pos(i - 1)
+      return string.format("pos(%d)", i - 1)
     end
   end
 end
@@ -97,16 +93,16 @@ return function (opts)
   state.bufnr = vim.api.nvim_get_current_buf()
   local marks = vim.split(get_marks(), "\n")
   local fzf_cli_args = concat({
-    "--header-lines=1 --multi --prompt='File marks> '",
+    "--header-lines=1 --multi --sync --prompt='File marks> '",
     concat({ "--history=", shellescape(history_file) }),
     concat({
       "--bind=", shellescape(string.format(
         concat({
-          "load:transform(%s)", "%s:reload(%s)",
+          "start:%s", "%s:reload(%s)+transform(%s)",
           "%s:reload(%s)", "%s:reload(%s)",
           "%s:reload(%s)", "%s:reload(%s)",
         }, ","),
-        get_pos_action, RELOAD, reload_action,
+        get_pos(), RELOAD, reload_action, get_pos_action,
         SHIFT_BELOW, shift_below_action, SHIFT_ABOVE, shift_above_action,
         SHIFT_DOWN, shift_down_action, SHIFT_UP, shift_up_action
       ))
