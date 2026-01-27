@@ -15,6 +15,8 @@ function M.continue()
     {
       { command = "redefine_classes", description = "Hot code replace (redefineClasses)" },
       { command = "dap_new", description = "Start additional session" },
+      { command = "dap_terminate", description = "Terminate session" },
+      { command = "dap_terminate_all", description = "Terminate all sessions" },
       { command = "dap_continue", description = "See more DAP options..." },
     },
     {
@@ -31,6 +33,10 @@ function M.continue()
         ---@field new? boolean force new session
         ---@field before? fun(config: dap.Configuration): dap.Configuration pre-process config
         require("lbrayner.dap").continue({ new = true })
+      elseif c.command == "dap_terminate" then
+        require("dap").terminate()
+      elseif c.command == "dap_terminate_all" then
+        require("dap").terminate({ all = true })
       else
         require("lbrayner.dap").continue()
       end
