@@ -13,9 +13,6 @@ local history_file = require("lbrayner.nvim-fzf.history").get_history_file("file
 local state = {}
 
 local function get_pos() -- {{{
-  -- print("marks", vim.inspect(state.marks)) -- TODO debug
-  local marks = vim.split(state.marks, "\n")
-
   local file_mark_info = require(
     "lbrayner.marks"
   ).file_mark_info_by_bufnr[state.bufnr]
@@ -26,22 +23,13 @@ local function get_pos() -- {{{
     return "ignore"
   end
 
-  -- Start from position 2
-  for i = 2, #marks do
-    if (marks[i]):match("%u") == file_mark_info.mark then
-      -- local p = pos(i - 1)
-      -- print("pos", vim.inspect(p)) -- TODO debug
-      -- return p
-      return string.format("pos(%d)", i - 1)
-    end
-  end
+  return string.format("pos(%d)", file_mark_info.index)
 end
 
 local get_pos_action = require("fzf.actions").raw_action(get_pos) -- }}}
 
 local function get_marks() -- {{{
-  state.marks = vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
-  return state.marks
+  return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
 end
 
 local reload_action = require("fzf.actions").raw_action(get_marks) -- }}}
