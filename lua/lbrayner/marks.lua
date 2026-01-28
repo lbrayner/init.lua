@@ -157,9 +157,14 @@ function M.file_mark_jump_to_location(mark)
 end
 
 function M.get_file_mark_info_list()
-  return vim.tbl_filter(function(mark)
-    mark.mark = (mark.mark):sub(2)
-    return is_file_mark(mark.mark)
+  local i = 0
+
+  return vim.tbl_filter(function(m)
+    m.mark = (m.mark):sub(2)
+    if not is_file_mark(m.mark) then return false end
+    i = i + 1
+    m.index = i
+    return true
   end, vim.fn.getmarklist())
 end
 
