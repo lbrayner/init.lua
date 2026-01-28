@@ -52,6 +52,7 @@ require("lbrayner.subcommands").create_user_command_and_subcommands("Wipe", subc
 })
 
 subcommand_tbl.file = {
+  complete = require("lbrayner.subcommands").complete_filename,
   optional = function(opts)
     local text = join(opts.args)
     assert(text ~= "", "Argument required")
@@ -63,6 +64,7 @@ subcommand_tbl.file = {
 }
 
 subcommand_tbl.fileHidden = {
+  complete = require("lbrayner.subcommands").complete_filename,
   optional = function(opts)
     local text = join(opts.args)
     wipe_buffers(opts.bang, function(buf)
@@ -74,6 +76,7 @@ subcommand_tbl.fileHidden = {
 }
 
 subcommand_tbl.fileNotReadable = {
+  complete = require("lbrayner.subcommands").complete_filename,
   optional = function(opts)
     local text = join(opts.args)
     wipe_buffers(opts.bang, function(buf)
@@ -88,6 +91,7 @@ subcommand_tbl.fileNotReadable = {
 }
 
 subcommand_tbl.filePattern = {
+  complete = require("lbrayner.subcommands").complete_filename,
   optional = function(opts)
     local pattern = join(opts.args)
     assert(pattern ~= "", "Argument required")
