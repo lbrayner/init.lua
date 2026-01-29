@@ -1,5 +1,6 @@
 -- vim: fdm=marker
 
+local ansi = require("lbrayner.nvim-fzf.utils").ansi
 local concat = table.concat
 local shellescape = vim.fn.shellescape
 
@@ -9,6 +10,10 @@ local SHIFT_BELOW = "shift-down"
 local SHIFT_DOWN  = "alt-shift-down"
 local SHIFT_UP    = "alt-shift-up"
 
+local BLUE = ansi.color_to_ansi("blue")
+local CLEAR = ansi.clear
+local GREEN = ansi.color_to_ansi("green")
+local YELLOW = ansi.color_to_ansi("yellow")
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file("file_marks")
 local state = {}
 
@@ -29,7 +34,28 @@ end
 local get_pos_action = require("fzf.actions").raw_action(get_pos) -- }}}
 
 local function get_marks() -- {{{
-  return vim.split(vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2), "\n")
+  local entries = {}
+  table.insert(
+    entries,
+    string.format("%-5s %s  %s %s", "mark", "line", "col", "file/text")
+  )
+
+  local marks = vim.split(vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2), "\n")
+
+  for i = 2, #marks do
+    -- from fzf-lua's nvim provider
+    local mark, line, col, text = marks[i]:match("(.)%s+(%d+)%s+(%d+)%s+(.*)")
+
+    table.insert(
+      entries, string.format(" %s%-5s %s%3s %s%4s%s %s",
+      YELLOW, mark,
+      BLUE, line,
+      GREEN, col, CLEAR,
+      text
+    ))
+  end
+
+  return entries
 end
 
 local reload_action = require("fzf.actions").raw_action(get_marks) -- }}}
@@ -81,7 +107,7 @@ return function (opts)
   state.bufnr = vim.api.nvim_get_current_buf()
   local marks = get_marks()
   local fzf_cli_args = concat({
-    "--header-lines=1 --multi --sync --prompt='File marks> '",
+    "--ansi --header-lines=1 --multi --sync --prompt='File marks> '",
     concat({ "--history=", shellescape(history_file) }),
     concat({
       "--bind=", shellescape(string.format(
