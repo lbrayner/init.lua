@@ -13,6 +13,7 @@ local TAB_BEFORE = "alt-t"
 local VSPLIT     = "alt-s"
 
 local PATH_SEPARATOR = package.config:sub(1,1)
+local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
 
 local function edit(selected) -- {{{
   if #selected > 2 then
@@ -37,7 +38,6 @@ return function (opts)
     { "rg --files --sort path", opts.fzf_command_args }, " "
   )
   -- print("command", vim.inspect(command)) -- TODO debug
-  local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
 
   local fzf_cli_args = concat({
     "--multi", concat({ "--history=", shellescape(history_file) }),
