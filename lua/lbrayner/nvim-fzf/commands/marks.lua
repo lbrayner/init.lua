@@ -76,9 +76,7 @@ local function jump(selected) -- {{{
   end
 
   local mark = selected[1]:match("%u")
-  local file_mark_info = require("lbrayner.marks").file_mark_info_by_mark[mark]
-  local bufnr = file_mark_info.pos[1]
-  require("lbrayner").jump_to_location(bufnr)
+  require("lbrayner.marks").file_mark_jump_to_location(mark)
 end -- }}}
 
 local function shift_below(args) -- {{{
