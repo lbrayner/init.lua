@@ -28,13 +28,22 @@ local function get_pos() -- {{{
     return "ignore"
   end
 
-  return string.format("pos(%d)", file_mark_info.index)
+  -- Start from position 2
+  for i = 2, #state.marks do
+    if (state.marks[i]):match("%u") == file_mark_info.mark then
+      -- local p = pos(i - 1)
+      -- print("pos", vim.inspect(p)) -- TODO debug
+      -- return p
+      return string.format("pos(%d)", i - 1)
+    end
+  end
 end
 
 local get_pos_action = require("fzf.actions").raw_action(get_pos) -- }}}
 
 local function get_marks() -- {{{
   local marks = vim.split(vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2), "\n")
+  state.marks = marks
   local header = marks[1]
   local entries = { header }
   local _, linepos = header:find("%s+", 4)
