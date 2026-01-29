@@ -29,7 +29,7 @@ end
 local get_pos_action = require("fzf.actions").raw_action(get_pos) -- }}}
 
 local function get_marks() -- {{{
-  return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
+  return vim.split(vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2), "\n")
 end
 
 local reload_action = require("fzf.actions").raw_action(get_marks) -- }}}
@@ -79,7 +79,7 @@ local shift_up_action = require("fzf.actions").raw_action(shift_up) -- }}}
 return function (opts)
   opts = opts or {}
   state.bufnr = vim.api.nvim_get_current_buf()
-  local marks = vim.split(get_marks(), "\n")
+  local marks = get_marks()
   local fzf_cli_args = concat({
     "--header-lines=1 --multi --sync --prompt='File marks> '",
     concat({ "--history=", shellescape(history_file) }),
