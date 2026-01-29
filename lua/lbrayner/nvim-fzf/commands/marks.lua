@@ -34,25 +34,25 @@ end
 local get_pos_action = require("fzf.actions").raw_action(get_pos) -- }}}
 
 local function get_marks() -- {{{
-  local entries = {}
-  table.insert(
-    entries,
-    string.format("%-5s %s  %s %s", "mark", "line", "col", "file/text")
-  )
-
   local marks = vim.split(vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2), "\n")
+  local header = marks[1]
+  local entries = { header }
+  local _, linepos = header:find("%s+", 4)
+  local _, colpos = header:find("%s+", linepos + 4)
+  -- print("linepos", linepos, "colpos", colpos)--TODO debug
+  local fmts = concat({
+    " %s%-3s ",
+    "%s%", linepos - 5 + 4, "s ",
+    "%s%", colpos - (linepos + 5) + 3, "s%s %s"
+  })
 
   for i = 2, #marks do
     -- from fzf-lua's nvim provider
     local mark, line, col, text = marks[i]:match("(.)%s+(%d+)%s+(%d+)%s+(.*)")
 
     table.insert(
-      entries, string.format(" %s%-5s %s%3s %s%4s%s %s",
-      YELLOW, mark,
-      BLUE, line,
-      GREEN, col, CLEAR,
-      text
-    ))
+      entries, string.format(fmts, YELLOW, mark, BLUE, line, GREEN, col, CLEAR, text)
+    )
   end
 
   return entries
