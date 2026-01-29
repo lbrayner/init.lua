@@ -84,19 +84,29 @@ end
 
 local function file_mark_info_jump_to_location(file_mark_info)
   if not file_mark_info then return end
-  local file = file_mark_info.file
-  if vim.startswith(file, "term://") then
-    local bufnr = vim.fn.bufnr(file)
-    require("lbrayner").jump_to_location(bufnr)
-    return
+
+  local bufnr, pos = file_mark_info.pos[1]
+
+  if bufnr == 0 then
+    (function()
+      local file = file_mark_info.file
+
+      if vim.startswith(file, "term://") then
+        bufnr = vim.fn.bufadd(file)
+        -- print("bufnr", bufnr)--TODO debug
+        return
+      end
+
+      -- Normalized path because tilde is not expanded in lua
+      file = vim.fs.normalize(file)
+      bufnr = vim.fn.bufadd(file)
+
+      if not vim.api.nvim_buf_is_loaded(bufnr) then
+        pos = { file_mark_info.pos[2], (file_mark_info.pos[3] - 1) }
+      end
+    end)()
   end
-  -- Normalized path because tilde is not expanded in lua
-  file = vim.fs.normalize(file)
-  local pos
-  local bufnr = vim.fn.bufadd(file)
-  if not vim.api.nvim_buf_is_loaded(bufnr) then
-    pos = { file_mark_info.pos[2], (file_mark_info.pos[3] - 1) }
-  end
+
   require("lbrayner").jump_to_location(bufnr, pos)
 end
 
@@ -144,15 +154,20 @@ end
 
 -- }}}
 
+local file_mark_info_by_bufnr = {}
+local file_mark_info_by_mark = {}
+
 function M.file_mark_jump_to_location(mark)
   assert(type(mark) == "string", "Bad argument; 'mark' must be a string.")
   assert(mark:match("^%u$"), "Bad argument; 'mark' must be a file mark.")
-  local file_mark_info_by_mark = get_file_mark_info_by_mark_bufnr()
+
   local file_mark_info = file_mark_info_by_mark[mark]
+
   if not file_mark_info then
     vim.notify(string.format("“%s” is not set.", mark))
     return
   end
+
   file_mark_info_jump_to_location(file_mark_info)
 end
 
@@ -166,8 +181,6 @@ end
 -- Mappings
 -- Borrowed from marks.nvim (https://github.com/chentoast/marks.nvim)
 
-local file_mark_info_by_bufnr = {}
-local file_mark_info_by_mark = {}
 local utils = require("lbrayner.marks.utils")
 
 vim.keymap.set("n", "'", function()
