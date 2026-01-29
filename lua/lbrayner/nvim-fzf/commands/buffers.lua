@@ -31,13 +31,13 @@ local function get_buffers() -- {{{
   local buffers = {}
 
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    local info = get_buffer_info(bufnr)
+    local binfo = get_buffer_info(bufnr)
 
     table.insert(
       buffers,
       ("%s[%d]%s	%s	%s"):format(
-        BLUE, bufnr, CLEAR,
-        info.flags, fnamemodify(info.name, ":~:.")
+        BLUE, bufnr, CLEAR, binfo.flags,
+        binfo.name == "" and "[No Name]" or fnamemodify(binfo.name, ":~:.")
       )
     )
   end

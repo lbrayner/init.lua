@@ -57,7 +57,9 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
 
   local fugitive_type = vim.b[binfo.bufnr].fugitive_type
 
-  if fugitive_type == "blob" then -- Fugitive object
+  if binfo.name == "" then
+    return "[No Name]"
+  elseif fugitive_type == "blob" then -- Fugitive object
     return concat({ "[Fugitive] ", get_fugitive_object(binfo.bufnr) })
   elseif fugitive_type == "index" then -- Fugitive summary
     local name = "[Fugitive] Summary"
