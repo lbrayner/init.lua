@@ -1,6 +1,7 @@
 local FugitiveParse = vim.fn.FugitiveParse
 local FugitiveReal = vim.fn.FugitiveReal
 local exists = vim.fn.exists
+local fnamemodify = vim.fn.fnamemodify
 local nvim_buf_get_name = vim.api.nvim_buf_get_name
 
 local M = {}
