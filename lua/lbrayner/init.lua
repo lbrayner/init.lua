@@ -195,6 +195,7 @@ end
 
 function M.jump_to_location(bufnr, pos, opts)
   assert(type(bufnr) == "number", "Bad argument; 'bufnr' must be a number.")
+  assert(vim.api.nvim_buf_is_valid(bufnr), "Bad argument; 'bufnr' must be a valid buffer.")
 
   opts = opts or {}
   local winid = vim.fn.win_findbuf(bufnr)[1]
