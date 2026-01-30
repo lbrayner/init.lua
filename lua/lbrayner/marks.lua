@@ -209,7 +209,7 @@ vim.keymap.set("n", "'", function()
 
       if not file_mark_info then return end
 
-      require("lbrayner").jump_to_location(file_mark_info.pos[1])
+      file_mark_info_jump_to_location(file_mark_info)
       return
     end
 
