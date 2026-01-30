@@ -4,8 +4,13 @@ local ansi = require("lbrayner.nvim-fzf.utils").ansi
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local get_buffer_info = require("lbrayner.nvim-fzf.utils").get_buffer_info
+local get_quickfix_or_location_list_title = require(
+  "lbrayner"
+).get_quickfix_or_location_list_title
+local getwininfo = vim.fn.getwininfo
 local nvim_buf_delete = vim.api.nvim_buf_delete
 local shellescape = vim.fn.shellescape
+local tbl_isempty = vim.tbl_isempty
 
 local EDIT        = "ctrl-]"
 local SPLIT       = "ctrl-s"
@@ -27,6 +32,25 @@ local function edit(selected) -- {{{
   end
 end -- }}}
 
+local function get_buffer_name(binfo) -- {{{
+  if vim.bo[binfo.bufnr].buftype == "quickfix" then
+    if tbl_isempty(binfo.windows) then
+      return "[Quickfix or Location List]"
+    end
+
+    local winfo = getwininfo(binfo.windows[1])[1]
+
+    return concat({
+      winfo.loclist == 1 and "[Location List] " or "[Quickfix List] ",
+      get_quickfix_or_location_list_title(winfo)
+    })
+  elseif binfo.name == "" then
+    return "[No Name]"
+  end
+
+  return fnamemodify(binfo.name, ":~:.")
+end -- }}}
+
 local function get_buffers() -- {{{
   local buffers = {}
 
@@ -36,8 +60,7 @@ local function get_buffers() -- {{{
     table.insert(
       buffers,
       ("%s[%d]%s	%s	%s"):format(
-        BLUE, bufnr, CLEAR, binfo.flags,
-        binfo.name == "" and "[No Name]" or fnamemodify(binfo.name, ":~:.")
+        BLUE, bufnr, CLEAR, binfo.flags, get_buffer_name(binfo)
       )
     )
   end
