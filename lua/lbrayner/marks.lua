@@ -4,23 +4,29 @@ local M = {}
 
  -- {{{ Helper functions
 
+local file_mark_info_by_bufnr = {}
+local file_mark_info_by_file = {}
+local file_mark_info_by_mark = {}
+
 local function get_file()
   return vim.fn.fnamemodify(
     vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()), ":p:~"
   )
 end
 
-local function get_file_mark_info_by_mark_bufnr()
+local function get_file_mark_info_by_bufnr_file_mark()
   local file_mark_info_list = M.get_file_mark_info_list()
 
-  local file_mark_info_by_mark = {}
   local file_mark_info_by_bufnr = {}
+  local file_mark_info_by_mark = {}
+  local file_mark_info_by_file = {}
   for _, file_mark_info in ipairs(file_mark_info_list) do
-    file_mark_info_by_mark[file_mark_info.mark] = file_mark_info
     file_mark_info_by_bufnr[file_mark_info.pos[1]] = file_mark_info
+    file_mark_info_by_mark[file_mark_info.mark] = file_mark_info
+    file_mark_info_by_file[file_mark_info.file] = file_mark_info
   end
 
-  return file_mark_info_by_mark, file_mark_info_by_bufnr
+  return file_mark_info_by_bufnr, file_mark_info_by_file, file_mark_info_by_mark
 end
 
 local function get_file_mark_navigator(opts)
@@ -154,9 +160,6 @@ end
 
 -- }}}
 
-local file_mark_info_by_bufnr = {}
-local file_mark_info_by_mark = {}
-
 function M.file_mark_jump_to_location(mark)
   assert(type(mark) == "string", "Bad argument; 'mark' must be a string.")
   assert(mark:match("^%u$"), "Bad argument; 'mark' must be a file mark.")
@@ -174,7 +177,9 @@ end
 function M.get_file_mark_info_list()
   return vim.tbl_filter(function(mark)
     mark.mark = (mark.mark):sub(2)
-    return is_file_mark(mark.mark)
+    if not is_file_mark(mark.mark) then return false end
+    mark.file = vim.fs.normalize(mark.file)
+    return true
   end, vim.fn.getmarklist())
 end
 
@@ -244,11 +249,14 @@ vim.keymap.set("n", "m", function()
 
       if file_mark_info then
         file_mark_info_by_bufnr[file_mark_info.pos[1]] = nil
+        file_mark_info_by_file[file_mark_info.file] = nil
       end
 
       local bufnr = vim.api.nvim_get_current_buf()
+      local file = vim.api.nvim_buf_get_name(bufnr)
       file_mark_info_by_mark[input] = { mark = input, pos = { bufnr } }
       file_mark_info_by_bufnr[bufnr] = file_mark_info_by_mark[input]
+      file_mark_info_by_file[file] = file_mark_info_by_mark[input]
 
       vim.api.nvim_exec_autocmds("User", { pattern = "FileMarkSet" })
     end
@@ -277,25 +285,18 @@ vim.keymap.set("n", "[4", function()
 end)
 
 local function load_file_marks() -- {{{
-  file_mark_info_by_mark, file_mark_info_by_bufnr = get_file_mark_info_by_mark_bufnr()
-  M.file_mark_info_by_bufnr = setmetatable(
-    {},
-    {
-      __index = file_mark_info_by_bufnr,
-      __newindex = function()
-        error("Cannot add item")
-      end,
-    }
-  )
-  M.file_mark_info_by_mark = setmetatable(
-    {},
-    {
-      __index = file_mark_info_by_mark,
-      __newindex = function()
-        error("Cannot add item")
-      end,
-    }
-  )
+  file_mark_info_by_bufnr,
+  file_mark_info_by_file,
+  file_mark_info_by_mark = get_file_mark_info_by_bufnr_file_mark()
+  M.file_mark_info_by_bufnr = require(
+    "lbrayner"
+  ).get_proxy_table(file_mark_info_by_bufnr)
+  M.file_mark_info_by_mark = require(
+    "lbrayner"
+  ).get_proxy_table(file_mark_info_by_mark)
+  M.file_mark_info_by_file = require(
+    "lbrayner"
+  ).get_proxy_table(file_mark_info_by_file)
 end -- }}}
 
 local function swap_marks(fmark1, fmark2) -- {{{
@@ -380,7 +381,24 @@ end, { bar = true, nargs = 1 })
 
 vim.keymap.set("ca", "delmarks", "Delmarks")
 
+-- Autocmds
+
 local marks = vim.api.nvim_create_augroup("marks", { clear = true })
+
+vim.api.nvim_create_autocmd("BufAdd", {
+  group = marks,
+  desc = "Update marks' state after buffer is added",
+  callback = function(args)
+    local file_mark_info = file_mark_info_by_file[args.file]
+
+    if file_mark_info then
+      local bufnr = args.buf
+
+      file_mark_info.pos[1] = bufnr
+      file_mark_info_by_bufnr[bufnr] = file_mark_info
+    end
+  end,
+})
 
 vim.api.nvim_create_autocmd("VimEnter", {
   group = marks,
