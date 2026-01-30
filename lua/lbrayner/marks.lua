@@ -96,16 +96,11 @@ local function file_mark_info_jump_to_location(file_mark_info)
     (function()
       local file = file_mark_info.file
 
-      if vim.startswith(file, "term://") then
-        bufnr = vim.fn.bufadd(file)
-        -- print("bufnr", bufnr)--TODO debug
-        return
-      end
-
       -- Actual files (file://) are already normalized
       bufnr = vim.fn.bufadd(file)
 
-      if not vim.api.nvim_buf_is_loaded(bufnr) then
+      if not vim.api.nvim_buf_is_loaded(bufnr) and
+        not vim.startswith(file, "term://") then
         pos = { file_mark_info.pos[2], (file_mark_info.pos[3] - 1) }
       end
     end)()
@@ -256,7 +251,7 @@ vim.keymap.set("n", "m", function()
 
       local bufnr = vim.api.nvim_get_current_buf()
       local file = vim.api.nvim_buf_get_name(bufnr)
-      file_mark_info_by_mark[input] = { mark = input, pos = { bufnr } }
+      file_mark_info_by_mark[input] = { file = file, mark = input, pos = { bufnr } }
       file_mark_info_by_bufnr[bufnr] = file_mark_info_by_mark[input]
       file_mark_info_by_file[file] = file_mark_info_by_mark[input]
 
@@ -387,25 +382,43 @@ vim.keymap.set("ca", "delmarks", "Delmarks")
 
 local marks = vim.api.nvim_create_augroup("marks", { clear = true })
 
-vim.api.nvim_create_autocmd("BufAdd", {
-  group = marks,
-  desc = "Update marks' state after buffer is added",
-  callback = function(args)
-    local file_mark_info = file_mark_info_by_file[args.file]
-
-    if file_mark_info then
-      local bufnr = args.buf
-
-      file_mark_info.pos[1] = bufnr
-      file_mark_info_by_bufnr[bufnr] = file_mark_info
-    end
-  end,
-})
-
 vim.api.nvim_create_autocmd("VimEnter", {
   group = marks,
   desc = "Load file marks",
-  callback = load_file_marks,
+  callback = function()
+    load_file_marks()
+
+    vim.api.nvim_create_autocmd({ "BufFilePost", "BufNew" }, {
+      group = marks,
+      desc = "Update marks' state after buffer is created or renamed",
+      callback = function(args)
+        -- print("args", vim.inspect(args))--TODO debug
+        local bufnr = args.buf
+        local event = args.event
+
+        if event == "BufFilePost" then
+          local file_mark_info = file_mark_info_by_bufnr[bufnr]
+          -- print("file_mark_info", vim.inspect(file_mark_info)) -- TODO debug
+
+          if file_mark_info then
+            file_mark_info_by_file[file_mark_info.file] = nil
+            file_mark_info.file = args.file
+            file_mark_info_by_file[file_mark_info.file] = file_mark_info
+            -- print("file_mark_info_by_file", vim.inspect(file_mark_info_by_file)) -- TODO debug
+          end
+        elseif event == "BufNew" then
+          local file_mark_info = file_mark_info_by_file[args.file]
+
+          -- print("file_mark_info", vim.inspect(file_mark_info)) -- TODO debug
+          if file_mark_info and file_mark_info.pos[1] == 0 then
+            file_mark_info.pos[1] = bufnr
+            file_mark_info_by_bufnr[bufnr] = file_mark_info
+            -- print("file_mark_info_by_bufnr", vim.inspect(file_mark_info_by_bufnr)) -- TODO debug
+          end
+        end
+      end,
+    })
+  end,
 })
 
 if vim.v.vim_did_enter == 1 then
