@@ -93,17 +93,15 @@ local function file_mark_info_jump_to_location(file_mark_info)
 
   -- print("bufnr", bufnr, "file_mark_info", vim.inspect(file_mark_info))--TODO debug
   if bufnr == 0 then
-    (function()
-      local file = file_mark_info.file
+    local file = file_mark_info.file
 
-      -- Actual files (file://) are already normalized
-      bufnr = vim.fn.bufadd(file)
+    -- Actual files (file://) are already normalized
+    bufnr = vim.fn.bufadd(file)
 
-      if not vim.api.nvim_buf_is_loaded(bufnr) and
-        not vim.startswith(file, "term://") then
-        pos = { file_mark_info.pos[2], (file_mark_info.pos[3] - 1) }
-      end
-    end)()
+    if not vim.api.nvim_buf_is_loaded(bufnr) and
+      not vim.startswith(file, "term://") then
+      pos = { file_mark_info.pos[2], (file_mark_info.pos[3] - 1) }
+    end
   end
 
   require("lbrayner").jump_to_location(bufnr, pos)
@@ -211,7 +209,15 @@ vim.keymap.set("n", "'", function()
 
       if not file_mark_info then return end
 
-      file_mark_info_jump_to_location(file_mark_info)
+      if vim.api.nvim_buf_is_valid(file_mark_info.pos[1]) then
+        file_mark_info_jump_to_location(file_mark_info)
+      else
+        -- Invalid mark
+        file_mark_info_by_bufnr[file_mark_info.pos[1]] = nil
+        file_mark_info_by_mark[file_mark_info.mark] = nil
+        file_mark_info_by_file[file_mark_info.file] = nil
+      end
+
       return
     end
 
