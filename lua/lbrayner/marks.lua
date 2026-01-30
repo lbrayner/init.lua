@@ -9,9 +9,7 @@ local file_mark_info_by_file = {}
 local file_mark_info_by_mark = {}
 
 local function get_file()
-  return vim.fn.fnamemodify(
-    vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()), ":p:~"
-  )
+  return vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
 end
 
 local function get_file_mark_info_by_bufnr_file_mark()
@@ -93,6 +91,7 @@ local function file_mark_info_jump_to_location(file_mark_info)
 
   local bufnr, pos = file_mark_info.pos[1]
 
+  -- print("bufnr", bufnr, "file_mark_info", vim.inspect(file_mark_info))--TODO debug
   if bufnr == 0 then
     (function()
       local file = file_mark_info.file
@@ -103,8 +102,7 @@ local function file_mark_info_jump_to_location(file_mark_info)
         return
       end
 
-      -- Normalized path because tilde is not expanded in lua
-      file = vim.fs.normalize(file)
+      -- Actual files (file://) are already normalized
       bufnr = vim.fn.bufadd(file)
 
       if not vim.api.nvim_buf_is_loaded(bufnr) then
@@ -178,7 +176,11 @@ function M.get_file_mark_info_list()
   return vim.tbl_filter(function(mark)
     mark.mark = (mark.mark):sub(2)
     if not is_file_mark(mark.mark) then return false end
-    mark.file = vim.fs.normalize(mark.file)
+
+    if not require("lbrayner").is_uri(mark.file) then
+      mark.file = vim.fs.normalize(mark.file)
+    end
+
     return true
   end, vim.fn.getmarklist())
 end
@@ -310,8 +312,8 @@ local function swap_marks(fmark1, fmark2) -- {{{
     return
   end
 
-  local cur = vim.fn.bufadd(vim.fs.normalize(fmark1.file))
-  local pre = vim.fn.bufadd(vim.fs.normalize(fmark2.file))
+  local cur = vim.fn.bufadd(fmark1.file)
+  local pre = vim.fn.bufadd(fmark2.file)
 
   local restore = function()
     vim.api.nvim_buf_set_mark(

@@ -162,6 +162,13 @@ function M.is_quickfix_list(winid)
   return vim.fn.getwininfo(winid)[1]["quickfix"] == 1 and vim.fn.getwininfo(winid)[1]["loclist"] == 0
 end
 
+-- From $VIMRUNTIME's lua/vim/uri.lua
+local URI_SCHEME_PATTERN = '^([a-zA-Z]+[a-zA-Z0-9.+-]*):.*'
+
+function M.is_uri(uri)
+  return uri:match(URI_SCHEME_PATTERN)
+end
+
 function M.join(col)
   assert(type(col) == "table", "Bad argument; 'col' must be a table.")
   return table.concat(col, " ")
