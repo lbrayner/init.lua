@@ -57,7 +57,12 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
 
   local fugitive_type = vim.b[binfo.bufnr].fugitive_type
 
-  if binfo.name == "" then
+  if winfo.loclist == 1 or winfo.quickfix == 1 then
+    return concat({
+      winfo.loclist == 1 and "[Location List] " or "[Quickfix List] ",
+      get_quickfix_or_location_list_title(winfo)
+    })
+  elseif binfo.name == "" then
     return "[No Name]"
   elseif fugitive_type == "blob" then -- Fugitive object
     return concat({ "[Fugitive] ", get_fugitive_object(binfo.bufnr) })
@@ -82,11 +87,6 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
     end
 
     return name
-  elseif winfo.loclist == 1 or winfo.quickfix == 1 then
-    return concat({
-      winfo.loclist == 1 and "[Location List] " or "[Quickfix List] ",
-      get_quickfix_or_location_list_title(winfo)
-    })
   end
 
   return strip_cwd(tinfo.cwd, binfo.name)
@@ -198,15 +198,13 @@ return function (opts)
   local fzf_cli_args = concat({
     "--ansi --multi --sync --prompt='Tabs> '",
     concat({ "--history=", shellescape(history_file) }),
-    concat(
-      {
-        "--bind=",
-        shellescape(string.format(
-          "start:%s,%s:transform(%s),%s:reload(%s)", pos, RELOAD, reload_action,
-          CLOSE_WINDOW, close_window_action
-        ))
-      }
-    ),
+    concat({
+      "--bind=",
+      shellescape(string.format(
+        "start:%s,%s:transform(%s),%s:reload(%s)", pos, RELOAD, reload_action,
+        CLOSE_WINDOW, close_window_action
+      ))
+    }),
     concat({ "--delimiter=", shellescape(TAB) }),
     "--with-nth=5..",
     concat({ "--preview=", shellescape(
