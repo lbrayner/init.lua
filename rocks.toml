@@ -13,7 +13,6 @@
 [plugins]
 "colorbuddy.nvim" = "scm"
 "lir.nvim" = "scm"
-"lz.n" = "2.12.2"
 "mini.nvim" = "scm"
 "rocks-git.nvim" = "2.5.6"
 "rocks.nvim" = "2.46.1"
@@ -21,12 +20,6 @@
 nvim-dap = "scm"
 nvim-lspconfig = "2.5.0"
 nvim-spider = "scm"
-
-[plugins.fzf-lua]
-git = "lbrayner/fzf-lua"
-branch = "lbrayner/stable"
-rev = "71fe5c16a2fc2897fc41d916b30b96d8a3a9811a"
-ignore_tags = true
 
 [plugins."neosolarized.nvim"]
 git = "svrana/neosolarized.nvim"
@@ -38,6 +31,12 @@ ignore_tags = true
 git = "igorlfs/nvim-dap-view"
 rev = "4b0adae3dd2b1eb17b5ab69d69327bbb93d33939"
 branch = "main"
+ignore_tags = true
+
+[plugins.nvim-fzf]
+git = "lbrayner/nvim-fzf"
+rev = "7b2bc051b31dbddd8ce97a55666952f5322099a4"
+branch = "lbrayner"
 ignore_tags = true
 
 [plugins.nvim-highlight-colors]

@@ -23,7 +23,7 @@ function M.typescript_tools()
   })
 end
 
-if not pcall(require, "lz.n") then
+if not pcall(require, "lspconfig") then
   -- rocks.nvim wasn't synced at least once
   return M
 end
@@ -31,8 +31,8 @@ end
 require("dap-view").setup({ winbar = { default_section = "scopes" } })
 require("fidget").setup() -- fidget.nvim (installed as a dependency of rocks.nvim)
 require("lbrayner.lir").setup() -- lir.nvim
+require("lbrayner.nvim-fzf").setup()
 require("lbrayner.setup.dap") -- nvim-dap
-require("lbrayner.setup.lz") -- lz.n
 require("lbrayner.setup.mini") -- mini.nvim
 require("lbrayner.setup.neosolarized") -- neosolarized.nvim
 require("lbrayner.setup.tint") -- tint.nvim

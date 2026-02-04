@@ -502,7 +502,7 @@ vim.api.nvim_create_autocmd("FileType", {
       -- Find first window in current tab visiting this buffer
       local winid = vim.fn.win_findbuf(bufnr)[1]
 
-      -- Specifically trying to exclude fzf-lua buffers
+      -- Specifically trying to exclude fzf buffers
       if vim.bo[bufnr].filetype == "terminal" and winid == vim.api.nvim_get_current_win() then
         vim.wo.relativenumber = true
       end
