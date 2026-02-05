@@ -129,9 +129,9 @@ local function get_tabs() -- {{{
 
       table.insert(
         tabs,
-        ("%d	%d	%d	%s		»%d	%d	%s[%d]%s	%s	%s"):format(
+        ("%d	%d	%d	%s		%s	%d	%s[%d]%s	%s	%s"):format(
           tabh, w, tabnr, base64_encode(fnamemodify(tcwd, ":~")),
-          tabnr, w, BLUE, bufnr, CLEAR,
+          p == i and "→" or "", w, BLUE, bufnr, CLEAR,
           binfo.flags, get_window_name(tinfo, winfo, binfo)
         )
       )
