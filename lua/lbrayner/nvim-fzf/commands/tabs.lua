@@ -3,6 +3,7 @@
 local FugitiveGitDir = vim.fn.FugitiveGitDir
 local FugitiveResult = vim.fn.FugitiveResult
 local ansi = require("lbrayner.nvim-fzf.utils").ansi
+local base64_encode = vim.base64.encode
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local get_buffer_info = require("lbrayner.nvim-fzf.utils").get_buffer_info
@@ -91,16 +92,31 @@ local function get_window_name(cwd, winfo, binfo) -- {{{
   return strip_cwd(cwd, binfo.name)
 end -- }}}
 
+local function get_window_statement(cinfo, tinfo, winfo, binfo) -- {{{
+  local statement = concat({ "Tab page ", tinfo.tabnr })
+
+  if cinfo.tabh == tinfo.tabh then
+    return concat({ BOLD_YELLOW, statement, CLEAR })
+  end
+
+  statement = concat({ statement, " War of attrition"})
+
+  return statement
+end -- }}}
+
 local function get_tabs() -- {{{
   local i, p = 0, 0
   local tabs = {}
   local curtabh = vim.api.nvim_get_current_tabpage()
   local curwin = vim.api.nvim_get_current_win()
   local cwd = getcwd(-1, vim.fn.tabpagenr())
+  local cinfo = { cwd = cwd, tabh = curtabh }
 
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
     local wins = vim.api.nvim_tabpage_list_wins(tabh)
     local tab_color = tabh == curtabh and BOLD_YELLOW or WHITE
+    local tcwd = getcwd(-1, tabnr)
+    local tinfo = { cwd = tcwd, tabh = tabh, tabnr = tabnr }
 
     for _, w in ipairs(wins) do
       i = i + 1
@@ -110,11 +126,14 @@ local function get_tabs() -- {{{
       local winfo = getwininfo(w)[1]
       local bufnr = nvim_win_get_buf(w)
       local binfo = get_buffer_info(bufnr)
+      -- local statement = base64_encode(get_window_statement(cwd, tinfo, winfo, binfo))
+      -- local statement = get_window_statement(cwd, tinfo, winfo, binfo)
+      -- statement = base64_encode(statement ~= "" and concat({ ": ", statement }) or statement)
 
       table.insert(
         tabs,
-        ("%d	%d	%d	%s#%d%s	%s	%d	%s[%d]%s	%s	%s"):format(
-          tabh, w, tabnr,
+        ("%d	%d	%s	%s#%d%s	%s	%d	%s[%d]%s	%s	%s"):format(
+          tabh, w, base64_encode(get_window_statement(cinfo, tinfo, winfo, binfo)),
           tab_color, tabnr, CLEAR, p == i and "→" or "", w, BLUE, bufnr, CLEAR,
           binfo.flags, get_window_name(cwd, winfo, binfo)
         )
@@ -182,6 +201,8 @@ return function (opts)
     }),
     concat({ "--delimiter=", shellescape(TAB) }),
     "--with-nth=4..",
+    concat({ "--preview=", shellescape([[echo {3} | base64 -d -]]) }),
+    "--preview-window=nohidden:up,1" ,
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
