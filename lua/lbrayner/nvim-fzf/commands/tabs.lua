@@ -77,7 +77,7 @@ local function get_window_name(cwd, winfo, binfo) -- {{{
   elseif fugitive_type == "temp" then -- Fugitive temporary buffers
     local fugitive_result = FugitiveResult(binfo.bufnr)
     local name = concat({
-      "[Fugitive]", "Git", concat(fugitive_result.args, " "), fugitive_result.blame_file
+      "Git", concat(fugitive_result.args, " "), fugitive_result.blame_file
     }, " ")
     local git_dir = fugitive_result.cwd
 
@@ -85,7 +85,7 @@ local function get_window_name(cwd, winfo, binfo) -- {{{
       name = concat({ pathshorten(fnamemodify(git_dir, ":~")), "$ ", name })
     end
 
-    return name
+    return concat({ "[Fugitive] ", name })
   end
 
   return strip_cwd(cwd, binfo.name)
