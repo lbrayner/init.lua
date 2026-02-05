@@ -3,7 +3,6 @@
 local FugitiveGitDir = vim.fn.FugitiveGitDir
 local FugitiveResult = vim.fn.FugitiveResult
 local ansi = require("lbrayner.nvim-fzf.utils").ansi
-local base64_encode = vim.base64.encode
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local get_buffer_info = require("lbrayner.nvim-fzf.utils").get_buffer_info
@@ -40,11 +39,11 @@ end
 local reload_action = require("fzf.actions").raw_action(get_pos) -- }}}
 
 local function get_entry_values(entry) -- {{{
-  local tabh, winid, tabn = entry:match(concat({ "^(%d+)", TAB, "(%d+)", TAB, "(%d+)" }))
-  return tonumber(tabh), tonumber(winid), tonumber(tabn)
+  local tabh, winid = entry:match(concat({ "^(%d+)", TAB, "(%d+)" }))
+  return tonumber(tabh), tonumber(winid)
 end -- }}}
 
-local function get_window_name(tinfo, winfo, binfo) -- {{{
+local function get_window_name(cwd, winfo, binfo) -- {{{
   local function strip_cwd(cwd, name)
     local rel = relpath(cwd, name)
 
@@ -70,7 +69,7 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
     local name = "[Fugitive] Summary"
     local git_dir = FugitiveGitDir(binfo.bufnr):sub(1, -6)
 
-    if git_dir ~= tinfo.cwd then
+    if git_dir ~= cwd then
       name = concat({ name, ": ", fnamemodify(git_dir, ":~") })
     end
 
@@ -82,14 +81,14 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
     }, " ")
     local git_dir = fugitive_result.cwd
 
-    if git_dir ~= tinfo.cwd then
+    if git_dir ~= cwd then
       name = concat({ pathshorten(fnamemodify(git_dir, ":~")), "$ ", name })
     end
 
     return name
   end
 
-  return strip_cwd(tinfo.cwd, binfo.name)
+  return strip_cwd(cwd, binfo.name)
 end -- }}}
 
 local function get_tabs() -- {{{
@@ -100,39 +99,24 @@ local function get_tabs() -- {{{
   local cwd = getcwd(-1, vim.fn.tabpagenr())
 
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
-    i = i + 1
     local wins = vim.api.nvim_tabpage_list_wins(tabh)
-    local title_color = tabh == curtabh and BOLD_YELLOW or WHITE
-
-    local entry = concat({
-      tabh, TAB, #wins, TAB, tabnr, TAB, "", TAB,
-      title_color, "Tab page ", tabnr
-    })
-
-    local tcwd = getcwd(-1, tabnr)
-    entry = cwd ~= tcwd and concat({
-      entry, ":", TAB,
-      BOLD_CYAN, fnamemodify(tcwd, ":~"), CLEAR
-    }) or concat({ entry, CLEAR })
-
-    table.insert(tabs, entry)
+    local tab_color = tabh == curtabh and BOLD_YELLOW or WHITE
 
     for _, w in ipairs(wins) do
       i = i + 1
 
       if p == 0 and tabh == curtabh and w == curwin then p = i end
 
-      local tinfo = { cwd = tcwd }
       local winfo = getwininfo(w)[1]
       local bufnr = nvim_win_get_buf(w)
       local binfo = get_buffer_info(bufnr)
 
       table.insert(
         tabs,
-        ("%d	%d	%d	%s		%s	%d	%s[%d]%s	%s	%s"):format(
-          tabh, w, tabnr, base64_encode(fnamemodify(tcwd, ":~")),
-          p == i and "→" or "", w, BLUE, bufnr, CLEAR,
-          binfo.flags, get_window_name(tinfo, winfo, binfo)
+        ("%d	%d	%d	%s#%d%s	%s	%d	%s[%d]%s	%s	%s"):format(
+          tabh, w, tabnr,
+          tab_color, tabnr, CLEAR, p == i and "→" or "", w, BLUE, bufnr, CLEAR,
+          binfo.flags, get_window_name(cwd, winfo, binfo)
         )
       )
     end
@@ -147,16 +131,9 @@ local function close_window(selected) -- {{{
     local count = 0
 
     vim.iter(selected):each(function(s)
-      local tabh, winid, tabn = get_entry_values(s)
-
-      if winid >= 1000 then
-        local success, _ = pcall(nvim_win_close, winid, false)
-        if success then count = count + 1 end
-      else
-        local wins = winid
-        local success, _ = pcall(tabclose, tabn)
-        if success then count = count + wins end
-      end
+      local _, winid = get_entry_values(s)
+      local success, _ = pcall(nvim_win_close, winid, false)
+      if success then count = count + 1 end
     end)
 
     vim.notify(concat({ "[FZF tabs] Closed ", count, " window(s)" }))
@@ -186,9 +163,7 @@ local function jump(selected) -- {{{
   local tabh, winid = get_entry_values(selected[1])
 
   vim.api.nvim_set_current_tabpage(tabh)
-  if winid >= 1000 then
-    vim.api.nvim_set_current_win(winid)
-  end
+  vim.api.nvim_set_current_win(winid)
 end -- }}}
 
 return function (opts)
@@ -206,12 +181,7 @@ return function (opts)
       ))
     }),
     concat({ "--delimiter=", shellescape(TAB) }),
-    "--with-nth=5..",
-    concat({ "--preview=", shellescape(
-      [[echo "Tab page "{3}"$(test {2} -ge 1000 && \
-      { echo -n :\ && echo {4} | base64 -d - ; } || echo \ has {2} window\(s\) )"]]
-    ) }),
-    "--preview-window=nohidden:up,1" ,
+    "--with-nth=4..",
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
