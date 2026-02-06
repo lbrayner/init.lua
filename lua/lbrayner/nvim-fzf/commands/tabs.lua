@@ -22,9 +22,9 @@ local tabclose = vim.cmd.tabclose
 
 local BLUE = ansi.color_to_ansi("blue")
 -- local BOLD_CYAN = ansi.color_to_ansi("cyan", "bold")
--- local BOLD_WHITE = ansi.color_to_ansi("white", "bold")
+local BOLD_WHITE = ansi.color_to_ansi("white", "bold")
 local CLEAR = ansi.clear
-local GREEN = ansi.color_to_ansi("green")
+-- local GREEN = ansi.color_to_ansi("green")
 -- local ITALIC_WHITE = ansi.color_to_ansi("white", "italic")
 -- local MAGENTA = ansi.color_to_ansi("magenta")
 -- local YELLOW = ansi.color_to_ansi("yellow")
@@ -106,7 +106,7 @@ local function get_window_statement(cinfo, tinfo, winfo, binfo) -- {{{
   local dir = fnamemodify(tinfo.cwd, ":~")
 
   if cinfo.cwd ~= tinfo.cwd then
-    dir = concat({ GREEN, dir, CLEAR })
+    dir = concat({ BOLD_WHITE, dir, CLEAR })
   end
 
   statement = concat({ statement, ": ", dir })
@@ -125,7 +125,7 @@ local function get_tabs() -- {{{
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
     local wins = vim.api.nvim_tabpage_list_wins(tabh)
     local tcwd = getcwd(-1, tabnr)
-    local tab_color = cwd ~= tcwd and GREEN or ""
+    local tab_color = cwd ~= tcwd and BOLD_WHITE or ""
     local tinfo = { cwd = tcwd, tabh = tabh, tabnr = tabnr }
 
     for _, w in ipairs(wins) do
