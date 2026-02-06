@@ -21,10 +21,14 @@ local shellescape = vim.fn.shellescape
 local tabclose = vim.cmd.tabclose
 
 local BLUE = ansi.color_to_ansi("blue")
-local BOLD_CYAN = ansi.color_to_ansi("cyan", "bold")
-local BOLD_YELLOW = ansi.color_to_ansi("yellow", "bold")
+-- local BOLD_CYAN = ansi.color_to_ansi("cyan", "bold")
+-- local BOLD_WHITE = ansi.color_to_ansi("white", "bold")
 local CLEAR = ansi.clear
-local WHITE = ansi.color_to_ansi("white")
+local GREEN = ansi.color_to_ansi("green")
+-- local ITALIC_WHITE = ansi.color_to_ansi("white", "italic")
+-- local MAGENTA = ansi.color_to_ansi("magenta")
+-- local YELLOW = ansi.color_to_ansi("yellow")
+local RED = ansi.color_to_ansi("red")
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
 local state = {}
 
@@ -70,7 +74,7 @@ local function get_window_name(cwd, winfo, binfo) -- {{{
     local name = "[Fugitive] Summary"
     local git_dir = FugitiveGitDir(binfo.bufnr):sub(1, -6)
 
-    if git_dir ~= cwd then
+    if cwd ~= git_dir then
       name = concat({ name, ": ", fnamemodify(git_dir, ":~") })
     end
 
@@ -82,7 +86,7 @@ local function get_window_name(cwd, winfo, binfo) -- {{{
     }, " ")
     local git_dir = fugitive_result.cwd
 
-    if git_dir ~= cwd then
+    if cwd ~= git_dir then
       name = concat({ pathshorten(fnamemodify(git_dir, ":~")), "$ ", name })
     end
 
@@ -95,11 +99,17 @@ end -- }}}
 local function get_window_statement(cinfo, tinfo, winfo, binfo) -- {{{
   local statement = concat({ "Tab page ", tinfo.tabnr })
 
-  if cinfo.tabh == tinfo.tabh then
-    return concat({ BOLD_YELLOW, statement, CLEAR })
+  -- if cinfo.tabh == tinfo.tabh then
+  --   statement = concat({ RED, statement, CLEAR })
+  -- end
+
+  local dir = fnamemodify(tinfo.cwd, ":~")
+
+  if cinfo.cwd ~= tinfo.cwd then
+    dir = concat({ GREEN, dir, CLEAR })
   end
 
-  statement = concat({ statement, " War of attrition"})
+  statement = concat({ statement, ": ", dir })
 
   return statement
 end -- }}}
@@ -114,14 +124,14 @@ local function get_tabs() -- {{{
 
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
     local wins = vim.api.nvim_tabpage_list_wins(tabh)
-    local tab_color = tabh == curtabh and BOLD_YELLOW or WHITE
     local tcwd = getcwd(-1, tabnr)
+    local tab_color = cwd ~= tcwd and GREEN or ""
     local tinfo = { cwd = tcwd, tabh = tabh, tabnr = tabnr }
 
     for _, w in ipairs(wins) do
       i = i + 1
 
-      if p == 0 and tabh == curtabh and w == curwin then p = i end
+      if p == 0 and curtabh == tabh and curwin == w then p = i end
 
       local winfo = getwininfo(w)[1]
       local bufnr = nvim_win_get_buf(w)
@@ -132,9 +142,10 @@ local function get_tabs() -- {{{
 
       table.insert(
         tabs,
-        ("%d	%d	%s	%s#%d%s	%s	%d	%s[%d]%s	%s	%s"):format(
+        ("%d	%d	%s	%s%s%d%s	%s	%d	%s[%d]%s	%s	%s"):format(
           tabh, w, base64_encode(get_window_statement(cinfo, tinfo, winfo, binfo)),
-          tab_color, tabnr, CLEAR, p == i and "→" or "", w, BLUE, bufnr, CLEAR,
+          curtabh == tabh and "⌂" or " ", tab_color, tabnr, CLEAR,
+          p == i and "→" or "", w, BLUE, bufnr, CLEAR,
           binfo.flags, get_window_name(cwd, winfo, binfo)
         )
       )
