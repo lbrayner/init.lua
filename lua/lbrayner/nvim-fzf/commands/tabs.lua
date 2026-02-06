@@ -13,6 +13,7 @@ local get_quickfix_or_location_list_title = require(
 ).get_quickfix_or_location_list_title
 local getcwd = vim.fn.getcwd
 local getwininfo = vim.fn.getwininfo
+local is_uri = require("lbrayner").is_uri
 local nvim_win_close = vim.api.nvim_win_close
 local nvim_win_get_buf = vim.api.nvim_win_get_buf
 local pathshorten = vim.fn.pathshorten
@@ -49,7 +50,7 @@ local function get_entry_values(entry) -- {{{
   return tonumber(tabh), tonumber(winid)
 end -- }}}
 
-local function get_window_name(cwd, winfo, binfo) -- {{{
+local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
   local function strip_cwd(cwd, name)
     local rel = relpath(cwd, name)
 
@@ -75,7 +76,7 @@ local function get_window_name(cwd, winfo, binfo) -- {{{
     local name = "[Fugitive] Summary"
     local git_dir = FugitiveGitDir(binfo.bufnr):sub(1, -6)
 
-    if cwd ~= git_dir then
+    if cinfo.cwd ~= git_dir then
       name = concat({ name, ": ", fnamemodify(git_dir, ":~") })
     end
 
@@ -87,14 +88,24 @@ local function get_window_name(cwd, winfo, binfo) -- {{{
     }, " ")
     local git_dir = fugitive_result.cwd
 
-    if cwd ~= git_dir then
+    if cinfo.cwd ~= git_dir then
       name = concat({ pathshorten(fnamemodify(git_dir, ":~")), "$ ", name })
     end
 
     return concat({ "[Fugitive] ", name })
   end
 
-  return strip_cwd(cwd, binfo.name)
+  local name = strip_cwd(cinfo.cwd, binfo.name)
+
+  if not is_uri(binfo.name) then
+    local rel = relpath(tinfo.cwd, binfo.name)
+
+    if not rel then
+      name = concat({ RED, name, CLEAR })
+    end
+  end
+
+  return name
 end -- }}}
 
 local function get_window_statement(cinfo, tinfo, winfo, binfo) -- {{{
@@ -147,7 +158,7 @@ local function get_tabs() -- {{{
           tabh, w, base64_encode(get_window_statement(cinfo, tinfo, winfo, binfo)),
           curtabh == tabh and "→" or " ", tab_color, tabnr, CLEAR,
           p == i and "★" or "", w, BLUE, bufnr, CLEAR,
-          binfo.flags, get_window_name(cwd, winfo, binfo)
+          binfo.flags, get_window_name(cinfo, tinfo, winfo, binfo)
         )
       )
     end
