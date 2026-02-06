@@ -22,11 +22,12 @@ local tabclose = vim.cmd.tabclose
 
 local BLUE = ansi.color_to_ansi("blue")
 -- local BOLD_CYAN = ansi.color_to_ansi("cyan", "bold")
-local BOLD_WHITE = ansi.color_to_ansi("white", "bold")
+-- local BOLD_WHITE = ansi.color_to_ansi("white", "bold")
 local CLEAR = ansi.clear
+-- local CYAN = ansi.color_to_ansi("cyan")
 -- local GREEN = ansi.color_to_ansi("green")
 -- local ITALIC_WHITE = ansi.color_to_ansi("white", "italic")
--- local MAGENTA = ansi.color_to_ansi("magenta")
+local MAGENTA = ansi.color_to_ansi("magenta")
 -- local YELLOW = ansi.color_to_ansi("yellow")
 local RED = ansi.color_to_ansi("red")
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
@@ -106,10 +107,10 @@ local function get_window_statement(cinfo, tinfo, winfo, binfo) -- {{{
   local dir = fnamemodify(tinfo.cwd, ":~")
 
   if cinfo.cwd ~= tinfo.cwd then
-    dir = concat({ BOLD_WHITE, dir, CLEAR })
+    dir = concat({ MAGENTA, dir, CLEAR })
   end
 
-  statement = concat({ statement, ": ", dir })
+  statement = concat({ statement, TAB, dir })
 
   return statement
 end -- }}}
@@ -125,7 +126,7 @@ local function get_tabs() -- {{{
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
     local wins = vim.api.nvim_tabpage_list_wins(tabh)
     local tcwd = getcwd(-1, tabnr)
-    local tab_color = cwd ~= tcwd and BOLD_WHITE or ""
+    local tab_color = cwd ~= tcwd and MAGENTA or ""
     local tinfo = { cwd = tcwd, tabh = tabh, tabnr = tabnr }
 
     for _, w in ipairs(wins) do
@@ -142,10 +143,10 @@ local function get_tabs() -- {{{
 
       table.insert(
         tabs,
-        ("%d	%d	%s	%s%s%d%s	%s	%d	%s[%d]%s	%s	%s"):format(
+        ("%d	%d	%s	%s%s%4d%s	%s	%d	%s[%d]%s	%s	%s"):format(
           tabh, w, base64_encode(get_window_statement(cinfo, tinfo, winfo, binfo)),
-          curtabh == tabh and "⌂" or " ", tab_color, tabnr, CLEAR,
-          p == i and "→" or "", w, BLUE, bufnr, CLEAR,
+          curtabh == tabh and "→" or " ", tab_color, tabnr, CLEAR,
+          p == i and "★" or "", w, BLUE, bufnr, CLEAR,
           binfo.flags, get_window_name(cwd, winfo, binfo)
         )
       )
