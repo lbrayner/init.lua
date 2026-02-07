@@ -20,6 +20,7 @@ local pathshorten = vim.fn.pathshorten
 local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
 local tabclose = vim.cmd.tabclose
+local tbl_count = vim.tbl_count
 local tbl_isempty = vim.tbl_isempty
 
 local BLUE = ansi.color_to_ansi("blue")
@@ -35,29 +36,29 @@ local RED = ansi.color_to_ansi("red")
 
 local PATH_SEPARATOR = package.config:sub(1,1)
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
-local state = {}
+local state
 
-local CLOSE_WINDOW = "ctrl-x"
-local RELOAD       = "ctrl-r"
+local CHANGE_CONTEXT = "alt-c"
+local CLOSE_WINDOW   = "ctrl-x"
+local RELOAD         = "ctrl-r"
 local TAB = ( -- {{{
   "	") -- }}}
 
-local function get_pos() -- {{{
-  return ("pos(%d)"):format(state.pos)
-end
-
-local reload_action = require("fzf.actions").raw_action(function(args)
-  if not tbl_isempty(args) and args[1] ~= "" then
-    return "ignore"
-  end
-
-  return get_pos()
-end, "${FZF_QUERY}") -- }}}
+local function get_pos(pos) -- {{{
+  return ("pos(%d)"):format(pos)
+end -- }}}
 
 local function get_entry_values(entry) -- {{{
   local tabh, winid = entry:match(concat({ "^(%d+)", TAB, "(%d+)" }))
   return tonumber(tabh), tonumber(winid)
 end -- }}}
+
+local reload_action = require("fzf.actions").raw_action(function(args) -- {{{
+  print("args", vim.inspect(args), vim.inspect(get_pos(state.pos)), vim.inspect(state.pos))--TODO debug
+  if not tbl_isempty(args) and args[1] ~= "" then return "ignore" end
+
+  return get_pos(state.pos)
+end, "${FZF_QUERY}") -- }}}
 
 local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
   local function tilde(name)
@@ -163,8 +164,8 @@ local function get_tabs() -- {{{
 
       table.insert(
         tabs,
-        ("%d	%d	%s	%s%s%4d%s	%s	%d	%s%6s%s	%s	%s"):format(
-          tabh, w, base64_encode(get_window_statement(cinfo, tinfo, winfo, binfo)),
+        ("%d	%d	%d	%s	%s%s%4d%s	%s	%d	%s%6s%s	%s	%s"):format(
+          tabh, w, i, base64_encode(get_window_statement(cinfo, tinfo, winfo, binfo)),
           tinfo.flags, YELLOW, tabnr, CLEAR, p == i and "★" or "", w,
           BLUE, concat({ "[", bufnr, "]" }), CLEAR,
           binfo.flags, get_window_name(cinfo, tinfo, winfo, binfo)
@@ -175,7 +176,38 @@ local function get_tabs() -- {{{
 
   state.pos = p
   return tabs
-end -- }}}
+end
+
+-- local get_tabs_action = require("fzf.actions").raw_action(get_tabs) -- }}}
+
+local result_action = require("fzf.actions").raw_action(function() -- {{{
+  -- print("state", vim.inspect(state))--TODO debug
+  if not state.cpos then return "ignore" end
+  local action = get_pos(state.cpos)
+  state.cpos = nil
+  return action
+end) -- }}}
+
+local change_context_action = require("fzf.actions").raw_action(function(args) -- {{{
+  -- print("args", vim.inspect(args), vim.inspect(get_pos(state.pos)), vim.inspect(state.pos))--TODO debug
+  -- if not tbl_isempty(args) and args[1] ~= "" then
+  --   return "ignore"
+  -- end
+  if tbl_count(args) == 1 then return "ignore" end
+  -- local fzf_pos = tonumber(args[1])
+  -- if fzf_pos == state.pos then return "ignore" end
+  -- if tbl_isempty(args) or args[1] == "" then return "ignore" end
+  -- local command = concat({ "clear-query+", get_pos() })
+  -- print("command", vim.inspect(command))--TODO debug
+
+  -- local _, _, pos = get_entry_values(args[1])
+  -- local pos = tonumber(args[1])
+  state.cpos = tonumber(args[1])
+  -- local command = ("clear-query+reload-sync(%s)+pos(%d)"):format(get_tabs_action, pos)
+  -- print("pos", vim.inspect(pos), "command", vim.inspect(command))--TODO debug
+
+  return "clear-query"
+end, "{3} ${FZF_QUERY} {}") -- }}}
 
 local function close_window(selected) -- {{{
   local function close(selected)
@@ -219,21 +251,27 @@ end -- }}}
 
 return function (opts)
   opts = opts or {}
+  state = {}
   local tabs = get_tabs()
-  local pos = get_pos()
+  local pos = get_pos(state.pos)
   local fzf_cli_args = concat({
     "--ansi --multi --sync --prompt='Tabs> '",
     concat({ "--history=", shellescape(history_file) }),
     concat({
       "--bind=",
-      shellescape(("start:%s,%s:transform(%s),%s:reload(%s)"):format(
-        pos, RELOAD, reload_action,
+      shellescape(concat({
+        "start:%s,result:transform(%s),",
+        "%s:transform(%s),%s:transform(%s),%s:reload(%s)"
+      }):format(
+        pos, result_action,
+        CHANGE_CONTEXT, change_context_action,
+        RELOAD, reload_action,
         CLOSE_WINDOW, close_window_action
       ))
     }),
     concat({ "--delimiter=", shellescape(TAB) }),
-    "--with-nth=4..",
-    concat({ "--preview=", shellescape([[echo {3} | base64 -d -]]) }),
+    "--with-nth=5..",
+    concat({ "--preview=", shellescape([[echo {4} | base64 -d -]]) }),
     "--preview-window=nohidden:up,1" ,
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
