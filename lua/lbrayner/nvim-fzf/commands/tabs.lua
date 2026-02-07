@@ -20,6 +20,7 @@ local pathshorten = vim.fn.pathshorten
 local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
 local tabclose = vim.cmd.tabclose
+local tbl_isempty = vim.tbl_isempty
 
 local BLUE = ansi.color_to_ansi("blue")
 -- local BOLD_CYAN = ansi.color_to_ansi("cyan", "bold")
@@ -45,7 +46,13 @@ local function get_pos() -- {{{
   return ("pos(%d)"):format(state.pos)
 end
 
-local reload_action = require("fzf.actions").raw_action(get_pos) -- }}}
+local reload_action = require("fzf.actions").raw_action(function(args)
+  if not tbl_isempty(args) and args[1] ~= "" then
+    return "ignore"
+  end
+
+  return get_pos()
+end, "${FZF_QUERY}") -- }}}
 
 local function get_entry_values(entry) -- {{{
   local tabh, winid = entry:match(concat({ "^(%d+)", TAB, "(%d+)" }))
