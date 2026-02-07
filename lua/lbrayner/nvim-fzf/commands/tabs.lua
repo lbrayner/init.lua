@@ -42,7 +42,7 @@ local TAB = ( -- {{{
   "	") -- }}}
 
 local function get_pos() -- {{{
-  return string.format("pos(%d)", state.pos)
+  return ("pos(%d)"):format(state.pos)
 end
 
 local reload_action = require("fzf.actions").raw_action(get_pos) -- }}}
@@ -109,7 +109,7 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
 end -- }}}
 
 local function get_window_statement(cinfo, tinfo, winfo, binfo) -- {{{
-  local statement = concat({ tinfo.flags, " Tab page ", tinfo.tabnr })
+  local statement = concat({ tinfo.flags, " Tab page ", ("%-4d"):format(tinfo.tabnr) })
 
   -- if cinfo.tabh == tinfo.tabh then
   --   statement = concat({ RED, statement, CLEAR })
@@ -219,8 +219,8 @@ return function (opts)
     concat({ "--history=", shellescape(history_file) }),
     concat({
       "--bind=",
-      shellescape(string.format(
-        "start:%s,%s:transform(%s),%s:reload(%s)", pos, RELOAD, reload_action,
+      shellescape(("start:%s,%s:transform(%s),%s:reload(%s)"):format(
+        pos, RELOAD, reload_action,
         CLOSE_WINDOW, close_window_action
       ))
     }),
