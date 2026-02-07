@@ -109,7 +109,7 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
 end -- }}}
 
 local function get_window_statement(cinfo, tinfo, winfo, binfo) -- {{{
-  local statement = concat({ "Tab page ", tinfo.tabnr })
+  local statement = concat({ tinfo.flags, " Tab page ", tinfo.tabnr })
 
   -- if cinfo.tabh == tinfo.tabh then
   --   statement = concat({ RED, statement, CLEAR })
@@ -121,9 +121,7 @@ local function get_window_statement(cinfo, tinfo, winfo, binfo) -- {{{
     dir = concat({ GREEN, dir, CLEAR })
   end
 
-  statement = concat({ statement, TAB, dir })
-
-  return statement
+  return concat({ statement, TAB, dir, TAB, #tinfo.windows, " window(s)" })
 end -- }}}
 
 local function get_tabs() -- {{{
@@ -138,7 +136,11 @@ local function get_tabs() -- {{{
     local wins = vim.api.nvim_tabpage_list_wins(tabh)
     local tcwd = getcwd(-1, tabnr)
     -- local tab_color = cwd ~= tcwd and MAGENTA or ""
-    local tinfo = { cwd = tcwd, tabh = tabh, tabnr = tabnr }
+    local tinfo = {
+      cwd = tcwd,
+      flags = curtabh == tabh and "→" or cwd ~= tcwd and "↳" or " ",
+      tabh = tabh, tabnr = tabnr, windows = wins
+    }
 
     for _, w in ipairs(wins) do
       i = i + 1
@@ -156,8 +158,7 @@ local function get_tabs() -- {{{
         tabs,
         ("%d	%d	%s	%s%s%4d%s	%s	%d	%s%6s%s	%s	%s"):format(
           tabh, w, base64_encode(get_window_statement(cinfo, tinfo, winfo, binfo)),
-          curtabh == tabh and "→" or cinfo.cwd ~= tinfo.cwd and "↳" or " ",
-          YELLOW, tabnr, CLEAR, p == i and "★" or "", w,
+          tinfo.flags, YELLOW, tabnr, CLEAR, p == i and "★" or "", w,
           BLUE, concat({ "[", bufnr, "]" }), CLEAR,
           binfo.flags, get_window_name(cinfo, tinfo, winfo, binfo)
         )
