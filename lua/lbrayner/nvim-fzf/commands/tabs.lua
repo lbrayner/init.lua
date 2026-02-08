@@ -175,13 +175,15 @@ local function get_tabs() -- {{{
   end
 
   state.pos = p
+  state.tabs = tabs
   return tabs
 end
 
 -- local get_tabs_action = require("fzf.actions").raw_action(get_tabs) -- }}}
 
-local result_action = require("fzf.actions").raw_action(function() -- {{{
+local load_action = require("fzf.actions").raw_action(function() -- {{{
   -- print("state", vim.inspect(state))--TODO debug
+  -- print("load!")--TODO debug
   if not state.cpos then return "ignore" end
   local action = get_pos(state.cpos)
   state.cpos = nil
@@ -193,7 +195,7 @@ local change_context_action = require("fzf.actions").raw_action(function(args) -
   -- if not tbl_isempty(args) and args[1] ~= "" then
   --   return "ignore"
   -- end
-  if tbl_count(args) == 1 then return "ignore" end
+  if tbl_count(args) == 1 then return state.tabs end
   -- local fzf_pos = tonumber(args[1])
   -- if fzf_pos == state.pos then return "ignore" end
   -- if tbl_isempty(args) or args[1] == "" then return "ignore" end
@@ -206,7 +208,7 @@ local change_context_action = require("fzf.actions").raw_action(function(args) -
   -- local command = ("clear-query+reload-sync(%s)+pos(%d)"):format(get_tabs_action, pos)
   -- print("pos", vim.inspect(pos), "command", vim.inspect(command))--TODO debug
 
-  return "clear-query"
+  return state.tabs
 end, "{3} ${FZF_QUERY} {}") -- }}}
 
 local function close_window(selected) -- {{{
@@ -260,10 +262,10 @@ return function (opts)
     concat({
       "--bind=",
       shellescape(concat({
-        "start:%s,result:transform(%s),",
-        "%s:transform(%s),%s:transform(%s),%s:reload(%s)"
+        "start:%s,load:transform(%s),",
+        "%s:clear-query+reload(%s),%s:transform(%s),%s:reload(%s)"
       }):format(
-        pos, result_action,
+        pos, load_action,
         CHANGE_CONTEXT, change_context_action,
         RELOAD, reload_action,
         CLOSE_WINDOW, close_window_action
@@ -279,6 +281,7 @@ return function (opts)
 
   coroutine.wrap(function()
     local selected = require("fzf").fzf(tabs, fzf_cli_args)
+    state = nil
 
     if selected then
       jump(selected)
