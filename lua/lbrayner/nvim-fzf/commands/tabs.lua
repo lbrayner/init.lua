@@ -1,5 +1,7 @@
 -- vim: fdm=marker
 
+-- {{{ Localizations
+
 local FugitiveGitDir = vim.fn.FugitiveGitDir
 local FugitiveResult = vim.fn.FugitiveResult
 local ansi = require("lbrayner.nvim-fzf.utils").ansi
@@ -23,14 +25,11 @@ local tabclose = vim.cmd.tabclose
 local tbl_count = vim.tbl_count
 local tbl_isempty = vim.tbl_isempty
 
+-- }}}
+
 local BLUE = ansi.color_to_ansi("blue")
--- local BOLD_CYAN = ansi.color_to_ansi("cyan", "bold")
--- local BOLD_WHITE = ansi.color_to_ansi("white", "bold")
 local CLEAR = ansi.clear
--- local CYAN = ansi.color_to_ansi("cyan")
 local GREEN = ansi.color_to_ansi("green")
--- local ITALIC_WHITE = ansi.color_to_ansi("white", "italic")
--- local MAGENTA = ansi.color_to_ansi("magenta")
 local YELLOW = ansi.color_to_ansi("yellow")
 local RED = ansi.color_to_ansi("red")
 
@@ -52,13 +51,6 @@ local function get_entry_values(entry) -- {{{
   local tabh, winid = entry:match(concat({ "^(%d+)", TAB, "(%d+)" }))
   return tonumber(tabh), tonumber(winid)
 end -- }}}
-
-local reload_action = require("fzf.actions").raw_action(function(args) -- {{{
-  print("args", vim.inspect(args), vim.inspect(get_pos(state.pos)), vim.inspect(state.pos))--TODO debug
-  if not tbl_isempty(args) and args[1] ~= "" then return "ignore" end
-
-  return get_pos(state.pos)
-end, "${FZF_QUERY}") -- }}}
 
 local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
   local function tilde(name)
@@ -119,10 +111,6 @@ end -- }}}
 local function get_window_statement(cinfo, tinfo, winfo, binfo) -- {{{
   local statement = concat({ tinfo.flags, " Tab page ", ("%-4d"):format(tinfo.tabnr) })
 
-  -- if cinfo.tabh == tinfo.tabh then
-  --   statement = concat({ RED, statement, CLEAR })
-  -- end
-
   local dir = fnamemodify(tinfo.cwd, ":~")
 
   if cinfo.cwd ~= tinfo.cwd then
@@ -143,7 +131,6 @@ local function get_tabs() -- {{{
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
     local wins = vim.api.nvim_tabpage_list_wins(tabh)
     local tcwd = getcwd(-1, tabnr)
-    -- local tab_color = cwd ~= tcwd and MAGENTA or ""
     local tinfo = {
       cwd = tcwd,
       flags = curtabh == tabh and "→" or cwd ~= tcwd and "↳" or " ",
@@ -158,9 +145,6 @@ local function get_tabs() -- {{{
       local winfo = getwininfo(w)[1]
       local bufnr = nvim_win_get_buf(w)
       local binfo = get_buffer_info(bufnr)
-      -- local statement = base64_encode(get_window_statement(cwd, tinfo, winfo, binfo))
-      -- local statement = get_window_statement(cwd, tinfo, winfo, binfo)
-      -- statement = base64_encode(statement ~= "" and concat({ ": ", statement }) or statement)
 
       table.insert(
         tabs,
@@ -177,41 +161,17 @@ local function get_tabs() -- {{{
   state.pos = p
   state.tabs = tabs
   return tabs
-end
-
--- local get_tabs_action = require("fzf.actions").raw_action(get_tabs) -- }}}
-
-local load_action = require("fzf.actions").raw_action(function() -- {{{
-  -- print("state", vim.inspect(state))--TODO debug
-  -- print("load!")--TODO debug
-  if not state.cpos then return "ignore" end
-  local action = get_pos(state.cpos)
-  state.cpos = nil
-  return action
-end) -- }}}
+end -- }}}
 
 local change_context_action = require("fzf.actions").raw_action(function(args) -- {{{
-  -- print("args", vim.inspect(args), vim.inspect(get_pos(state.pos)), vim.inspect(state.pos))--TODO debug
-  -- if not tbl_isempty(args) and args[1] ~= "" then
-  --   return "ignore"
-  -- end
   if tbl_count(args) == 1 then return state.tabs end
-  -- local fzf_pos = tonumber(args[1])
-  -- if fzf_pos == state.pos then return "ignore" end
-  -- if tbl_isempty(args) or args[1] == "" then return "ignore" end
-  -- local command = concat({ "clear-query+", get_pos() })
-  -- print("command", vim.inspect(command))--TODO debug
 
-  -- local _, _, pos = get_entry_values(args[1])
-  -- local pos = tonumber(args[1])
   state.cpos = tonumber(args[1])
-  -- local command = ("clear-query+reload-sync(%s)+pos(%d)"):format(get_tabs_action, pos)
-  -- print("pos", vim.inspect(pos), "command", vim.inspect(command))--TODO debug
 
   return state.tabs
 end, "{3} ${FZF_QUERY} {}") -- }}}
 
-local function close_window(selected) -- {{{
+local close_window_action = require("fzf.actions").raw_action(function(selected) -- {{{
   local function close(selected)
     local count = 0
 
@@ -235,9 +195,7 @@ local function close_window(selected) -- {{{
   end
 
   return get_tabs()
-end
-
-local close_window_action = require("fzf.actions").raw_action(close_window) -- }}}
+end) -- }}}
 
 local function jump(selected) -- {{{
   if #selected > 1 then
@@ -250,6 +208,19 @@ local function jump(selected) -- {{{
   vim.api.nvim_set_current_tabpage(tabh)
   vim.api.nvim_set_current_win(winid)
 end -- }}}
+
+local load_action = require("fzf.actions").raw_action(function() -- {{{
+  if not state.cpos then return "ignore" end
+  local action = get_pos(state.cpos)
+  state.cpos = nil
+  return action
+end) -- }}}
+
+local reload_action = require("fzf.actions").raw_action(function(args) -- {{{
+  if not tbl_isempty(args) and args[1] ~= "" then return "ignore" end
+
+  return get_pos(state.pos)
+end, "${FZF_QUERY}") -- }}}
 
 return function (opts)
   opts = opts or {}
@@ -277,7 +248,6 @@ return function (opts)
     "--preview-window=nohidden:up,1" ,
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
-  -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
 
   coroutine.wrap(function()
     local selected = require("fzf").fzf(tabs, fzf_cli_args)
