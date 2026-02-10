@@ -33,15 +33,14 @@ local GREEN = ansi.color_to_ansi("green")
 local YELLOW = ansi.color_to_ansi("yellow")
 local RED = ansi.color_to_ansi("red")
 
-local PATH_SEPARATOR = package.config:sub(1,1)
+local TAB = ( -- {{{
+  "	") -- }}}
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
 local state
 
 local CHANGE_CONTEXT = "alt-c"
 local CLOSE_WINDOW   = "ctrl-x"
 local RELOAD         = "ctrl-r"
-local TAB = ( -- {{{
-  "	") -- }}}
 
 local function get_pos(pos) -- {{{
   return ("pos(%d)"):format(pos)
@@ -102,10 +101,10 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
   end
 
   if cinfo.cwd == tinfo.cwd then
-    return tilde(binfo.name)
+    return concat({ tilde(tinfo.cwd), TAB, "📁", TAB, rel })
   end
 
-  return concat({ GREEN, tilde(tinfo.cwd), CLEAR, PATH_SEPARATOR, rel })
+  return concat({ GREEN, tilde(tinfo.cwd), CLEAR, TAB, "📁", TAB, rel })
 end -- }}}
 
 local function get_window_statement(cinfo, tinfo, winfo, binfo) -- {{{
