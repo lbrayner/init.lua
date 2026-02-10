@@ -18,7 +18,6 @@ local getwininfo = vim.fn.getwininfo
 local is_uri = require("lbrayner").is_uri
 local nvim_win_close = vim.api.nvim_win_close
 local nvim_win_get_buf = vim.api.nvim_win_get_buf
-local pathshorten = vim.fn.pathshorten
 local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
 local tabclose = vim.cmd.tabclose
@@ -68,26 +67,40 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
   elseif fugitive_type == "blob" then -- Fugitive object
     return concat({ "[Fugitive] ", get_fugitive_object(binfo.bufnr) })
   elseif fugitive_type == "index" then -- Fugitive summary
-    local name = "[Fugitive] Summary"
-    local git_dir = FugitiveGitDir(binfo.bufnr):sub(1, -6)
+    local fugitive = { cwd = FugitiveGitDir(binfo.bufnr):sub(1, -6) }
 
-    if cinfo.cwd ~= git_dir then
-      name = concat({ name, ": ", fnamemodify(git_dir, ":~") })
-    end
-
-    return name
+    return concat({
+      "[Fugitive] ", tilde(fugitive.cwd), " 📁", TAB, " Summary"
+    })
   elseif fugitive_type == "temp" then -- Fugitive temporary buffers
-    local fugitive_result = FugitiveResult(binfo.bufnr)
+    local fugitive = FugitiveResult(binfo.bufnr)
     local name = concat({
-      "Git", concat(fugitive_result.args, " "), fugitive_result.blame_file
+      "Git", concat(fugitive.args, " "), fugitive.blame_file
     }, " ")
-    local git_dir = fugitive_result.cwd
 
-    if cinfo.cwd ~= git_dir then
-      name = concat({ pathshorten(fnamemodify(git_dir, ":~")), "$ ", name })
+    if cinfo.cwd == fugitive.cwd then
+      return concat({
+        "[Fugitive] ", tilde(fugitive.cwd), " 📁", TAB, name
+      })
     end
 
-    return concat({ "[Fugitive] ", name })
+    if tinfo.cwd == fugitive.cwd then
+      return concat({
+        "[Fugitive] ", GREEN, tilde(fugitive.cwd), CLEAR, " 📁", TAB, name
+      })
+    end
+
+    local rel = relpath(tinfo.cwd, fugitive.cwd)
+
+    if not rel then
+      return concat({
+        "[Fugitive] ", RED, tilde(fugitive.cwd), " 📁", TAB, CLEAR, name
+      })
+    end
+
+    return concat({
+      "[Fugitive] ", tilde(fugitive.cwd), " 📁", TAB, name
+    })
   end
 
   if is_uri(binfo.name) then
