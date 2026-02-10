@@ -101,10 +101,10 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
   end
 
   if cinfo.cwd == tinfo.cwd then
-    return concat({ tilde(tinfo.cwd), TAB, "📁", TAB, rel })
+    return concat({ tilde(tinfo.cwd), " 📁", TAB, rel })
   end
 
-  return concat({ GREEN, tilde(tinfo.cwd), CLEAR, TAB, "📁", TAB, rel })
+  return concat({ GREEN, tilde(tinfo.cwd), CLEAR, " 📁", TAB, rel })
 end -- }}}
 
 local function get_window_statement(cinfo, tinfo, winfo, binfo) -- {{{
