@@ -39,7 +39,7 @@ local state
 
 local CHANGE_CONTEXT = "alt-c"
 local CLOSE_WINDOW   = "ctrl-x"
-local RELOAD         = "ctrl-r"
+local RESET          = "ctrl-r"
 
 local function get_pos(pos) -- {{{
   return ("pos(%d)"):format(pos)
@@ -175,13 +175,17 @@ local function get_tabs() -- {{{
   return tabs
 end -- }}}
 
+local reload_action = require("fzf.actions").raw_action(function()
+  return state.tabs
+end)
+
 local change_context_action = require("fzf.actions").raw_action(function(args) -- {{{
-  if tbl_count(args) == 1 then return state.tabs end
+  if tbl_count(args) == 1 then return "ignore" end
 
   state.cpos = tonumber(args[1])
 
-  return state.tabs
-end, "{3} ${FZF_QUERY}") -- }}}
+  return ("clear-query+reload(%s)"):format(reload_action)
+end, [[{3} ${FZF_QUERY}]]) -- }}}
 
 local close_window_action = require("fzf.actions").raw_action(function(selected) -- {{{
   local function close(selected)
@@ -228,7 +232,7 @@ local load_action = require("fzf.actions").raw_action(function() -- {{{
   return action
 end) -- }}}
 
-local reload_action = require("fzf.actions").raw_action(function(args) -- {{{
+local reset_action = require("fzf.actions").raw_action(function(args) -- {{{
   if not tbl_isempty(args) and args[1] ~= "" then return "ignore" end
 
   return get_pos(state.pos)
@@ -246,11 +250,11 @@ return function (opts)
       "--bind=",
       shellescape(concat({
         "start:%s,load:transform(%s),",
-        "%s:clear-query+reload(%s),%s:transform(%s),%s:reload(%s)"
+        "%s:transform(%s),%s:transform(%s),%s:reload(%s)"
       }):format(
         pos, load_action,
         CHANGE_CONTEXT, change_context_action,
-        RELOAD, reload_action,
+        RESET, reset_action,
         CLOSE_WINDOW, close_window_action
       ))
     }),
