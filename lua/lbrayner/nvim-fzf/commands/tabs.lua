@@ -3,19 +3,20 @@
 -- {{{ Localizations
 
 local FugitiveGitDir = vim.fn.FugitiveGitDir
+local FugitiveParse = vim.fn.FugitiveParse
 local FugitiveResult = vim.fn.FugitiveResult
 local ansi = require("lbrayner.nvim-fzf.utils").ansi
 local base64_encode = vim.base64.encode
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local get_buffer_info = require("lbrayner.nvim-fzf.utils").get_buffer_info
-local get_fugitive_object = require("lbrayner.fugitive").get_fugitive_object
 local get_quickfix_or_location_list_title = require(
   "lbrayner"
 ).get_quickfix_or_location_list_title
 local getcwd = vim.fn.getcwd
 local getwininfo = vim.fn.getwininfo
 local is_uri = require("lbrayner").is_uri
+local nvim_buf_get_name = vim.api.nvim_buf_get_name
 local nvim_win_close = vim.api.nvim_win_close
 local nvim_win_get_buf = vim.api.nvim_win_get_buf
 local relpath = vim.fs.relpath
@@ -55,8 +56,6 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
     return fnamemodify(name, ":~")
   end
 
-  local fugitive_type = vim.b[binfo.bufnr].fugitive_type
-
   if winfo.loclist == 1 or winfo.quickfix == 1 then
     return concat({
       winfo.loclist == 1 and "[Location List] " or "[Quickfix List] ",
@@ -64,29 +63,32 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
     })
   elseif binfo.name == "" then
     return "[No Name]"
-  elseif fugitive_type == "blob" then -- Fugitive object
-    return concat({ "[Fugitive] ", get_fugitive_object(binfo.bufnr) })
-  elseif fugitive_type == "index" then -- Fugitive summary
-    local fugitive = { cwd = FugitiveGitDir(binfo.bufnr):sub(1, -6) }
+  elseif vim.b[binfo.bufnr].fugitive_type then
+    local fugitive_type, fugitive = vim.b[binfo.bufnr].fugitive_type
 
-    return concat({
-      "[Fugitive] ", tilde(fugitive.cwd), " 📁", TAB, "Summary"
-    })
-  elseif fugitive_type == "temp" then -- Fugitive temporary buffers
-    local fugitive = FugitiveResult(binfo.bufnr)
-    local name = concat({
-      "Git", concat(fugitive.args, " "), fugitive.blame_file
-    }, " ")
+    if fugitive_type == "blob" then -- Fugitive summary
+      local fugitive_object = FugitiveParse(nvim_buf_get_name(binfo.bufnr))
+      fugitive = { cwd = fugitive_object[2]:sub(1, -6), name = fugitive_object[1] }
+    elseif fugitive_type == "index" then -- Fugitive summary
+      fugitive = { cwd = FugitiveGitDir(binfo.bufnr):sub(1, -6), name = "Summary" }
+    elseif fugitive_type == "temp" then -- Fugitive temporary buffers
+      fugitive = FugitiveResult(binfo.bufnr)
+      fugitive.name = concat({
+        "Git", concat(fugitive.args, " "), fugitive.blame_file
+      }, " ")
+    else
+      error(concat({ "[FZF tabs] Unknow fugitive type: ", fugitive_type }))
+    end
 
     if cinfo.cwd == fugitive.cwd then
       return concat({
-        "[Fugitive] ", tilde(fugitive.cwd), " 📁", TAB, name
+        "[Fugitive] ", tilde(fugitive.cwd), " 📁", TAB, fugitive.name
       })
     end
 
     if tinfo.cwd == fugitive.cwd then
       return concat({
-        "[Fugitive] ", GREEN, tilde(fugitive.cwd), CLEAR, " 📁", TAB, name
+        "[Fugitive] ", GREEN, tilde(fugitive.cwd), CLEAR, " 📁", TAB, fugitive.name
       })
     end
 
@@ -94,12 +96,12 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
 
     if not rel then
       return concat({
-        "[Fugitive] ", RED, tilde(fugitive.cwd), CLEAR, " 📁", TAB, name
+        "[Fugitive] ", RED, tilde(fugitive.cwd), CLEAR, " 📁", TAB, fugitive.name
       })
     end
 
     return concat({
-      "[Fugitive] ", tilde(fugitive.cwd), " 📁", TAB, name
+      "[Fugitive] ", tilde(fugitive.cwd), " 📁", TAB, fugitive.name
     })
   end
 
