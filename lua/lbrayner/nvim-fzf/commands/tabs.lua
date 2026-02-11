@@ -120,7 +120,7 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
   return concat({ GREEN, tilde(tinfo.cwd), CLEAR, " 📁", TAB, rel })
 end -- }}}
 
-local function get_window_statement(cinfo, tinfo, winfo, binfo) -- {{{
+local function get_window_statement(cinfo, tinfo, winfo) -- {{{
   local statement = concat({ tinfo.flags, " Tab page ", ("%-4d"):format(tinfo.tabnr) })
 
   local dir = fnamemodify(tinfo.cwd, ":~")
@@ -161,7 +161,7 @@ local function get_tabs() -- {{{
       table.insert(
         tabs,
         ("%d	%d	%d	%s	%s%s%4d%s	%s	%d	%s%6s%s	%s	%s"):format(
-          tabh, w, i, base64_encode(get_window_statement(cinfo, tinfo, winfo, binfo)),
+          tabh, w, i, base64_encode(get_window_statement(cinfo, tinfo, winfo)),
           tinfo.flags, YELLOW, tabnr, CLEAR, p == i and "★" or "", w,
           BLUE, concat({ "[", bufnr, "]" }), CLEAR,
           binfo.flags, get_window_name(cinfo, tinfo, winfo, binfo)
@@ -181,7 +181,7 @@ local change_context_action = require("fzf.actions").raw_action(function(args) -
   state.cpos = tonumber(args[1])
 
   return state.tabs
-end, "{3} ${FZF_QUERY} {}") -- }}}
+end, "{3} ${FZF_QUERY}") -- }}}
 
 local close_window_action = require("fzf.actions").raw_action(function(selected) -- {{{
   local function close(selected)
