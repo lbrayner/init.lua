@@ -70,7 +70,7 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
     local fugitive = { cwd = FugitiveGitDir(binfo.bufnr):sub(1, -6) }
 
     return concat({
-      tilde(fugitive.cwd), " 📁", TAB, "[Fugitive] Summary"
+      "[Fugitive] ", tilde(fugitive.cwd), " 📁", TAB, "Summary"
     })
   elseif fugitive_type == "temp" then -- Fugitive temporary buffers
     local fugitive = FugitiveResult(binfo.bufnr)
@@ -80,13 +80,13 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
 
     if cinfo.cwd == fugitive.cwd then
       return concat({
-        tilde(fugitive.cwd), " 📁", TAB, "[Fugitive] ", name
+        "[Fugitive] ", tilde(fugitive.cwd), " 📁", TAB, name
       })
     end
 
     if tinfo.cwd == fugitive.cwd then
       return concat({
-        GREEN, tilde(fugitive.cwd), CLEAR, " 📁", TAB, "[Fugitive] ", name
+        "[Fugitive] ", GREEN, tilde(fugitive.cwd), CLEAR, " 📁", TAB, name
       })
     end
 
@@ -94,12 +94,12 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
 
     if not rel then
       return concat({
-        RED, tilde(fugitive.cwd), " 📁", TAB, CLEAR, "[Fugitive] ", name
+        "[Fugitive] ", RED, tilde(fugitive.cwd), CLEAR, " 📁", TAB, name
       })
     end
 
     return concat({
-      tilde(fugitive.cwd), " 📁", TAB, "[Fugitive] ", name
+      "[Fugitive] ", tilde(fugitive.cwd), " 📁", TAB, name
     })
   end
 
