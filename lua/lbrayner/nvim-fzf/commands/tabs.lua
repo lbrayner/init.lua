@@ -82,13 +82,13 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
 
     if cinfo.cwd == fugitive.cwd then
       return concat({
-        "[Fugitive] ", tilde(fugitive.cwd), " 📁", TAB, fugitive.name
+        "📁 ", tilde(fugitive.cwd), TAB, "[Fugitive] ", fugitive.name
       })
     end
 
     if tinfo.cwd == fugitive.cwd then
       return concat({
-        "[Fugitive] ", GREEN, tilde(fugitive.cwd), CLEAR, " 📁", TAB, fugitive.name
+        "📁 ", GREEN, tilde(fugitive.cwd), CLEAR, TAB, "[Fugitive] ", fugitive.name
       })
     end
 
@@ -96,12 +96,12 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
 
     if not rel then
       return concat({
-        "[Fugitive] ", RED, tilde(fugitive.cwd), CLEAR, " 📁", TAB, fugitive.name
+        "📁 ", RED, tilde(fugitive.cwd), CLEAR, TAB, "[Fugitive] ", fugitive.name
       })
     end
 
     return concat({
-      "[Fugitive] ", tilde(fugitive.cwd), " 📁", TAB, fugitive.name
+      "📁 ", tilde(fugitive.cwd), TAB, "[Fugitive] ", fugitive.name
     })
   end
 
@@ -116,10 +116,10 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
   end
 
   if cinfo.cwd == tinfo.cwd then
-    return concat({ tilde(tinfo.cwd), " 📁", TAB, rel })
+    return concat({ "📁 ", tilde(tinfo.cwd), TAB, rel })
   end
 
-  return concat({ GREEN, tilde(tinfo.cwd), CLEAR, " 📁", TAB, rel })
+  return concat({ "📁 ", GREEN, tilde(tinfo.cwd), CLEAR, TAB, rel })
 end -- }}}
 
 local function get_window_statement(cinfo, tinfo, winfo) -- {{{
