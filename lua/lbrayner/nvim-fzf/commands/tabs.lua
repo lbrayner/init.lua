@@ -33,6 +33,8 @@ local GREEN = ansi.color_to_ansi("green")
 local YELLOW = ansi.color_to_ansi("yellow")
 local RED = ansi.color_to_ansi("red")
 
+local FOLDER = "📁 "
+local CUSTOM_FOLDER_GIT = "  "
 local TAB = ( -- {{{
   "	") -- }}}
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
@@ -56,13 +58,22 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
     return fnamemodify(name, ":~")
   end
 
+  local cwd
+
+  if cinfo.cwd == tinfo.cwd then
+    cwd = concat({ FOLDER, tilde(tinfo.cwd)  })
+  else
+    cwd = concat({ FOLDER, GREEN, tilde(tinfo.cwd), CLEAR })
+  end
+
   if winfo.loclist == 1 or winfo.quickfix == 1 then
     return concat({
+      cwd, TAB,
       winfo.loclist == 1 and "[Location List] " or "[Quickfix List] ",
       get_quickfix_or_location_list_title(winfo)
     })
   elseif binfo.name == "" then
-    return "[No Name]"
+    return concat({ cwd, TAB, "[No Name]" })
   elseif vim.b[binfo.bufnr].fugitive_type then
     local fugitive_type, fugitive = vim.b[binfo.bufnr].fugitive_type
 
@@ -80,46 +91,35 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
       error(concat({ "[FZF tabs] Unknow fugitive type: ", fugitive_type }))
     end
 
-    if cinfo.cwd == fugitive.cwd then
-      return concat({
-        "📁 ", tilde(fugitive.cwd), TAB, "[Fugitive] ", fugitive.name
-      })
-    end
-
     if tinfo.cwd == fugitive.cwd then
-      return concat({
-        "📁 ", GREEN, tilde(fugitive.cwd), CLEAR, TAB, "[Fugitive] ", fugitive.name
-      })
+      return concat({ cwd, TAB, "[Fugitive] ", fugitive.name })
     end
 
     local rel = relpath(tinfo.cwd, fugitive.cwd)
 
     if not rel then
       return concat({
-        "📁 ", RED, tilde(fugitive.cwd), CLEAR, TAB, "[Fugitive] ", fugitive.name
+        cwd, TAB, RED, CUSTOM_FOLDER_GIT, tilde(fugitive.cwd), CLEAR,
+        TAB, "[Fugitive] ", fugitive.name
       })
     end
 
     return concat({
-      "📁 ", tilde(fugitive.cwd), TAB, "[Fugitive] ", fugitive.name
+      cwd, TAB, CUSTOM_FOLDER_GIT, rel, TAB, "[Fugitive] ", fugitive.name
     })
   end
 
   if is_uri(binfo.name) then
-    return binfo.name
+    return concat({ cwd, TAB, binfo.name })
   end
 
   local rel = relpath(tinfo.cwd, binfo.name)
 
   if not rel then
-    return concat({ RED, tilde(binfo.name), CLEAR })
+    return concat({ cwd, TAB, RED, tilde(binfo.name), CLEAR })
   end
 
-  if cinfo.cwd == tinfo.cwd then
-    return concat({ "📁 ", tilde(tinfo.cwd), TAB, rel })
-  end
-
-  return concat({ "📁 ", GREEN, tilde(tinfo.cwd), CLEAR, TAB, rel })
+  return concat({ cwd, TAB, rel })
 end -- }}}
 
 local function get_window_statement(cinfo, tinfo, winfo) -- {{{
