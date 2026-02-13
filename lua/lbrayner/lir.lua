@@ -10,6 +10,10 @@ local isdirectory = vim.fn.isdirectory
 local mark_actions = require("lir.mark.actions")
 
 local function jump_cmd(open_cmd) -- {{{
+  if not open_cmd then
+    open_cmd = ""
+  end
+
   return function()
     local ctx = get_context()
     local filename = concat({ ctx.dir, ctx:current_value() })
