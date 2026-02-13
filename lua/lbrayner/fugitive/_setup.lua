@@ -12,6 +12,7 @@ vim.keymap.set("ca", "Gf", "Git! fetch origin")
 vim.keymap.set("ca", "Gl", "Git log")
 vim.keymap.set("ca", "Glf", "Git! ls-files")
 vim.keymap.set("ca", "Glns", "Git log --name-status")
+vim.keymap.set("ca", "-1", "Git log --name-status -1")
 vim.keymap.set("ca", "Glo", "Git log --oneline")
 -- To list branches of a specific remote: Git! ls-remote upstream
 vim.keymap.set("ca", "Glr", "Git! ls-remote origin")
