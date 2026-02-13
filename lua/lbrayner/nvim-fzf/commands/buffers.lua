@@ -59,7 +59,7 @@ local function get_buffers() -- {{{
 
     table.insert(
       buffers,
-      ("%s%6s%s	%s	%s"):format(
+      ("%s%6s%s %s %s"):format(
         BLUE, concat({ "[", bufnr, "]" }), CLEAR, binfo.flags, get_buffer_name(binfo)
       )
     )
