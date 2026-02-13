@@ -97,15 +97,24 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
 
     local rel = relpath(tinfo.cwd, fugitive.cwd)
 
-    if not rel then
+    if rel then
       return concat({
-        cwd, TAB, RED, CUSTOM_FOLDER_GIT, tilde(fugitive.cwd), CLEAR,
+        cwd, TAB, CUSTOM_FOLDER_GIT, rel, TAB, "[Fugitive] ", fugitive.name
+      })
+    end
+
+    rel = relpath(fugitive.cwd, tinfo.cwd)
+
+    if rel then
+      return concat({
+        cwd, TAB, CUSTOM_FOLDER_GIT, tilde(fugitive.cwd),
         TAB, "[Fugitive] ", fugitive.name
       })
     end
 
     return concat({
-      cwd, TAB, CUSTOM_FOLDER_GIT, rel, TAB, "[Fugitive] ", fugitive.name
+      cwd, TAB, RED, CUSTOM_FOLDER_GIT, tilde(fugitive.cwd), CLEAR,
+      TAB, "[Fugitive] ", fugitive.name
     })
   end
 
