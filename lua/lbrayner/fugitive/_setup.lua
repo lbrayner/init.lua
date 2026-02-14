@@ -19,6 +19,7 @@ vim.keymap.set("ca", "Glr", "Git! ls-remote origin")
 -- List all files of a local or remote commit, branch (tree-ish)
 vim.keymap.set("ca", "Glt", "Git! ls-tree -r")
 vim.keymap.set("ca", "Gp", "Git cherry-pick")
+vim.keymap.set("ca", "p", "Git! pull")
 vim.keymap.set("ca", "Gr", "Git rebase -i")
 vim.keymap.set("ca", "Gs", "Git stash")
 -- git bash and zsh autocomplete should complete --keep-index
