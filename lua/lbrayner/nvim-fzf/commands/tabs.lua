@@ -44,36 +44,27 @@ local CHANGE_CONTEXT = "alt-c"
 local CLOSE_WINDOW   = "ctrl-x"
 local RESET          = "ctrl-r"
 
-local function get_pos(pos) -- {{{
-  return ("pos(%d)"):format(pos)
-end -- }}}
-
 local function get_entry_values(entry) -- {{{
   local tabh, winid = entry:match(concat({ "^(%d+)", TAB, "(%d+)" }))
   return tonumber(tabh), tonumber(winid)
 end -- }}}
 
-local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
-  local function tilde(name)
-    return fnamemodify(name, ":~")
-  end
+local function get_pos(pos) -- {{{
+  return ("pos(%d)"):format(pos)
+end -- }}}
 
-  local cwd
+local function tilde(name) -- {{{
+  return fnamemodify(name, ":~")
+end -- }}}
 
-  if cinfo.cwd == tinfo.cwd then
-    cwd = concat({ FOLDER, tilde(tinfo.cwd)  })
-  else
-    cwd = concat({ FOLDER, GREEN, tilde(tinfo.cwd), CLEAR })
-  end
-
+local function get_window_name(tinfo, winfo, binfo) -- {{{
   if winfo.loclist == 1 or winfo.quickfix == 1 then
     return concat({
-      cwd, TAB,
       winfo.loclist == 1 and "[Location List] " or "[Quickfix List] ",
       get_quickfix_or_location_list_title(winfo)
     })
   elseif binfo.name == "" then
-    return concat({ cwd, TAB, "[No Name]" })
+    return "[No Name]"
   elseif vim.b[binfo.bufnr].fugitive_type then
     local fugitive_type, fugitive = vim.b[binfo.bufnr].fugitive_type
 
@@ -92,14 +83,14 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
     end
 
     if tinfo.cwd == fugitive.cwd then
-      return concat({ cwd, TAB, "[Fugitive] ", fugitive.name })
+      return concat({ "[Fugitive] ", fugitive.name })
     end
 
     local rel = relpath(tinfo.cwd, fugitive.cwd)
 
     if rel then
       return concat({
-        cwd, TAB, CUSTOM_FOLDER_GIT, rel, TAB, "[Fugitive] ", fugitive.name
+        CUSTOM_FOLDER_GIT, rel, TAB, "[Fugitive] ", fugitive.name
       })
     end
 
@@ -107,40 +98,33 @@ local function get_window_name(cinfo, tinfo, winfo, binfo) -- {{{
 
     if rel then
       return concat({
-        cwd, TAB, CUSTOM_FOLDER_GIT, tilde(fugitive.cwd),
+        CUSTOM_FOLDER_GIT, tilde(fugitive.cwd),
         TAB, "[Fugitive] ", fugitive.name
       })
     end
 
     return concat({
-      cwd, TAB, RED, CUSTOM_FOLDER_GIT, tilde(fugitive.cwd), CLEAR,
+      RED, CUSTOM_FOLDER_GIT, tilde(fugitive.cwd), CLEAR,
       TAB, "[Fugitive] ", fugitive.name
     })
   end
 
   if is_uri(binfo.name) then
-    return concat({ cwd, TAB, binfo.name })
+    return binfo.name
   end
 
   local rel = relpath(tinfo.cwd, binfo.name)
 
   if not rel then
-    return concat({ cwd, TAB, RED, tilde(binfo.name), CLEAR })
+    return concat({ RED, tilde(binfo.name), CLEAR })
   end
 
-  return concat({ cwd, TAB, rel })
+  return rel
 end -- }}}
 
-local function get_window_statement(cinfo, tinfo, winfo) -- {{{
-  local statement = concat({ tinfo.flags, " Tab page ", ("%-4d"):format(tinfo.tabnr) })
-
-  local dir = fnamemodify(tinfo.cwd, ":~")
-
-  if cinfo.cwd ~= tinfo.cwd then
-    dir = concat({ GREEN, dir, CLEAR })
-  end
-
-  return concat({ statement, TAB, dir, TAB, #tinfo.windows, " window(s)" })
+local function get_window_statement(tinfo) -- {{{
+  local statement = concat({ "Tab page ", ("%-4d"):format(tinfo.tabnr) })
+  return concat({ statement, TAB, tinfo.dir, TAB, #tinfo.windows, " window(s)" })
 end -- }}}
 
 local function get_tabs() -- {{{
@@ -149,15 +133,19 @@ local function get_tabs() -- {{{
   local curtabh = vim.api.nvim_get_current_tabpage()
   local curwin = vim.api.nvim_get_current_win()
   local cwd = getcwd(-1, vim.fn.tabpagenr())
-  local cinfo = { cwd = cwd, tabh = curtabh }
 
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
+    local tcwd, dir = getcwd(-1, tabnr)
+
+    if cwd == tcwd then
+      dir = concat({ "  ", FOLDER, tilde(tcwd)  })
+    else
+      dir = concat({ "↳ ", FOLDER, GREEN, tilde(tcwd), CLEAR })
+    end
+
     local wins = vim.api.nvim_tabpage_list_wins(tabh)
-    local tcwd = getcwd(-1, tabnr)
     local tinfo = {
-      cwd = tcwd,
-      flags = curtabh == tabh and "→" or cwd ~= tcwd and "↳" or " ",
-      tabh = tabh, tabnr = tabnr, windows = wins
+      cwd = tcwd, dir = dir, tabh = tabh, tabnr = tabnr, windows = wins
     }
 
     for _, w in ipairs(wins) do
@@ -171,11 +159,11 @@ local function get_tabs() -- {{{
 
       table.insert(
         tabs,
-        ("%d	%d	%d	%s	%s%s%4d%s %s %d %s%6s%s %s %s"):format(
-          tabh, w, i, base64_encode(get_window_statement(cinfo, tinfo, winfo)),
-          tinfo.flags, YELLOW, tabnr, CLEAR, p == i and "★" or " ", w,
-          BLUE, concat({ "[", bufnr, "]" }), CLEAR,
-          binfo.flags, get_window_name(cinfo, tinfo, winfo, binfo)
+        ("%d	%d	%d	%s	%s%4d%s %s %d %s %s%6s%s %s	%s"):format(
+          tabh, w, i, base64_encode(get_window_statement(tinfo)),
+          YELLOW, tabnr, CLEAR, p == i and "★" or " ", w,
+          binfo.flags, BLUE, concat({ "[", bufnr, "]" }), CLEAR,
+          dir, get_window_name(tinfo, winfo, binfo)
         )
       )
     end
@@ -186,9 +174,9 @@ local function get_tabs() -- {{{
   return tabs
 end -- }}}
 
-local reload_action = require("fzf.actions").raw_action(function()
+local reload_action = require("fzf.actions").raw_action(function() -- {{{
   return state.tabs
-end)
+end) -- }}}
 
 local change_context_action = require("fzf.actions").raw_action(function(args) -- {{{
   if tbl_count(args) == 1 then return "ignore" end
