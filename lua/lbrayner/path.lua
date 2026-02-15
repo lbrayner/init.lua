@@ -1,6 +1,8 @@
-local M = {}
-
 local fnamemodify = vim.fn.fnamemodify
+local startswith = vim.startswith
+local validate = vim.validate
+
+local M = {}
 
 function M.get_cwd()
   return fnamemodify(vim.fn.getcwd(), ":~")
@@ -53,7 +55,7 @@ function M.get_full_path(path)
       return ""
     end
 
-    if not vim.startswith(vim.uri_from_bufnr(bufnr), "file://") then
+    if not startswith(vim.uri_from_bufnr(bufnr), "file://") then
       return bufname
     end
 
@@ -72,7 +74,7 @@ function M.is_in_directory(node, directory, opts)
     return false
   end
 
-  return vim.startswith(node, directory)
+  return startswith(node, directory)
 end
 
 function M.get_name()
@@ -87,15 +89,15 @@ function M.get_path(bufnr)
     return ""
   end
 
-  if vim.startswith(vim.uri_from_bufnr(bufnr), "jdt://") then
+  if startswith(vim.uri_from_bufnr(bufnr), "jdt://") then
     return require("lbrayner.jdtls").get_buffer_name(bufnr)
   end
 
-  if vim.startswith(vim.uri_from_bufnr(bufnr), "fugitive://") then
+  if startswith(vim.uri_from_bufnr(bufnr), "fugitive://") then
     return require("lbrayner.fugitive").get_fugitive_path()
   end
 
-  if not vim.startswith(vim.uri_from_bufnr(bufnr), "file://") then
+  if not startswith(vim.uri_from_bufnr(bufnr), "file://") then
     return bufname
   end
 
@@ -114,6 +116,36 @@ function M.get_working_directory_name()
   return fnamemodify(vim.fn.getcwd(), ":p:h:t")
 end
 
+-- From ChatGPT
+local function down_rel(base, target)
+  local t = vim.split(target, "/", { plain = true })
+  local b = vim.split(base, "/", { plain = true })
+
+  -- find common prefix
+  local i = 1
+  while i <= #t and i <= #b and t[i] == b[i] do
+    i = i + 1
+  end
+
+  local rel = {}
+
+  -- go up for remaining base parts
+  for _ = i, #b do
+    table.insert(rel, "..")
+  end
+
+  -- go down into target
+  for j = i, #t do
+    table.insert(rel, t[j])
+  end
+
+  if #rel == 0 then
+    return "."
+  end
+
+  return table.concat(rel, "/")
+end
+
 local split_windows_path = require("lbrayner.path._split_windows_path")
 
 -- NVIM v0.12.0-dev-1935+g0f9aae20ec
@@ -123,9 +155,11 @@ local split_windows_path = require("lbrayner.path._split_windows_path")
 --- @param opts table? Reserved for future use
 --- @return string|nil
 function M.relpath(base, target, opts)
-  vim.validate('base', base, 'string')
-  vim.validate('target', target, 'string')
-  vim.validate('opts', opts, 'table', true)
+  opts = opts or {}
+
+  validate('base', base, 'string')
+  validate('target', target, 'string')
+  validate('opts', opts, 'table', true)
 
   base = vim.fs.normalize(vim.fs.abspath(base))
   target = vim.fs.normalize(vim.fs.abspath(target))
@@ -139,7 +173,13 @@ function M.relpath(base, target, opts)
   end
   base = prefix .. base .. (base ~= '/' and '/' or '')
 
-  return vim.startswith(target, base) and target:sub(#base + 1) or nil
+  local up = startswith(target, base) and target:sub(#base + 1) or nil
+
+  if not opts.downward then return up end
+
+  local down = down_rel(base, target)
+
+  return up, down
 end
 
 -- Insert path (use i_CTRL-R)
