@@ -114,6 +114,34 @@ function M.get_working_directory_name()
   return fnamemodify(vim.fn.getcwd(), ":p:h:t")
 end
 
+local split_windows_path = require("lbrayner.path._split_windows_path")
+
+-- NVIM v0.12.0-dev-1935+g0f9aae20ec
+-- From $VIMRUNTIME/lua/vim/fs.lua
+--- @param base string
+--- @param target string
+--- @param opts table? Reserved for future use
+--- @return string|nil
+function M.relpath(base, target, opts)
+  vim.validate('base', base, 'string')
+  vim.validate('target', target, 'string')
+  vim.validate('opts', opts, 'table', true)
+
+  base = vim.fs.normalize(vim.fs.abspath(base))
+  target = vim.fs.normalize(vim.fs.abspath(target))
+  if base == target then
+    return '.'
+  end
+
+  local prefix = ''
+  if iswin then
+    prefix, base = split_windows_path(base)
+  end
+  base = prefix .. base .. (base ~= '/' and '/' or '')
+
+  return vim.startswith(target, base) and target:sub(#base + 1) or nil
+end
+
 -- Insert path (use i_CTRL-R)
 vim.cmd([[
 function! Cwd()
