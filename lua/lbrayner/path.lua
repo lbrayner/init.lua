@@ -146,8 +146,6 @@ local function down_rel(base, target)
   return table.concat(rel, "/")
 end
 
-local split_windows_path = require("lbrayner.path._split_windows_path")
-
 -- NVIM v0.12.0-dev-1935+g0f9aae20ec
 -- From $VIMRUNTIME/lua/vim/fs.lua
 --- @param base string
@@ -167,13 +165,9 @@ function M.relpath(base, target, opts)
     return '.'
   end
 
-  local prefix = ''
-  if iswin then
-    prefix, base = split_windows_path(base)
-  end
-  base = prefix .. base .. (base ~= '/' and '/' or '')
+  local sbase = base .. (base ~= '/' and '/' or '')
 
-  local up = startswith(target, base) and target:sub(#base + 1) or nil
+  local up = startswith(target, sbase) and target:sub(#sbase + 1) or nil
 
   if not opts.downward then return up end
 
