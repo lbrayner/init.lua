@@ -1,3 +1,6 @@
+local abspath = vim.fs.abspath
+local normalize = vim.fs.normalize
+local split = vim.split
 local startswith = vim.startswith
 
 local M = {}
@@ -13,8 +16,8 @@ function M.relpath(base, target, opts)
   local function down_rel(base, target, level)
     level = type(level) == "number" and level or nil
 
-    local t = vim.split(target, "/", { plain = true })
-    local b = vim.split(base, "/", { plain = true })
+    local t = split(target, "/", { plain = true })
+    local b = split(base, "/", { plain = true })
 
     -- find common prefix
     local i = 1
@@ -44,8 +47,8 @@ function M.relpath(base, target, opts)
   end
 
   opts = opts or {}
-  base = vim.fs.normalize(vim.fs.abspath(base))
-  target = vim.fs.normalize(vim.fs.abspath(target))
+  base = normalize(abspath(base))
+  target = normalize(abspath(target))
   if base == target then
     return '.'
   end
@@ -54,11 +57,13 @@ function M.relpath(base, target, opts)
 
   local up = startswith(target, sbase) and target:sub(#sbase + 1) or nil
 
+  if up then return up end
+
   if not opts.downward then return up end
 
   local down = down_rel(base, target, opts.downward)
 
-  return up, down
+  return nil, down
 end
 
 return M
