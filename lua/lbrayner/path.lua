@@ -1,6 +1,5 @@
 local fnamemodify = vim.fn.fnamemodify
 local startswith = vim.startswith
-local validate = vim.validate
 
 local M = {}
 
@@ -114,70 +113,6 @@ end
 
 function M.get_working_directory_name()
   return fnamemodify(vim.fn.getcwd(), ":p:h:t")
-end
-
--- From ChatGPT
-local function down_rel(base, target, level)
-  level = type(level) == "number" and level or nil
-
-  local t = vim.split(target, "/", { plain = true })
-  local b = vim.split(base, "/", { plain = true })
-
-  -- find common prefix
-  local i = 1
-  while i <= #t and i <= #b and t[i] == b[i] do
-    i = i + 1
-  end
-
-  local rel = {}
-
-  -- go up for remaining base parts
-  for _ = i, #b do
-    table.insert(rel, "..")
-  end
-
-  if level and level < #rel then return nil end
-
-  -- go down into target
-  for j = i, #t do
-    table.insert(rel, t[j])
-  end
-
-  if #rel == 0 then
-    return "."
-  end
-
-  return table.concat(rel, "/")
-end
-
--- NVIM v0.12.0-dev-1935+g0f9aae20ec
--- From $VIMRUNTIME/lua/vim/fs.lua
---- @param base string
---- @param target string
---- @param opts table? Reserved for future use
---- @return string|nil
-function M.relpath(base, target, opts)
-  opts = opts or {}
-
-  validate('base', base, 'string')
-  validate('target', target, 'string')
-  validate('opts', opts, 'table', true)
-
-  base = vim.fs.normalize(vim.fs.abspath(base))
-  target = vim.fs.normalize(vim.fs.abspath(target))
-  if base == target then
-    return '.'
-  end
-
-  local sbase = base .. (base ~= '/' and '/' or '')
-
-  local up = startswith(target, sbase) and target:sub(#sbase + 1) or nil
-
-  if not opts.downward then return up end
-
-  local down = down_rel(base, target, opts.downward)
-
-  return up, down
 end
 
 -- Insert path (use i_CTRL-R)
