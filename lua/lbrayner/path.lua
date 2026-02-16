@@ -117,7 +117,9 @@ function M.get_working_directory_name()
 end
 
 -- From ChatGPT
-local function down_rel(base, target)
+local function down_rel(base, target, level)
+  level = type(level) == "number" and level or nil
+
   local t = vim.split(target, "/", { plain = true })
   local b = vim.split(base, "/", { plain = true })
 
@@ -133,6 +135,8 @@ local function down_rel(base, target)
   for _ = i, #b do
     table.insert(rel, "..")
   end
+
+  if level and level < #rel then return nil end
 
   -- go down into target
   for j = i, #t do
@@ -171,7 +175,7 @@ function M.relpath(base, target, opts)
 
   if not opts.downward then return up end
 
-  local down = down_rel(base, target)
+  local down = down_rel(base, target, opts.downward)
 
   return up, down
 end
