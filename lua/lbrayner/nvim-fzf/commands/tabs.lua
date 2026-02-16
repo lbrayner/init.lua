@@ -19,8 +19,8 @@ local is_uri = require("lbrayner").is_uri
 local nvim_buf_get_name = vim.api.nvim_buf_get_name
 local nvim_win_close = vim.api.nvim_win_close
 local nvim_win_get_buf = vim.api.nvim_win_get_buf
-local relpath = vim.fs.relpath
 local shellescape = vim.fn.shellescape
+local startswith = vim.startswith
 local tabclose = vim.cmd.tabclose
 local tbl_count = vim.tbl_count
 local tbl_isempty = vim.tbl_isempty
@@ -52,6 +52,72 @@ end -- }}}
 local function get_pos(pos) -- {{{
   return ("pos(%d)"):format(pos)
 end -- }}}
+
+-- NVIM v0.12.0-dev-1935+g0f9aae20ec
+-- From $VIMRUNTIME/lua/vim/fs.lua
+--- @param base string
+--- @param target string
+--- @param opts table? Reserved for future use
+--- @return string|nil
+function fs_relpath(base, target, opts)
+  local function down_rel(base, target, level)
+    level = type(level) == "number" and level or nil
+
+    local t = vim.split(target, "/", { plain = true })
+    local b = vim.split(base, "/", { plain = true })
+
+    -- find common prefix
+    local i = 1
+    while i <= #t and i <= #b and t[i] == b[i] do
+      i = i + 1
+    end
+
+    local rel = {}
+
+    -- go up for remaining base parts
+    for _ = i, #b do
+      table.insert(rel, "..")
+    end
+
+    if level and level < #rel then return nil end
+
+    -- go down into target
+    for j = i, #t do
+      table.insert(rel, t[j])
+    end
+
+    if #rel == 0 then
+      return "."
+    end
+
+    return table.concat(rel, "/")
+  end
+
+  opts = opts or {}
+  base = vim.fs.normalize(vim.fs.abspath(base))
+  target = vim.fs.normalize(vim.fs.abspath(target))
+  if base == target then
+    return '.'
+  end
+
+  local sbase = base .. (base ~= '/' and '/' or '')
+
+  local up = startswith(target, sbase) and target:sub(#sbase + 1) or nil
+
+  if not opts.downward then return up end
+
+  local down = down_rel(base, target, opts.downward)
+
+  return up, down
+end
+
+local function relpath(base, target)
+  local up, down = fs_relpath(base, target, { downward = 2 })
+
+  if up and down then return #up <= #down and up or down end
+
+  return up and up or down
+end
 
 local function tilde(name) -- {{{
   return fnamemodify(name, ":~")
