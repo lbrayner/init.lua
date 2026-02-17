@@ -24,6 +24,8 @@ local get_quickfix_or_location_list_title = require(
 local get_state = vim.fn.state
 local getwininfo = vim.fn.getwininfo
 local hlID = vim.fn.hlID
+local isdirectory = vim.fn.isdirectory
+local joinpath = vim.fs.joinpath
 local nvim__redraw = vim.api.nvim__redraw
 local nvim_buf_get_name = vim.api.nvim_buf_get_name
 local nvim_create_augroup = vim.api.nvim_create_augroup
@@ -151,15 +153,17 @@ function M.get_buffer_name(opts)
   opts = opts or {}
   local buffer_name = get_path()
 
-  if opts.tail then -- default is relative
-    buffer_name = fnamemodify(buffer_name, ":t")
-  end
-
   if buffer_name == "" then
     return concat({ "#", nvim_get_current_buf() })
   end
 
-  return buffer_name
+  if opts.tail then -- default is relative
+    return fnamemodify(buffer_name, ":t")
+  end
+
+  return isdirectory(buffer_name) == 1 and joinpath(
+    buffer_name, "" -- lir: add trailing slash
+  ) or buffer_name
 end
 
 function M.get_buffer_status()
