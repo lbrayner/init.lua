@@ -1,4 +1,5 @@
 local fnamemodify = vim.fn.fnamemodify
+local fs_relpath = require("lbrayner.fs").relpath
 local get_fugitive_path = require("lbrayner.fugitive").get_fugitive_path
 local get_jdtls_buffer_name = require("lbrayner.jdtls").get_buffer_name
 local getcwd = vim.fn.getcwd
@@ -105,11 +106,20 @@ function M.get_path(bufnr)
     return bufname
   end
 
-  if not M.is_in_directory(bufname, getcwd(), { exclusive = true }) then
-    return M.get_full_path(bufname) -- In case buffer represents a directory
+  local cwd = getcwd()
+  local tilde = fnamemodify(bufname, ":~")
+
+  local up, down = fs_relpath(cwd, bufname, { downward = 2 })
+
+  if not up and not down then
+    return tilde
   end
 
-  return fnamemodify(bufname, ":~:.")
+  if up then return up end
+
+  if #down < #tilde then return down end
+
+  return tilde
 end
 
 function M.get_relative_directory()
