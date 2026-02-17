@@ -170,7 +170,7 @@ local function get_tabs() -- {{{
 
       table.insert(
         tabs,
-        ("%d	%d	%d	%s	%s%4d%s %s %d %s %s%6s%s %s	%s"):format(
+        ("%d	%d	%d	%s	%s%4d%s %s %d %s %s%6s%s %s    %s"):format(
           tabh, w, i, base64_encode(get_window_statement(tinfo)),
           YELLOW, tabnr, CLEAR, p == i and "★" or " ", w,
           binfo.flags, BLUE, concat({ "[", bufnr, "]" }), CLEAR,
