@@ -16,9 +16,8 @@ local fugitiveHead = vim.fn["fugitive#Head"]
 local get_diagnostic = vim.diagnostic.get
 local get_fugitive_object = require("lbrayner.fugitive").get_fugitive_object
 local get_full_path = require("lbrayner.path").get_full_path
-local get_jdtls_buffer_name = require("lbrayner.jdtls").get_buffer_name
 local get_line = vim.fn.line
-local get_path_ = require("lbrayner.path").get_path
+local get_path = require("lbrayner.path").get_path
 local get_quickfix_or_location_list_title = require(
   "lbrayner"
 ).get_quickfix_or_location_list_title
@@ -82,22 +81,6 @@ local function get_number_of_lines()
   end
 
   return concat({ "%-", length, "L" })
-end
-
--- local copy of lbrayner.get_path
-local function get_path()
-  local bufnr = 0
-  local path = get_fugitive_object(bufnr)
-
-  if path then
-    return path
-  end
-
-  if startswith(nvim_buf_get_name(bufnr), "jdt://") then -- jdtls
-    return get_jdtls_buffer_name(bufnr)
-  end
-
-  return get_path_(bufnr)
 end
 
 -- }}}

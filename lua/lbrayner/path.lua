@@ -1,5 +1,10 @@
 local fnamemodify = vim.fn.fnamemodify
+local get_fugitive_path = require("lbrayner.fugitive").get_fugitive_path
+local get_jdtls_buffer_name = require("lbrayner.jdtls").get_buffer_name
+local getcwd = vim.fn.getcwd
+local nvim_buf_get_name = vim.api.nvim_buf_get_name
 local startswith = vim.startswith
+local uri_from_bufnr = vim.uri_from_bufnr
 
 local M = {}
 
@@ -82,25 +87,25 @@ end
 
 function M.get_path(bufnr)
   bufnr = bufnr or 0
-  local bufname = vim.api.nvim_buf_get_name(bufnr)
+  local bufname = nvim_buf_get_name(bufnr)
 
   if bufname == "" then
     return ""
   end
 
-  if startswith(vim.uri_from_bufnr(bufnr), "jdt://") then
-    return require("lbrayner.jdtls").get_buffer_name(bufnr)
+  if startswith(uri_from_bufnr(bufnr), "jdt://") then
+    return get_jdtls_buffer_name(bufnr)
   end
 
-  if startswith(vim.uri_from_bufnr(bufnr), "fugitive://") then
-    return require("lbrayner.fugitive").get_fugitive_path()
+  if startswith(uri_from_bufnr(bufnr), "fugitive://") then
+    return get_fugitive_path()
   end
 
-  if not startswith(vim.uri_from_bufnr(bufnr), "file://") then
+  if not startswith(uri_from_bufnr(bufnr), "file://") then
     return bufname
   end
 
-  if not M.is_in_directory(bufname, vim.fn.getcwd(), { exclusive = true }) then
+  if not M.is_in_directory(bufname, getcwd(), { exclusive = true }) then
     return M.get_full_path(bufname) -- In case buffer represents a directory
   end
 
