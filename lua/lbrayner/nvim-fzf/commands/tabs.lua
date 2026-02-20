@@ -133,11 +133,6 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
   return rel
 end -- }}}
 
-local function get_window_statement(tinfo) -- {{{
-  local statement = concat({ "Tab page ", ("%-4d"):format(tinfo.tabnr) })
-  return concat({ statement, TAB, tinfo.dir, TAB, #tinfo.windows, " window(s)" })
-end -- }}}
-
 local function get_tabs() -- {{{
   local i, p = 0, 0
   local tabs = {}
@@ -155,9 +150,11 @@ local function get_tabs() -- {{{
     end
 
     local wins = vim.api.nvim_tabpage_list_wins(tabh)
-    local tinfo = {
-      cwd = tcwd, dir = dir, tabh = tabh, tabnr = tabnr, windows = wins
-    }
+    local tinfo = { cwd = tcwd }
+
+    local statement = base64_encode(concat({
+      "Tab page ", ("%-4d"):format(tabnr), TAB, dir, TAB, #wins, " window(s)"
+    }))
 
     for _, w in ipairs(wins) do
       i = i + 1
@@ -171,7 +168,7 @@ local function get_tabs() -- {{{
       table.insert(
         tabs,
         ("%d	%d	%d	%s	%s%4d%s %s %d %s %s%6s%s %s    %s"):format(
-          tabh, w, i, base64_encode(get_window_statement(tinfo)),
+          tabh, w, i, statement,
           YELLOW, tabnr, CLEAR, p == i and "★" or " ", w,
           binfo.flags, BLUE, concat({ "[", bufnr, "]" }), CLEAR,
           dir, get_window_name(tinfo, winfo, binfo)
