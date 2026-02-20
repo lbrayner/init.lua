@@ -91,7 +91,6 @@ local function file_mark_info_jump_to_location(file_mark_info)
 
   local bufnr, pos = file_mark_info.pos[1]
 
-  -- print("bufnr", bufnr, "file_mark_info", vim.inspect(file_mark_info))--TODO debug
   if bufnr == 0 then
     local file = file_mark_info.file
 
@@ -248,15 +247,26 @@ vim.keymap.set("n", "m", function()
     vim.cmd("normal! m" .. input)
 
     if is_file_mark(input) then
-      local file_mark_info = file_mark_info_by_mark[input]
-
-      if file_mark_info then
+      local function clear_mark(file_mark_info)
         file_mark_info_by_bufnr[file_mark_info.pos[1]] = nil
         file_mark_info_by_file[file_mark_info.file] = nil
+        file_mark_info_by_mark[file_mark_info.mark] = nil
       end
 
       local bufnr = vim.api.nvim_get_current_buf()
       local file = vim.api.nvim_buf_get_name(bufnr)
+
+      if file_mark_info_by_mark[input] then
+        local file_mark_info = file_mark_info_by_mark[input]
+        clear_mark(file_mark_info)
+      end
+
+      if file_mark_info_by_file[file] then
+        local file_mark_info = file_mark_info_by_file[file]
+        clear_mark(file_mark_info)
+        vim.cmd.delmarks(file_mark_info.mark)
+      end
+
       file_mark_info_by_mark[input] = { file = file, mark = input, pos = { bufnr } }
       file_mark_info_by_bufnr[bufnr] = file_mark_info_by_mark[input]
       file_mark_info_by_file[file] = file_mark_info_by_mark[input]
@@ -398,28 +408,23 @@ vim.api.nvim_create_autocmd("VimEnter", {
       group = marks,
       desc = "Update marks' state after buffer is created or renamed",
       callback = function(args)
-        -- print("args", vim.inspect(args))--TODO debug
         local bufnr = args.buf
         local event = args.event
 
         if event == "BufFilePost" then
           local file_mark_info = file_mark_info_by_bufnr[bufnr]
-          -- print("file_mark_info", vim.inspect(file_mark_info)) -- TODO debug
 
           if file_mark_info then
             file_mark_info_by_file[file_mark_info.file] = nil
             file_mark_info.file = args.file
             file_mark_info_by_file[file_mark_info.file] = file_mark_info
-            -- print("file_mark_info_by_file", vim.inspect(file_mark_info_by_file)) -- TODO debug
           end
         elseif event == "BufNew" then
           local file_mark_info = file_mark_info_by_file[args.file]
 
-          -- print("file_mark_info", vim.inspect(file_mark_info)) -- TODO debug
           if file_mark_info and file_mark_info.pos[1] == 0 then
             file_mark_info.pos[1] = bufnr
             file_mark_info_by_bufnr[bufnr] = file_mark_info
-            -- print("file_mark_info_by_bufnr", vim.inspect(file_mark_info_by_bufnr)) -- TODO debug
           end
         end
       end,
