@@ -79,7 +79,7 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
   elseif vim.b[binfo.bufnr].fugitive_type then
     local fugitive_type, fugitive = vim.b[binfo.bufnr].fugitive_type
 
-    if fugitive_type == "blob" then -- Fugitive summary
+    if fugitive_type == "blob" then -- Fugitive object
       local fugitive_object = FugitiveParse(nvim_buf_get_name(binfo.bufnr))
       fugitive = { cwd = fugitive_object[2]:sub(1, -6), name = fugitive_object[1] }
     elseif fugitive_type == "index" then -- Fugitive summary
