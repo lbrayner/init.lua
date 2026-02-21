@@ -354,7 +354,9 @@ function M.get_winbar()
 
   local winfo = getwininfo(nvim_get_current_win())[1]
 
-  if vim.b.fugitive_type == "index" then -- Fugitive summary
+  if vim.b.fugitive_type == "blob" then -- Fugitive object
+    statusline = concat({ statusline, get_fugitive_object(0) })
+  elseif vim.b.fugitive_type == "index" then -- Fugitive summary
     local git_dir = pathshorten(fnamemodify(
       FugitiveGitDir(nvim_get_current_buf()):sub(1, -6), ":~"
     ))
