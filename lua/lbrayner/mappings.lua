@@ -88,6 +88,11 @@ vim.keymap.set("v", "<Leader>x", [[""y:keepp .,$s/\C\V<C-R>"//gc<Left><Left><Lef
 vim.keymap.set("n", "[<Space>", [[<Cmd>exe "put!=repeat(nr2char(10), v:count1)\<Bar>silent ']+"<CR>]])
 vim.keymap.set("n", "]<Space>", [[<Cmd>exe "put =repeat(nr2char(10), v:count1)\<Bar>silent ']-"<CR>]])
 
+-- Command-line abbreviations
+
+vim.keymap.set("ca", "t", "tab")
+vim.keymap.set("ca", "v", "vert")
+
 -- nvim-spider
 
 if pcall(require, "spider") then
