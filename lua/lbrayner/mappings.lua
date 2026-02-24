@@ -90,6 +90,7 @@ vim.keymap.set("n", "]<Space>", [[<Cmd>exe "put =repeat(nr2char(10), v:count1)\<
 
 -- Command-line abbreviations
 
+vim.keymap.set("ca", "-t", "-tab")
 vim.keymap.set("ca", "t", "tab")
 vim.keymap.set("ca", "v", "vert")
 
