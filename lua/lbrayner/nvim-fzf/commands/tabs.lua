@@ -192,7 +192,7 @@ local change_context_action = require("fzf.actions").raw_action(function(args) -
   state.cpos = tonumber(args[1])
 
   return ("clear-query+reload(%s)"):format(reload_action)
-end, [[{3} ${FZF_QUERY}]]) -- }}}
+end, [[-- {3} ${FZF_QUERY}]]) -- }}}
 
 local close_window_action = require("fzf.actions").raw_action(function(selected) -- {{{
   local function close(selected)
@@ -243,7 +243,7 @@ local reset_action = require("fzf.actions").raw_action(function(args) -- {{{
   if not tbl_isempty(args) and args[1] ~= "" then return "ignore" end
 
   return get_pos(state.pos)
-end, "${FZF_QUERY}") -- }}}
+end, "-- ${FZF_QUERY}") -- }}}
 
 return function (opts)
   opts = opts or {}
