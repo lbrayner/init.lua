@@ -93,16 +93,3 @@ vim.keymap.set("n", "]<Space>", [[<Cmd>exe "put =repeat(nr2char(10), v:count1)\<
 vim.keymap.set("ca", "-t", "-tab")
 vim.keymap.set("ca", "t", "tab")
 vim.keymap.set("ca", "v", "vert")
-
--- nvim-spider
-
-if pcall(require, "spider") then
-  local function spider(motion)
-    return function() require("spider").motion(motion) end
-  end
-
-  vim.keymap.set({"n", "o", "x"}, "<Leader>w",  spider("w"),  { desc = "Spider-w"  })
-  vim.keymap.set({"n", "o", "x"}, "<Leader>e",  spider("e"),  { desc = "Spider-e"  })
-  vim.keymap.set({"n", "o", "x"}, "<Leader>b",  spider("b"),  { desc = "Spider-b"  })
-  vim.keymap.set({"n", "o", "x"}, "<Leader>ge", spider("ge"), { desc = "Spider-ge" })
-end

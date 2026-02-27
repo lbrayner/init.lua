@@ -45,4 +45,15 @@ require("nvim-highlight-colors").setup({ -- nvim-highlight-colors
 vim.g.nvim_jdtls = 1 -- skipping autocmds and commands
 require("lbrayner.jdtls").create_user_command()
 
+-- nvim-spider
+
+local function spider(motion)
+  return function() require("spider").motion(motion) end
+end
+
+vim.keymap.set({"n", "o", "x"}, "<Leader>w",  spider("w"),  { desc = "Spider-w"  })
+vim.keymap.set({"n", "o", "x"}, "<Leader>e",  spider("e"),  { desc = "Spider-e"  })
+vim.keymap.set({"n", "o", "x"}, "<Leader>b",  spider("b"),  { desc = "Spider-b"  })
+vim.keymap.set({"n", "o", "x"}, "<Leader>ge", spider("ge"), { desc = "Spider-ge" })
+
 return M
