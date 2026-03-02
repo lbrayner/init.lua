@@ -151,7 +151,13 @@ end
 
 function M.get_buffer_name(opts)
   opts = opts or {}
-  local buffer_name = get_path()
+  local buffer_name
+
+  if opts.fugitive_type and vim.b.fugitive_type == "blob" then -- Fugitive object
+    buffer_name = get_fugitive_object(0)
+  else
+    buffer_name = get_path()
+  end
 
   if buffer_name == "" then
     return concat({ "#", nvim_get_current_buf() })
@@ -354,9 +360,7 @@ function M.get_winbar()
 
   local winfo = getwininfo(nvim_get_current_win())[1]
 
-  if vim.b.fugitive_type == "blob" then -- Fugitive object
-    statusline = concat({ statusline, get_fugitive_object(0) })
-  elseif vim.b.fugitive_type == "index" then -- Fugitive summary
+  if vim.b.fugitive_type == "index" then -- Fugitive summary
     local git_dir = pathshorten(fnamemodify(
       FugitiveGitDir(nvim_get_current_buf()):sub(1, -6), ":~"
     ))
@@ -395,7 +399,7 @@ function M.get_winbar()
       statusline = concat({
         statusline,
         "%<%{v:lua.require'lbrayner'.truncate_filename(",
-        "v:lua.require'lbrayner.statusline'.get_buffer_name(), winwidth('%') - 4)}"
+        "v:lua.require'lbrayner.statusline'.get_winbar_buffer_name(), winwidth('%') - 4)}"
       })
     end
     statusline = concat({
@@ -404,6 +408,10 @@ function M.get_winbar()
   end
 
   return statusline
+end
+
+function M.get_winbar_buffer_name()
+  return M.get_buffer_name({ fugitive_type = true })
 end
 
 local theme
