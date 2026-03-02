@@ -46,7 +46,7 @@ local function is_file_mark(input)
   return input:match("^%u$") -- Uppercase letters
 end
 
-local function file_mark_info_get_previous(mark)
+local function get_previous_file_mark_info(mark)
   local file = get_file()
 
   if file == "" then return end
@@ -67,7 +67,7 @@ local function file_mark_info_get_previous(mark)
   return next_file_mark_info
 end
 
-local function file_mark_info_get_next()
+local function get_next_file_mark_info()
   local file = get_file()
 
   if file == "" then return end
@@ -106,7 +106,7 @@ local function file_mark_info_jump_to_location(file_mark_info)
   require("lbrayner").jump_to_location(bufnr, pos)
 end
 
-local function file_mark_move_down_info()
+local function get_file_mark_move_down_data()
   local file = get_file()
 
   if file == "" then return end
@@ -126,7 +126,7 @@ local function file_mark_move_down_info()
   return file_mark_info, next_file_mark_info
 end
 
-local function file_mark_move_up_info()
+local function get_file_mark_move_up_data()
   local file = get_file()
 
   if file == "" then return end
@@ -277,7 +277,7 @@ vim.keymap.set("n", "m", function()
 end)
 
 vim.keymap.set("n", "]4", function()
-  local file_mark_info = file_mark_info_get_next()
+  local file_mark_info = get_next_file_mark_info()
 
   if not file_mark_info then
     vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
@@ -287,7 +287,7 @@ vim.keymap.set("n", "]4", function()
   file_mark_info_jump_to_location(file_mark_info)
 end)
 vim.keymap.set("n", "[4", function()
-  local file_mark_info = file_mark_info_get_previous()
+  local file_mark_info = get_previous_file_mark_info()
 
   if not file_mark_info then
     vim.notify("Not currently on a marked file.", vim.log.levels.WARN)
@@ -375,11 +375,11 @@ local function swap_marks(fmark1, fmark2) -- {{{
 end -- }}}
 
 vim.keymap.set("n", "<A-4>", function()
-  local file_mark_info, next_file_mark_info = file_mark_move_down_info()
+  local file_mark_info, next_file_mark_info = get_file_mark_move_down_data()
   swap_marks(file_mark_info, next_file_mark_info)
 end)
 vim.keymap.set("n", "<A-$>", function()
-  local file_mark_info, previous_file_mark_info = file_mark_move_up_info()
+  local file_mark_info, previous_file_mark_info = get_file_mark_move_up_data()
   swap_marks(file_mark_info, previous_file_mark_info)
 end)
 
