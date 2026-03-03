@@ -249,6 +249,10 @@ function M.get_minor_modes()
   return ""
 end
 
+function M.get_quickfix_or_location_list_title()
+  return get_quickfix_or_location_list_title(getwininfo(nvim_get_current_win())[1])
+end
+
 -- A Nerd Font is required
 function M.get_status_flag()
   if vim.bo.modified then
@@ -304,7 +308,8 @@ function M.get_statusline()
     })
   elseif winfo.loclist == 1 or winfo.quickfix == 1 then
     leftline = concat({
-      leftline, "%<%5*%f%* ", get_quickfix_or_location_list_title(winfo)
+      leftline, "%<%5*%f%* ",
+      "%{v:lua.require'lbrayner.statusline'.get_quickfix_or_location_list_title()}"
     })
   elseif vim.w.cmdline then
     leftline = concat({ leftline, "%<%5*[Command Line]%*" })
@@ -392,7 +397,8 @@ function M.get_winbar()
   else
     if vim.wo.previewwindow then
       statusline = concat({
-        statusline, "%<", pathshorten(get_full_path())
+        statusline, "%<",
+        "%{v:lua.require'lbrayner.statusline'.get_quickfix_or_location_list_title()}"
       })
     else
       -- margins of 1 column, space and status flag
