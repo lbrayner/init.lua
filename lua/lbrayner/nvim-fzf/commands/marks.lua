@@ -17,29 +17,9 @@ local YELLOW = ansi.color_to_ansi("yellow")
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file("file_marks")
 local state = {}
 
-local function get_pos() -- {{{
-  local file_mark_info = require(
-    "lbrayner.marks"
-  ).file_mark_info_by_bufnr[state.bufnr]
-  -- print("file_mark_info", vim.inspect(file_mark_info)) -- TODO debug
-
-  if not file_mark_info then
-    -- print("pos", 1) -- TODO debug
-    return "ignore"
-  end
-
-  -- Start from position 2
-  for i = 2, #state.marks do
-    if (state.marks[i]):match("%u") == file_mark_info.mark then
-      -- local p = pos(i - 1)
-      -- print("pos", vim.inspect(p)) -- TODO debug
-      -- return p
-      return string.format("pos(%d)", i - 1)
-    end
-  end
-end
-
-local get_pos_action = require("fzf.actions").raw_action(get_pos) -- }}}
+local function get_pos(pos) -- {{{
+  return ("pos(%d)"):format(pos)
+end -- }}}
 
 local function get_marks() -- {{{
   local success, marks = pcall(vim.fn.execute, "marks ABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -48,30 +28,42 @@ local function get_marks() -- {{{
 
   marks = vim.split(marks:sub(2), "\n")
   state.marks = marks
-  local header = marks[1]
+  local header = concat({ "  ", marks[1] })
   local entries = { header }
   local _, linepos = header:find("%s+", 4)
   local _, colpos = header:find("%s+", linepos + 4)
   -- print("linepos", linepos, "colpos", colpos)--TODO debug
   local fmts = concat({
-    " %s%-3s ",
-    "%s%", linepos - 5 + 4, "s ",
+    " %s %s%-3s ",
+    "%s%", linepos - 7 + 4, "s ",
     "%s%", colpos - (linepos + 5) + 3, "s%s %s"
   })
 
+  local file_mark_info = require(
+    "lbrayner.marks"
+  ).file_mark_info_by_bufnr[state.bufnr]
+
   for i = 2, #marks do
     -- from fzf-lua's nvim provider
+    local star = " "
     local mark, line, col, text = marks[i]:match("(.)%s+(%d+)%s+(%d+)%s+(.*)")
 
+    if file_mark_info and file_mark_info.mark == mark then
+      star = "★"
+      state.pos = i - 1
+    end
+
     table.insert(
-      entries, string.format(fmts, YELLOW, mark, BLUE, line, GREEN, col, CLEAR, text)
+      entries, string.format(fmts, star, YELLOW, mark, BLUE, line, GREEN, col, CLEAR, text)
     )
   end
 
   return entries
-end
+end -- }}}
 
-local reload_action = require("fzf.actions").raw_action(get_marks) -- }}}
+local reload_action = require("fzf.actions").raw_action(function()
+  return get_marks() or {}
+end)
 
 local function jump(selected) -- {{{
   if #selected > 1 then
@@ -83,32 +75,30 @@ local function jump(selected) -- {{{
   require("lbrayner.marks").file_mark_jump_to_location(mark)
 end -- }}}
 
+local set_pos_action = require("fzf.actions").raw_action(function()
+  return get_pos(state.pos)
+end)
+
 local function shift_below(args) -- {{{
-  -- TODO
-  print("args", vim.inspect(args)) -- TODO debug
-  return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
+  return get_marks() or {}
 end
 
 local shift_below_action = require("fzf.actions").raw_action(shift_below) -- }}}
 
 local function shift_above() -- {{{
-  -- TODO
-  return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
+  return get_marks() or {}
 end
 
 local shift_above_action = require("fzf.actions").raw_action(shift_above) -- }}}
 
 local function shift_down(args) -- {{{
-  -- TODO
-  print("args", vim.inspect(args)) -- TODO debug
-  return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
+  return get_marks() or {}
 end
 
 local shift_down_action = require("fzf.actions").raw_action(shift_down) -- }}}
 
 local function shift_up() -- {{{
-  -- TODO
-  return vim.fn.execute("marks ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(2)
+  return get_marks() or {}
 end
 
 local shift_up_action = require("fzf.actions").raw_action(shift_up) -- }}}
@@ -127,7 +117,7 @@ return function (opts)
           "%s:reload(%s)", "%s:reload(%s)",
           "%s:reload(%s)", "%s:reload(%s)",
         }, ","),
-        get_pos(), RELOAD, reload_action, get_pos_action,
+        get_pos(state.pos), RELOAD, reload_action, set_pos_action,
         SHIFT_BELOW, shift_below_action, SHIFT_ABOVE, shift_above_action,
         SHIFT_DOWN, shift_down_action, SHIFT_UP, shift_up_action
       ))
