@@ -27,7 +27,7 @@ local function get_marks() -- {{{
   if not success then return end
 
   marks = vim.split(marks:sub(2), "\n")
-  state.marks = marks
+  state.marks, state.pos = marks
   local header = concat({ "  ", marks[1] })
   local entries = { header }
   local _, linepos = header:find("%s+", 4)
@@ -117,7 +117,7 @@ return function (opts)
           "%s:reload(%s)", "%s:reload(%s)",
           "%s:reload(%s)", "%s:reload(%s)",
         }, ","),
-        get_pos(state.pos), RELOAD, reload_action, set_pos_action,
+        state.pos and get_pos(state.pos) or "ignore", RELOAD, reload_action, set_pos_action,
         SHIFT_BELOW, shift_below_action, SHIFT_ABOVE, shift_above_action,
         SHIFT_DOWN, shift_down_action, SHIFT_UP, shift_up_action
       ))
