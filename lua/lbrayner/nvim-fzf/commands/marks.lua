@@ -76,6 +76,8 @@ local function jump(selected) -- {{{
 end -- }}}
 
 local set_pos_action = require("fzf.actions").raw_action(function()
+  if not state.pos then return "ignore" end
+
   return get_pos(state.pos)
 end)
 
