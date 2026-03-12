@@ -7,7 +7,7 @@ local FugitiveHead = vim.fn.FugitiveHead
 local FugitiveResult = vim.fn.FugitiveResult
 local buf_is_scratch = require("lbrayner").buf_is_scratch
 local concat = table.concat
-local dap = require("dap")
+local dap_available, dap = pcall(require, "dap")
 local empty_dict = vim.empty_dict
 local endswith = vim.endswith
 local exists = vim.fn.exists
@@ -115,19 +115,21 @@ local function highlight_dap_stopped(is_stopped)
   )
 end
 
--- command: 'continue';
-dap.listeners.after["continue"]["lbrayner.statusline"] = function()
-  highlight_dap_stopped(false)
-end
+if dap_available then
+  -- command: 'continue';
+  dap.listeners.after["continue"]["lbrayner.statusline"] = function()
+    highlight_dap_stopped(false)
+  end
 
--- event: 'stopped';
-dap.listeners.after["event_stopped"]["lbrayner.statusline"] = function()
-  highlight_dap_stopped(true)
-end
+  -- event: 'stopped';
+  dap.listeners.after["event_stopped"]["lbrayner.statusline"] = function()
+    highlight_dap_stopped(true)
+  end
 
--- command: 'launch';
-dap.listeners.after["launch"]["lbrayner.statusline"] = function()
-  highlight_dap_stopped(false)
+  -- command: 'launch';
+  dap.listeners.after["launch"]["lbrayner.statusline"] = function()
+    highlight_dap_stopped(false)
+  end
 end
 
 -- }}}
@@ -193,11 +195,15 @@ function M.get_buffer_status()
 end
 
 function M.get_dap_status()
+  local empty = "    "
+
+  if not dap_available then return empty end
+
   local sessions = dap.sessions()
   local count = tbl_count(sessions)
 
   if count == 0 then
-    return "    "
+    return empty
   elseif count == 1 then
     return "   "
   elseif count == 2 then
