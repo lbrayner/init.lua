@@ -20,7 +20,7 @@ function M.buf_is_scratch(bufnr)
 end
 
 function M.contains(s, text)
-  vim.validate({ s = { s, 's' }, text = { text, 's' } })
+  vim.validate({ s = { s, "s" }, text = { text, "s" } })
   return string.find(s, text, 1, true)
 end
 
@@ -163,7 +163,7 @@ function M.is_quickfix_list(winid)
 end
 
 -- From $VIMRUNTIME's lua/vim/uri.lua
-local URI_SCHEME_PATTERN = '^([a-zA-Z]+[a-zA-Z0-9.+-]*):.*'
+local URI_SCHEME_PATTERN = "^([a-zA-Z]+[a-zA-Z0-9.+-]*):.*"
 
 function M.is_uri(uri)
   return uri:match(URI_SCHEME_PATTERN)
