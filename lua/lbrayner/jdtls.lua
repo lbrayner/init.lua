@@ -74,6 +74,12 @@ function M.get_config()
 end
 
 function M.setup(config)
+  local opts = { dap = {} } -- required to setup dap
+
+  local function start_or_attach()
+    require("jdtls").start_or_attach(config, opts)
+  end
+
   local jdtls_setup = vim.api.nvim_create_augroup("jdtls_setup", { clear = true })
 
   vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
@@ -88,7 +94,7 @@ function M.setup(config)
         return
       end
 
-      require("jdtls").start_or_attach(config)
+      start_or_attach()
     end,
   })
 
@@ -97,7 +103,7 @@ function M.setup(config)
     pattern = { "jdt://*", "*.class" },
     desc = "Handle jdt:// URIs and classfiles",
     callback = function(args)
-      require("jdtls").start_or_attach(config)
+      start_or_attach()
       require("jdtls").open_classfile(args.match)
     end,
   })
@@ -112,9 +118,7 @@ function M.setup(config)
         buffer = bufnr,
         desc = "This Java buffer will attach to JDT Language Server once focused",
         once = true,
-        callback = function()
-          require("jdtls").start_or_attach(config)
-        end,
+        callback = start_or_attach,
       })
     end
   end
@@ -163,7 +167,7 @@ function M.setup(config)
     end,
   })
 
-  require("jdtls").start_or_attach(config)
+  start_or_attach()
 end
 
 M.operations = require("lbrayner").get_proxy_table_for_module("lbrayner.jdtls._operations")
