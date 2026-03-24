@@ -56,6 +56,11 @@ local tbl_isempty = vim.tbl_isempty
 local tbl_keys = vim.tbl_keys
 local win_is_actual_curwin = require("lbrayner").win_is_actual_curwin
 local win_is_floating = require("lbrayner").win_is_floating
+local winwidth = vim.fn.winwidth
+
+local function get_qf_title_prefix(winfo)
+  return winfo.loclist == 1 and "[Location List] " or "[Quickfix List] "
+end
 
 local function get_line_format()
   if vim.bo.buftype == "terminal" then
@@ -83,6 +88,16 @@ local function get_number_of_lines()
   end
 
   return concat({ "%-", length, "L" })
+end
+
+local function truncate(text, maxlength, where)
+  if string_len(text) > maxlength then
+    return concat({
+      string_sub(text, 1, (maxlength - where)), "…", string_sub(text, (0 - where))
+    })
+  end
+
+  return text
 end
 
 -- }}}
@@ -255,10 +270,6 @@ function M.get_minor_modes()
   return ""
 end
 
-function M.get_quickfix_or_location_list_title()
-  return get_quickfix_or_location_list_title(getwininfo(nvim_get_current_win())[1])
-end
-
 -- A Nerd Font is required
 function M.get_status_flag()
   if vim.bo.modified then
@@ -314,8 +325,7 @@ function M.get_statusline()
     })
   elseif winfo.loclist == 1 or winfo.quickfix == 1 then
     leftline = concat({
-      leftline, "%<%5*%f%* ",
-      "%{v:lua.require'lbrayner.statusline'.get_quickfix_or_location_list_title()}"
+      leftline, "%<%5*", get_qf_title_prefix(winfo), "%*",
     })
   elseif vim.w.cmdline then
     leftline = concat({ leftline, "%<%5*[Command Line]%*" })
@@ -356,15 +366,12 @@ function M.get_version_control()
     return ""
   end
 
-  if string_len(branch) > 60 then
-    return concat({ string_sub(branch, 1, 54), "…", string_sub(branch, -5) })
-  end
-
-  return branch
+  return truncate(branch, 60, 5)
 end
 
 function M.get_winbar()
   local statusline = " "
+
   if vim.wo.previewwindow then
     statusline = concat({ statusline, "%w " })
   end
@@ -395,28 +402,25 @@ function M.get_winbar()
       })
     end
   elseif winfo.loclist == 1 or winfo.quickfix == 1 then
+    local width = winwidth("%")
+
     statusline = concat({
-      statusline, "%<%f ", get_quickfix_or_location_list_title(winfo)
+      statusline, "%<",
+      truncate(concat({
+        get_qf_title_prefix(winfo),
+        get_quickfix_or_location_list_title(winfo)
+      }), width - 4, width/2)
     })
   elseif vim.w.cmdline then
     statusline = ""
   else
-    if vim.wo.previewwindow then
-      statusline = concat({
-        statusline, "%<",
-        "%{v:lua.require'lbrayner.statusline'.get_quickfix_or_location_list_title()}"
-      })
-    else
       -- margins of 1 column, space and status flag
       statusline = concat({
         statusline,
         "%<%{v:lua.require'lbrayner'.truncate_filename(",
-        "v:lua.require'lbrayner.statusline'.get_winbar_buffer_name(), winwidth('%') - 4)}"
+        "v:lua.require'lbrayner.statusline'.get_winbar_buffer_name(), winwidth('%') - 4)}",
+        " %{v:lua.require'lbrayner.statusline'.get_status_flag()}"
       })
-    end
-    statusline = concat({
-      statusline, " %{v:lua.require'lbrayner.statusline'.get_status_flag()}"
-    })
   end
 
   return statusline
