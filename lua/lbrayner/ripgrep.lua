@@ -9,13 +9,14 @@ local get_visual_selection = require("lbrayner").get_visual_selection
 local join = require("lbrayner").join
 local notify = vim.notify
 local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
+local nvim_buf_get_name = vim.api.nvim_buf_get_name
 
 local function rg(args, opts) -- {{{
   if vim.fn.executable("rg") == 0 then
     error("Rg: 'rg' not executable.")
   end
 
-  local grep, rgopts = "rg --engine=auto --vimgrep --sort path", {}
+  local cmd, cmdopts = "rg --engine=auto --vimgrep --sort path", {}
   local cclose, copen, getqf, setqf
 
   if opts.loclist then
@@ -34,19 +35,23 @@ local function rg(args, opts) -- {{{
   end
 
   if opts.config_path and vim.uv.fs_stat(opts.config_path) then
-    grep = join({ concat({ "RIPGREP_CONFIG_PATH=", opts.config_path }), grep })
+    cmd = join({ concat({ "RIPGREP_CONFIG_PATH=", opts.config_path }), cmd })
+  end
+
+  if opts.places and vim.uv.fs_stat(opts.places) then
+    cmd = join({ "xargs -d\\\\n", cmd, "<", opts.places })
   end
 
   if vim.o.ignorecase then
-    table.insert(rgopts, "-i")
+    table.insert(cmdopts, "-i")
   end
 
   if vim.o.smartcase then
-    table.insert(rgopts, "-S")
+    table.insert(cmdopts, "-S")
   end
 
-  local cmd, qfid = join({ grep, join(rgopts), args })
-  local title = opts.title or cmd
+  cmd = join({ cmd, join(cmdopts), args })
+  local title, qfid = opts.title or cmd
 
   vim.system(
     { "sh", "-c", cmd },
@@ -138,6 +143,10 @@ function M.rg(args, opts)
       return false, "'on_exit' must be a function"
     end
 
+    if opts.places and type(opts.places) ~= "string" then
+      return false, "'places' must be a string"
+    end
+
     if opts.title and type(opts.title) ~= "string" then
       return false, "'title' must be a string"
     end
@@ -152,19 +161,43 @@ end
 
 function M.user_command_with_config_path(command_name, config_path)
   vim.api.nvim_create_user_command(command_name, function(opts)
-    local args = opts.args
-    local count = opts.count
-
-    if count == 0 then -- :0Rg
+    local function get_context()
       local context = vim.fn.getqflist({ context = 1 }).context
 
       if vim.tbl_get(context, "ripgrep", "args") then
-        -- :0Rg performs a search with the last text juxtaposed with the new text
-        args = join({ context.ripgrep.args, args })
+        return context
       else
-        notify("Could not find a ripgrep search context.")
-        return
+        error("Could not find a ripgrep search context.")
       end
+    end
+
+    local args, count, rgopts = opts.args, opts.count, { config_path = config_path }
+
+    if count == 0 then -- :0Rg
+      local context = get_context()
+      -- :0Rg juxtaposes last text with new text
+      args = join({ context.ripgrep.args, args })
+    elseif count == 1 then -- :1Rg
+      -- :1Rg searches files from the previous search
+      local _, names = get_context(), {}
+
+      for _, qfitem in ipairs(vim.fn.getqflist()) do
+        if qfitem.bufnr > 0 then
+          names[nvim_buf_get_name(qfitem.bufnr)] = true
+        end
+      end
+
+      rgopts.places = os.tmpname()
+      local file = io.open(rgopts.places, "w")
+
+      names = vim.tbl_keys(names)
+      table.sort(names)
+
+      for _, name in ipairs(names) do
+        file:write(concat({ name, "\n" }))
+      end
+
+      file:close()
     elseif count > 0 then -- :'<,'>Rg
       -- https://neovim.discourse.group/t/function-that-return-visually-selected-text/1601
       local success, result = get_visual_selection(opts)
@@ -182,7 +215,7 @@ function M.user_command_with_config_path(command_name, config_path)
       args = join({ "-s -F -e", vim.fn.shellescape(result[1]), args })
     end
 
-    M.rg(args, { config_path = config_path })
+    M.rg(args, rgopts)
   end, { complete = "file", nargs = "*", range = -1 })
 end
 
