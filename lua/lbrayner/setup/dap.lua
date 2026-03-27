@@ -19,7 +19,7 @@ vim.api.nvim_create_user_command("ClearBreakpoints", function()
   require("dap").clear_breakpoints()
 end, { nargs = 0 })
 
-vim.api.nvim_create_user_command("DapListBreakpoints", function()
+vim.api.nvim_create_user_command("ListBreakpoints", function()
   require("dap").list_breakpoints(true) -- openqf
 end, { nargs = 0 })
 
