@@ -21,6 +21,7 @@ local nvim_buf_get_name = vim.api.nvim_buf_get_name
 local nvim_win_close = vim.api.nvim_win_close
 local nvim_win_get_buf = vim.api.nvim_win_get_buf
 local shellescape = vim.fn.shellescape
+local string_len = string.len
 local strwidth = vim.fn.strwidth
 local tabclose = vim.cmd.tabclose
 local tbl_count = vim.tbl_count
@@ -118,7 +119,7 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
     return concat({
       RED, CUSTOM_FOLDER_GIT, tilde(fugitive.cwd), CLEAR,
       TAB, "[Fugitive] ", fugitive.name
-    })
+    }), string_len(concat({ RED, CLEAR }))
   end
 
   if is_uri(binfo.name) then
@@ -128,7 +129,9 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
   local rel = relpath(tinfo.cwd, binfo.name)
 
   if not rel then
-    return concat({ RED, tilde(binfo.name), CLEAR })
+    return concat({
+      RED, tilde(binfo.name), CLEAR
+    }), string_len(concat({ RED, CLEAR }))
   end
 
   return rel
@@ -142,16 +145,21 @@ local function get_tabs() -- {{{
   local cwd = getcwd(-1, vim.fn.tabpagenr())
 
   for tabnr, tabh in ipairs(vim.api.nvim_list_tabpages()) do
+    local ansi_length = 0
     local tcwd, dir = getcwd(-1, tabnr)
 
     if cwd == tcwd then
       dir = concat({ "  ", FOLDER, tilde(tcwd)  })
     else
       dir = concat({ "↳ ", FOLDER, GREEN, tilde(tcwd), CLEAR })
+      ansi_length = string_len(concat({ GREEN, CLEAR }))
     end
 
     local wins = vim.api.nvim_tabpage_list_wins(tabh)
     local tinfo = { cwd = tcwd }
+    ansi_length = ansi_length + string_len(
+      concat({ YELLOW, CLEAR, BLUE, CLEAR }) -- see for loop below
+    )
 
     local statement = base64_encode(concat({
       "Tab page ", ("%-4d"):format(tabnr), TAB, dir, TAB, #wins, " window(s)"
@@ -165,7 +173,7 @@ local function get_tabs() -- {{{
       local winfo = getwininfo(w)[1]
       local bufnr = nvim_win_get_buf(w)
       local binfo = get_buffer_info(bufnr)
-      local window_name = get_window_name(tinfo, winfo, binfo)
+      local window_name, window_name_ansi_length = get_window_name(tinfo, winfo, binfo)
 
       local visible = ("%s %s%4d%s %d %s %s%6s%s %s    %s"):format(
         p == i and "★" or " ", YELLOW, tabnr, CLEAR, w,
@@ -173,7 +181,10 @@ local function get_tabs() -- {{{
         dir, window_name
       )
 
-      if strwidth(visible) > state.width then
+      ansi_length = ansi_length + (window_name_ansi_length or 0)
+      local visible_width = strwidth(visible) - ansi_length
+
+      if visible_width > (state.width - 2) then -- FZF left pads 2
         statement = base64_encode(window_name)
       end
 
