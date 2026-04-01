@@ -21,6 +21,7 @@ local nvim_buf_get_name = vim.api.nvim_buf_get_name
 local nvim_win_close = vim.api.nvim_win_close
 local nvim_win_get_buf = vim.api.nvim_win_get_buf
 local shellescape = vim.fn.shellescape
+local strwidth = vim.fn.strwidth
 local tabclose = vim.cmd.tabclose
 local tbl_count = vim.tbl_count
 local tbl_isempty = vim.tbl_isempty
@@ -164,16 +165,19 @@ local function get_tabs() -- {{{
       local winfo = getwininfo(w)[1]
       local bufnr = nvim_win_get_buf(w)
       local binfo = get_buffer_info(bufnr)
+      local window_name = get_window_name(tinfo, winfo, binfo)
 
-      table.insert(
-        tabs,
-        ("%d	%d	%d	%s	%s %s%4d%s %d %s %s%6s%s %s    %s"):format(
-          tabh, w, i, statement,
-          p == i and "★" or " ", YELLOW, tabnr, CLEAR, w,
-          binfo.flags, BLUE, concat({ "[", bufnr, "]" }), CLEAR,
-          dir, get_window_name(tinfo, winfo, binfo)
-        )
+      local visible = ("%s %s%4d%s %d %s %s%6s%s %s    %s"):format(
+        p == i and "★" or " ", YELLOW, tabnr, CLEAR, w,
+        binfo.flags, BLUE, concat({ "[", bufnr, "]" }), CLEAR,
+        dir, window_name
       )
+
+      if strwidth(visible) > state.width then
+        statement = base64_encode(window_name)
+      end
+
+      table.insert(tabs, ("%d	%d	%d	%s	%s"):format(tabh, w, i, statement, visible))
     end
   end
 
@@ -246,8 +250,14 @@ local reset_action = require("fzf.actions").raw_action(function(args) -- {{{
 end, "-- ${FZF_QUERY}") -- }}}
 
 return function (opts)
+  -- Fom nvim-fzf.floating_window
+  local columns, lines = vim.o.columns, vim.o.lines
+  local height = math.min(lines - 4, math.max(20, lines - 10))
+  local width = math.min(columns - 4, math.max(80, columns - 20))
+
   opts = opts or {}
-  state = {}
+  state = { width = width }
+
   local tabs = get_tabs()
   local pos = get_pos(state.pos)
   local fzf_cli_args = concat({
@@ -273,6 +283,7 @@ return function (opts)
   }, " ")
 
   coroutine.wrap(function()
+    local opts = { height = state.height, width = state.width }
     local selected = require("fzf").fzf(tabs, fzf_cli_args)
     state = nil
 
