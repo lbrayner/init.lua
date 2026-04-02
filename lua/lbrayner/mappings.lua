@@ -93,3 +93,10 @@ vim.keymap.set("n", "]<Space>", [[<Cmd>exe "put =repeat(nr2char(10), v:count1)\<
 vim.keymap.set("ca", "-t", "-tab")
 vim.keymap.set("ca", "t", "tab")
 vim.keymap.set("ca", "v", "vert")
+
+-- Wezterm does not support mouse wheel horizontal scroll
+
+vim.keymap.set("n", "<C-ScrollWheelUp>", "zl")
+vim.keymap.set("n", "<C-ScrollWheelDown>", "zh")
+vim.keymap.set("n", "<S-ScrollWheelUp>", "zL")
+vim.keymap.set("n", "<S-ScrollWheelDown>", "zH")
