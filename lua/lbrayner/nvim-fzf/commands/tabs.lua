@@ -161,7 +161,7 @@ local function get_tabs() -- {{{
       concat({ YELLOW, CLEAR, BLUE, CLEAR }) -- see for loop below
     )
 
-    local statement = base64_encode(concat({
+    local default_statement = base64_encode(concat({
       "Tab page ", ("%-4d"):format(tabnr), TAB, dir, TAB, #wins, " window(s)"
     }))
 
@@ -173,6 +173,7 @@ local function get_tabs() -- {{{
       local winfo = getwininfo(w)[1]
       local bufnr = nvim_win_get_buf(w)
       local binfo = get_buffer_info(bufnr)
+      local statement = default_statement
       local window_name, window_name_ansi_length = get_window_name(tinfo, winfo, binfo)
 
       local visible = ("%s %s%4d%s %d %s %s%6s%s %s    %s"):format(
