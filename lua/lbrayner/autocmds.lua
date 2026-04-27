@@ -547,6 +547,7 @@ vim.api.nvim_create_autocmd("TermEnter", {
         local bufnr = vim.api.nvim_win_get_buf(winid)
         return vim.bo[bufnr].buftype == "terminal"
       end, vim.api.nvim_tabpage_list_wins(0))
+
       if vim.tbl_count(terminals) > 1 then
         vim.opt.winhighlight:append({ Normal = "CursorLine" })
       end
