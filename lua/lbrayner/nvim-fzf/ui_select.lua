@@ -47,6 +47,10 @@ function M.ui_select(items, ui_opts, on_choice)
 
   if co then
     select()
+
+    if vim.bo.buftype == "terminal" and vim.api.nvim_get_mode().mode == "t" then
+      vim.cmd.stopinsert()
+    end
   else
     wrap(function()
       select()
