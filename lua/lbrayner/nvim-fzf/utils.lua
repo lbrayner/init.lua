@@ -33,6 +33,16 @@ end
 
 M.ansi = ansi
 
+function M.coroutine_wrap(f)
+  return coroutine.wrap(function()
+    f()
+
+    if vim.bo.buftype == "terminal" then
+      vim.cmd.stopinsert()
+    end
+  end)
+end
+
 -- From fzf-lua.providers.buffers's gen_buffer_entry
 function M.get_buffer_info(bufnr)
   local info = getbufinfo(bufnr)[1]

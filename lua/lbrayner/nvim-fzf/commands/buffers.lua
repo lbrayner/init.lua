@@ -11,6 +11,7 @@ local getwininfo = vim.fn.getwininfo
 local nvim_buf_delete = vim.api.nvim_buf_delete
 local shellescape = vim.fn.shellescape
 local tbl_isempty = vim.tbl_isempty
+local wrap = require("lbrayner.nvim-fzf.utils").coroutine_wrap
 
 local EDIT        = "ctrl-]"
 local SPLIT       = "ctrl-s"
@@ -125,7 +126,7 @@ return function (opts)
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
 
-  coroutine.wrap(function()
+  wrap(function()
     local selected = require("fzf").fzf(buffers, fzf_cli_args)
     -- print("selected", vim.inspect(selected)) -- TODO debug
 

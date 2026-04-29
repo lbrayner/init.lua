@@ -1,5 +1,6 @@
 local concat = table.concat
 local shellescape = vim.fn.shellescape
+local wrap = require("lbrayner.nvim-fzf.utils").coroutine_wrap
 
 local M = {}
 
@@ -47,7 +48,7 @@ function M.ui_select(items, ui_opts, on_choice)
   if co then
     select()
   else
-    coroutine.wrap(function()
+    wrap(function()
       select()
     end)()
   end

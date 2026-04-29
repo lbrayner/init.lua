@@ -3,6 +3,7 @@
 local ansi = require("lbrayner.nvim-fzf.utils").ansi
 local concat = table.concat
 local shellescape = vim.fn.shellescape
+local wrap = require("lbrayner.nvim-fzf.utils").coroutine_wrap
 
 local RELOAD      = "ctrl-r"
 local SHIFT_ABOVE = "shift-up"
@@ -128,7 +129,7 @@ return function (opts)
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
 
-  coroutine.wrap(function()
+  wrap(function()
     local selected = require("fzf").fzf(marks, fzf_cli_args)
 
     if selected then

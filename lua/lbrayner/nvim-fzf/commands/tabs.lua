@@ -26,6 +26,7 @@ local strwidth = vim.fn.strwidth
 local tabclose = vim.cmd.tabclose
 local tbl_count = vim.tbl_count
 local tbl_isempty = vim.tbl_isempty
+local wrap = require("lbrayner.nvim-fzf.utils").coroutine_wrap
 
 -- }}}
 
@@ -294,7 +295,7 @@ return function (opts)
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
 
-  coroutine.wrap(function()
+  wrap(function()
     local opts = { height = state.height, width = state.width }
     local selected = require("fzf").fzf(tabs, fzf_cli_args)
     state = nil

@@ -5,6 +5,7 @@ local concat = table.concat
 local fnameescape = vim.fn.fnameescape
 local get_cwd = require("lbrayner.path").get_cwd
 local shellescape = vim.fn.shellescape
+local wrap = require("lbrayner.nvim-fzf.utils").coroutine_wrap
 
 local EDIT       = "ctrl-]"
 local SPLIT      = "ctrl-s"
@@ -49,7 +50,7 @@ return function (opts)
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
 
-  coroutine.wrap(function()
+  wrap(function()
     local selected = require("fzf").fzf(command, fzf_cli_args)
 
     if selected then
