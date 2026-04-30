@@ -10,7 +10,7 @@ local base64_encode = vim.base64.encode
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
 local fs_relpath = require("lbrayner.fs").relpath
-local get_buffer_info = require("lbrayner.nvim-fzf.utils").get_buffer_info
+local get_buffer_infos = require("lbrayner.nvim-fzf.utils").get_buffer_infos
 local get_quickfix_or_location_list_title = require(
   "lbrayner"
 ).get_quickfix_or_location_list_title
@@ -140,6 +140,7 @@ end -- }}}
 
 local function get_tabs() -- {{{
   local i, p = 0, 0
+  local binfos = get_buffer_infos()
   local tabs = {}
   local curtabh = vim.api.nvim_get_current_tabpage()
   local curwin = vim.api.nvim_get_current_win()
@@ -173,7 +174,7 @@ local function get_tabs() -- {{{
 
       local winfo = getwininfo(w)[1]
       local bufnr = nvim_win_get_buf(w)
-      local binfo = get_buffer_info(bufnr)
+      local binfo = binfos[bufnr]
       local statement = default_statement
       local window_name, window_name_ansi_length = get_window_name(tinfo, winfo, binfo)
 

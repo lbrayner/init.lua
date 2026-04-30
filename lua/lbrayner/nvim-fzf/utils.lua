@@ -44,18 +44,25 @@ function M.coroutine_wrap(f)
 end
 
 -- From fzf-lua.providers.buffers's gen_buffer_entry
-function M.get_buffer_info(bufnr)
-  local info = getbufinfo(bufnr)[1]
-  local hidden = info.hidden == 1 and "h" or " "
-  local readonly = vim.bo[bufnr].readonly and "=" or " "
-  local changed = info.changed == 1 and "+" or " "
-  local terminal = jobwait({ vim.bo[bufnr].channel }, 0)[1] < -2 and "!" or "&"
-  info.flags = concat({
-    hidden,
-    vim.bo[bufnr].buftype == "terminal" and terminal or readonly,
-    changed
-  })
-  return info
+function M.get_buffer_infos()
+  local infos = {}
+
+  for _, info in ipairs(getbufinfo()) do
+    local bufnr = info.bufnr
+    local hidden = info.hidden == 1 and "h" or " "
+    local readonly = vim.bo[bufnr].readonly and "=" or " "
+    local changed = info.changed == 1 and "+" or " "
+    local terminal = jobwait({ vim.bo[bufnr].channel }, 0)[1] < -2 and "!" or "&"
+    info.flags = concat({
+      hidden,
+      vim.bo[bufnr].buftype == "terminal" and terminal or readonly,
+      changed
+    })
+
+    infos[bufnr] = info
+  end
+
+  return infos
 end
 
 return M

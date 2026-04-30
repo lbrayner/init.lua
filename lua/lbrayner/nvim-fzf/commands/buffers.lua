@@ -3,7 +3,7 @@
 local ansi = require("lbrayner.nvim-fzf.utils").ansi
 local concat = table.concat
 local fnamemodify = vim.fn.fnamemodify
-local get_buffer_info = require("lbrayner.nvim-fzf.utils").get_buffer_info
+local get_buffer_infos = require("lbrayner.nvim-fzf.utils").get_buffer_infos
 local get_quickfix_or_location_list_title = require(
   "lbrayner"
 ).get_quickfix_or_location_list_title
@@ -53,10 +53,11 @@ local function get_buffer_name(binfo) -- {{{
 end -- }}}
 
 local function get_buffers() -- {{{
+  local binfos = get_buffer_infos()
   local buffers = {}
 
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    local binfo = get_buffer_info(bufnr)
+    local binfo = binfos[bufnr]
 
     table.insert(
       buffers,
