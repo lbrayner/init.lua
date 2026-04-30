@@ -45,18 +45,22 @@ end
 
 -- From fzf-lua.providers.buffers's gen_buffer_entry
 function M.get_buffer_infos()
+  local curbuf = vim.api.nvim_get_current_buf()
+  local altbuf = vim.fn.bufnr("#")
   local infos = {}
 
   for _, info in ipairs(getbufinfo()) do
     local bufnr = info.bufnr
-    local hidden = info.hidden == 1 and "h" or " "
-    local readonly = vim.bo[bufnr].readonly and "=" or " "
-    local changed = info.changed == 1 and "+" or " "
-    local terminal = jobwait({ vim.bo[bufnr].channel }, 0)[1] < -2 and "!" or "&"
+    local listed = info.listed == 1 and " " or "u"
+    local current = bufnr == curbuf and "%" or bufnr == altbuf and "#" or " "
+    local active = info.hidden == 1 and "h" or info.loaded == 1 and "a" or " "
+    local readonly = vim.bo[bufnr].readonly and "=" or vim.bo[bufnr].modifiable and " " or "-"
+    local modified = info.changed == 1 and "+" or " "
+    local terminal = jobwait({ vim.bo[bufnr].channel }, 0)[1] < -2 and "R" or "F"
     info.flags = concat({
-      hidden,
+      listed, current, active,
       vim.bo[bufnr].buftype == "terminal" and terminal or readonly,
-      changed
+      modified
     })
 
     infos[bufnr] = info
