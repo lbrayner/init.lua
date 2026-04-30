@@ -296,8 +296,8 @@ return function (opts)
   }, " ")
 
   wrap(function()
-    local opts = { height = state.height, width = state.width }
-    local selected = require("fzf").fzf(tabs, fzf_cli_args)
+    local opts = { height = height, width = width }
+    local selected = require("fzf").fzf(tabs, fzf_cli_args, opts)
     state = nil
 
     if selected then
