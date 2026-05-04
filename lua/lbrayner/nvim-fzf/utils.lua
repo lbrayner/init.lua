@@ -54,8 +54,10 @@ function M.get_buffer_infos()
     local listed = info.listed == 1 and " " or "u"
     local current = bufnr == curbuf and "%" or bufnr == altbuf and "#" or " "
     local active = info.hidden == 1 and "h" or info.loaded == 1 and "a" or " "
-    local readonly = vim.bo[bufnr].readonly and "=" or vim.bo[bufnr].modifiable and " " or "-"
-    local modified = info.changed == 1 and "+" or " "
+    local readonly = (
+      vim.bo[bufnr].readonly and "=" or vim.bo[bufnr].modifiable and " " or "-"
+    )
+    local modified = vim.bo[bufnr].modified == 1 and "+" or " "
     local terminal = jobwait({ vim.bo[bufnr].channel }, 0)[1] < -2 and "R" or "F"
     info.flags = concat({
       listed, current, active,
