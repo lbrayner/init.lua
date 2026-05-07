@@ -1,12 +1,15 @@
 local M = {}
 
 local concat = table.concat
+local floor = math.floor
 local fnamemodify = vim.fn.fnamemodify
 local getloclist = vim.fn.getloclist
 local getqflist = vim.fn.getqflist
 local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
 local nvim_buf_get_text = vim.api.nvim_buf_get_text
 local nvim_get_current_buf = vim.api.nvim_get_current_buf
+local str_len = string.len
+local str_sub = string.sub
 local tbl_contains = vim.tbl_contains
 
 function M.buf_is_scratch(bufnr)
@@ -342,17 +345,17 @@ function M.synstack()
 end
 
 function M.truncate_filename(filename, maxlength)
-  if string.len(filename) <= maxlength then
+  if str_len(filename) <= maxlength then
     return filename
   end
   local head = fnamemodify(filename, ":h")
   local tail = fnamemodify(filename, ":t")
-  if head ~= "." and string.len(tail) < maxlength then
+  if head ~= "." and str_len(tail) < maxlength then
     -- -1 (horizontal ellipsis …), -1 (forward slash)
-    return string.sub(head, 1, maxlength - string.len(tail) - 1 -1) .. "…/" .. tail
+    return str_sub(head, 1, maxlength - str_len(tail) - 1 -1) .. "…/" .. tail
   end
-  local cut = maxlength / 2
-  return string.sub(tail, 1, cut - 1) .. "…" .. string.sub(tail, cut)
+  local cut = floor(maxlength / 2)
+  return str_sub(tail, 1, cut - 1) .. "…" .. str_sub(tail, str_len(tail) - cut)
 end
 
 function M.tbl_tostring(t)
