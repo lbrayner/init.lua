@@ -57,7 +57,7 @@ function M.get_buffer_infos()
     local readonly = (
       vim.bo[bufnr].readonly and "=" or vim.bo[bufnr].modifiable and " " or "-"
     )
-    local modified = vim.bo[bufnr].modified == 1 and "+" or " "
+    local modified = vim.bo[bufnr].modified and "+" or " "
     local terminal = jobwait({ vim.bo[bufnr].channel }, 0)[1] < -2 and "R" or "F"
     info.flags = concat({
       listed, current, active,
