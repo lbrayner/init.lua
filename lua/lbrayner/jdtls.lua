@@ -9,8 +9,7 @@ function M.get_buffer_name(bufnr)
   local bufname = vim.api.nvim_buf_get_name(bufnr)
 
   if vim.startswith(bufname, "jdt://") then
-    bufname = string.gsub(bufname, "%?.*", "")
-    return bufname
+    return string.gsub(bufname, "%?.*", "")
   end
 end
 
