@@ -13,65 +13,6 @@ function M.get_buffer_name(bufnr)
   end
 end
 
-function M.get_config()
-  local capabilities = vim.tbl_deep_extend("keep", {
-    textDocument = {
-      declaration = {
-        dynamicRegistration = true,
-      },
-    },
-  }, vim.lsp.protocol.make_client_capabilities())
-
-  local java_debug_jar_pattern = vim.fs.joinpath(vim.fn.stdpath("data"),
-    "java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar")
-  local vscode_java_test_jar_pattern = vim.fs.joinpath(vim.fn.stdpath("data"), "vscode-java-test/server/*.jar")
-
-  return {
-    capabilities = capabilities,
-    cmd = {
-      "jdtls",
-      "-configuration", vim.fs.normalize("~/.cache/jdtls/default/config"),
-      "-data", vim.fs.normalize("~/.cache/jdtls/default/workspace"),
-    },
-    init_options = {
-      bundles = (function()
-        local bundles = {}
-
-        local java_debug_jars = vim.fn.glob(java_debug_jar_pattern, 1, 1)
-        if vim.tbl_count(java_debug_jars) == 1 then
-          vim.list_extend(bundles, java_debug_jars)
-        end
-
-        local vscode_java_test_jars = vim.tbl_filter(function(jar)
-          -- https://github.com/eclipse-jdtls/eclipse.jdt.ls/issues/2761#issuecomment-1638311201.
-          -- Not all jars in vscode-java-test/server should be passed in the bundles setting.
-          return not vim.endswith(jar, "com.microsoft.java.test.runner-jar-with-dependencies.jar") and
-          not vim.endswith(jar, "jacocoagent.jar")
-        end, vim.fn.glob(vscode_java_test_jar_pattern, 1, 1))
-
-        vim.list_extend(bundles, vscode_java_test_jars)
-
-        if not vim.tbl_isempty(bundles) then
-          return bundles
-        end
-      end)(),
-    },
-    root_dir = require("jdtls.setup").find_root({".git", "mvnw", "gradlew"}),
-    settings = {
-      java = {
-        settings = {
-          url = (function()
-            local prefs = vim.fs.normalize("~/.local/share/nvim/eclipse/settings.prefs")
-            if vim.uv.fs_stat(prefs) then
-              return prefs
-            end
-          end)(),
-        }
-      }
-    },
-  }
-end
-
 function M.setup(config)
   local opts = { dap = {} } -- required to setup dap
 

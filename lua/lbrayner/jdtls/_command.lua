@@ -66,15 +66,17 @@ subcommand_tbl.start = {
       return
     end
 
-    local config
     local success, session = pcall(require, "lbrayner.session.jdtls")
 
-    if success and session.get_config and type(session.get_config) == "function" then
-      config = session.get_config()
-    else
-      config = require("lbrayner.jdtls").get_config()
+    if not success or not session.get_config or type(session.get_config) ~= "function" then
+      vim.notify(
+        "JDT Language Server explicit session configuration required",
+        vim.log.levels.WARN
+      )
+      return
     end
 
+    local config = session.get_config()
     local client = vim.lsp.get_clients({ name = "jdtls" })[1]
 
     if not opts.bang and client then
