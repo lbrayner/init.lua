@@ -76,8 +76,10 @@ function M.get_root_dir()
   }
 end
 
-function M.get_workspace_folders(...)
-  local folders = { ... }
+function M.get_workspace_folders(folders)
+  if type(folders) == "string" then
+    folders = { folders }
+  end
 
   return {
     init_options = {
