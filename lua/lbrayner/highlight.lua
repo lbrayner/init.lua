@@ -1,3 +1,5 @@
+local concat = table.concat
+
 local M = {}
 
 vim.api.nvim_create_user_command("OverlengthToggle", function()
@@ -44,7 +46,13 @@ function M.highlight_trailing_whitespace()
     -- Commit message paragraphs
     -- Git branch graphs
     -- Diffs
-    vim.fn.matchadd("TrailingWhitespace", [[^\%( \{4}\zs\s\+\|[| ]\+| \{5}\zs\s\+\|[+-].*[^ 	]\+\zs\s\+\)$]])
+    vim.fn.matchadd("TrailingWhitespace", concat({
+      [[^\%(]],
+      [[ \{4}\zs\s\+\|[| ]\+| \{5}\zs\s\+\|]],
+      [[\([-+]\(-- \|++ \)\@!\)\zs\s\+]], [[\|]],
+      [[\([-+]\(-- \|++ \)\@!.*]], "[^[:blank:]]", [[\)\zs\s\+]],
+      [[\)$]],
+    }))
     -- Neogit
   elseif vim.startswith(vim.bo.syntax, "Neogit") then
     M.clear_trailing_whitespace()
