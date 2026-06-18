@@ -151,10 +151,10 @@ local function get_tabs() -- {{{
     local tcwd, dir = getcwd(-1, tabnr)
 
     if cwd == tcwd then
-      dir = concat({ "  ", FOLDER, tilde(tcwd)  })
-    else
-      dir = concat({ "↳ ", FOLDER, GREEN, tilde(tcwd), CLEAR })
+      dir = concat({ "  ", FOLDER, GREEN, tilde(tcwd), CLEAR  })
       ansi_length = string_len(concat({ GREEN, CLEAR }))
+    else
+      dir = concat({ "↳ ", FOLDER, tilde(tcwd) })
     end
 
     local wins = vim.api.nvim_tabpage_list_wins(tabh)
