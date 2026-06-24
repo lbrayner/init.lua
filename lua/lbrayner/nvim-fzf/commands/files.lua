@@ -13,7 +13,7 @@ local TAB        = "ctrl-t"
 local TAB_BEFORE = "alt-t"
 local VSPLIT     = "alt-s"
 
-local PATH_SEPARATOR = package.config:sub(1,1)
+local PATH_SEPARATOR = package.config:sub(1, 1)
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file()
 
 local function edit(selected) -- {{{
@@ -51,7 +51,9 @@ return function (opts)
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
 
   wrap(function()
-    local selected = require("fzf").fzf(command, fzf_cli_args)
+    local selected = require("fzf").fzf(
+      command, fzf_cli_args, { title = opts.fzf_command_args }
+    )
 
     if selected then
       (function()
