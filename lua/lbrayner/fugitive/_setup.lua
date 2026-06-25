@@ -9,7 +9,7 @@ vim.keymap.set("ca", "Gdd", "Git difftool -y  -- :^package-lock.json<S-Left><S-L
 -- To list files modified by a range of commits
 vim.keymap.set("ca", "Gdn", "Git diff --name-only --stat")
 vim.keymap.set("ca", "Gf", "Git! fetch origin")
-vim.keymap.set("ca", "-0", "Git log --name-status --first-parent -1")
+vim.keymap.set("ca", "-0", "Git log --name-status -1")
 vim.keymap.set("ca", "Glfp", "Git log --name-status --first-parent")
 vim.keymap.set("ca", "Glns", "Git log --name-status")
 vim.keymap.set("ca", "Glo", "Git log --oneline")
