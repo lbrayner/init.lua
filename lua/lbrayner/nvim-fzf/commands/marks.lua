@@ -1,8 +1,10 @@
 -- vim: fdm=marker
 
 local ansi = require("lbrayner.nvim-fzf.utils").ansi
+local base64_encode = vim.base64.encode
 local concat = table.concat
 local shellescape = vim.fn.shellescape
+local truncate_filename = require("lbrayner").truncate_filename
 local wrap = require("lbrayner.nvim-fzf.utils").coroutine_wrap
 
 local RELOAD      = "ctrl-r"
@@ -15,6 +17,9 @@ local BLUE = ansi.color_to_ansi("blue")
 local CLEAR = ansi.clear
 local GREEN = ansi.color_to_ansi("green")
 local YELLOW = ansi.color_to_ansi("yellow")
+
+local TAB = ( -- {{{
+  "	") -- }}}
 local history_file = require("lbrayner.nvim-fzf.history").get_history_file("file_marks")
 local state = {}
 
@@ -55,7 +60,11 @@ local function get_marks() -- {{{
     end
 
     table.insert(
-      entries, string.format(fmts, star, YELLOW, mark, BLUE, line, GREEN, col, CLEAR, text)
+      entries,
+      concat({
+        base64_encode(truncate_filename(text, state.width - 4)), TAB,
+        string.format(fmts, star, YELLOW, mark, BLUE, line, GREEN, col, CLEAR, text)
+      })
     )
   end
 
@@ -107,8 +116,14 @@ end
 local shift_up_action = require("fzf.actions").raw_action(shift_up) -- }}}
 
 return function (opts)
-  opts = opts or {}
+  local columns, lines = vim.o.columns, vim.o.lines
+  local height = math.min(lines - 4, math.max(20, lines - 10))
+  local width = math.min(columns - 4, math.max(80, columns - 20))
+
   state.bufnr = vim.api.nvim_get_current_buf()
+  state.width = width
+
+  opts = opts or {}
   local marks = get_marks() or {}
   local fzf_cli_args = concat({
     "--ansi --header-lines=1 --multi --sync --prompt='File marks> '",
@@ -125,12 +140,19 @@ return function (opts)
         SHIFT_DOWN, shift_down_action, SHIFT_UP, shift_up_action
       ))
     }),
+    concat({ "--delimiter=", shellescape(TAB) }),
+    "--with-nth=2..",
+    concat({ "--preview=", shellescape([[echo {1} | base64 -d -]]) }),
+    "--preview-window=nohidden:up,1" ,
     opts.fzf_cli_args and opts.fzf_cli_args or nil
   }, " ")
   -- print("fzf_cli_args", vim.inspect(fzf_cli_args)) -- TODO debug
 
   wrap(function()
-    local selected = require("fzf").fzf(marks, fzf_cli_args)
+    local selected = require("fzf").fzf(
+      marks, fzf_cli_args,
+      { height = height, width = width }
+    )
 
     if selected then
       jump(selected)
