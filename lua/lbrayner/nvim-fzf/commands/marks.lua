@@ -81,7 +81,7 @@ local function jump(selected) -- {{{
     return
   end
 
-  local mark = selected[1]:match("%u")
+  local mark = selected[1]:match("%s+(%u)")
   require("lbrayner.marks").file_mark_jump_to_location(mark)
 end -- }}}
 
