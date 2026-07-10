@@ -1,4 +1,6 @@
 local concat = table.concat
+local fnamemodify = vim.fn.fnamemodify
+local fs_relpath = require("lbrayner.fs").relpath
 local getbufinfo = vim.fn.getbufinfo
 local jobwait = vim.fn.jobwait
 
@@ -69,6 +71,21 @@ function M.get_buffer_infos()
   end
 
   return infos
+end
+
+function M.relpath(base, target)
+  local up, down = fs_relpath(base, target, { downward = 2 })
+
+  if up then return up end
+
+  if down then
+    local tt = M.tilde(target)
+    return #down < #tt and down
+  end
+end
+
+function M.tilde(name)
+  return fnamemodify(name, ":~")
 end
 
 return M

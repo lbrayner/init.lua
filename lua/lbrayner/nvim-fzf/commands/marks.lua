@@ -3,6 +3,8 @@
 local ansi = require("lbrayner.nvim-fzf.utils").ansi
 local base64_encode = vim.base64.encode
 local concat = table.concat
+local getcwd = vim.fn.getcwd
+local relpath = require("lbrayner.nvim-fzf.utils").relpath
 local shellescape = vim.fn.shellescape
 local truncate_filename = require("lbrayner").truncate_filename
 local wrap = require("lbrayner.nvim-fzf.utils").coroutine_wrap
@@ -62,7 +64,7 @@ local function get_marks() -- {{{
     table.insert(
       entries,
       concat({
-        base64_encode(truncate_filename(text, state.width - 4)), TAB,
+        base64_encode(truncate_filename(relpath(getcwd(), text), state.width - 4)), TAB,
         string.format(fmts, star, YELLOW, mark, BLUE, line, GREEN, col, CLEAR, text)
       })
     )

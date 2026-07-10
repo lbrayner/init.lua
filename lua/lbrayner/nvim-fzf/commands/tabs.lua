@@ -8,8 +8,6 @@ local FugitiveResult = vim.fn.FugitiveResult
 local ansi = require("lbrayner.nvim-fzf.utils").ansi
 local base64_encode = vim.base64.encode
 local concat = table.concat
-local fnamemodify = vim.fn.fnamemodify
-local fs_relpath = require("lbrayner.fs").relpath
 local get_buffer_infos = require("lbrayner.nvim-fzf.utils").get_buffer_infos
 local get_quickfix_or_location_list_title = require(
   "lbrayner"
@@ -20,12 +18,14 @@ local is_uri = require("lbrayner").is_uri
 local nvim_buf_get_name = vim.api.nvim_buf_get_name
 local nvim_win_close = vim.api.nvim_win_close
 local nvim_win_get_buf = vim.api.nvim_win_get_buf
+local relpath = require("lbrayner.nvim-fzf.utils").relpath
 local shellescape = vim.fn.shellescape
 local string_len = string.len
 local strwidth = vim.fn.strwidth
 local tabclose = vim.cmd.tabclose
 local tbl_count = vim.tbl_count
 local tbl_isempty = vim.tbl_isempty
+local tilde = require("lbrayner.nvim-fzf.utils").tilde
 local wrap = require("lbrayner.nvim-fzf.utils").coroutine_wrap
 
 -- }}}
@@ -54,21 +54,6 @@ end -- }}}
 
 local function get_pos(pos) -- {{{
   return ("pos(%d)"):format(pos)
-end -- }}}
-
-local function tilde(name) -- {{{
-  return fnamemodify(name, ":~")
-end -- }}}
-
-local function relpath(base, target) -- {{{
-  local up, down = fs_relpath(base, target, { downward = 2 })
-
-  if up then return up end
-
-  if down then
-    local tt = tilde(target)
-    return #down < #tt and down
-  end
 end -- }}}
 
 local function get_window_name(tinfo, winfo, binfo) -- {{{
