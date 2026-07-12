@@ -80,7 +80,7 @@ function M.relpath(base, target)
 
   if down then
     local tt = M.tilde(target)
-    return #down < #tt and down
+    return #down < #tt and down or nil
   end
 end
 

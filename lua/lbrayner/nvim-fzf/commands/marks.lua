@@ -64,7 +64,9 @@ local function get_marks() -- {{{
     table.insert(
       entries,
       concat({
-        base64_encode(truncate_filename(relpath(getcwd(), text), state.width - 4)), TAB,
+        base64_encode(truncate_filename(
+          relpath(getcwd(), text) or text, state.width - 4
+        )), TAB,
         string.format(fmts, star, YELLOW, mark, BLUE, line, GREEN, col, CLEAR, text)
       })
     )
