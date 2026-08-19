@@ -14,11 +14,11 @@
 "colorbuddy.nvim" = "scm"
 "lir.nvim" = "scm"
 "mini.nvim" = "scm"
-"rocks-git.nvim" = "2.5.6"
-"rocks.nvim" = "2.46.1"
+"rocks-git.nvim" = "2.6.0"
+"rocks.nvim" = "2.49.0"
 "typescript-tools.nvim" = "scm"
 nvim-dap = "scm"
-nvim-lspconfig = "2.5.0"
+nvim-lspconfig = "2.11.0"
 nvim-spider = "scm"
 
 [plugins."neosolarized.nvim"]
@@ -29,7 +29,7 @@ ignore_tags = true
 
 [plugins.nvim-dap-view]
 git = "igorlfs/nvim-dap-view"
-rev = "4b0adae3dd2b1eb17b5ab69d69327bbb93d33939"
+rev = "4e73e57008df10f9971b60c3a11e6aa11ba9f94a"
 branch = "main"
 ignore_tags = true
 
@@ -41,14 +41,14 @@ ignore_tags = true
 
 [plugins.nvim-highlight-colors]
 git = "brenoprata10/nvim-highlight-colors"
+rev = "e4c7af0211866162d999ce0bdd6a029302e19139"
 branch = "main"
-rev = "b42a5ccec7457b44e89f7ed3b3afb1b375bb2093"
 ignore_tags = true
 
 [plugins."reply.vim"]
 git = "rhysd/reply.vim"
-branch = "master"
 rev = "f458f7c13cbd8eafaf9acd69e8eade71416338c5"
+branch = "master"
 ignore_tags = true
 
 [plugins."tint.nvim"]
@@ -58,53 +58,53 @@ ignore_tags = true
 
 [plugins.nvim-jdtls]
 git = "lbrayner/nvim-jdtls"
-rev = "lbrayner"
+rev = "77ccaeb422f8c81b647605da5ddb4a7f725cda90"
 ignore_tags = true
 
 [plugins.vim-characterize]
 git = "tpope/vim-characterize"
-branch = "master"
 rev = "a8bffac6cead6b2869d939ecad06312b187a4c79"
+branch = "master"
 ignore_tags = true
 
 [plugins.vim-dadbod]
 git = "tpope/vim-dadbod"
+rev = "6d1d41da4873a445c5605f2005ad2c68c99d8770"
 branch = "master"
-rev = "e95afed23712f969f83b4857a24cf9d59114c2e6"
 ignore_tags = true
 
 [plugins.vim-eunuch]
 git = "tpope/vim-eunuch"
+rev = "929490937745cd96130d3e7948f762f0aa403314"
 branch = "master"
-rev = "e86bb794a1c10a2edac130feb0ea590a00d03f1e"
 ignore_tags = true
 
 [plugins.vim-fugitive]
 git = "tpope/vim-fugitive"
+rev = "3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0"
 branch = "master"
-rev = "593f831d6f6d779cbabb70a4d1e6b1b1936a88af"
 ignore_tags = true
 
 [plugins.vim-obsession]
 git = "tpope/vim-obsession"
-branch = "master"
 rev = "ed9dfc7c2cc917ace8b24f4f9f80a91e05614b63"
+branch = "master"
 ignore_tags = true
 
 [plugins.vim-quickhl]
 git = "t9md/vim-quickhl"
-branch = "master"
 rev = "be1f44169c3fdee3beab629e83380515da03835e"
+branch = "master"
 ignore_tags = true
 
 [plugins.vim-rsi]
 git = "tpope/vim-rsi"
-branch = "master"
 rev = "45540637ead22f011e8215f1c90142e49d946a54"
+branch = "master"
 ignore_tags = true
 
 [plugins.vim-rzip]
 git = "lbrayner/vim-rzip"
-branch = "master"
 rev = "f65400fed27b27c7cff7ef8d428c4e5ff749bf28"
+branch = "master"
 ignore_tags = true
