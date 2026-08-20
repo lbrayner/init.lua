@@ -34,7 +34,7 @@ local function get_marks() -- {{{
 
   if not success then return end
 
-  marks = vim.split(marks:sub(2), "\n")
+  marks = vim.split(marks:sub(3), "\n")
   state.marks, state.pos = marks
   local header = concat({ "  ", marks[1] })
   local entries = { header }
