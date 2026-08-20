@@ -111,4 +111,13 @@ require("mini.surround").setup({
 })
 
 vim.keymap.del("x", "ys")
-vim.keymap.set("x", "S", [[:<C-u>lua MiniSurround.add("visual")<CR>]], { desc = "Add surrounding to selection" })
+vim.keymap.del("x", "ysF")
+vim.keymap.del("x", "ysFl")
+vim.keymap.del("x", "ysFn")
+vim.keymap.del("x", "ysf")
+vim.keymap.del("x", "ysfl")
+vim.keymap.del("x", "ysfn")
+vim.keymap.set(
+  "x", "S", [[:<C-u>lua MiniSurround.add("visual")<CR>]],
+  { desc = "Add surrounding to selection" }
+)
