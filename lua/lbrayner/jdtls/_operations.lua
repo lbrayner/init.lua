@@ -2,7 +2,7 @@
 
 local M = {}
 
-local join = require("lbrayner").join
+local concat = table.concat
 
 local offset_encoding = "utf-16"
 local SymbolKind = vim.lsp.protocol.SymbolKind
@@ -263,30 +263,48 @@ function M.update_projects_config(opts)
   end
 
   local bufnr = vim.api.nvim_get_current_buf()
-  local command = {
-    command = "java.project.getAll",
-  }
 
-  require("jdtls.util").execute_command(command, function(err, result)
+  require("jdtls.util").execute_command({
+    command = "java.project.getAll"
+  }, function(err, result)
     assert(not err, vim.inspect(err))
 
     local input = vim.fn.input("Update project configurations: ")
-    local indexes = vim.fn.split(input, "[^[:keyword:]]")
 
-    local selection = vim.tbl_map(function(i)
-      return result[tonumber(i)]
-    end, indexes)
+    if input:match("^%s*$") then
+      vim.notify(
+        "Update project configurations: user did not supply any input. Aborting.",
+        vim.log.levels.WARN
+      )
+
+      return
+    end
+
+    local function contains(s, text)
+      return string.find(s, text, 1, true)
+    end
+
+    local selection = vim.tbl_filter(function(p)
+      return contains(p, input)
+    end, result)
 
     if selection and next(selection) then
       local params = {
-        identifiers = vim.tbl_map(function(project) return { uri = project } end, selection)
+        identifiers = vim.tbl_map(function(project)
+          return { uri = project }
+        end, selection)
       }
 
-      vim.notify(join({ "Updating project configurations:", vim.inspect(selection) }))
+      vim.notify(concat({
+        "Updating project configurations:", vim.inspect(selection)
+      }, " "))
       vim.lsp.buf_notify(bufnr, "java/projectConfigurationsUpdate", params)
     else
       vim.notify(
-        "Update project configurations: user did not supply any input. Aborting.",
+        string.format(
+          "Update project configurations: could not match supplied input “%s”. Aborting.",
+          input
+        ),
         vim.log.levels.WARN
       )
     end
