@@ -20,11 +20,14 @@ end
 
 ---@type table<string, MyCmdSubcommand>
 local subcommand_tbl = {}
-require("lbrayner.subcommands").create_user_command_and_subcommands("Lsp", subcommand_tbl, {
-  bar = true,
-  desc = "LSP client commands",
-  range = true
-})
+require("lbrayner.subcommands").create_user_command_and_subcommands(
+  "Lsp", subcommand_tbl,
+  {
+    bar = true,
+    desc = "LSP client commands",
+    range = true
+  }
+)
 
 subcommand_tbl.addWorkspaceFolder = {
   complete = require("lbrayner.subcommands").complete_filename,
@@ -75,7 +78,9 @@ subcommand_tbl.diagnostic = {
     local _, arg = next(args)
 
     if not arg then
-      require("lbrayner.lsp").diagnostic_setqflist({ severity = { min = vim.diagnostic.severity.HINT } })
+      require("lbrayner.lsp").diagnostic_setqflist({
+        severity = { min = vim.diagnostic.severity.HINT }
+      })
       return
     end
 
@@ -85,11 +90,13 @@ subcommand_tbl.diagnostic = {
     )
 
     if arg == "--error" then
-      require("lbrayner.lsp").diagnostic_setqflist({ severity = vim.diagnostic.severity.ERROR })
-    end
-
-    if arg == "--warn" then
-      require("lbrayner.lsp").diagnostic_setqflist({ severity = { min = vim.diagnostic.severity.WARN } })
+      require("lbrayner.lsp").diagnostic_setqflist({
+        severity = vim.diagnostic.severity.ERROR
+      })
+    elseif arg == "--warn" then
+      require("lbrayner.lsp").diagnostic_setqflist({
+        severity = { min = vim.diagnostic.severity.WARN }
+      })
     end
   end,
 }
