@@ -1,3 +1,6 @@
+local concat = table.concat
+local format = string.format
+
 local M = {}
 
 local diagnostic_qf_opts = {}
@@ -22,12 +25,12 @@ function M.diagnostic_setqflist(opts)
 
   table.sort(names)
 
-  local title = "LSP Diagnostics: " .. table.concat(names, ",") -- joining items with a separator
+  local title = concat({ "LSP Diagnostics: ", concat(names, ",") })
   local severity = diagnostic_qf_opts.severity
 
   if severity then
     if type(severity) == "table" then severity = severity.min end
-    title = string.format("%s (%s)", title, vim.diagnostic.severity[severity])
+    title = format("%s (%s)", title, vim.diagnostic.severity[severity])
   end
 
   diagnostic_qf_opts.title = title
