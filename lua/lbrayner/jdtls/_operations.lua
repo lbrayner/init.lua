@@ -269,23 +269,28 @@ function M.update_projects_config(opts)
   }, function(err, result)
     assert(not err, vim.inspect(err))
 
-    local input = vim.fn.input("Update project configurations: ")
+    local input = vim.fn.input("Update project configurations (comma separated): ")
+    local substrings = vim.split(input, ",")
 
-    if input:match("^%s*$") then
+    substrings = vim.tbl_filter(function(s)
+      return not s:match("^%s*$")
+    end, substrings)
+
+    if vim.tbl_isempty(substrings) then
       vim.notify(
-        "Update project configurations: user did not supply any input. Aborting.",
+        "Update project configurations: user did not supply any valid input. Aborting.",
         vim.log.levels.WARN
       )
 
       return
     end
 
-    local function contains(s, text)
-      return string.find(s, text, 1, true)
+    local function contains(text, substring)
+      return string.find(text, substring, 1, true)
     end
 
-    local selection = vim.tbl_filter(function(p)
-      return contains(p, input)
+    local selection = vim.tbl_filter(function(r)
+      return vim.iter(substrings):any(function(s) return contains(r, s) end)
     end, result)
 
     if selection and next(selection) then
