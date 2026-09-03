@@ -86,7 +86,9 @@ local function get_buffers() -- {{{
   end
 
   return buffers
-end -- }}}
+end
+
+local get_buffers_action = require("fzf.actions").raw_action(get_buffers) -- }}}
 
 local function jump(selected) -- {{{
   if #selected > 2 then
@@ -115,13 +117,29 @@ local function wipe_buffer(selected) -- {{{
   if #selected <= 10 then
     wipe(selected)
   else
-    vim.notify(
-      "[FZF buffers] Wipe buffer: exceeded limit of 10 selected items",
-      vim.log.levels.ERROR
-    )
+    local opts = {
+      prompt = concat({
+        "[FZF buffers]: Are you sure you want to wipe", #selected, "buffers? [y/N] "
+      }, " ")
+    }
+
+    vim.ui.input(opts, function(input)
+      input = input:lower()
+
+      if input == "y" or input == "yes" then
+        wipe(selected)
+      else
+        vim.notify(
+          "[FZF buffers] Wipe buffer: no buffers wiped.",
+          vim.log.levels.WARN
+        )
+      end
+    end)
+
+    return "abort"
   end
 
-  return get_buffers()
+  return ("reload(%s)+first"):format(get_buffers_action)
 end
 
 local wipe_buffer_action = require("fzf.actions").raw_action(wipe_buffer) -- }}}
@@ -140,7 +158,7 @@ return function (opts)
     concat({ "--history=", shellescape(history_file) }),
     concat({
       "--bind=",
-      shellescape(string.format("%s:reload(%s)+first", WIPE_BUFFER, wipe_buffer_action))
+      shellescape(string.format("%s:transform(%s)", WIPE_BUFFER, wipe_buffer_action))
     }),
     concat({
       "--expect=", shellescape(concat({
