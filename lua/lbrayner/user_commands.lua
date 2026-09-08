@@ -1,7 +1,8 @@
 local cmd = vim.cmd
 local fnameescape = vim.fn.fnameescape
-local nvim_create_user_command = vim.api.nvim_create_user_command
 local format = string.format
+local nvim_create_user_command = vim.api.nvim_create_user_command
+local nvim_put = vim.api.nvim_put
 
 nvim_create_user_command("DeleteTrailingWhitespace", function(opts)
   require("lbrayner").preserve_view_port(function()
@@ -54,6 +55,16 @@ nvim_create_user_command("Number", function()
     vim.wo.relativenumber = false
   end
 end, { nargs = 0 })
+
+nvim_create_user_command("Paste", function(opts)
+  if vim.bo.buftype ~= "terminal" then
+    vim.notify("Paste: not a terminal buffer", vim.log.levels.WARN)
+
+    return
+  end
+
+  nvim_put({ opts.args }, "l", true, true)
+end, { nargs = 1, desc = "Paste register contents into terminal" })
 
 -- https://stackoverflow.com/a/2573758
 -- Inspired by the TabMessage function/command combo found at <http://www.jukie.net/~bart/conf/vimrc>.
