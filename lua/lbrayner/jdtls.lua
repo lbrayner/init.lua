@@ -44,7 +44,7 @@ function M.setup(config)
     desc = "Handle jdt:// URIs and classfiles",
     callback = function(args)
       start_or_attach()
-      require("jdtls").open_classfile(args.match)
+      require("jdtls").open_classfile(args.buf, args.match)
     end,
   })
 
