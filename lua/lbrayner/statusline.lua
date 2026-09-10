@@ -225,9 +225,21 @@ function M.get_dap_status()
     return " ² "
   elseif count == 3 then
     return " ³ "
+  elseif count == 4 then
+    return " ⁴ "
+  elseif count == 5 then
+    return " ⁵ "
+  elseif count == 6 then
+    return " ⁶ "
+  elseif count == 7 then
+    return " ⁷ "
+  elseif count == 8 then
+    return " ⁸ "
+  elseif count == 9 then
+    return " ⁹ "
   end
 
-  return " ³⁺"
+  return " ⁹⁺"
 end
 
 function M.get_diagnostics()
