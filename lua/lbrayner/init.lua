@@ -8,9 +8,11 @@ local getqflist = vim.fn.getqflist
 local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
 local nvim_buf_get_text = vim.api.nvim_buf_get_text
 local nvim_get_current_buf = vim.api.nvim_get_current_buf
+local nvim_get_current_win = vim.api.nvim_get_current_win
 local str_len = string.len
 local str_sub = string.sub
 local tbl_contains = vim.tbl_contains
+local win_findbuf = vim.fn.win_findbuf
 
 function M.buf_is_scratch(bufnr)
   bufnr = bufnr or nvim_get_current_buf()
@@ -156,12 +158,12 @@ function M.include_expression(fname)
 end
 
 function M.is_location_list(winid)
-  winid = winid or vim.api.nvim_get_current_win()
+  winid = winid or nvim_get_current_win()
   return vim.fn.getwininfo(winid)[1]["loclist"] == 1
 end
 
 function M.is_quickfix_list(winid)
-  winid = winid or vim.api.nvim_get_current_win()
+  winid = winid or nvim_get_current_win()
   return vim.fn.getwininfo(winid)[1]["quickfix"] == 1 and vim.fn.getwininfo(winid)[1]["loclist"] == 0
 end
 
@@ -201,7 +203,17 @@ function M.jump_to_location(bufnr, pos, opts)
   assert(vim.api.nvim_buf_is_valid(bufnr), "Bad argument; 'bufnr' must be a valid buffer.")
 
   opts = opts or {}
-  local winid = vim.fn.win_findbuf(bufnr)[1]
+
+  local curwin = nvim_get_current_win()
+  local winids = win_findbuf(bufnr)
+
+  local winid = vim.iter(winids):find(function(w)
+    return w == curwin
+  end)
+
+  if not winid then
+    winid = winids[1]
+  end
 
   local function open(command)
     if not command then return end
@@ -211,7 +223,7 @@ function M.jump_to_location(bufnr, pos, opts)
     if command ~= "" then
       -- from fzf-lua's actions (vimcmd_entry)
       vim.cmd(concat({ command, " | setlocal bufhidden=wipe | buffer ", bufnr }))
-      winid = vim.api.nvim_get_current_win()
+      winid = nvim_get_current_win()
     end
 
     _jump_to_window_or_unhide(winid, bufnr, pos)
@@ -374,7 +386,7 @@ end
 function M.win_is_actual_curwin()
   -- This variable is defined by the runtime.
   -- :h g:actual_curwin
-  if vim.g.actual_curwin and vim.g.actual_curwin ~= vim.api.nvim_get_current_win() then
+  if vim.g.actual_curwin and vim.g.actual_curwin ~= nvim_get_current_win() then
     return false
   end
 
