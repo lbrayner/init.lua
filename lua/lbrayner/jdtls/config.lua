@@ -27,13 +27,17 @@ function M.get(...)
   local data = stdpath("data")
   local java_debug_jar_glob_pattern = joinpath(
     data,
-    -- {{{ glob pattern
-    "java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar"
-    -- }}}
+    "java-debug",
+    "default",
+    "com.microsoft.java.debug.plugin",
+    "target",
+    "com.microsoft.java.debug.plugin-*.jar"
   )
-  local vscode_java_test_jar_glob_pattern = joinpath(data, "vscode-java-test/server/*.jar")
+  local vscode_java_test_jar_glob_pattern = joinpath(
+    data, "vscode-java-test/default/server/*.jar"
+  )
 
-  return tbl_deep_extend("force", {
+  return tbl_deep_extend("force", {}, {
     capabilities = capabilities,
     cmd = {
       "jdtls",
