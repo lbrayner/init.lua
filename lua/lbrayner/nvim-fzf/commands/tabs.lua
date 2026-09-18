@@ -64,6 +64,10 @@ local function get_window_name(tinfo, winfo, binfo) -- {{{
     })
   elseif binfo.name == "" then
     return "[No Name]"
+  elseif vim.bo[binfo.bufnr].filetype == "lir" and
+    vim.bo[binfo.bufnr].buftype == "nofile" and
+    vim.w[winfo.winid].lir_file_quit_on_edit then
+    return concat({ "[lir] ", binfo.name })
   elseif vim.b[binfo.bufnr].fugitive_type then
     local fugitive_type, fugitive = vim.b[binfo.bufnr].fugitive_type
 
