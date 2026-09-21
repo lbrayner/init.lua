@@ -17,6 +17,7 @@ local M = {}
 
 function M.get(...)
   local capabilities = tbl_deep_extend("keep", {
+    -- effectively enable vim.lsp.buf.declaration()
     textDocument = {
       declaration = {
         dynamicRegistration = true,
