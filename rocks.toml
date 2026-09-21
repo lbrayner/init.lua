@@ -58,7 +58,8 @@ ignore_tags = true
 
 [plugins.nvim-jdtls]
 git = "lbrayner/nvim-jdtls"
-rev = "77ccaeb422f8c81b647605da5ddb4a7f725cda90"
+rev = "2689adf48a31c01c3a61784fe432157d253c81be"
+branch = "lbrayner"
 ignore_tags = true
 
 [plugins.vim-characterize]
