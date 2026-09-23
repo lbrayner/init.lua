@@ -3,6 +3,7 @@
 local M = {}
 
 local concat = table.concat
+local tbl_extend = vim.tbl_extend
 
 local SymbolKind = vim.lsp.protocol.SymbolKind
 local offset_encoding = "utf-16"
@@ -135,39 +136,32 @@ function M.java_redefine_classes()
 end
 
 function M.java_search_symbols(opts)
+  local search_symbol_params = {
+    projectName = opts.project_name,
+    sourceOnly = opts.source_only,
+    maxResults = opts.max_results,
+  }
+
   with_jdtls(function(client, bufnr)
     client:request(
       "java/searchSymbols",
-      {
-        projectName = opts.project_name,
-        sourceOnly = opts.source_only,
-        maxResults = opts.max_results,
+      tbl_extend("keep", search_symbol_params, {
         query = opts.query,
         textDocument = vim.lsp.util.make_text_document_params(bufnr)
-      },
+      }),
       function(err, result, ctx)
         assert(not err, vim.inspect(err))
 
         local items = symbols_to_items(result, bufnr, client.offset_encoding)
         local params = ctx.params
+        local title = vim.iter(vim.tbl_keys(search_symbol_params)):fold(
+          ("Java symbols matching %s"):format(vim.inspect(params.query)),
+          function(t, n)
+            return n and ("%s, %s=%s"):format(t, n, vim.inspect(search_symbol_params[n])) or t
+          end
+        )
 
-        require("lbrayner.lsp").on_list({
-          title = concat({
-            ("Java Symbols matching '%s'"):format(params.query),
-            params.projectName and (
-              ", projectName='%s'"
-            ):format(params.projectName) or "",
-            params.sourceOnly and (
-              ", sourceOnly='%s'"
-            ):format(params.sourceOnly) or "",
-            params.maxResults and (
-              ", maxResults='%s'"
-            ):format(params.maxResults) or "",
-          }),
-          items = items, context = ctx
-        })
-        -- print(vim.inspect(ctx))
-        -- print(#result, vim.inspect(result))
+        require("lbrayner.lsp").on_list({ title = title, items = items, context = ctx })
       end, bufnr)
     end)
 end
