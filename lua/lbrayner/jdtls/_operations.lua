@@ -4,8 +4,9 @@ local M = {}
 
 local concat = table.concat
 
-local offset_encoding = "utf-16"
 local SymbolKind = vim.lsp.protocol.SymbolKind
+local offset_encoding = "utf-16"
+local symbols_to_items = vim.lsp.util.symbols_to_items
 
 local maximum_resolve_depth = 10
 
@@ -59,7 +60,7 @@ function M.java_go_to_top_level_declaration()
 
         local title = string.format("Top level symbols in %s",
         vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":."))
-        local items = vim.lsp.util.symbols_to_items(top_level_symbols, bufnr)
+        local items = symbols_to_items(top_level_symbols, bufnr)
 
         vim.fn.setqflist({}, " ", { title = title, items = items, context = ctx })
         vim.api.nvim_command("botright copen")
@@ -146,8 +147,27 @@ function M.java_search_symbols(opts)
       },
       function(err, result, ctx)
         assert(not err, vim.inspect(err))
-        print(vim.inspect(ctx))
-        print(vim.inspect(result))
+
+        local items = symbols_to_items(result, bufnr, client.offset_encoding)
+        local params = ctx.params
+
+        require("lbrayner.lsp").on_list({
+          title = concat({
+            ("Java Symbols matching '%s'"):format(params.query),
+            params.projectName and (
+              ", projectName='%s'"
+            ):format(params.projectName) or "",
+            params.sourceOnly and (
+              ", sourceOnly='%s'"
+            ):format(params.sourceOnly) or "",
+            params.maxResults and (
+              ", maxResults='%s'"
+            ):format(params.maxResults) or "",
+          }),
+          items = items, context = ctx
+        })
+        -- print(vim.inspect(ctx))
+        -- print(#result, vim.inspect(result))
       end, bufnr)
     end)
 end
