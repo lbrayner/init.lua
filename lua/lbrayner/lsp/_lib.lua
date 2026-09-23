@@ -1,18 +1,18 @@
 local M = {}
 
-function M.on_list(options)
-  if vim.tbl_isempty(options.items) then
+function M.on_list(opts)
+  if vim.tbl_isempty(opts.items) then
     vim.notify("Empty list.")
     return
   end
 
-  if #options.items > 1  then
-    vim.fn.setqflist({}, " ", options)
+  if #opts.items > 1  then
+    vim.fn.setqflist({}, " ", opts)
     vim.cmd("botright copen")
     return
   end
 
-  local _, qfitem = next(options.items)
+  local _, qfitem = next(opts.items)
   local filename = qfitem.filename
   local pos = { qfitem.lnum, (qfitem.col - 1) }
 
