@@ -133,6 +133,25 @@ function M.java_redefine_classes()
   end)
 end
 
+function M.java_search_symbols(opts)
+  with_jdtls(function(client, bufnr)
+    client:request(
+      "java/searchSymbols",
+      {
+        projectName = opts.project_name,
+        sourceOnly = opts.source_only,
+        maxResults = opts.max_results,
+        query = opts.query,
+        textDocument = vim.lsp.util.make_text_document_params(bufnr)
+      },
+      function(err, result, ctx)
+        assert(not err, vim.inspect(err))
+        print(vim.inspect(ctx))
+        print(vim.inspect(result))
+      end, bufnr)
+    end)
+end
+
 -- Type hierarchy on quickfix list
 function M.java_type_hierarchy(opts)
   local function resolve_command(result)
