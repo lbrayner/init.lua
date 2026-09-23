@@ -3,9 +3,11 @@
 local M = {}
 
 local concat = table.concat
-local tbl_extend = vim.tbl_extend
 
 local SymbolKind = vim.lsp.protocol.SymbolKind
+local inspect = vim.inspect
+local iter = vim.iter
+local make_text_document_params = vim.lsp.util.make_text_document_params
 local offset_encoding = "utf-16"
 local symbols_to_items = vim.lsp.util.symbols_to_items
 
@@ -32,7 +34,7 @@ function M.import_project()
   }
 
   require("jdtls.util").execute_command(command, function(err)
-    assert(not err, vim.inspect(err))
+    assert(not err, inspect(err))
   end)
 end
 
@@ -88,7 +90,7 @@ function M.java_is_test_file(cb)
   }
 
   require("jdtls.util").execute_command(command, function(err, result, ctx)
-    assert(not err, vim.inspect(err))
+    assert(not err, inspect(err))
     cb(result, ctx)
   end)
 end
@@ -103,7 +105,7 @@ function M.java_main_symbols(cb)
         return
       end
 
-      local mains = vim.iter(result):filter(
+      local mains = iter(result):filter(
         function(s)
           return s.kind == SymbolKind.Class and s.children and not vim.tbl_isempty(s.children)
         end
@@ -131,7 +133,7 @@ function M.java_redefine_classes()
 
   vim.notify("Applying code changes")
   session:request("redefineClasses", nil, function(err)
-    assert(not err, vim.inspect(err))
+    assert(not err, inspect(err))
   end)
 end
 
@@ -145,23 +147,26 @@ function M.java_search_symbols(opts)
   with_jdtls(function(client, bufnr)
     client:request(
       "java/searchSymbols",
-      tbl_extend("keep", search_symbol_params, {
+      vim.tbl_extend("keep", search_symbol_params, {
         query = opts.query,
-        textDocument = vim.lsp.util.make_text_document_params(bufnr)
+        textDocument = make_text_document_params(bufnr)
       }),
       function(err, result, ctx)
-        assert(not err, vim.inspect(err))
+        assert(not err, inspect(err))
 
         local items = symbols_to_items(result, bufnr, client.offset_encoding)
-        local params = ctx.params
-        local title = vim.iter(vim.tbl_keys(search_symbol_params)):fold(
-          ("Java symbols matching %s"):format(vim.inspect(params.query)),
+        local title = iter(vim.tbl_keys(search_symbol_params)):fold(
+          ("Java symbols matching %s"):format(inspect(ctx.params.query)),
           function(t, n)
-            return n and ("%s, %s=%s"):format(t, n, vim.inspect(search_symbol_params[n])) or t
+            return n and
+            ("%s, %s=%s"):format(t, n, inspect(search_symbol_params[n]))
+            or t
           end
         )
 
-        require("lbrayner.lsp").on_list({ title = title, items = items, context = ctx })
+        require("lbrayner.lsp").on_list({
+          title = title, items = items, context = ctx
+        })
       end, bufnr)
     end)
 end
@@ -184,7 +189,7 @@ function M.java_type_hierarchy(opts)
   local open_type_hierarchy
 
   local function resolve_handler(err, result, ctx)
-    assert(not err, vim.inspect(err))
+    assert(not err, inspect(err))
     depth = depth + 1
 
     local parents = result.parents
@@ -203,7 +208,7 @@ function M.java_type_hierarchy(opts)
       if not parent then
         assert(vim.tbl_count(parents) == 1,
           string.format("Type hierarchy: could not determine parent with result %s",
-          vim.inspect(result)))
+          inspect(result)))
         -- Symbol at point is a SymbolKind.Method
         parent = parents[1]
       end
@@ -275,7 +280,7 @@ function M.java_type_hierarchy(opts)
   }
 
   require("jdtls.util").execute_command(command, function(err, result)
-    assert(not err, vim.inspect(err))
+    assert(not err, inspect(err))
     if not result then
       vim.notify("Type hierarchy: openTypeHierarchy returned no results", vim.log.levels.ERROR)
       return
@@ -300,7 +305,7 @@ function M.update_projects_config(opts)
   require("jdtls.util").execute_command({
     command = "java.project.getAll"
   }, function(err, result)
-    assert(not err, vim.inspect(err))
+    assert(not err, inspect(err))
 
     local input = vim.fn.input("Update project configurations (comma separated): ")
     local substrings = vim.split(input, ",")
@@ -323,7 +328,7 @@ function M.update_projects_config(opts)
     end
 
     local selection = vim.tbl_filter(function(r)
-      return vim.iter(substrings):any(function(s) return contains(r, s) end)
+      return iter(substrings):any(function(s) return contains(r, s) end)
     end, result)
 
     if selection and next(selection) then
@@ -334,7 +339,7 @@ function M.update_projects_config(opts)
       }
 
       vim.notify(concat({
-        "Updating project configurations:", vim.inspect(selection)
+        "Updating project configurations:", inspect(selection)
       }, " "))
       vim.lsp.buf_notify(bufnr, "java/projectConfigurationsUpdate", params)
     else
