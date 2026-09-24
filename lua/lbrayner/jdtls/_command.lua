@@ -1,4 +1,7 @@
+local iter = vim.iter
 local join = require("lbrayner").join
+local list_contains = vim.list_contains
+local tbl_keys = vim.tbl_keys
 
 ---@type table<string, MyCmdSubcommand>
 local subcommand_tbl = {}
@@ -28,6 +31,27 @@ subcommand_tbl.importProject = {
 subcommand_tbl.organizeImports = {
   simple = function()
     require("jdtls").organize_imports()
+  end,
+}
+
+subcommand_tbl.searchSymbols = {
+  complete = { "--max-results=", "--project-name=", "--source-only" },
+  optional = function(opts)
+    local args = opts.args
+
+    args = iter(args):fold({}, function(acc, a)
+      local key, value = a:match("^(.-=)(.*)$")
+      acc[key] = value
+      return acc
+    end)
+    print(vim.inspect(args))
+
+    assert(
+      iter(tbl_keys(args)):all(function(a)
+        return list_contains(opts.subcommand.complete, a)
+      end),
+      string.format("Illegal arguments: %s", join(opts.args))
+    )
   end,
 }
 
@@ -158,7 +182,7 @@ subcommand_tbl.updateProjectsConfig = {
     end
 
     assert(
-      vim.list_contains(opts.subcommand.complete, arg),
+      list_contains(opts.subcommand.complete, arg),
       string.format("Illegal arguments: %s", join(args))
     )
 
