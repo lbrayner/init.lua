@@ -40,22 +40,21 @@ subcommand_tbl.searchSymbols = {
   optional = function(opts)
     local args = opts.args
 
-    args = iter(args):fold({}, function(acc, a)
-      local key, value = a:match("^(.-=)(.+)$")
+    args = iter(args):fold({}, function(acc, arg)
+      local key, value = arg:match("^(.-=)(.+)$")
 
       if key then
         acc[key] = value
       else
-        acc[a] = true
+        acc[arg] = true
       end
 
       return acc
     end)
-    print(vim.inspect(args))--TODO debug
 
     assert(
-      iter(tbl_keys(args)):all(function(a)
-        return list_contains(opts.subcommand.complete, a)
+      iter(tbl_keys(args)):all(function(arg)
+        return list_contains(opts.subcommand.complete, arg)
       end),
       string.format("Illegal arguments: %s", join(opts.args))
     )
@@ -64,7 +63,7 @@ subcommand_tbl.searchSymbols = {
       max_results = args["--max-results="],
       project_name = args["--project-name="],
       query = args["--query="],
-      source_only = args["--source-only="],
+      source_only = args["--source-only"],
     }
 
     if not opts.project_name then
