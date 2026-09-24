@@ -144,6 +144,11 @@ function M.java_search_symbols(opts)
     maxResults = opts.max_results,
   }
 
+  if not search_symbol_params.projectName then
+    search_symbol_params.projectName = require(
+      "lbrayner.jdtls").get_current_project_name()
+  end
+
   with_jdtls(
     function(client, bufnr)
       client:request(
