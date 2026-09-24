@@ -5,9 +5,11 @@ local M = {}
 local concat = table.concat
 
 local SymbolKind = vim.lsp.protocol.SymbolKind
+local input = vim.fn.input
 local inspect = vim.inspect
 local iter = vim.iter
 local make_text_document_params = vim.lsp.util.make_text_document_params
+local notify = vim.notify
 local offset_encoding = "utf-16"
 local symbols_to_items = vim.lsp.util.symbols_to_items
 
@@ -21,7 +23,7 @@ local function with_jdtls(fn) -- {{{
 
   -- From nvim-jdtls
   if not client then
-    vim.notify("No LSP client with name `jdtls` available", vim.log.levels.WARN)
+    notify("No LSP client with name `jdtls` available", vim.log.levels.WARN)
     return
   end
 
@@ -42,7 +44,7 @@ function M.java_go_to_top_level_declaration()
   with_jdtls(function(client, bufnr)
     require("lbrayner.lsp").document_symbol(client, function(result, ctx)
       if vim.tbl_isempty(result) then
-        vim.notify("Go to top level declaration: no document symbols found", vim.log.levels.ERROR)
+        notify("Go to top level declaration: no document symbols found", vim.log.levels.ERROR)
         return
       end
 
@@ -101,7 +103,7 @@ function M.java_main_symbols(cb)
   with_jdtls(function(client, bufnr)
     require("lbrayner.lsp").document_symbol(client, function(result, ctx)
       if vim.tbl_isempty(result) then
-        vim.notify("Get main symbols: no document symbols found", vim.log.levels.ERROR)
+        notify("Get main symbols: no document symbols found", vim.log.levels.ERROR)
         return
       end
 
@@ -127,11 +129,11 @@ function M.java_redefine_classes()
   local session = require("dap").session()
 
   if not session then
-    vim.notify("No active debug session")
+    notify("No active debug session")
     return
   end
 
-  vim.notify("Applying code changes")
+  notify("Applying code changes")
   session:request("redefineClasses", nil, function(err)
     assert(not err, inspect(err))
   end)
@@ -144,6 +146,17 @@ function M.java_search_symbols(opts)
     sourceOnly = opts.source_only,
   }
 
+  local query = opts.query
+
+  if not query then
+    query = input("Java search symbols query: ")
+  end
+
+  if query:match("^%s*$") then
+    notify("Java search symbols: empty query.", vim.log.levels.WARN)
+    return
+  end
+
   with_jdtls(
     function(client, bufnr)
       client:request(
@@ -152,7 +165,7 @@ function M.java_search_symbols(opts)
           "keep",
           search_symbol_params,
           {
-            query = opts.query,
+            query = query,
             textDocument = make_text_document_params(bufnr)
           }
         ),
@@ -202,7 +215,7 @@ function M.java_type_hierarchy(opts)
     local parents = result.parents
 
     if not vim.tbl_isempty(parents) and depth > maximum_resolve_depth then
-      vim.notify(string.format("Type hierarchy: maximum resolve depth is %d.", maximum_resolve_depth),
+      notify(string.format("Type hierarchy: maximum resolve depth is %d.", maximum_resolve_depth),
         vim.log.levels.WARN)
     elseif not vim.tbl_isempty(parents) then
       local parent_classes = vim.tbl_filter(function(parent)
@@ -234,7 +247,7 @@ function M.java_type_hierarchy(opts)
     end
 
     if vim.tbl_isempty(hierarchy) then
-      vim.notify("Type hierarchy: no results.")
+      notify("Type hierarchy: no results.")
       return
     end
 
@@ -289,7 +302,7 @@ function M.java_type_hierarchy(opts)
   require("jdtls.util").execute_command(command, function(err, result)
     assert(not err, inspect(err))
     if not result then
-      vim.notify("Type hierarchy: openTypeHierarchy returned no results", vim.log.levels.ERROR)
+      notify("Type hierarchy: openTypeHierarchy returned no results", vim.log.levels.ERROR)
       return
     end
     open_type_hierarchy = result
@@ -314,7 +327,7 @@ function M.update_projects_config(opts)
   }, function(err, result)
     assert(not err, inspect(err))
 
-    local input = vim.fn.input("Update project configurations (comma separated): ")
+    local input = input("Update project configurations (comma separated): ")
     local substrings = vim.split(input, ",")
 
     substrings = vim.tbl_filter(function(s)
@@ -322,7 +335,7 @@ function M.update_projects_config(opts)
     end, substrings)
 
     if vim.tbl_isempty(substrings) then
-      vim.notify(
+      notify(
         "Update project configurations: user did not supply any valid input. Aborting.",
         vim.log.levels.WARN
       )
@@ -345,12 +358,12 @@ function M.update_projects_config(opts)
         end, selection)
       }
 
-      vim.notify(concat({
+      notify(concat({
         "Updating project configurations:", inspect(selection)
       }, " "))
       vim.lsp.buf_notify(bufnr, "java/projectConfigurationsUpdate", params)
     else
-      vim.notify(
+      notify(
         string.format(
           "Update project configurations: could not match supplied input “%s”. Aborting.",
           input
