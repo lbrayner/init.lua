@@ -139,15 +139,10 @@ end
 
 function M.java_search_symbols(opts)
   local search_symbol_params = {
+    maxResults = opts.max_results,
     projectName = opts.project_name,
     sourceOnly = opts.source_only,
-    maxResults = opts.max_results,
   }
-
-  if not search_symbol_params.projectName then
-    search_symbol_params.projectName = require(
-      "lbrayner.jdtls").get_current_project_name()
-  end
 
   with_jdtls(
     function(client, bufnr)

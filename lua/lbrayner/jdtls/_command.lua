@@ -34,8 +34,9 @@ subcommand_tbl.organizeImports = {
   end,
 }
 
+-- parses key=value pairs
 subcommand_tbl.searchSymbols = {
-  complete = { "--max-results=", "--project-name=", "--source-only" },
+  complete = { "--max-results=", "--project-name=", "--query=", "--source-only" },
   optional = function(opts)
     local args = opts.args
 
@@ -50,7 +51,7 @@ subcommand_tbl.searchSymbols = {
 
       return acc
     end)
-    print(vim.inspect(args))
+    print(vim.inspect(args))--TODO debug
 
     assert(
       iter(tbl_keys(args)):all(function(a)
@@ -58,6 +59,21 @@ subcommand_tbl.searchSymbols = {
       end),
       string.format("Illegal arguments: %s", join(opts.args))
     )
+
+    local opts = {
+      max_results = args["--max-results="],
+      project_name = args["--project-name="],
+      query = args["--query="],
+      source_only = args["--source-only="],
+    }
+
+    if not opts.project_name then
+      opts.project_name = require(
+        "lbrayner.jdtls"
+      ).get_current_project_name()
+    end
+
+    require("lbrayner.jdtls").java_search_symbols(opts)
   end,
 }
 
