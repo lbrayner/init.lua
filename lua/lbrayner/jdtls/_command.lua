@@ -40,8 +40,14 @@ subcommand_tbl.searchSymbols = {
     local args = opts.args
 
     args = iter(args):fold({}, function(acc, a)
-      local key, value = a:match("^(.-=)(.*)$")
-      acc[key] = value
+      local key, value = a:match("^(.-=)(.+)$")
+
+      if key then
+        acc[key] = value
+      else
+        acc[a] = true
+      end
+
       return acc
     end)
     print(vim.inspect(args))
