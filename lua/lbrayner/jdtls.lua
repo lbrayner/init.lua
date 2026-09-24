@@ -110,16 +110,33 @@ function M.setup(config)
   start_or_attach()
 end
 
-M.operations = require("lbrayner").get_proxy_table_for_module("lbrayner.jdtls._operations")
+local get_proxy = require("lbrayner").get_proxy_table_for_module
+
+M.operations = get_proxy("lbrayner.jdtls._operations")
+M.lib = get_proxy("lbrayner.jdtls._lib")
+
+local function get(proxy, key)
+  if not rawget(M, key) then
+    rawset(M, key, function(...)
+      return proxy[key](...)
+    end)
+  end
+  return rawget(M, key)
+end
 
 return setmetatable(M, {
   __index = function(_, key)
-    if not rawget(M, key) then
-      rawset(M, key, function(...)
-        return M.operations[key](...)
-      end)
+    if vim.list_contains(
+      {
+        "get_current_project_name",
+      },
+      key
+    )
+    then
+      return get(M.lib, key)
     end
-  return rawget(M, key)
+
+    return get(M.operations, key)
   end,
   __newindex = function()
     error("Cannot add item")

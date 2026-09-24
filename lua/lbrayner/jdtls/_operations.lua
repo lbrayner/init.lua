@@ -144,31 +144,38 @@ function M.java_search_symbols(opts)
     maxResults = opts.max_results,
   }
 
-  with_jdtls(function(client, bufnr)
-    client:request(
-      "java/searchSymbols",
-      vim.tbl_extend("keep", search_symbol_params, {
-        query = opts.query,
-        textDocument = make_text_document_params(bufnr)
-      }),
-      function(err, result, ctx)
-        assert(not err, inspect(err))
+  with_jdtls(
+    function(client, bufnr)
+      client:request(
+        "java/searchSymbols",
+        vim.tbl_extend(
+          "keep",
+          search_symbol_params,
+          {
+            query = opts.query,
+            textDocument = make_text_document_params(bufnr)
+          }
+        ),
+        function(err, result, ctx)
+          assert(not err, inspect(err))
 
-        local items = symbols_to_items(result, bufnr, client.offset_encoding)
-        local title = iter(vim.tbl_keys(search_symbol_params)):fold(
-          ("Java symbols matching %s"):format(inspect(ctx.params.query)),
-          function(t, n)
-            return n and
-            ("%s, %s=%s"):format(t, n, inspect(search_symbol_params[n]))
-            or t
-          end
-        )
+          local items = symbols_to_items(result, bufnr, client.offset_encoding)
+          local title = iter(vim.tbl_keys(search_symbol_params)):fold(
+            ("Java symbols matching %s"):format(inspect(ctx.params.query)),
+            function(t, n)
+              return n and
+              ("%s, %s=%s"):format(t, n, inspect(search_symbol_params[n])) or t
+            end
+          )
 
-        require("lbrayner.lsp").on_list({
-          title = title, items = items, context = ctx
-        })
-      end, bufnr)
-    end)
+          require("lbrayner.lsp").on_list({
+            title = title, items = items, context = ctx
+          })
+        end,
+        bufnr
+      )
+    end
+  )
 end
 
 -- Type hierarchy on quickfix list
