@@ -44,4 +44,35 @@ function M.continue()
   )
 end
 
+-- Start a JDWP Maven Failsafe Cucumber test JVM
+-- mvn verify \
+--   -Dit.test=BatchIT \
+--   -Dcucumber.features=classpath:feature/foo.feature:42 \
+--   -Dmaven.failsafe.debug
+function M.maven_failsafe_attach()
+  local dap = require("dap")
+
+  _G.original_java_adapter = _G.original_java_adapter or dap.adapters.java
+
+  dap.adapters.java = function(callback, config)
+    if config.request == "attach" then
+      config.name = config.name or "Attach to Maven Failsafe"
+      config.mainClass = config.mainClass or "__attach__"
+      config.projectName = config.projectName or "__attach__"
+      config.modulePaths = config.modulePaths or {}
+      config.classPaths = config.classPaths or {}
+      config.javaExec = config.javaExec or "__attach__"
+    end
+
+    original_java_adapter(callback, config)
+  end
+
+  dap.run({
+    type = "java",
+    request = "attach",
+    hostName = "localhost",
+    port = 5005,
+  })
+end
+
 return M
