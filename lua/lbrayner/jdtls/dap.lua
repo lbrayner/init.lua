@@ -58,10 +58,23 @@ function M.maven_failsafe_attach()
     if config.request == "attach" then
       config.name = config.name or "Attach to Maven Failsafe"
       config.mainClass = config.mainClass or "__attach__"
-      config.projectName = config.projectName or "__attach__"
       config.modulePaths = config.modulePaths or {}
       config.classPaths = config.classPaths or {}
       config.javaExec = config.javaExec or "__attach__"
+
+      if not config.projectName then
+        config.projectName = require(
+          "lbrayner.jdtls"
+        ).get_current_project_name()
+      end
+
+      if not config.projectName then
+        vim.notify(
+          "Maven Failsafe Attach must be run from within a JDTLS project.",
+          vim.log.levels.WARN
+        )
+        return
+      end
     end
 
     original_java_adapter(callback, config)
