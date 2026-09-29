@@ -20,6 +20,9 @@ subcommand_tbl.compile = {
   end,
 }
 
+local dap_subcommand_tbl = {}
+subcommand_tbl.dap = { subcommand_tbl = dap_subcommand_tbl }
+
 subcommand_tbl.goToTopLevelDeclaration = {
   simple = require("lbrayner.jdtls").java_go_to_top_level_declaration,
 }
@@ -209,5 +212,17 @@ subcommand_tbl.updateProjectsConfig = {
 
     local select_mode = arg:match("--(%a+)")
     require("lbrayner.jdtls").update_projects_config({ select_mode = select_mode })
+  end,
+}
+
+dap_subcommand_tbl.continue = {
+  simple = function()
+    require("lbrayner.jdtls.dap").continue()
+  end,
+}
+
+dap_subcommand_tbl.mavenAttach = {
+  simple = function()
+    require("lbrayner.jdtls.dap").maven_attach()
   end,
 }

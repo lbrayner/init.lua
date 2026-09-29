@@ -44,19 +44,31 @@ function M.continue()
   )
 end
 
--- Start a JDWP Maven Failsafe Cucumber test JVM
+-- Start a JDWP Maven Surefire/Failsafe Cucumber test JVM
+-- mvn test \
+--   -Dtest=UnitarioTest \
+--   -Dcucumber.features=classpath:feature/foo.feature:42 \
+--   -Dcucumber.plugin=pretty \
+--   -Dmaven.surefire.debug
+-- mvn test -am -pl api-module \
+--   -Dtest=UnitarioTest \
+--   -Dcucumber.features=classpath:feature/foo.feature:42 \
+--   -Dcucumber.plugin=pretty \
+--   -Dsurefire.failIfNoSpecifiedTests=false \
+--   -Dmaven.surefire.debug
 -- mvn verify \
 --   -Dit.test=BatchIT \
---   -Dcucumber.features=classpath:feature/foo.feature:42 \
+--   -Dcucumber.features=classpath:feature/bar.feature:19 \
+--   -Dcucumber.plugin=pretty \
 --   -Dmaven.failsafe.debug
-function M.maven_failsafe_attach()
+function M.maven_attach()
   local dap = require("dap")
 
   _G.original_java_adapter = _G.original_java_adapter or dap.adapters.java
 
   dap.adapters.java = function(callback, config)
     if config.request == "attach" then
-      config.name = config.name or "Attach to Maven Failsafe"
+      config.name = config.name or "Attach to Maven Surefire/Failsafe"
       config.mainClass = config.mainClass or "__attach__"
       config.modulePaths = config.modulePaths or {}
       config.classPaths = config.classPaths or {}
@@ -70,7 +82,7 @@ function M.maven_failsafe_attach()
 
       if not config.projectName then
         vim.notify(
-          "Maven Failsafe Attach must be run from within a JDTLS project.",
+          "Maven Surefire/Failsafe Attach must be run from within a JDTLS project.",
           vim.log.levels.WARN
         )
         return
