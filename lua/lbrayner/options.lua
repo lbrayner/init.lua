@@ -16,11 +16,14 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.ruler = false
 vim.o.shiftwidth = 2
+vim.o.sessionoptions = "curdir,help,tabpages,terminal"
 vim.o.smartcase = true
 vim.o.splitbelow = true
 vim.o.splitright = true
 vim.o.switchbuf = "usetab,uselast"
-vim.o.synmaxcol = 500 -- From tpope's vim-sensible (lowering this improves performance in files with long lines)
+-- From tpope's vim-sensible (lowering this improves performance in files with
+-- long lines):
+vim.o.synmaxcol = 500
 vim.o.tabclose = "left"
 vim.o.tabstop = 2
 vim.o.termguicolors = true
