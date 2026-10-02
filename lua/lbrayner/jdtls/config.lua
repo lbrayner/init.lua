@@ -34,6 +34,9 @@ function M.get(...)
     "target",
     "com.microsoft.java.debug.plugin-*.jar"
   )
+  local jdtls_gjf_glob_pattern = joinpath(
+    data, "jdtls-gjf/jdtls-gjf-*.jar"
+  )
   local vscode_java_test_jar_glob_pattern = joinpath(
     data, "vscode-java-test/default/server/*.jar"
   )
@@ -47,15 +50,22 @@ function M.get(...)
     },
     init_options = {
       bundles = (function()
-        local java_debug_jars = glob(java_debug_jar_glob_pattern, 1, 1)
+        local bundles = {}
+        local jars = glob(jdtls_gjf_glob_pattern, 1, 1)
 
-        if #java_debug_jars ~= 1 then
-          return
+        if #jars == 1 then
+          list_extend(bundles, jars)
         end
 
-        local bundles = java_debug_jars
+        jars = glob(java_debug_jar_glob_pattern, 1, 1)
 
-        local vscode_java_test_jars = tbl_filter(function(jar)
+        if #jars ~= 1 then
+          return not tbl_isempty(bundles) and bundles or nil
+        end
+
+        list_extend(bundles, jars)
+
+        jars = tbl_filter(function(jar)
           -- {{{ github issue
           -- https://github.com/eclipse-jdtls/eclipse.jdt.ls/issues/2761#issuecomment-1638311201.
           -- }}}
@@ -66,7 +76,7 @@ function M.get(...)
           ) and not endswith(jar, "jacocoagent.jar")
         end, glob(vscode_java_test_jar_glob_pattern, 1, 1))
 
-        list_extend(bundles, vscode_java_test_jars)
+        list_extend(bundles, jars)
 
         if not tbl_isempty(bundles) then
           return bundles
