@@ -25,7 +25,8 @@ function M.buf_is_scratch(bufnr)
 end
 
 function M.contains(s, text)
-  vim.validate({ s = { s, "s" }, text = { text, "s" } })
+  vim.validate("s", s, "string")
+  vim.validate("text", text, "string")
   return string.find(s, text, 1, true)
 end
 
