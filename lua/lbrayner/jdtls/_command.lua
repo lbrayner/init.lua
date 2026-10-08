@@ -148,7 +148,7 @@ subcommand_tbl.stop = {
     end
 
     vim.api.nvim_del_augroup_by_name("jdtls_setup")
-    vim.lsp.stop_client(client.id)
+    client:stop()
   end,
 }
 
