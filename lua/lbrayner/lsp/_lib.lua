@@ -1,4 +1,30 @@
+local nvim_buf_get_mark = vim.api.nvim_buf_get_mark
+
 local M = {}
+
+function M.get_range(opts)
+  opts = opts or {}
+
+  if not opts.line1 or not opts.line2 then
+    return
+  end
+
+  local visual_selection = {
+    start = nvim_buf_get_mark(0, "<"),
+    ["end"] = nvim_buf_get_mark(0, ">")
+  }
+
+  if opts.line1 ~= visual_selection.start[1] or
+    opts.line2 ~= visual_selection["end"][1] then
+    -- Supplied range inferred
+    return {
+      start = { opts.line1, 0 },
+      ["end"] = { opts.line2, 2147483647 }, -- Maximum line length (vi_diff.txt)
+    }
+  end
+
+  return visual_selection
+end
 
 function M.on_list(opts)
   if vim.tbl_isempty(opts.items) then

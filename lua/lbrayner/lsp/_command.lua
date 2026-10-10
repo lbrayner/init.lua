@@ -1,23 +1,5 @@
 local join = require("lbrayner").join
 
-local function get_range(opts)
-  local visual_selection = {
-    start = vim.api.nvim_buf_get_mark(0, "<"),
-    ["end"] = vim.api.nvim_buf_get_mark(0, ">")
-  }
-
-  if opts.line1 ~= visual_selection.start[1] or
-    opts.line2 ~= visual_selection["end"][1] then
-    -- Supplied range inferred
-    return {
-      start = { opts.line1, 0 },
-      ["end"] = { opts.line2, 2147483647 }, -- Maximum line length (vi_diff.txt)
-    }
-  end
-
-  return visual_selection
-end
-
 ---@type table<string, MyCmdSubcommand>
 local subcommand_tbl = {}
 require("lbrayner.subcommands").create_user_command_and_subcommands(
@@ -45,7 +27,9 @@ subcommand_tbl.addWorkspaceFolder = {
 subcommand_tbl.codeAction = {
   ranged = true,
   simple = function(opts)
-    vim.lsp.buf.code_action({ range = get_range(opts) })
+    vim.lsp.buf.code_action({
+      range = require("lbrayner.lsp").get_range(opts),
+    })
   end,
 }
 
@@ -108,7 +92,10 @@ subcommand_tbl.documentSymbol = {
 subcommand_tbl.format = {
   ranged = true,
   simple = function(opts)
-    vim.lsp.buf.format({ async = true, range = get_range(opts) })
+    vim.lsp.buf.format({
+      async = true,
+      range = require("lbrayner.lsp").get_range(opts)
+    })
   end,
 }
 

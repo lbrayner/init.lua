@@ -108,6 +108,7 @@ return setmetatable(M, {
     end
     if vim.list_contains(
       {
+        "get_range",
         "on_list",
       }, key) then
       return get(M.lib, key)
