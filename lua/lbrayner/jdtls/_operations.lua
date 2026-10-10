@@ -5,6 +5,7 @@ local M = {}
 local concat = table.concat
 
 local SymbolKind = vim.lsp.protocol.SymbolKind
+local apply_text_edits = vim.lsp.util.apply_text_edits
 local input = vim.fn.input
 local inspect = vim.inspect
 local iter = vim.iter
@@ -12,6 +13,7 @@ local make_text_document_params = vim.lsp.util.make_text_document_params
 local notify = vim.notify
 local offset_encoding = "utf-16"
 local symbols_to_items = vim.lsp.util.symbols_to_items
+local uri_from_bufnr = vim.uri_from_bufnr
 
 local maximum_resolve_depth = 10
 
@@ -29,6 +31,33 @@ local function with_jdtls(fn) -- {{{
 
   fn(client, bufnr)
 end -- }}}
+
+function M.gjf_format(opts)
+  opts = opts or {}
+
+  local gjf_options = {
+    ["gjf.sortImports"] = opts.sort_imports,
+    ["gjf.removeUnusedImports"] = opts.remove_unused_imports,
+    ["gjf.reflowLongStrings"] = opts.reflow_long_strings,
+    ["gjf.formatJavadoc"] = opts.format_javadoc,
+  }
+
+  local bufnr = vim.api.nvim_get_current_buf()
+
+  local command = {
+    command = "xyz.lbrayner.jdtls.gjf.format",
+    arguments = {
+      uri_from_bufnr(bufnr),
+      opts.range,
+      gjf_options,
+    },
+  }
+
+  require("jdtls.util").execute_command(command, function(err, result, _ctx)
+    assert(not err, inspect(err))
+    apply_text_edits(result, bufnr, offset_encoding)
+  end)
+end
 
 function M.import_project()
   local command = {
@@ -84,7 +113,7 @@ function M.java_is_test_file(cb)
 
   -- From jdtls.util.with_classpaths
   local bufnr = vim.api.nvim_get_current_buf()
-  local uri = vim.uri_from_bufnr(bufnr)
+  local uri = uri_from_bufnr(bufnr)
 
   local command = {
     command = "java.project.isTestFile",
