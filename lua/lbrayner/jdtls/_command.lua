@@ -9,6 +9,7 @@ require("lbrayner.subcommands").create_user_command_and_subcommands("Jdt", subco
   bang = true,
   bar = true,
   desc = "JDT Language Server commands",
+  range = true,
 })
 
 subcommand_tbl.compile = {
@@ -22,6 +23,9 @@ subcommand_tbl.compile = {
 
 local dap_subcommand_tbl = {}
 subcommand_tbl.dap = { subcommand_tbl = dap_subcommand_tbl }
+
+local gjf_subcommand_tbl = {}
+subcommand_tbl.gjf = { subcommand_tbl = gjf_subcommand_tbl }
 
 subcommand_tbl.goToTopLevelDeclaration = {
   simple = require("lbrayner.jdtls").java_go_to_top_level_declaration,
@@ -224,5 +228,40 @@ dap_subcommand_tbl.continue = {
 dap_subcommand_tbl.mavenAttach = {
   simple = function()
     require("lbrayner.jdtls.dap").maven_attach()
+  end,
+}
+
+gjf_subcommand_tbl.format = {
+  ranged = true,
+  complete = {
+    "--format-javadoc",
+    "--reflow-long-strings",
+    "--remove-unused-imports",
+    "--sort-imports"
+  },
+  optional = function(opts)
+    local args = opts.args
+
+    args = iter(args):fold({}, function(acc, arg)
+      acc[arg] = true
+      return acc
+    end)
+
+    assert(
+      iter(tbl_keys(args)):all(function(arg)
+        return list_contains(opts.subcommand.complete, arg)
+      end),
+      string.format("Illegal arguments: %s", join(opts.args))
+    )
+
+    local opts = {
+      format_javadoc = args["--format-javadoc"],
+      range = require("lbrayner.lsp").get_range(opts),
+      reflow_long_strings = args["--reflow-long-strings"],
+      remove_unused_imports = args["--remove-unused-imports"],
+      sort_imports = args["--sort-imports"],
+    }
+
+    require("lbrayner.jdtls").gjf_format(opts)
   end,
 }
