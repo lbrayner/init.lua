@@ -9,6 +9,7 @@ local apply_text_edits = vim.lsp.util.apply_text_edits
 local input = vim.fn.input
 local inspect = vim.inspect
 local iter = vim.iter
+local make_given_range_params = require("vim.lsp.util").make_given_range_params
 local make_text_document_params = vim.lsp.util.make_text_document_params
 local notify = vim.notify
 local offset_encoding = "utf-16"
@@ -43,12 +44,17 @@ function M.gjf_format(opts)
   }
 
   local bufnr = vim.api.nvim_get_current_buf()
+  local range = opts.range
+
+  range = range and make_given_range_params(
+    range.start, range["end"], bufnr, offset_encoding
+  ).range or nil
 
   local command = {
     command = "xyz.lbrayner.jdtls.gjf.format",
     arguments = {
       uri_from_bufnr(bufnr),
-      opts.range,
+      range,
       gjf_options,
     },
   }
