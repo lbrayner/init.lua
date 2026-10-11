@@ -55,7 +55,7 @@ function M.gjf_format(opts)
     arguments = {
       uri_from_bufnr(bufnr),
       range,
-      gjf_options,
+      next(gjf_options) and gjf_options or nil,
     },
   }
 
