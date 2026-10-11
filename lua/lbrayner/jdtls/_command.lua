@@ -234,32 +234,38 @@ dap_subcommand_tbl.mavenAttach = {
 gjf_subcommand_tbl.format = {
   ranged = true,
   complete = {
-    "--format-javadoc",
-    "--reflow-long-strings",
-    "--remove-unused-imports",
-    "--sort-imports"
+    "--format-javadoc=true",
+    "--format-javadoc=false",
+    "--reflow-long-strings=true",
+    "--reflow-long-strings=false",
+    "--remove-unused-imports=true",
+    "--remove-unused-imports=false",
+    "--sort-imports=true",
+    "--sort-imports=false",
   },
   optional = function(opts)
     local args = opts.args
 
     args = iter(args):fold({}, function(acc, arg)
-      acc[arg] = true
+      local key, value = arg:match("^(.-=)(.+)$")
+
+      acc[key] = value
       return acc
     end)
 
     assert(
-      iter(tbl_keys(args)):all(function(arg)
+      iter(opts.args):all(function(arg)
         return list_contains(opts.subcommand.complete, arg)
       end),
       string.format("Illegal arguments: %s", join(opts.args))
     )
 
     local opts = {
-      format_javadoc = args["--format-javadoc"],
+      format_javadoc = args["--format-javadoc="],
       range = require("lbrayner.lsp").get_range(opts),
-      reflow_long_strings = args["--reflow-long-strings"],
-      remove_unused_imports = args["--remove-unused-imports"],
-      sort_imports = args["--sort-imports"],
+      reflow_long_strings = args["--reflow-long-strings="],
+      remove_unused_imports = args["--remove-unused-imports="],
+      sort_imports = args["--sort-imports="],
     }
 
     require("lbrayner.jdtls").gjf_format(opts)
