@@ -1,9 +1,11 @@
 -- https://github.com/nvim-neorocks/nvim-best-practices
 
+local concat = table.concat
+
 local M = {}
 
 function M.complete_filename(lead)
-  return vim.fn.glob(lead .. "*", 1, 1)
+  return vim.fn.glob(concat({ lead, "*" }), 1, 1)
 end
 
 local function main_cmd(name, subcommand_tbl)
@@ -21,7 +23,10 @@ local function main_cmd(name, subcommand_tbl)
       local subcommand = subcommand_tbl[subcommand_key]
 
       if not subcommand then
-        vim.notify(name .. ": Unknown command: " .. subcommand_key, vim.log.levels.ERROR)
+        vim.notify(
+          concat({ name, ": Unknown command: ", subcommand_key }),
+          vim.log.levels.ERROR
+        )
         return
       end
 
@@ -51,13 +56,13 @@ local function smart_complete(lead, options)
   if not lead:find("%u") then
     return vim.iter(options)
     :filter(function(option)
-      return option:lower():find(lead:lower()) ~= nil
+      return option:lower():find(lead:lower(), 1, true) ~= nil
     end)
     :totable()
   else
     return vim.iter(options)
     :filter(function(option)
-      return option:find(lead) ~= nil
+      return option:find(lead, 1, true) ~= nil
     end)
     :totable()
   end
@@ -70,12 +75,14 @@ function M.create_user_command_and_subcommands(name, subcommand_tbl, opts)
   assert(type(subcommand_tbl) == "table", "'subcommand_tbl' must be a table")
   assert(type(opts) == "table", "'opts' must be a table")
 
-  vim.api.nvim_create_user_command(name, main_cmd(name, subcommand_tbl), vim.tbl_extend("keep", {
+  opts = vim.tbl_extend("keep", {
     nargs = "+",
     complete = function(arg_lead, cmdline, _)
       local arguments = vim.fn.substitute(
         cmdline,
-        [[.*\%(\s*|\s*\)\?]] .. name .. "[!]\\?\\(\\s\\+[^[:blank:]]*\\)\\%(\\s*|.*\\)\\?",
+        concat({
+          [[.*\%(\s*|\s*\)\?]], name, "[!]\\?\\(\\s\\+[^[:blank:]]*\\)\\%(\\s*|.*\\)\\?"
+        }),
         [[\1]],
         ""
       )
@@ -109,7 +116,9 @@ function M.create_user_command_and_subcommands(name, subcommand_tbl, opts)
           return candidates
         elseif arg_lead and vim.tbl_get(subcommand_tbl, subcommand_key, "complete") then
           if type(subcommand_tbl[subcommand_key].complete) == "table" then
-            local candidates = smart_complete(arg_lead, subcommand_tbl[subcommand_key].complete)
+            local candidates = smart_complete(
+              arg_lead, subcommand_tbl[subcommand_key].complete
+            )
             table.sort(candidates)
             return candidates
           end
@@ -118,7 +127,9 @@ function M.create_user_command_and_subcommands(name, subcommand_tbl, opts)
         end
       end)(subcommand_tbl)
     end,
-  }, opts))
+  }, opts)
+
+  vim.api.nvim_create_user_command(name, main_cmd(name, subcommand_tbl), opts)
 end
 
 return M
