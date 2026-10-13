@@ -262,23 +262,22 @@ gjf_subcommand_tbl.format = {
       string.format("Illegal arguments: %s", join(opts.args))
     )
 
-    local aosp = args["--aosp="]
+    local function getopt(value, default)
+      return value ~= nil and value or default
+    end
+
+    local aosp = getopt(args["--aosp="], false)
     local format_javadoc = args["--format-javadoc="]
     local reflow_long_strings = args["--reflow-long-strings="]
-    local remove_unused_imports = args["--remove-unused-imports="]
-    local sort_imports = args["--sort-imports="]
-
-    local aosp = aosp ~= nil and aosp or false
+    local remove_unused_imports = getopt(args["--remove-unused-imports="], false)
+    local sort_imports = getopt(args["--sort-imports="], false)
 
     local whole_file = opts.line1 == 1 and opts.line2 == line("$")
 
     if not whole_file then
-      format_javadoc = format_javadoc ~= nil and format_javadoc or false
-      reflow_long_strings = reflow_long_strings ~= nil and reflow_long_strings or false
+      format_javadoc = getopt(format_javadoc, false)
+      reflow_long_strings = getopt(reflow_long_strings, false)
     end
-
-    remove_unused_imports = remove_unused_imports ~= nil and remove_unused_imports or false
-    sort_imports = sort_imports ~= nil and sort_imports or false
 
     local opts = {
       aosp = aosp,
@@ -289,7 +288,6 @@ gjf_subcommand_tbl.format = {
       sort_imports = sort_imports,
     }
 
-    local bufnr = vim.api.nvim_get_current_buf()
-    require("lbrayner.jdtls").gjf_format(bufnr, opts)
+    require("lbrayner.jdtls").gjf_format(vim.api.nvim_get_current_buf(), opts)
   end,
 }
