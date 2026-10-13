@@ -34,11 +34,12 @@ local function with_jdtls(fn) -- {{{
 end -- }}}
 
 function M.gjf_format(bufnr, opts)
-  assert(type(bufnr) == "number" and bufnr > 0, "'bufnr' is required")
+  assert(type(bufnr) == "number" and bufnr > 0, "'bufnr' must be a positive integer")
 
   opts = opts or {}
 
   local gjf_options = {
+    ["gjf.aosp"] = opts.aosp,
     ["gjf.sortImports"] = opts.sort_imports,
     ["gjf.removeUnusedImports"] = opts.remove_unused_imports,
     ["gjf.reflowLongStrings"] = opts.reflow_long_strings,

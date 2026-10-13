@@ -235,6 +235,8 @@ dap_subcommand_tbl.mavenAttach = {
 gjf_subcommand_tbl.format = {
   ranged = true,
   complete = {
+    "--aosp=true",
+    "--aosp=false",
     "--format-javadoc=true",
     "--format-javadoc=false",
     "--reflow-long-strings=true",
@@ -260,10 +262,13 @@ gjf_subcommand_tbl.format = {
       string.format("Illegal arguments: %s", join(opts.args))
     )
 
+    local aosp = args["--aosp="]
     local format_javadoc = args["--format-javadoc="]
     local reflow_long_strings = args["--reflow-long-strings="]
     local remove_unused_imports = args["--remove-unused-imports="]
     local sort_imports = args["--sort-imports="]
+
+    local aosp = aosp ~= nil and aosp or false
 
     local whole_file = opts.line1 == 1 and opts.line2 == line("$")
 
@@ -276,6 +281,7 @@ gjf_subcommand_tbl.format = {
     sort_imports = sort_imports ~= nil and sort_imports or false
 
     local opts = {
+      aosp = aosp,
       format_javadoc = format_javadoc,
       range = require("lbrayner.lsp").get_range(opts),
       reflow_long_strings = reflow_long_strings,
