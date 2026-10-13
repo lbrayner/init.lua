@@ -33,7 +33,9 @@ local function with_jdtls(fn) -- {{{
   fn(client, bufnr)
 end -- }}}
 
-function M.gjf_format(opts)
+function M.gjf_format(bufnr, opts)
+  assert(type(bufnr) == "number" and bufnr > 0, "'bufnr' is required")
+
   opts = opts or {}
 
   local gjf_options = {
@@ -43,7 +45,6 @@ function M.gjf_format(opts)
     ["gjf.formatJavadoc"] = opts.format_javadoc,
   }
 
-  local bufnr = vim.api.nvim_get_current_buf()
   local range = opts.range
 
   range = range and make_given_range_params(

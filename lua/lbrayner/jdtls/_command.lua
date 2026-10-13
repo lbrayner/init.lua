@@ -1,5 +1,6 @@
 local iter = vim.iter
 local join = require("lbrayner").join
+local line = vim.fn.line
 local list_contains = vim.list_contains
 local tbl_keys = vim.tbl_keys
 
@@ -248,7 +249,6 @@ gjf_subcommand_tbl.format = {
 
     args = iter(args):fold({}, function(acc, arg)
       local key, value = arg:match("^(.-=)(.+)$")
-
       acc[key] = value
       return acc
     end)
@@ -260,14 +260,30 @@ gjf_subcommand_tbl.format = {
       string.format("Illegal arguments: %s", join(opts.args))
     )
 
+    local format_javadoc = args["--format-javadoc="]
+    local reflow_long_strings = args["--reflow-long-strings="]
+    local remove_unused_imports = args["--remove-unused-imports="]
+    local sort_imports = args["--sort-imports="]
+
+    local whole_file = opts.line1 == 1 and opts.line2 == line("$")
+
+    if not whole_file then
+      format_javadoc = format_javadoc ~= nil and format_javadoc or false
+      reflow_long_strings = reflow_long_strings ~= nil and reflow_long_strings or false
+    end
+
+    remove_unused_imports = remove_unused_imports ~= nil and remove_unused_imports or false
+    sort_imports = sort_imports ~= nil and sort_imports or false
+
     local opts = {
-      format_javadoc = args["--format-javadoc="],
+      format_javadoc = format_javadoc,
       range = require("lbrayner.lsp").get_range(opts),
-      reflow_long_strings = args["--reflow-long-strings="],
-      remove_unused_imports = args["--remove-unused-imports="],
-      sort_imports = args["--sort-imports="],
+      reflow_long_strings = reflow_long_strings,
+      remove_unused_imports = remove_unused_imports,
+      sort_imports = sort_imports,
     }
 
-    require("lbrayner.jdtls").gjf_format(opts)
+    local bufnr = vim.api.nvim_get_current_buf()
+    require("lbrayner.jdtls").gjf_format(bufnr, opts)
   end,
 }
