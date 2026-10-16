@@ -2,6 +2,7 @@ local iter = vim.iter
 local join = require("lbrayner").join
 local line = vim.fn.line
 local list_contains = vim.list_contains
+local nvim_get_current_buf = vim.api.nvim_get_current_buf
 local tbl_keys = vim.tbl_keys
 
 ---@type table<string, MyCmdSubcommand>
@@ -112,7 +113,7 @@ subcommand_tbl.setupDapMainClassConfigs = {
 
 subcommand_tbl.start = {
   simple = function(opts)
-    local bufnr = vim.api.nvim_get_current_buf()
+    local bufnr = nvim_get_current_buf()
 
     if vim.bo[bufnr].filetype ~= "java" then
       vim.notify("JDT Language Server start requires a Java buffer", vim.log.levels.WARN)
@@ -248,6 +249,7 @@ gjf_subcommand_tbl.format = {
   },
   optional = function(opts)
     local args = opts.args
+    local bufnr = nvim_get_current_buf()
 
     args = iter(args):fold({}, function(acc, arg)
       local key, value = arg:match("^(.-=)(.+)$")
@@ -274,7 +276,10 @@ gjf_subcommand_tbl.format = {
 
     local whole_file = opts.line1 == 1 and opts.line2 == line("$")
 
-    if not whole_file then
+    if whole_file then
+      format_javadoc = getopt(format_javadoc, true)
+      reflow_long_strings = getopt(reflow_long_strings, true)
+    else
       format_javadoc = getopt(format_javadoc, false)
       reflow_long_strings = getopt(reflow_long_strings, false)
     end
@@ -288,6 +293,6 @@ gjf_subcommand_tbl.format = {
       sort_imports = sort_imports,
     }
 
-    require("lbrayner.jdtls").gjf_format(vim.api.nvim_get_current_buf(), opts)
+    require("lbrayner.jdtls").gjf_format(bufnr, opts)
   end,
 }
