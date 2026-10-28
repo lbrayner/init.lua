@@ -176,7 +176,7 @@ local function get_tabs() -- {{{
       ansi_length = ansi_length + (window_name_ansi_length or 0)
       local visible_width = strwidth(visible) - ansi_length
 
-      if visible_width > (state.width - 2) then -- FZF left pads 2
+      if visible_width > (state.width - 2 - 1) then -- FZF left pads 2 and right pads 1
         statement = base64_encode(window_name)
       end
 
