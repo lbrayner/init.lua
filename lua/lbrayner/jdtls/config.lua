@@ -27,18 +27,13 @@ function M.get(...)
 
   local data = stdpath("data")
   local java_debug_jar_glob_pattern = joinpath(
-    data,
-    "java-debug",
-    "default",
-    "com.microsoft.java.debug.plugin",
-    "target",
-    "com.microsoft.java.debug.plugin-*.jar"
+    data, "java-debug/default/**/com.microsoft.java.debug.plugin-*.jar"
   )
   local jdtls_gjf_glob_pattern = joinpath(
     data, "jdtls-gjf/jdtls-gjf-*.jar"
   )
   local vscode_java_test_jar_glob_pattern = joinpath(
-    data, "vscode-java-test/default/server/*.jar"
+    data, "vscode-java-test/default/**/*.jar"
   )
 
   return tbl_deep_extend("force", {}, {
