@@ -67,6 +67,8 @@ function M.maven_attach()
   _G.original_java_adapter = _G.original_java_adapter or dap.adapters.java
 
   dap.adapters.java = function(callback, config)
+    dap.adapters.java = _G.original_java_adapter
+
     if config.request == "attach" then
       config.name = config.name or "Attach to Maven Surefire/Failsafe"
       config.mainClass = config.mainClass or "__attach__"
@@ -89,7 +91,7 @@ function M.maven_attach()
       end
     end
 
-    original_java_adapter(callback, config)
+    _G.original_java_adapter(callback, config)
   end
 
   dap.run({
@@ -98,6 +100,40 @@ function M.maven_attach()
     hostName = "localhost",
     port = 5005,
   })
+end
+
+---@class JdtTestOpts
+---...
+---@field on_config nil|function Callback called after config is assembled
+
+local function setup_on_config(opts)
+  opts = opts or {}
+  local on_config = opts.on_config
+
+  if not on_config then return end
+
+  local dap = require("dap")
+  _G.original_java_adapter = _G.original_java_adapter or dap.adapters.java
+
+  dap.adapters.java = function(callback, config)
+    dap.adapters.java = _G.original_java_adapter
+    on_config(config)
+    _G.original_java_adapter(callback, config)
+  end
+end
+
+--- Debug the test class in the current buffer
+--- @param opts JdtTestOpts|nil
+function M.test_class(opts)
+  setup_on_config(opts)
+  require("jdtls").test_class(opts)
+end
+
+--- Debug the nearest test method in the current buffer
+--- @param opts nil|JdtTestOpts
+function M.test_nearest_method(opts)
+  setup_on_config(opts)
+  require("jdtls").test_nearest_method(opts)
 end
 
 return M

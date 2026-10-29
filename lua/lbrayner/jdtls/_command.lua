@@ -158,30 +158,29 @@ subcommand_tbl.stop = {
   end,
 }
 
-local function get_dap_test_config()
+local function dap_get_jdt_test_opts()
   local success, session = pcall(require, "lbrayner.session.jdtls")
 
   if not success then
     return
   end
 
-  local get_session_dap_test_config = session.get_dap_test_config
+  local get = session.dap_get_jdt_test_opts
 
-  if get_session_dap_test_config and
-    type(get_session_dap_test_config) == "function" then
-    return get_session_dap_test_config()
+  if get and type(get) == "function" then
+    return get()
   end
 end
 
 subcommand_tbl.testClass = {
   simple = function()
-    require("jdtls").test_class({ config = get_dap_test_config() })
+    require("lbrayner.jdtls.dap").test_class(dap_get_jdt_test_opts())
   end,
 }
 
 subcommand_tbl.testNearestMethod = {
   simple = function()
-    require("jdtls").test_nearest_method({ config = get_dap_test_config() })
+    require("lbrayner.jdtls.dap").test_nearest_method(dap_get_jdt_test_opts())
   end,
 }
 
