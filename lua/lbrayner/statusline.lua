@@ -37,6 +37,7 @@ local nvim_get_current_win = vim.api.nvim_get_current_win
 local nvim_get_hl = vim.api.nvim_get_hl
 local nvim_set_hl = vim.api.nvim_set_hl
 local nvim_win_call = vim.api.nvim_win_call
+local nvim_win_get_width = vim.api.nvim_win_get_width
 local nvim_win_is_valid = vim.api.nvim_win_is_valid
 local pathshorten = vim.fn.pathshorten
 local schedule = vim.schedule
@@ -56,7 +57,6 @@ local tbl_isempty = vim.tbl_isempty
 local tbl_keys = vim.tbl_keys
 local win_is_actual_curwin = require("lbrayner").win_is_actual_curwin
 local win_is_floating = require("lbrayner").win_is_floating
-local winwidth = vim.fn.winwidth
 
 local function get_qf_title_prefix(winfo)
   return winfo.loclist == 1 and "[Location List] " or "[Quickfix List] "
@@ -388,11 +388,13 @@ function M.get_winbar()
     statusline = concat({ statusline, "%w " })
   end
 
-  local winfo = getwininfo(nvim_get_current_win())[1]
+  local bufnr = nvim_get_current_buf()
+  local win = nvim_get_current_win()
+  local winfo = getwininfo(win)[1]
 
   if vim.b.fugitive_type == "index" then -- Fugitive summary
     local git_dir = pathshorten(fnamemodify(
-      FugitiveGitDir(nvim_get_current_buf()):sub(1, -6), ":~"
+      FugitiveGitDir(bufnr):sub(1, -6), ":~"
     ))
 
     statusline = concat({
@@ -400,7 +402,7 @@ function M.get_winbar()
       "%{v:lua.require'lbrayner.statusline'.get_status_flag()}"
     })
   elseif vim.b.fugitive_type == "temp" then -- Fugitive temporary buffers
-    local fugitive_result = FugitiveResult(nvim_get_current_buf())
+    local fugitive_result = FugitiveResult(bufnr)
 
     if fugitive_result.blame_file then
       statusline = concat({ statusline, "%=Fugitive blame " })
@@ -414,7 +416,7 @@ function M.get_winbar()
       })
     end
   elseif winfo.loclist == 1 or winfo.quickfix == 1 then
-    local width = winwidth("%")
+    local width = nvim_win_get_width(win)
 
     statusline = concat({
       statusline, "%<",
