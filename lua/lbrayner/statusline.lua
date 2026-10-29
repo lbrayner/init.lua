@@ -106,10 +106,11 @@ end
 
 local DAP_HL_USER_GROUP = "User8"
 
-local function highlight_dap_stopped(is_stopped)
+local function highlight_dap_status(opts)
+  opts = opts or {}
   local daphl = nvim_get_hl(0, { name = DAP_HL_USER_GROUP })
 
-  if is_stopped then
+  if opts.status == "stopped" then
     local stopped_hl = nvim_get_hl(0, { name = "DiagnosticError" })
 
     nvim_set_hl(
@@ -118,32 +119,31 @@ local function highlight_dap_stopped(is_stopped)
       tbl_deep_extend("keep", { fg = stopped_hl.fg }, daphl)
     )
 
-    return
+  else
+    local default_hl = nvim_get_hl(0, { name = "DiagnosticWarn" })
+
+    nvim_set_hl(
+      0,
+      DAP_HL_USER_GROUP,
+      tbl_deep_extend("keep", { fg = default_hl.fg }, daphl)
+    )
   end
-
-  local not_stopped_hl = nvim_get_hl(0, { name = "DiagnosticWarn" })
-
-  nvim_set_hl(
-    0,
-    DAP_HL_USER_GROUP,
-    tbl_deep_extend("keep", { fg = not_stopped_hl.fg }, daphl)
-  )
 end
 
 if dap_available then
   -- command: 'continue';
   dap.listeners.after["continue"]["lbrayner.statusline"] = function()
-    highlight_dap_stopped(false)
+    highlight_dap_status()
   end
 
   -- event: 'stopped';
   dap.listeners.after["event_stopped"]["lbrayner.statusline"] = function()
-    highlight_dap_stopped(true)
+    highlight_dap_status({ status = "stopped" })
   end
 
   -- command: 'launch';
   dap.listeners.after["launch"]["lbrayner.statusline"] = function()
-    highlight_dap_stopped(false)
+    highlight_dap_status()
   end
 end
 
