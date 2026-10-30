@@ -44,6 +44,42 @@ function M.continue()
   )
 end
 
+local function attach(config)
+  local dap = require("dap")
+  local name = config.name
+
+  _G.original_java_adapter = _G.original_java_adapter or dap.adapters.java
+
+  dap.adapters.java = function(callback, config)
+    dap.adapters.java = _G.original_java_adapter
+
+    if config.request == "attach" then
+      config.name = config.name or name
+      config.mainClass = config.mainClass or "__attach__"
+      config.modulePaths = config.modulePaths or {}
+      config.classPaths = config.classPaths or {}
+      config.javaExec = config.javaExec or "__attach__"
+
+      if not config.projectName then
+        config.projectName = require("lbrayner.jdtls").get_current_project_name()
+      end
+
+      if not config.projectName then
+        vim.notify(
+          "Java DAP Attach must be run from within a JDTLS project.",
+          vim.log.levels.WARN
+        )
+        return
+      end
+      config.name = config.name or "Attach to WebSphere 9"
+    end
+
+    _G.original_java_adapter(callback, config)
+  end
+
+  dap.run(config)
+end
+
 -- Start a JDWP Maven Surefire/Failsafe Cucumber test JVM
 -- mvn test \
 --   -Dtest=UnitarioTest \
@@ -62,43 +98,22 @@ end
 --   -Dcucumber.plugin=pretty \
 --   -Dmaven.failsafe.debug
 function M.maven_attach()
-  local dap = require("dap")
-
-  _G.original_java_adapter = _G.original_java_adapter or dap.adapters.java
-
-  dap.adapters.java = function(callback, config)
-    dap.adapters.java = _G.original_java_adapter
-
-    if config.request == "attach" then
-      config.name = config.name or "Attach to Maven Surefire/Failsafe"
-      config.mainClass = config.mainClass or "__attach__"
-      config.modulePaths = config.modulePaths or {}
-      config.classPaths = config.classPaths or {}
-      config.javaExec = config.javaExec or "__attach__"
-
-      if not config.projectName then
-        config.projectName = require(
-          "lbrayner.jdtls"
-        ).get_current_project_name()
-      end
-
-      if not config.projectName then
-        vim.notify(
-          "Maven Surefire/Failsafe Attach must be run from within a JDTLS project.",
-          vim.log.levels.WARN
-        )
-        return
-      end
-    end
-
-    _G.original_java_adapter(callback, config)
-  end
-
-  dap.run({
+  attach({
     type = "java",
+    name = "Attach to Maven Surefire/Failsafe",
     request = "attach",
     hostName = "localhost",
     port = 5005,
+  })
+end
+
+function M.websphere9_attach()
+  attach({
+    type = "java",
+    name = "Attach to WebSphere 9",
+    request = "attach",
+    hostName = "localhost",
+    port = 7777,
   })
 end
 
