@@ -1,5 +1,6 @@
 -- vim: fdm=marker
 
+local concat = table.concat
 local endswith = vim.endswith
 local fs_stat = vim.uv.fs_stat
 local glob = vim.fn.glob
@@ -14,6 +15,16 @@ local tbl_map = vim.tbl_map
 local uri_from_fname = vim.uri_from_fname
 
 local M = {}
+
+function M.extend_args(config_args, ...)
+  local ts = { ... }
+  local args = vim.iter(ts):flatten():totable()
+  args = concat(args, " ")
+
+  return config_args and config_args ~= "" and concat({
+    config_args, args
+  }, " ") or args
+end
 
 function M.get(...)
   local capabilities = tbl_deep_extend("keep", {
