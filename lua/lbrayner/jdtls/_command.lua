@@ -226,9 +226,30 @@ dap_subcommand_tbl.continue = {
   end,
 }
 
+-- Start a JDWP Maven Surefire/Failsafe Cucumber test JVM
+-- mvn test \
+--   -Dtest=UnitarioTest \
+--   -Dcucumber.features=classpath:feature/foo.feature:42 \
+--   -Dcucumber.plugin=pretty \
+--   -Dmaven.surefire.debug
+-- mvn test -am -pl api-module \
+--   -Dtest=UnitarioTest \
+--   -Dcucumber.features=classpath:feature/foo.feature:42 \
+--   -Dcucumber.plugin=pretty \
+--   -Dsurefire.failIfNoSpecifiedTests=false \
+--   -Dmaven.surefire.debug
+-- mvn verify \
+--   -Dit.test=BatchIT \
+--   -Dcucumber.features=classpath:feature/bar.feature:19 \
+--   -Dcucumber.plugin=pretty \
+--   -Dmaven.failsafe.debug
 dap_subcommand_tbl.mavenAttach = {
   simple = function()
-    require("lbrayner.jdtls.dap").maven_attach()
+    require("lbrayner.jdtls.dap").attach({
+      name = "Attach to Maven Surefire/Failsafe",
+      hostName = "localhost",
+      port = 5005,
+    })
   end,
 }
 
