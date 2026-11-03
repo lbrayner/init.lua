@@ -271,18 +271,18 @@ gjf_subcommand_tbl.format = {
     local args = opts.args
     local bufnr = nvim_get_current_buf()
 
-    args = iter(args):fold({}, function(acc, arg)
-      local key, value = arg:match("^(.-=)(.+)$")
-      acc[key] = value
-      return acc
-    end)
-
     assert(
       iter(opts.args):all(function(arg)
         return list_contains(opts.subcommand.complete, arg)
       end),
       string.format("Illegal arguments: %s", join(opts.args))
     )
+
+    args = iter(args):fold({}, function(acc, arg)
+      local key, value = arg:match("^(.-=)(.+)$")
+      acc[key] = value
+      return acc
+    end)
 
     local function getopt(value, default)
       return value ~= nil and value or default
