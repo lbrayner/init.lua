@@ -6,12 +6,12 @@ function M.attach(config)
   config.type = "java"
 
   local dap = require("dap")
-
-  _G.original_java_adapter = _G.original_java_adapter or dap.adapters.java
   local name = config.name
 
+  _G.dap_original_java_adapter = _G.dap_original_java_adapter or dap.adapters.java
+
   dap.adapters.java = function(callback, config)
-    dap.adapters.java = _G.original_java_adapter
+    dap.adapters.java = _G.dap_original_java_adapter
 
     if config.request == "attach" then
       config.name = config.name or name
@@ -31,10 +31,9 @@ function M.attach(config)
         )
         return
       end
-      config.name = config.name or "Attach to WebSphere 9"
     end
 
-    _G.original_java_adapter(callback, config)
+    _G.dap_original_java_adapter(callback, config)
   end
 
   dap.run(config)
@@ -95,12 +94,13 @@ local function setup_on_config(opts)
   if not on_config then return end
 
   local dap = require("dap")
-  _G.original_java_adapter = _G.original_java_adapter or dap.adapters.java
+
+  _G.dap_original_java_adapter = _G.dap_original_java_adapter or dap.adapters.java
 
   dap.adapters.java = function(callback, config)
-    dap.adapters.java = _G.original_java_adapter
+    dap.adapters.java = _G.dap_original_java_adapter
     on_config(config)
-    _G.original_java_adapter(callback, config)
+    _G.dap_original_java_adapter(callback, config)
   end
 end
 
