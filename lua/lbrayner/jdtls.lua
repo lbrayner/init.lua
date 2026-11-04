@@ -129,6 +129,7 @@ return setmetatable(M, {
     if vim.list_contains(
       {
         "get_current_project_name",
+        "with_jdtls",
       },
       key
     )

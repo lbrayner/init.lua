@@ -1,5 +1,3 @@
--- vim: fdm=marker
-
 local M = {}
 
 local concat = table.concat
@@ -17,21 +15,6 @@ local symbols_to_items = vim.lsp.util.symbols_to_items
 local uri_from_bufnr = vim.uri_from_bufnr
 
 local maximum_resolve_depth = 10
-
-local function with_jdtls(fn) -- {{{
-  local bufnr = vim.api.nvim_get_current_buf()
-
-  local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "jdtls" })
-  local _, client = next(clients)
-
-  -- From nvim-jdtls
-  if not client then
-    notify("No LSP client with name `jdtls` available", vim.log.levels.WARN)
-    return
-  end
-
-  fn(client, bufnr)
-end -- }}}
 
 function M.gjf_format(bufnr, opts)
   assert(type(bufnr) == "number" and bufnr > 0, "'bufnr' must be a positive integer")
@@ -78,7 +61,7 @@ function M.import_project()
 end
 
 function M.java_go_to_top_level_declaration()
-  with_jdtls(function(client, bufnr)
+  require("lbrayner.jdtls").with_jdtls(function(client, bufnr)
     require("lbrayner.lsp").document_symbol(client, function(result, ctx)
       if vim.tbl_isempty(result) then
         notify("Go to top level declaration: no document symbols found", vim.log.levels.ERROR)
@@ -137,7 +120,7 @@ end
 function M.java_main_symbols(cb)
   assert(type(cb) == "function", "'cb' must be a function")
 
-  with_jdtls(function(client, bufnr)
+  require("lbrayner.jdtls").with_jdtls(function(client, bufnr)
     require("lbrayner.lsp").document_symbol(client, function(result, ctx)
       if vim.tbl_isempty(result) then
         notify("Get main symbols: no document symbols found", vim.log.levels.ERROR)
@@ -194,7 +177,7 @@ function M.java_search_symbols(opts)
     return
   end
 
-  with_jdtls(
+  require("lbrayner.jdtls").with_jdtls(
     function(client, bufnr)
       client:request(
         "java/searchSymbols",
