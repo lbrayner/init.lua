@@ -83,6 +83,24 @@ function M.continue()
   )
 end
 
+function M.debug_support_on_decompiled_source()
+  require("jdtls.util").execute_command(
+    {
+      command = "vscode.java.updateDebugSettings",
+      arguments = {
+        vim.json.encode({
+          debugSupportOnDecompiledSource = "on",
+          logLevel = "WARNING",
+        }),
+      },
+    },
+    function(err, result)
+      assert(not err, vim.inspect(err))
+      print(vim.inspect(vim.json.decode(result)))
+    end
+  )
+end
+
 -- From jdtls/setup.lua JdtUpdateHotcode
 function M.redefine_classes()
   local session = require("dap").session()

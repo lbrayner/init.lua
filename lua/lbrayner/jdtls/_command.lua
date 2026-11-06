@@ -226,6 +226,12 @@ dap_subcommand_tbl.continue = {
   end,
 }
 
+dap_subcommand_tbl.debugSupportOnDecompiledSource = {
+  simple = function()
+    require("lbrayner.jdtls.dap").debug_support_on_decompiled_source()
+  end,
+}
+
 -- Start a JDWP Maven Surefire/Failsafe Cucumber test JVM
 -- mvn test \
 --   -Dtest=UnitarioTest \
