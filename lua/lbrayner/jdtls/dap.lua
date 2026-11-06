@@ -66,7 +66,7 @@ function M.continue()
       if not c then return end
 
       if c.command == "redefine_classes" then
-        require("lbrayner.jdtls").java_redefine_classes()
+        M.redefine_classes()
       elseif c.command == "dap_new" then
         ---@class dap.run.opts
         ---@field new? boolean force new session
@@ -81,6 +81,21 @@ function M.continue()
       end
     end
   )
+end
+
+-- From jdtls/setup.lua JdtUpdateHotcode
+function M.redefine_classes()
+  local session = require("dap").session()
+
+  if not session then
+    notify("No active debug session")
+    return
+  end
+
+  notify("Applying code changes")
+  session:request("redefineClasses", nil, function(err)
+    assert(not err, inspect(err))
+  end)
 end
 
 ---@class JdtTestOpts

@@ -144,21 +144,6 @@ function M.java_main_symbols(cb)
   end)
 end
 
--- From jdtls/setup.lua JdtUpdateHotcode
-function M.java_redefine_classes()
-  local session = require("dap").session()
-
-  if not session then
-    notify("No active debug session")
-    return
-  end
-
-  notify("Applying code changes")
-  session:request("redefineClasses", nil, function(err)
-    assert(not err, inspect(err))
-  end)
-end
-
 function M.java_search_symbols(opts)
   local search_symbol_params = {
     maxResults = opts.max_results,
