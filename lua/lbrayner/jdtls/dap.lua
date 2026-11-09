@@ -90,7 +90,7 @@ function M.debug_support_on_decompiled_source()
       arguments = {
         vim.json.encode({
           debugSupportOnDecompiledSource = "on",
-          logLevel = "WARNING",
+          logLevel = "INFO",
         }),
       },
     },
