@@ -141,8 +141,8 @@ if dap_available then
     highlight_dap_status({ status = "stopped" })
   end
 
-  -- command: 'launch';
-  dap.listeners.after["launch"]["lbrayner.statusline"] = function()
+  -- event: 'event_initialized';
+  dap.listeners.after["event_initialized"]["lbrayner.statusline"] = function()
     highlight_dap_status()
   end
 end
