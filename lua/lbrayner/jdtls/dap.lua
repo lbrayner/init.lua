@@ -28,7 +28,7 @@ function M.attach(config)
 
       if not config.projectName then
         notify(
-          "Java DAP Attach must be run from within a JDTLS project.",
+          "Java Debug: DAP Attach must be run from within a JDTLS project.",
           vim.log.levels.WARN
         )
         return
@@ -108,11 +108,11 @@ function M.redefine_classes()
   local session = require("dap").session()
 
   if not session then
-    notify("No active debug session")
+    notify("Java Debug: No active debug session")
     return
   end
 
-  notify("Applying code changes")
+  notify("Java Debug: Applying code changes")
   session:request("redefineClasses", nil, function(err)
     assert(not err, inspect(err))
   end)
