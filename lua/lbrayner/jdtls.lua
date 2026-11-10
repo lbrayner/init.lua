@@ -1,3 +1,4 @@
+local tbl_contains = vim.tbl_contains
 local tbl_get = vim.tbl_get
 
 local M = {}
@@ -104,6 +105,32 @@ function M.setup(config)
       if tbl_get(dap, "providers", "configs", "jdtls") then
         -- disable automatic discovery on dap.continue()
         dap.providers.configs.jdtls = nil
+        return true -- delete autocmd after performing action
+      end
+    end,
+  })
+
+  vim.api.nvim_create_autocmd("LspAttach", {
+    group = jdtls_setup,
+    pattern = "*.java",
+    desc = "Java Debug: enable debugSupportOnDecompiledSource",
+    callback = function(args)
+      local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+      if client.name ~= "jdtls" then
+        return
+      end
+
+      local commands = tbl_get(
+        client, "server_capabilities", "executeCommandProvider", "commands"
+      )
+
+      if not commands then
+        return
+      end
+
+      if tbl_contains(commands, "vscode.java.updateDebugSettings") then
+        require("lbrayner.jdtls.dap").debug_support_on_decompiled_source()
         return true -- delete autocmd after performing action
       end
     end,
