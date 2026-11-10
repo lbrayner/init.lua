@@ -1,3 +1,5 @@
+local notify = vim.notify
+
 local M = {}
 
 function M.attach(config)
@@ -25,7 +27,7 @@ function M.attach(config)
       end
 
       if not config.projectName then
-        vim.notify(
+        notify(
           "Java DAP Attach must be run from within a JDTLS project.",
           vim.log.levels.WARN
         )
