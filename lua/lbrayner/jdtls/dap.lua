@@ -98,7 +98,8 @@ function M.debug_support_on_decompiled_source()
     },
     function(err, result)
       assert(not err, vim.inspect(err))
-      print(vim.inspect(vim.json.decode(result)))
+      M.debug_settings = vim.json.decode(result)
+      notify("Java Debug: updated debug settings (debugSupportOnDecompiledSource)")
     end
   )
 end
