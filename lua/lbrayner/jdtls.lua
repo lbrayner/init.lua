@@ -1,3 +1,5 @@
+local tbl_get = vim.tbl_get
+
 local M = {}
 
 function M.create_user_command()
@@ -99,7 +101,7 @@ function M.setup(config)
     callback = function()
       -- Must run after on_attach (see jdtls.dap.setup.start_or_attach)
       -- From nvim.jdtls.dap's setup_dap_main_class_configs
-      if dap.providers and dap.providers.configs and dap.providers.configs.jdtls then
+      if tbl_get(dap, "providers", "configs", "jdtls") then
         -- disable the automatic discovery on dap.continue()
         dap.providers.configs.jdtls = nil
         return true -- delete autocmd after overriding jdtls dap provider
