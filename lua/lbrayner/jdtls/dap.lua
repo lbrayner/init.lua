@@ -1,14 +1,21 @@
+local format = string.format
 local notify = vim.notify
 
 local M = {}
 
 function M.attach(config)
+  local function get_name(config)
+    local name = config.name
+    local projectName = config.projectName
+
+    return projectName and format("%s (%s)", name, projectName) or name
+  end
+
   config = config or {}
   config.request = "attach"
   config.type = "java"
 
   local dap = require("dap")
-  local name = config.name
 
   _G.dap_original_java_adapter = _G.dap_original_java_adapter or dap.adapters.java
 
@@ -16,12 +23,6 @@ function M.attach(config)
     dap.adapters.java = _G.dap_original_java_adapter
 
     if config.request == "attach" then
-      config.name = config.name or name
-      config.mainClass = config.mainClass or "__attach__"
-      config.modulePaths = config.modulePaths or {}
-      config.classPaths = config.classPaths or {}
-      config.javaExec = config.javaExec or "__attach__"
-
       if not config.projectName then
         config.projectName = require("lbrayner.jdtls").get_current_project_name()
       end
@@ -33,6 +34,12 @@ function M.attach(config)
         )
         return
       end
+
+      config.name = get_name(config)
+      config.mainClass = config.mainClass or "__attach__"
+      config.modulePaths = config.modulePaths or {}
+      config.classPaths = config.classPaths or {}
+      config.javaExec = config.javaExec or "__attach__"
     end
 
     _G.dap_original_java_adapter(callback, config)
