@@ -1,3 +1,5 @@
+-- vim: fdm=marker
+
 local tbl_contains = vim.tbl_contains
 local tbl_get = vim.tbl_get
 
@@ -16,11 +18,22 @@ function M.get_buffer_name(bufnr)
   end
 end
 
-function M.setup(config)
-  local opts = { dap = {} } -- required to setup dap
+-- {{{ @class JdtSetupDapOpts
+---@class JdtSetupDapOpts
+---@field config_overrides JdtDapConfig These will be used as default overrides for |jdtls.dap.test_class|, |jdtls.dap.test_nearest_method| and discovered main classes
+---@field hotcodereplace? string "auto"
+-- }}}
+
+---@class jdtls.start.opts
+---@field dap? JdtSetupDapOpts
+
+---@param config table<string, any> configuration. See |vim.lsp.start_client|
+---@param opts? jdtls.start.opts
+function M.setup(config, opts)
+  opts = opts or {}
 
   local function start_or_attach()
-    require("jdtls").start_or_attach(config, opts)
+    require("jdtls").start_or_attach(config)
   end
 
   local jdtls_setup = vim.api.nvim_create_augroup("jdtls_setup", { clear = true })
@@ -93,19 +106,32 @@ function M.setup(config)
     end,
   })
 
-  local dap = require("dap")
-
-  -- TODO it's only triggering on second LspAttach
   vim.api.nvim_create_autocmd("LspAttach", {
     group = jdtls_setup,
     pattern = "*.java",
     desc = "JDTLS: disable automatic discovery of DAP configuration provider",
-    callback = function()
-      -- Must run after on_attach (see jdtls.dap.setup.start_or_attach)
-      -- From nvim.jdtls.dap's setup_dap_main_class_configs
-      if tbl_get(dap, "providers", "configs", "jdtls") then
-        -- disable automatic discovery on dap.continue()
-        dap.providers.configs.jdtls = nil
+    callback = function(args)
+      local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+      if client.name ~= "jdtls" then return end
+
+      local commands = tbl_get(
+        client, "server_capabilities", "executeCommandProvider", "commands"
+      )
+
+      if not commands then return end
+
+      if tbl_contains(commands, "vscode.java.startDebugSession") then
+        require("jdtls.dap").setup_dap(opts.dap or {})
+        local dap = require("dap")
+
+        -- Must run after on_attach (see jdtls.dap.setup.start_or_attach)
+        -- From nvim.jdtls.dap's setup_dap_main_class_configs
+        if tbl_get(dap, "providers", "configs", "jdtls") then
+          -- disable automatic discovery on dap.continue()
+          dap.providers.configs.jdtls = nil
+        end
+
         return true -- delete autocmd after performing action
       end
     end,
@@ -118,17 +144,13 @@ function M.setup(config)
     callback = function(args)
       local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-      if client.name ~= "jdtls" then
-        return
-      end
+      if client.name ~= "jdtls" then return end
 
       local commands = tbl_get(
         client, "server_capabilities", "executeCommandProvider", "commands"
       )
 
-      if not commands then
-        return
-      end
+      if not commands then return end
 
       if tbl_contains(commands, "vscode.java.updateDebugSettings") then
         require("lbrayner.jdtls.dap").debug_support_on_decompiled_source()
