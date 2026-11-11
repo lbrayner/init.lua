@@ -315,6 +315,11 @@ function M.java_type_hierarchy(opts)
   end)
 end
 
+function M.update_project_config()
+  local params = { uri = vim.uri_from_bufnr(0) }
+  vim.lsp.buf_notify(0, "java/projectConfigurationUpdate", params)
+end
+
 --- From nvim-jdtls
 ---@param opts JdtUpdateProjectsOpts|nil configuration options
 function M.update_projects_config(opts)

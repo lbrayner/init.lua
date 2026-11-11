@@ -189,7 +189,7 @@ subcommand_tbl.typeHierarchy = {
 }
 
 subcommand_tbl.updateProjectConfig = {
-  simple = function() require("jdtls").update_project_config() end,
+  simple = function() require("lbrayner.jdtls").update_project_config() end,
 }
 
 -- Reference implementarion of multiple mutually exclusive flags
