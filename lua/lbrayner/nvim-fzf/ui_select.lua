@@ -33,11 +33,10 @@ function M.ui_select(items, ui_opts, on_choice)
 
   local function select()
     local selected = require("fzf").fzf(entries, fzf_cli_args)
-    -- print("selected", vim.inspect(selected)) -- TODO debug
 
     if selected then
       local idx = tonumber(selected[1]:match("%d+"))
-      on_choice(items[idx])
+      on_choice(items[idx], idx)
     end
 
     require("lbrayner.nvim-fzf.history").sanitize_history_file(history_file)
