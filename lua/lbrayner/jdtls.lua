@@ -95,6 +95,7 @@ function M.setup(config)
 
   local dap = require("dap")
 
+  -- TODO it's only triggering on second LspAttach
   vim.api.nvim_create_autocmd("LspAttach", {
     group = jdtls_setup,
     pattern = "*.java",
