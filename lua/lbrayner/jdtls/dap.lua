@@ -1,5 +1,6 @@
 local format = string.format
 local notify = vim.notify
+local tbl_extend = vim.tbl_extend
 
 local M = {}
 
@@ -92,21 +93,12 @@ function M.continue()
   )
 end
 
-function M.debug_support_on_decompiled_source()
-  require("jdtls.util").execute_command(
+function M.enable_debug_support_on_decompiled_source()
+  M.update_debug_settings(
     {
-      command = "vscode.java.updateDebugSettings",
-      arguments = {
-        vim.json.encode({
-          debugSupportOnDecompiledSource = "on",
-          logLevel = "INFO",
-        }),
-      },
-    },
-    function(err, result)
-      assert(not err, vim.inspect(err))
-      M.debug_settings = vim.json.decode(result)
-      notify("Java Debug: updated debug settings (debugSupportOnDecompiledSource)")
+      debugSupportOnDecompiledSource = "on"
+    }, function()
+      notify("Java Debug: enabled debug support on decompiled source")
     end
   )
 end
@@ -124,6 +116,36 @@ function M.redefine_classes()
   session:request("redefineClasses", nil, function(err)
     assert(not err, inspect(err))
   end)
+end
+
+function M.update_debug_settings(settings, cb)
+  assert(type(settings) == "table", "Bad argument; 'settings' must be a table.")
+  assert(not cb or type(cb) == "function", "Bad argument; 'cb' must be a function.")
+
+  require("jdtls.util").execute_command(
+    {
+      command = "vscode.java.updateDebugSettings",
+      arguments = {
+        vim.json.encode(
+          tbl_extend(
+            "force",
+            { logLevel = "INFO" },
+            M.debug_settings or {},
+            settings or {}
+          )
+        ),
+      },
+    },
+    function(err, result)
+      assert(not err, vim.inspect(err))
+      M.debug_settings = vim.json.decode(result)
+      if cb then
+        cb()
+      else
+        notify("Java Debug: updated debug settings")
+      end
+    end
+  )
 end
 
 ---@class JdtTestOpts

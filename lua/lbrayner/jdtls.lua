@@ -140,7 +140,7 @@ function M.setup(config, opts)
   vim.api.nvim_create_autocmd("LspAttach", {
     group = jdtls_setup,
     pattern = "*.java",
-    desc = "Java Debug: enable debugSupportOnDecompiledSource",
+    desc = "Java Debug: enable debug support on decompiled source",
     callback = function(args)
       local client = vim.lsp.get_client_by_id(args.data.client_id)
 
@@ -153,7 +153,7 @@ function M.setup(config, opts)
       if not commands then return end
 
       if tbl_contains(commands, "vscode.java.updateDebugSettings") then
-        require("lbrayner.jdtls.dap").debug_support_on_decompiled_source()
+        require("lbrayner.jdtls.dap").enable_debug_support_on_decompiled_source()
         return true -- delete autocmd after performing action
       end
     end,
