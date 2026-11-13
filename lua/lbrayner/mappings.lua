@@ -9,6 +9,11 @@ vim.keymap.set("v", "Ç", ":<Up><CR>")
 vim.keymap.set("n", "¬", "^")
 vim.keymap.set("v", "¬", "^")
 
+if vim.env.TERM == "wezterm" then
+  vim.keymap.set("n", "<S-Ç>", ":<Up><CR>")
+  vim.keymap.set("v", "<S-Ç>", ":<Up><CR>")
+end
+
 -- alternate file
 vim.keymap.set("n", "<Space>a", "<Cmd>b#<CR>")
 
