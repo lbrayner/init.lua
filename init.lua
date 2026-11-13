@@ -40,14 +40,23 @@ vim.g.markdown_recommended_style = 0
 
 if vim.env.TERM == "wezterm" then
   local osc52 = require("vim.ui.clipboard.osc52")
+  local cache = { {}, "v" }
+
+  local function wrap(reg)
+    local copy = osc52.copy(reg)
+    return function(lines, regtype)
+      cache = { lines, regtype or "v" }
+      copy(lines, regtype)
+    end
+  end
 
   local function paste()
-    return { vim.fn.split(vim.fn.getreg(""), "\n"), vim.fn.getregtype("") }
+    return cache
   end
 
   vim.g.clipboard = {
-    name = "OSC 52",
-    copy = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
+    name = "OSC 52 (WezTerm)",
+    copy = { ["+"] = wrap("+"), ["*"] = wrap("*") },
     paste = { ["+"] = paste, ["*"] = paste },
   }
 end
